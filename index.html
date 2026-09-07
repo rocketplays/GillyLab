@@ -5193,6 +5193,7 @@
  { name: "Daniel Santos", division: "FW", rank: "NR", record: "14-3-0", initials: "DSA", country: "Brazil" },
  { name: "Chepe Mariscal", division: "FW", rank: "NR", record: "18-7-0", initials: "CHM", country: "USA" }, // 1 NC
  { name: "Christian Rodriguez", division: "FW", rank: "NR", record: "13-4-0", initials: "CRD", country: "USA" },
+ { name: "Christian Natividad", division: "FLW", rank: "NR", record: "9-0-0", initials: "CNA", country: "USA" },
  { name: "Zubaira Tukhugov", division: "FW", rank: "NR", record: "23-8-1", initials: "ZTU", country: "Russia" },
  { name: "Billy Quarantillo", division: "FW", rank: "NR", record: "18-8-0", initials: "BQU", country: "USA" },
  { name: "Lucas Almeida", division: "FW", rank: "NR", record: "15-5-0", initials: "LAL", country: "Brazil" },
@@ -10495,6 +10496,7 @@
   "Kwon Won Il": { ht:"5'10\"", dob:"1995-06-24", reach:'71.5"', stance:"Orthodox", slpm:5.02, strAcc:"39%", sapm:5.82, strDef:"60%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"67%", subAvg:0.0, finRate:"93%", streak:0, gym:"Extreme Combat" },
   "Apollo Gomes": { ht:"5'8\"", dob:"2000-07-10", reach:'70.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"75%", streak:3, gym:"Chute Boxe - Diego Lima" },
   "Colton Loud": { ht:"5'10\"", dob:"2000-12-07", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Skywalker 101 Boxing Academy" },
+  "Christian Natividad": { ht:"5'5\"", dob:"1996-12-07", reach:'69.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"33%", streak:9, gym:"Fight Ready" },
   "Freddy Vidal": { ht:"6'3\"", dob:"1994-05-06", reach:'79.5"', stance:"Orthodox", slpm:2.7, strAcc:"66%", sapm:2.65, strDef:"26%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"60%", subAvg:0.83, finRate:"75%", streak:0, gym:"Serra-Longo Fight Team " },
   "Azamat Nuftillaev": { ht:"6'0\"", dob:"1994-01-01", reach:'77"', stance:"Orthodox", slpm:0.6, strAcc:"56%", sapm:1.6, strDef:"25%", kd:0.0, tdLanded:4.0, tdAcc:"44%", tdDef:"0%", subAvg:0.0, finRate:"92%", streak:0, gym:"" },
   "Tecia Pennington": { ht:"5'1\"", dob:"1989-08-16", reach:'60.5"', stance:"Orthodox", slpm:4.73, strAcc:"48%", sapm:3.48, strDef:"62%", kd:0.06, tdLanded:0.56, tdAcc:"15%", tdDef:"63%", subAvg:0.06, finRate:"13%", streak:0, gym:"Pound 4 Pound Fitness" },
@@ -40253,6 +40255,14 @@
   ],
   "Colton Loud": [
     { opponent: "Jacobo Martos", odds: -245 },
+  ],
+  "Christian Natividad": [
+    { opponent: "Evan Woolsey", odds: -1250 },
+    { opponent: "Luis Aguirre", odds: -750 },
+    { opponent: "Israel Galvan", odds: -300 },
+    { opponent: "Jose Sandoval", odds: -500 },
+    { opponent: "Jostin Quilca", odds: -770 },
+    { opponent: "Adrian Garcia", odds: -405 },
   ],
   "Cody Haddon": [
     { opponent: "Aoriqileng", odds: -350 },
@@ -82916,6 +82926,17 @@ const FIGHT_HISTORY = {
     { date: "Jan 7, 2023", opponent: "Brendan Clarke", result: "W", method: "Submission", round: 1, time: "0:18", event: "Peak Fighting 25", org: "Peak Fighting" },
     { date: "Oct 22, 2022", opponent: "Jesse Sanderson", result: "W", method: "TKO (Punches)", round: 1, time: "3:01", event: "Peak Fighting 24", org: "Peak Fighting" }
   ],
+  "Christian Natividad": [
+    { date: "Mar 12, 2026", opponent: "Adrian Garcia", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 228: Natividad vs. Garcia", org: "LFA" },
+    { date: "Oct 24, 2025", opponent: "Jostin Quilca", result: "W", method: "KO/TKO", round: 1, time: "3:07", event: "LFA 220: Tanner vs. Cyr", org: "LFA" },
+    { date: "Jun 12, 2025", opponent: "Jose Sandoval", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 210: Lawrence vs. Reyes", org: "LFA" },
+    { date: "Nov 8, 2024", opponent: "Devon Jackson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 196: Tanner vs. Ureña", org: "LFA" },
+    { date: "Oct 14, 2022", opponent: "Israel Galvan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 144: Gafurov vs. Silva", org: "LFA" },
+    { date: "Jul 2, 2021", opponent: "Luis Aguirre", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 110: Johnson vs. Horiuchi", org: "LFA" },
+    { date: "Feb 19, 2021", opponent: "Evan Woolsey", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 100: Altamirano vs. Smith", org: "LFA" },
+    { date: "Oct 2, 2020", opponent: "Jose Holguin", result: "W", method: "KO/TKO", round: 1, time: "0:29", event: "LFA 92: Wirth vs. Askar", org: "LFA" },
+    { date: "Jul 17, 2020", opponent: "Michael Aquila", result: "W", method: "KO/TKO", round: 1, time: "2:48", event: "LFA 85: Hughes vs. Demopoulos", org: "LFA" }
+  ],
   "Freddy Vidal": [
     { date: "Oct 14, 2025", opponent: "Levi Rodrigues Jr.", result: "D", method: "No Contest", round: 1, time: "3:20", event: "Dana White's Contender Series: Season 9, Week 10", org: "UFC" },
     { date: "Sep 9, 2025", opponent: "Felipe Franco", result: "W", method: "Submission", round: 3, time: "4:48", event: "Dana White's Contender Series: Season 9, Week 5", org: "UFC" },
@@ -123700,6 +123721,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "Undefeated by finish — 7-1 pro with every win by stoppage (4 KO/TKO, 3 submission), a perfect finish rate", detail: null },
     { icon: "🏆", title: "Former Peak Fighting flyweight champion; lost the title by submission to Jesse Tafoya in 2024, his only pro loss", detail: null },
     { icon: "🏟️", title: "Texas flyweight out of Fort Worth; trains at Skywalker 101 Boxing Academy", detail: null }
+  ],
+  "Christian Natividad": [
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series (Sep 8, 2026) vs. Colton Loud", detail: null },
+    { icon: "🥊", title: "Undefeated 9-0 pro on a 9-fight win streak since his 2020 debut — every fight has been a win, mostly by decision (6 decision, 3 KO/TKO)", detail: null },
+    { icon: "🏟️", title: "Nicknamed \"The Hawaiian Punch\"; Arizona flyweight who trains at Fight Ready", detail: null }
   ],
   "Tecia Pennington": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null },
