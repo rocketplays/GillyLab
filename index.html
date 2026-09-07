@@ -7309,6 +7309,7 @@
  { name: "Jon Manley", division: "?", rank: "NR", record: "10-5-0", initials: "JM", country: "USA" },
  { name: "Dominic Waters", division: "WW", rank: "NR", record: "9-6-0", initials: "DW", country: "USA" },
  { name: "Colton Smith", division: "LW", rank: "NR", record: "7-5-0", initials: "CS", country: "USA" },
+ { name: "Colton Loud", division: "FLW", rank: "NR", record: "7-1-0", initials: "CLD", country: "USA" },
  { name: "Motonobu Tezuka", division: "BW", rank: "NR", record: "19-8-4", initials: "MT", country: "Japan" },
  { name: "Sergio Pettis", division: "FLW", rank: "NR", record: "25-8-0", initials: "SP", country: "USA" },
  { name: "Steve Kennedy", division: "WW", rank: "NR", record: "22-9-0", initials: "SK", country: "Australia" },
@@ -10493,6 +10494,7 @@
   "Ananias Mulumba": { ht:"5'5\"", dob:"1998-09-18", reach:'70.5"', stance:"Switch", slpm:4.44, strAcc:"43%", sapm:4.72, strDef:"53%", kd:1.39, tdLanded:0.0, tdAcc:"0%", tdDef:"67%", subAvg:0.69, finRate:"100%", streak:1, gym:"Elite Training Centre" },
   "Kwon Won Il": { ht:"5'10\"", dob:"1995-06-24", reach:'71.5"', stance:"Orthodox", slpm:5.02, strAcc:"39%", sapm:5.82, strDef:"60%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"67%", subAvg:0.0, finRate:"93%", streak:0, gym:"Extreme Combat" },
   "Apollo Gomes": { ht:"5'8\"", dob:"2000-07-10", reach:'70.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"75%", streak:3, gym:"Chute Boxe - Diego Lima" },
+  "Colton Loud": { ht:"5'10\"", dob:"2000-12-07", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Skywalker 101 Boxing Academy" },
   "Freddy Vidal": { ht:"6'3\"", dob:"1994-05-06", reach:'79.5"', stance:"Orthodox", slpm:2.7, strAcc:"66%", sapm:2.65, strDef:"26%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"60%", subAvg:0.83, finRate:"75%", streak:0, gym:"Serra-Longo Fight Team " },
   "Azamat Nuftillaev": { ht:"6'0\"", dob:"1994-01-01", reach:'77"', stance:"Orthodox", slpm:0.6, strAcc:"56%", sapm:1.6, strDef:"25%", kd:0.0, tdLanded:4.0, tdAcc:"44%", tdDef:"0%", subAvg:0.0, finRate:"92%", streak:0, gym:"" },
   "Tecia Pennington": { ht:"5'1\"", dob:"1989-08-16", reach:'60.5"', stance:"Orthodox", slpm:4.73, strAcc:"48%", sapm:3.48, strDef:"62%", kd:0.06, tdLanded:0.56, tdAcc:"15%", tdDef:"63%", subAvg:0.06, finRate:"13%", streak:0, gym:"Pound 4 Pound Fitness" },
@@ -40248,6 +40250,9 @@
     { opponent: "Vinicius Pires", odds: 105 },
     { opponent: "Lionel Abojer", odds: -699 },
     { opponent: "Zebenzui Ruiz", odds: 100 },
+  ],
+  "Colton Loud": [
+    { opponent: "Jacobo Martos", odds: -245 },
   ],
   "Cody Haddon": [
     { opponent: "Aoriqileng", odds: -350 },
@@ -82901,6 +82906,16 @@ const FIGHT_HISTORY = {
     { date: "Jul 5, 2018", opponent: "Denes da Silva Carvalho", result: "W", method: "Submission (Guillotine)", round: 2, time: "4:50", event: "Xambioa Fight Combat 2", org: "XFC2" },
     { date: "Apr 13, 2018", opponent: "Evando Vieira da Silva", result: "W", method: "KO/TKO", round: 1, time: "4:40", event: "Veneno Fight Club 2", org: "VFC" }
   ],
+  "Colton Loud": [
+    { date: "Mar 15, 2026", opponent: "Jacobo Martos", result: "W", method: "Technical Submission (Brabo Choke)", round: 1, time: "0:22", event: "Fury FC 117: Wint vs. Tatum", org: "Fury FC" },
+    { date: "Nov 16, 2024", opponent: "Cameron Miller", result: "W", method: "Submission (Brabo Choke)", round: 1, time: "1:10", event: "Peak Fighting 40", org: "Peak Fighting" },
+    { date: "Mar 16, 2024", opponent: "Jesse Tafoya", result: "L", method: "Submission (Brabo Choke)", round: 1, time: "2:38", event: "Peak Fighting 34", org: "Peak Fighting" },
+    { date: "Aug 26, 2023", opponent: "Jesus Urbina", result: "W", method: "TKO (Punches)", round: 1, time: "1:22", event: "Peak Fighting 31", org: "Peak Fighting" },
+    { date: "Jul 15, 2023", opponent: "Devon Jackson", result: "W", method: "TKO (Punches)", round: 2, time: "1:52", event: "Peak Fighting 30", org: "Peak Fighting" },
+    { date: "Mar 11, 2023", opponent: "Jett Shell", result: "W", method: "TKO (Punches)", round: 1, time: "1:00", event: "Peak Fighting 27", org: "Peak Fighting" },
+    { date: "Jan 7, 2023", opponent: "Brendan Clarke", result: "W", method: "Submission", round: 1, time: "0:18", event: "Peak Fighting 25", org: "Peak Fighting" },
+    { date: "Oct 22, 2022", opponent: "Jesse Sanderson", result: "W", method: "TKO (Punches)", round: 1, time: "3:01", event: "Peak Fighting 24", org: "Peak Fighting" }
+  ],
   "Freddy Vidal": [
     { date: "Oct 14, 2025", opponent: "Levi Rodrigues Jr.", result: "D", method: "No Contest", round: 1, time: "3:20", event: "Dana White's Contender Series: Season 9, Week 10", org: "UFC" },
     { date: "Sep 9, 2025", opponent: "Felipe Franco", result: "W", method: "Submission", round: 3, time: "4:48", event: "Dana White's Contender Series: Season 9, Week 5", org: "UFC" },
@@ -123679,6 +123694,12 @@ const ACCOLADES = {
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series (Sep 8, 2026) vs. Kwon Won Il", detail: null },
     { icon: "🥊", title: "12-2 pro (1 NC) on a 3-fight win streak; 75% finish rate with a well-rounded arsenal (5 KO/TKO, 4 submission)", detail: null },
     { icon: "🏟️", title: "Brazilian bantamweight nicknamed \"Deus da Guerra\" (\"God of War\"); trains at Chute Boxe under Diego Lima", detail: null }
+  ],
+  "Colton Loud": [
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series (Sep 8, 2026) vs. Christian Natividad", detail: null },
+    { icon: "🥊", title: "Undefeated by finish — 7-1 pro with every win by stoppage (4 KO/TKO, 3 submission), a perfect finish rate", detail: null },
+    { icon: "🏆", title: "Former Peak Fighting flyweight champion; lost the title by submission to Jesse Tafoya in 2024, his only pro loss", detail: null },
+    { icon: "🏟️", title: "Texas flyweight out of Fort Worth; trains at Skywalker 101 Boxing Academy", detail: null }
   ],
   "Tecia Pennington": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null },
