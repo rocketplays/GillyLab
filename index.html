@@ -5076,6 +5076,7 @@
  { name: "Alexander Hernandez", division: "LW", rank: "NR", record: "18-9-0", initials: "ALH", country: "USA" },
  { name: "Rafa Garcia", division: "LW", rank: "NR", record: "19-4-0", initials: "RAG", country: "Mexico" },
  { name: "Drakkar Klose", division: "LW", rank: "NR", record: "16-3-1", initials: "DKL", country: "USA" },
+ { name: "Quentin Pasley", division: "LHW", rank: "NR", record: "3-0-0", initials: "QP", country: "USA" },
  { name: "Quillan Salkilld", division: "LW", rank: "#8", record: "13-1-0", initials: "QSA", country: "Australia" },
  { name: "Anshul Jubli", division: "LW", rank: "NR", record: "7-2-0", initials: "AJ", country: "India" },
  { name: "Drew Dober", division: "LW", rank: "NR", record: "29-15-0", initials: "DDO", country: "USA" },
@@ -9166,6 +9167,7 @@
  // ── Final sweep ──
  "Rizvan Kuniev": { ht:'6\'4"', dob:"1992-03-10", reach:'76"', stance:"Orthodox", slpm:4.32, strAcc:"55%", sapm:2.22, strDef:"49%", kd:0.52, tdLanded:0.79, tdAcc:"75%", tdDef:"94%", subAvg:0.00, finRate:"62%", streak:1, gym:"Gorets Fight Club" },
  "Victor Henry": { ht:"5'7\"", dob:"1987-05-04", reach:'68"', stance:"Switch", slpm:7.17, strAcc:"53%", sapm:5.19, strDef:"48%", kd:0.52, tdLanded:1.04, tdAcc:"43%", tdDef:"81%", subAvg:0.35, finRate:"60%", streak:1, gym:"UWF-USA" },
+ "Quentin Pasley": { ht:"6'5\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:3, gym:"Fighting Arts Academy CT" },
  "Quillan Salkilld": { ht:"6'0\"", dob:"1999-12-28", reach:'75"', stance:"Orthodox", slpm:4.73, strAcc:"57%", sapm:2.79, strDef:"46%", kd:1.03, tdLanded:6.86, tdAcc:"36%", tdDef:"81%", subAvg:1.03, finRate:"75%", streak:12, gym:"Luistro Combat Academy" },
  "Anshul Jubli": { ht:"6'0\"", dob:"1995-01-13", reach:'69"', stance:"Orthodox", slpm:6.42, strAcc:"46%", sapm:5.72, strDef:"50%", kd:0.40, tdLanded:0.81, tdAcc:"20%", tdDef:"64%", subAvg:0.40, finRate:"43%", streak:0, gym:"Soma Fight Club" },
  "Gauge Young": { ht:"5'9\"", dob:"2000-07-14", reach:'70"', stance:"Orthodox", slpm:6.88, strAcc:"53%", sapm:5.73, strDef:"52%", kd:0.2, tdLanded:1.2, tdAcc:"32%", tdDef:"76%", subAvg:0.0, finRate:"64%", streak:2, gym:"Ignite Jiu-Jitsu & MMA" },
@@ -44947,6 +44949,9 @@
   ],
   "Carlos Leal": [
   ],
+  "Quentin Pasley": [
+    { opponent: "Reylan Gracie", odds: -1000 },
+  ],
   "Quillan Salkilld": [
     { opponent: "Beneil Dariush", odds: -400 },
     { opponent: "Jamie Mullarkey", odds: -800 },
@@ -64321,6 +64326,11 @@ const FIGHT_HISTORY = {
     { date: "Dec 15, 2012", opponent: "Daniel Snaider", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Planet: Rota de Colisão" },
     { date: "Nov 10, 2012", opponent: "Fernando Ghuetoman", result: "W", method: "Decision", round: 3, time: "5:00", event: "Beltrão Combat 2" },
     { date: "Oct 6, 2012", opponent: "Pedro Cabelo", result: "W", method: "DQ (Illegal strike)", round: 1, time: "0:10", event: "Fight Planet Juquiá" }
+  ],
+  "Quentin Pasley": [
+    { date: "Aug 9, 2025", opponent: "Jerell Nettles", result: "W", method: "TKO (Punches)", round: 1, time: "2:55", event: "CES MMA 81: Carvalho vs. Bohn", org: "CES" },
+    { date: "Mar 22, 2025", opponent: "Reylan Gracie", result: "W", method: "TKO (Flying Knee and Punches)", round: 1, time: "1:31", event: "LFA 204: Cunha vs. Freeman", org: "LFA" },
+    { date: "Oct 20, 2023", opponent: "Turner Williams", result: "W", method: "TKO (Elbows)", round: 1, time: "0:59", event: "CES MMA 75: Fight For A Cause", org: "CES" }
   ],
   "Quillan Salkilld": [
     { date: "Aug 8, 2026", opponent: "Mateusz Gamrot", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:25", event: "UFC Fight Night: Gamrot vs Salkilld", org: "UFC" },
@@ -118479,6 +118489,12 @@ const ACCOLADES = {
   "Drakkar Klose": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu under Sadiq Daniels", detail: null },
     { icon: "⭐", title: "UFC lightweight since 2017; def. Edson Barboza, Joe Solecki & Lando Vannata", detail: null }
+  ],
+  "Quentin Pasley": [
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 5 vs. Arlind Berisha (Sep 8, 2026)", detail: null },
+    { icon: "🥊", title: "Boxer-turned-MMA fighter; 3-0 pro with all three wins by first-round KO/TKO — a perfect finish rate", detail: null },
+    { icon: "🏅", title: "Returned from a second torn ACL and reconstructive surgery — a full year away from competition — to remain undefeated", detail: null },
+    { icon: "🏟️", title: "American light heavyweight prospect out of New Haven, Connecticut; trains at Fighting Arts Academy CT", detail: null }
   ],
   "Quillan Salkilld": [
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu", detail: null },
