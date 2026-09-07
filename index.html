@@ -5310,6 +5310,7 @@
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-5-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "8-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
+ { name: "Apollo Gomes", division: "BW", rank: "NR", record: "12-2-0", initials: "APG", country: "Brazil" }, // 1 NC
  { name: "Ryan Gandra", division: "MW", rank: "NR", record: "10-1-0", initials: "RGA", country: "Brazil" },
  { name: "Aliaskhab Khizriev", division: "MW", rank: "NR", record: "14-0-0", initials: "AKH", country: "Russia" },
  // ─── WELTERWEIGHT (remaining) ───
@@ -10491,6 +10492,7 @@
   "Mario Mingaj": { ht:"6'3\"", dob:"1998-10-28", reach:'78"', stance:"Orthodox", slpm:1.62, strAcc:"33%", sapm:6.49, strDef:"52%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"0%", subAvg:0.0, finRate:"86%", streak:0, gym:"Pompeo's Team" },
   "Ananias Mulumba": { ht:"5'5\"", dob:"1998-09-18", reach:'70.5"', stance:"Switch", slpm:4.44, strAcc:"43%", sapm:4.72, strDef:"53%", kd:1.39, tdLanded:0.0, tdAcc:"0%", tdDef:"67%", subAvg:0.69, finRate:"100%", streak:1, gym:"Elite Training Centre" },
   "Kwon Won Il": { ht:"5'10\"", dob:"1995-06-24", reach:'71.5"', stance:"Orthodox", slpm:5.02, strAcc:"39%", sapm:5.82, strDef:"60%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"67%", subAvg:0.0, finRate:"93%", streak:0, gym:"Extreme Combat" },
+  "Apollo Gomes": { ht:"5'8\"", dob:"2000-07-10", reach:'70.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"75%", streak:3, gym:"Chute Boxe - Diego Lima" },
   "Freddy Vidal": { ht:"6'3\"", dob:"1994-05-06", reach:'79.5"', stance:"Orthodox", slpm:2.7, strAcc:"66%", sapm:2.65, strDef:"26%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"60%", subAvg:0.83, finRate:"75%", streak:0, gym:"Serra-Longo Fight Team " },
   "Azamat Nuftillaev": { ht:"6'0\"", dob:"1994-01-01", reach:'77"', stance:"Orthodox", slpm:0.6, strAcc:"56%", sapm:1.6, strDef:"25%", kd:0.0, tdLanded:4.0, tdAcc:"44%", tdDef:"0%", subAvg:0.0, finRate:"92%", streak:0, gym:"" },
   "Tecia Pennington": { ht:"5'1\"", dob:"1989-08-16", reach:'60.5"', stance:"Orthodox", slpm:4.73, strAcc:"48%", sapm:3.48, strDef:"62%", kd:0.06, tdLanded:0.56, tdAcc:"15%", tdDef:"63%", subAvg:0.06, finRate:"13%", streak:0, gym:"Pound 4 Pound Fitness" },
@@ -40241,6 +40243,11 @@
     { opponent: "Mark Abelardo", odds: -300 },
     { opponent: "Shinechagtga Zoltsetseg", odds: -275 },
     { opponent: "Fabricio Andrade", odds: 430 },
+  ],
+  "Apollo Gomes": [
+    { opponent: "Vinicius Pires", odds: 105 },
+    { opponent: "Lionel Abojer", odds: -699 },
+    { opponent: "Zebenzui Ruiz", odds: 100 },
   ],
   "Cody Haddon": [
     { opponent: "Aoriqileng", odds: -350 },
@@ -82877,6 +82884,23 @@ const FIGHT_HISTORY = {
     { date: "Mar 29, 2015", opponent: "Keisuke Iwata", result: "W", method: "KO/TKO", round: 1, time: "1:46", event: "Japan Regional" },
     { date: "Apr 29, 2014", opponent: "Hirotaka Miyakawa", result: "W", method: "KO/TKO", round: 1, time: "0:36", event: "Deep: 66 Impact" },
   ],
+  "Apollo Gomes": [
+    { date: "Mar 27, 2026", opponent: "Zebenzui Ruiz", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "WOW 28: Barcelona", org: "WOW FC" },
+    { date: "May 17, 2025", opponent: "Pol Villanueva", result: "W", method: "Submission (Rear Naked Choke)", round: 2, time: "0:39", event: "LATAMM 3: Villanueva vs. Gomes", org: "LATAMM" },
+    { date: "Feb 11, 2025", opponent: "Jesus Ru", result: "W", method: "KO/TKO", round: 3, time: "1:59", event: "XFC Young Guns 5", org: "XFC" },
+    { date: "Jul 6, 2024", opponent: "Lionel Abojer", result: "L", method: "Submission (Rear Naked Choke)", round: 2, time: "1:37", event: "LFA 187: Brazil vs. Latin America", org: "LFA" },
+    { date: "Jan 27, 2024", opponent: "Vinicius Pires", result: "NC", method: "No Contest", round: 2, time: "2:35", event: "LFA 175: Lopes vs. Brigagão", org: "LFA" },
+    { date: "Nov 17, 2022", opponent: "Wagner Lima", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Future FC - Road to Future 4", org: "Future FC" },
+    { date: "Sep 16, 2022", opponent: "Vitor Zmish", result: "W", method: "Submission (Armbar)", round: 1, time: "4:07", event: "MMA Brazil Tour 3: Maia vs. Martin", org: "MMA Brazil Tour" },
+    { date: "Apr 29, 2022", opponent: "Paulo Pizzo", result: "L", method: "Submission (Guillotine)", round: 2, time: "2:24", event: "Spartacus MMA: Spartacus Fight Event 2", org: "Spartacus MMA" },
+    { date: "Sep 24, 2021", opponent: "Elivaldo Lima Martins", result: "W", method: "KO/TKO", round: 2, time: "2:27", event: "PDA: Punho de Aco 7", org: "PDA" },
+    { date: "Jul 14, 2021", opponent: "Fernando Henrique", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "SFT 27: Bispo vs Sousa", org: "SFT" },
+    { date: "Nov 13, 2020", opponent: "Elias Gonçalves", result: "W", method: "Submission (Rear Naked Choke)", round: 2, time: "4:45", event: "Shooto Brazil 104", org: "Shooto Brazil" },
+    { date: "Dec 19, 2019", opponent: "Caique Araujo", result: "W", method: "KO/TKO", round: 1, time: "2:31", event: "Thunder Fight 22", org: "TF" },
+    { date: "May 16, 2019", opponent: "Denes da Silva Carvalho", result: "W", method: "KO/TKO", round: 3, time: "3:45", event: "Veneno Fight Club 3", org: "VFC" },
+    { date: "Jul 5, 2018", opponent: "Denes da Silva Carvalho", result: "W", method: "Submission (Guillotine)", round: 2, time: "4:50", event: "Xambioa Fight Combat 2", org: "XFC2" },
+    { date: "Apr 13, 2018", opponent: "Evando Vieira da Silva", result: "W", method: "KO/TKO", round: 1, time: "4:40", event: "Veneno Fight Club 2", org: "VFC" }
+  ],
   "Freddy Vidal": [
     { date: "Oct 14, 2025", opponent: "Levi Rodrigues Jr.", result: "D", method: "No Contest", round: 1, time: "3:20", event: "Dana White's Contender Series: Season 9, Week 10", org: "UFC" },
     { date: "Sep 9, 2025", opponent: "Felipe Franco", result: "W", method: "Submission", round: 3, time: "4:48", event: "Dana White's Contender Series: Season 9, Week 5", org: "UFC" },
@@ -123650,6 +123674,11 @@ const ACCOLADES = {
     { icon: "⭐", title: "Two ONE Championship Performance of the Night bonuses (KO of Artem Belakh, 2023; TKO of Shinechagtga Zoltsetseg, 2024)", detail: null },
     { icon: "🥊", title: "12 of his 14 pro wins have come by knockout — a South Korean bantamweight nicknamed \"Pretty Boy\" out of Extreme Combat, Seoul", detail: null },
     { icon: "🏟️", title: "Longtime ONE Championship veteran (13 fights, 2019–2025) who faced former titleholders Kevin Belingon and Fabricio Andrade", detail: null }
+  ],
+  "Apollo Gomes": [
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series (Sep 8, 2026) vs. Kwon Won Il", detail: null },
+    { icon: "🥊", title: "12-2 pro (1 NC) on a 3-fight win streak; 75% finish rate with a well-rounded arsenal (5 KO/TKO, 4 submission)", detail: null },
+    { icon: "🏟️", title: "Brazilian bantamweight nicknamed \"Deus da Guerra\" (\"God of War\"); trains at Chute Boxe under Diego Lima", detail: null }
   ],
   "Tecia Pennington": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null },
