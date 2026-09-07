@@ -35,6 +35,7 @@ window.GL_API = (function(){
     login: function(email, password){ return request('/api/login', { method:'POST', body:{ email:email, password:password } }); },
     signup: function(email, password){ return request('/api/signup', { method:'POST', body:{ email:email, password:password } }); },
     rankings: function(){ return request('/api/app/rankings'); },
+    refresh: function(){ return request('/api/app/refresh'); },
     request: request,
     BASE: BASE,
   };

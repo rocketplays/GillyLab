@@ -2580,6 +2580,35 @@ export default {
           .map((r) => ({ rank: r.rank, name: r.fighterName || (r.fighter && r.fighter.name) || "" }));
         return json({ generatedAt: raw.meta && raw.meta.generatedAt, rows }, 200, cors);
       }
+      // Deliberately public, unlike the website's /data/climb.json (gated a
+      // few hundred lines below — see readSession there): the app is
+      // specced to let Climb be played with no account at all, so this
+      // serves the exact same ladder data without the session check. Not a
+      // bypass of that gate so much as a second, explicitly-designed door.
+      if (path === "/api/app/climb" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const data = await loadAssetJson(env, url, "/data/climb.json");
+        if (!data) return json({ error: "Climb data unavailable" }, 502, cors);
+        return json(data, 200, cors);
+      }
+      // Token refresh: the bearer token in the app carries the same
+      // exp/TTL as the session cookie (SESSION_TTL_HOURS, default 12h), but
+      // an app is expected to stay "logged in" far longer than a browser
+      // tab, so it needs a way to renew before that clock runs out. This
+      // requires a currently-valid token (readSession rejects an expired
+      // one outright -- there's no grace-period renewal of an already-
+      // expired session, same as the cookie) and hands back a fresh token
+      // with a new full-length TTL for the same account. App-origin only,
+      // like the token field on login/signup -- this is not a general
+      // session-extension endpoint for the website's cookie flow.
+      if (path === "/api/app/refresh" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        if (!cors["Access-Control-Allow-Origin"]) return json({ error: "Not found" }, 404);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Session expired" }, 401, cors);
+        const token = await makeSessionToken(env, s.email, s.sub);
+        return json({ token }, 200, cors);
+      }
 
       // ---- public pages ----
       // Auth-entry pages: if already logged in, skip them and go to the app

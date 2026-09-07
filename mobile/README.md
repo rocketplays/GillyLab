@@ -135,8 +135,17 @@ should -- that needs a real build, which needs Xcode/Android Studio.
    GillyLab mark; all platform-specific resolutions (Android mipmaps/
    drawables, iOS `Assets.xcassets`) generated via `capacitor-assets
    generate` and committed.
-5. **Token refresh/expiry.** Not started. The bearer token expires with the
-   same TTL as the cookie (`SESSION_TTL_HOURS`, default 12h) and there's no
-   refresh flow yet -- the app will just look logged-out once it expires,
-   same as the cookie would, but a longer-lived native app probably wants a
-   refresh path eventually.
+5. **Token refresh/expiry.** Done. `GET /api/app/refresh` (worker/index.js)
+   verifies the current bearer token via the same `readSession` path as
+   everything else and, if still valid, hands back a fresh token with a
+   renewed full-length TTL. `auth.js` decodes the token's own `exp` claim
+   client-side (the payload is signed, not encrypted, so no secret is
+   needed to read it) and calls this endpoint once the token is within
+   `REFRESH_MARGIN_SEC` (6h) of expiring -- checked on load, on
+   `visibilitychange` (foregrounding the app), and every 30 minutes while
+   open. An already-expired token is left alone (refreshing it would fail
+   the same check login/signup would) and just falls back to the
+   logged-out view, same as before this existed. Deliberately not built on
+   `@capacitor/app`'s resume event, since adding that plugin is a native-
+   platform change (Podfile/Gradle) unverified in this sandbox -- plain
+   `visibilitychange` already works in a Capacitor WebView.
