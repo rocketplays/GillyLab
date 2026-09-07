@@ -5358,6 +5358,7 @@
  { name: "Keiichiro Nakamura", division: "FW", rank: "NR", record: "8-1-0", initials: "KNA", country: "Japan" },
  { name: "Rinya Nakamura", division: "BW", rank: "NR", record: "10-1-0", initials: "RNK", country: "Japan" },
  { name: "Jessie Rosas", division: "FW", rank: "NR", record: "8-1-0", initials: "JER", country: "USA" },
+ { name: "Sean King", division: "FW", rank: "NR", record: "6-0-0", initials: "SKI", country: "USA" },
  { name: "Colby Covington", division: "WW", rank: "NR", record: "17-5-0", initials: "CLB", country: "USA" },
  { name: "Pavel Andrusca", division: "FW", rank: "NR", record: "8-0-0", initials: "PAN", country: "Moldova" },
  // ─── HEAVYWEIGHT (remaining) ───
@@ -9129,6 +9130,7 @@
  "Keiichiro Nakamura": { ht:"5'10\"", dob:"1998-12-02", reach:'70"', stance:"Southpaw", slpm:4.48, strAcc:"42%", sapm:4.28, strDef:"64%", kd:0.83, tdLanded:0.00, tdAcc:"0%", tdDef:"79%", subAvg:0.00, finRate:"88%", streak:8, gym:"EXFIGHT" },
  "Rinya Nakamura": { ht:"5'7\"", dob:"1995-03-23", reach:'68"', stance:"Southpaw", slpm:3.27, strAcc:"52%", sapm:1.72, strDef:"64%", kd:1.43, tdLanded:2.58, tdAcc:"88%", tdDef:"100%", subAvg:1.43, finRate:"70%", streak:1, gym:"American Top Team" },
 "Jessie Rosas": { ht:"5'9\"", dob:"2002-12-04", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:null, streak:3, gym:"MMA Lab" },
+"Sean King": { ht:"6'0\"", dob:"2003-10-17", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:6, gym:"Mid City MMA" },
 "Richie Miranda": { ht:"5'9\"", dob:"1994-08-12", reach:'74"', stance:null, slpm:3.07, strAcc:"39%", sapm:4.47, strDef:"44%", kd:0.0, tdLanded:1.0, tdAcc:"11%", tdDef:"0%", subAvg:0.0, finRate:null, streak:7, gym:"Bloodline Combat Sports" },
 "Anthony Wint": { ht:"6'0\"", dob:"1995-09-14", reach:null, stance:null, slpm:3.56, strAcc:"67%", sapm:0.2, strDef:"83%", kd:0.0, tdLanded:2.97, tdAcc:"33%", tdDef:"100%", subAvg:2.97, finRate:null, streak:6, gym:"Kill Cliff FC" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
@@ -44231,6 +44233,12 @@
   "Jessie Rosas": [
     { opponent: "Keenan Lewis", odds: -901 }
   ],
+  "Sean King": [
+    { opponent: "Dimitre Ivy", odds: -250 },
+    { opponent: "Cristian Lopez", odds: -5000 },
+    { opponent: "Dumar Roa", odds: -5000 },
+    { opponent: "Tony Toro", odds: 200 }
+  ],
   "Anthony Wint": [
     { opponent: "Jamahl Tatum", odds: -450 },
     { opponent: "Miles Banks", odds: -290 },
@@ -62116,6 +62124,14 @@ const FIGHT_HISTORY = {
     { date: "Feb 24, 2023", opponent: "Cesar Banuelos", result: "W", method: "Submission (Armbar)", round: 1, time: "3:16", event: "UWC Mexico 41", org: "UWC" },
     { date: "Nov 19, 2022", opponent: "Raymond Smith", result: "W", method: "TKO (Punches)", round: 1, time: "0:12", event: "Bear River FC 16", org: "Bear River FC" },
     { date: "Jun 24, 2022", opponent: "Eliu Trujillo", result: "W", method: "Disqualification (Illegal Knee)", round: 2, time: "1:44", event: "UWC Mexico 35", org: "UWC" }
+  ],
+  "Sean King": [
+    { date: "Jul 24, 2026", opponent: "Dimitre Ivy", result: "W", method: "TKO (Elbow and Punches)", round: 2, time: "4:09", event: "Fury FC 122", org: "Fury FC" },
+    { date: "Apr 12, 2026", opponent: "Cristian Lopez", result: "W", method: "Submission (Arm Triangle Choke)", round: 2, time: "1:40", event: "Fury FC 118", org: "Fury FC" },
+    { date: "Feb 6, 2026", opponent: "Dumar Roa", result: "W", method: "TKO (Punches)", round: 1, time: "4:54", event: "Fury FC 115", org: "Fury FC" },
+    { date: "Nov 9, 2025", opponent: "Tony Toro", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 111", org: "Fury FC" },
+    { date: "Jul 18, 2025", opponent: "Christian Hightower", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 106", org: "Fury FC" },
+    { date: "Apr 11, 2025", opponent: "Angel Martinez", result: "W", method: "TKO (Strikes)", round: 1, time: "0:32", event: "Empire FC 30", org: "Empire FC" }
   ],
   "Anthony Wint": [
     { date: "Aug 22, 2026", opponent: "Terrance Chatman", result: "W", method: "Submission (Arm Triangle)", round: 1, time: "4:29", event: "UFC Fight Night: Hernandez vs. Rodrigues", org: "UFC" },
@@ -120263,6 +120279,9 @@ const ACCOLADES = {
   "Jessie Rosas": [
     { icon: "🏆", title: "UWC Mexico Bantamweight Champion", detail: null },
     { icon: "🤼", title: "Wrestling background (high school / pankration)", detail: null }
+  ],
+  "Sean King": [
+    { icon: "🥊", title: "Undefeated 6-0 as a pro (4 finishes) plus a 6-0 amateur run — a 12-fight combined winning streak entering his UFC debut", detail: null }
   ],
   "Anthony Wint": [
     { icon: "🎯", title: "Finish bonus — 1st-round Submission (arm Triangle) of Terrance Chatman at UFC Fight Night: Hernandez vs. Rodrigues (Aug 22, 2026)", detail: null },
