@@ -5334,6 +5334,7 @@
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "17-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "21-7-0", initials: "MBU", country: "Lithuania" },
  { name: "Christian Edwards", division: "LHW", rank: "NR", record: "8-5-0", initials: "CED", country: "USA" },
+ { name: "Christian Echols", division: "MW", rank: "NR", record: "8-4-0", initials: "CECH", country: "USA" },
  { name: "Benardo Sopaj", division: "BW", rank: "NR", record: "13-3-0", initials: "BSO", country: "Albania" },
  { name: "Timmy Cuamba", division: "BW", rank: "NR", record: "10-4-0", initials: "TCU", country: "USA" },
  { name: "Nikolay Veretennikov", division: "WW", rank: "NR", record: "14-8-0", initials: "NVE", country: "Kazakhstan" },
@@ -8688,6 +8689,7 @@
  "Isaac Moreno": { ht:"6'0\"", dob:"1997-09-11", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Gracie Barra Katy" },
  "Reginaldo Junior": { ht:"5'9\"", dob:"1999-02-10", reach:'74.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"82%", streak:5, gym:"Fighting Nerds" },
  "Martin Kozák": { ht:"6'4\"", dob:"2002-07-09", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:6, gym:"Mattix MMA" },
+ "Christian Echols": { ht:"5'10\"", dob:"1998-06-11", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"10th Planet Jiu-Jitsu Decatur" },
  "Pat Sabatini": { ht:"5'8\"", dob:"1990-11-09", reach:'70"', stance:"Orthodox", slpm:1.69, strAcc:"55%", sapm:1.16, strDef:"54%", kd:0.14, tdLanded:4.27, tdAcc:"41%", tdDef:"50%", subAvg:1.28, finRate:"64%", streak:4, gym:"Marquez MMA" },
  "Sodiq Yusuff": { ht:"5'9\"", dob:"1993-05-19", reach:'71"', stance:"Orthodox", slpm:5.27, strAcc:"49%", sapm:4.29, strDef:"54%", kd:0.49, tdLanded:0.36, tdAcc:"23%", tdDef:"63%", subAvg:0.36, finRate:"54%", streak:0, gym:"Team Lloyd Irvin" },
  "Kevin Vallejos": { ht:"5'7\"", dob:"2001-12-08", reach:'68"', stance:"Switch", slpm:6.12, strAcc:"48%", sapm:4.41, strDef:"57%", kd:1.65, tdLanded:0.66, tdAcc:"29%", tdDef:"85%", subAvg:0.0, finRate:"83%", streak:7, gym:"Brothers of Life MMA" },
@@ -44984,6 +44986,11 @@
   "Martin Kozák": [
     { opponent: "Lukasz Dziudzia", odds: -175 },
   ],
+  "Christian Echols": [
+    { opponent: "Pat Downey", odds: 1500 },
+    { opponent: "Keanan Patershuk", odds: -160 },
+    { opponent: "Guram Gochashvili", odds: 175 },
+  ],
   "Quillan Salkilld": [
     { opponent: "Beneil Dariush", odds: -400 },
     { opponent: "Jamie Mullarkey", odds: -800 },
@@ -64403,6 +64410,20 @@ const FIGHT_HISTORY = {
     { date: "Nov 15, 2024", opponent: "Marek Linhart", result: "W", method: "KO/TKO", round: 1, time: "1:57", event: "RFA 19", org: "RFA" },
     { date: "Sep 27, 2024", opponent: "Frederico Komuenha", result: "W", method: "KO/TKO", round: 1, time: "2:52", event: "RFA x IAF: Special Title Night 2", org: "RFA" },
     { date: "Jun 14, 2024", opponent: "Robert Koky", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "3:33", event: "Fabriq MMA 5", org: "Fabriq MMA" }
+  ],
+  "Christian Echols": [
+    { date: "Nov 22, 2025", opponent: "Brian Jackson", result: "W", method: "TKO (Strikes)", round: 1, time: "1:05", event: "CFC 6: Rise of Champions", org: "CFC" },
+    { date: "Jun 6, 2025", opponent: "Guram Gochashvili", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:31", event: "CFFC 143: Hasan vs. Eastman", org: "CFFC" },
+    { date: "Jun 29, 2024", opponent: "Logan Tucker", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "2:58", event: "Birmingham Beatdown 2", org: "Impact Promotions" },
+    { date: "May 31, 2024", opponent: "Chris Crosby", result: "W", method: "Submission", round: 1, time: "3:44", event: "AIC 6: Datsilaev vs. Freeman", org: "All In Combat" },
+    { date: "Mar 9, 2024", opponent: "Jacob Zogg", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:47", event: "CFC 4", org: "CFC" },
+    { date: "Jul 14, 2023", opponent: "Keanan Patershuk", result: "L", method: "KO (Knee)", round: 1, time: "3:22", event: "CFFC 121: Perez vs. Vasil", org: "CFFC" },
+    { date: "Apr 1, 2023", opponent: "Chris Warf", result: "W", method: "Submission (Kimura)", round: 1, time: "0:42", event: "B2 Fighting Series 179: Trussville, AL", org: "B2" },
+    { date: "Dec 9, 2022", opponent: "Pat Downey", result: "W", method: "KO (Punches)", round: 1, time: "2:27", event: "Bellator 289: Stots vs. Sabatello", org: "Bellator" },
+    { date: "Aug 19, 2022", opponent: "Travis Murchison", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:23", event: "B2 Fighting Series 173: Orange Beach, AL", org: "B2" },
+    { date: "Feb 12, 2022", opponent: "Dornes Butler", result: "W", method: "Submission (Kimura)", round: 1, time: "0:32", event: "AFC 9: War of the Roses", org: "AFC" },
+    { date: "Aug 28, 2021", opponent: "Derik Overstreet", result: "L", method: "TKO (Strikes)", round: 1, time: "4:46", event: "B2 Fighting Series 133: Alabama", org: "B2" },
+    { date: "Oct 3, 2020", opponent: "Tresean Gore", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:17", event: "AFC 5: Five On It", org: "AFC" }
   ],
   "Quillan Salkilld": [
     { date: "Aug 8, 2026", opponent: "Mateusz Gamrot", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:25", event: "UFC Fight Night: Gamrot vs Salkilld", org: "UFC" },
@@ -118589,6 +118610,12 @@ const ACCOLADES = {
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 5 vs. Christian Echols (Sep 8, 2026), after his original opponent was scratched due to visa issues", detail: null },
     { icon: "🥊", title: "Undefeated 6-0 pro with every win by finish (4 KO/TKO, 2 submission) — a perfect finish rate", detail: null },
     { icon: "🏟️", title: "24-year-old Slovak middleweight nicknamed \"CEO\"; trains at Mattix MMA", detail: null }
+  ],
+  "Christian Echols": [
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 5 vs. Martin Kozák (Sep 8, 2026)", detail: null },
+    { icon: "🥋", title: "BJJ brown belt out of 10th Planet Jiu-Jitsu Decatur; 6 of his 8 pro wins have come by submission across four different chokes", detail: null },
+    { icon: "🏆", title: "Current CFC Light Heavyweight Champion, won via first-round TKO of Brian Jackson in a 5-round title fight (Nov 2025)", detail: null },
+    { icon: "🏟️", title: "Alabama middleweight nicknamed \"The Vanilla Gorilla\"; 8-4 pro on a 1-fight win streak after a 2025 TKO loss to Guram Gochashvili", detail: null }
   ],
   "Quillan Salkilld": [
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu", detail: null },
