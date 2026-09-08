@@ -137780,6 +137780,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'long xiao': 'Xiao Long',
     'meng ding': 'Ding Meng',
     'su mudaerji': 'Sumudaerji',
+    // DWCS 2026 Week 5 (Sep 8, 2026): same family-name-order bug as the four
+    // entries above. data/odds.json (The Odds API) lists him "Won Il Kwon"
+    // (Western order); our DB (FIGHTERS/FIGHTER_STATS/TAPE_STUDY/FIGHT_HISTORY/
+    // ACCOLADES) keys him "Kwon Won Il" (family name first). Unresolved, the
+    // Odds & Projections page showed "Won Il Kwon" unlinked, no photo -- same
+    // failure mode as 'carlos diego ferreira' etc. above.
+    'won il kwon': 'Kwon Won Il',
   };
 
   // Share-sheet only: "Dana White's Contender Series: Season 10, Week 1" is long
