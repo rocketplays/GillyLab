@@ -343,18 +343,74 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 /* ---- Matchup: free-flowing event header + live countdown (mirrors the
    premium in-app home page's #countdown -- .event-header/.event-countdown
    in index.html -- rather than a boxed card with a button next to the
-   title). Just a bottom-border divider, same as the site. ---- */
+   title). Just a bottom-border divider, same as the site.
+   Layout matches that same page's OWN narrow-viewport treatment (its
+   `@media (max-width:768px)` block), not the wide-desktop one this used to
+   copy: the countdown sits inline right after the title (small, one line,
+   never its own big right-aligned block) and the details/date wrap to their
+   own full-width line below. display:contents on .mf-event-info lifts its
+   two children (name, details) into this flex row so each can get its own
+   `order`, same trick the site uses. ---- */
 .mf-event-header{
-  display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  display:flex; flex-wrap:wrap; align-items:baseline; column-gap:.4rem; row-gap:.15rem;
   padding-bottom:.9rem; margin-bottom:1rem; border-bottom:1px solid var(--border);
 }
-.mf-event-info{ min-width:0; }
-.mf-event-name{ font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.4rem; text-transform:uppercase; letter-spacing:.02em; margin:0; }
-.mf-event-details{ font-size:.8rem; color:var(--muted); margin-top:.25rem; }
-.mf-event-countdown{ text-align:right; flex-shrink:0; }
-.mf-cd-label{ font-size:.6rem; color:var(--muted); letter-spacing:.14em; text-transform:uppercase; }
-.mf-cd-time{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.5rem; color:var(--accent); letter-spacing:.04em; }
-.mf-cd-unit{ font-size:.55em; letter-spacing:.04em; margin-left:.15em; opacity:.75; text-transform:lowercase; }
+.mf-event-info{ display:contents; }
+.mf-event-name{ order:1; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.4rem; text-transform:uppercase; letter-spacing:.02em; margin:0; }
+.mf-event-details{ order:3; flex-basis:100%; font-size:.8rem; color:var(--muted); }
+.mf-event-countdown{
+  order:2; display:inline-flex; align-items:baseline; gap:.25rem; white-space:nowrap; flex-shrink:0; text-align:left;
+}
+.mf-cd-label{ font-size:.56rem; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
+.mf-cd-time{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1rem; color:var(--accent); letter-spacing:.04em; }
+.mf-cd-unit{ font-size:.6em; letter-spacing:.04em; margin-left:.15em; opacity:.75; text-transform:lowercase; }
+
+/* ---- Matchup: numbered-PPV (gold) / DWCS (blue) event styling, mirroring
+   the site's own .numbered-card/.dwcs-card treatment (index.html) --
+   applied to whichever event is showing, on the featured header AND on any
+   carousel slide whose own main event is a numbered card or a DWCS card
+   (see specialClassFor() in matchup.js). A regular Fight Night gets neither
+   class and just keeps the app's normal green accent -- there is no
+   "regular-card" class, green is simply the default. ---- */
+.mf-event-header.mf-numbered{ border-bottom-color:rgba(212,175,55,.3); }
+.mf-event-header.mf-numbered .mf-event-name{
+  background:linear-gradient(90deg,#d4af37 0%,#fff8dc 45%,#d4af37 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 10px rgba(212,175,55,.45));
+}
+.mf-event-header.mf-numbered .mf-cd-time{ color:#fff8dc; text-shadow:0 0 10px rgba(212,175,55,.85); }
+.mf-ev-slide-hdr.mf-numbered .mf-ev-slide-name{
+  background:linear-gradient(90deg,#d4af37 0%,#fff8dc 45%,#d4af37 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 10px rgba(212,175,55,.45));
+}
+.mf-card.main.mf-numbered{ border-color:rgba(212,175,55,.45); }
+.mf-card.main.mf-numbered .mf-vs{ color:#fff8dc; }
+.mf-card.main.mf-numbered .mf-av-initials, .mf-card.main.mf-numbered .mf-av-photo{ border-color:#d4af37; }
+.mf-card.main.mf-numbered .mf-dd-bar{
+  background:linear-gradient(180deg, rgba(212,175,55,.14), rgba(212,175,55,.05));
+  border-color:rgba(212,175,55,.35); color:#d4af37;
+}
+
+.mf-event-header.mf-dwcs{ border-bottom-color:rgba(59,130,246,.3); }
+.mf-event-header.mf-dwcs .mf-event-name{
+  background:linear-gradient(90deg,#3b82f6 0%,#dbeafe 45%,#3b82f6 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 10px rgba(59,130,246,.45));
+}
+.mf-event-header.mf-dwcs .mf-cd-time{ color:#dbeafe; text-shadow:0 0 10px rgba(59,130,246,.85); }
+.mf-ev-slide-hdr.mf-dwcs .mf-ev-slide-name{
+  background:linear-gradient(90deg,#3b82f6 0%,#dbeafe 45%,#3b82f6 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 10px rgba(59,130,246,.45));
+}
+.mf-card.main.mf-dwcs{ border-color:rgba(59,130,246,.45); }
+.mf-card.main.mf-dwcs .mf-vs{ color:#dbeafe; }
+.mf-card.main.mf-dwcs .mf-av-initials, .mf-card.main.mf-dwcs .mf-av-photo{ border-color:#3b82f6; }
+.mf-card.main.mf-dwcs .mf-dd-bar{
+  background:linear-gradient(180deg, rgba(59,130,246,.14), rgba(59,130,246,.05));
+  border-color:rgba(59,130,246,.35); color:#3b82f6;
+}
 
 /* ---- Matchup: fighter search bar ---- */
 .mf-search{ position:relative; margin-bottom:.8rem; }

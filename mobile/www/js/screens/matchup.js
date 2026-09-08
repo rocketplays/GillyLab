@@ -72,6 +72,19 @@ function mountMatchup(container){
     return p[i] || n;
   }
 
+  // Numbered PPV (gold) / DWCS (blue) event styling -- same classification
+  // index.html uses for its own .numbered-card/.dwcs-card treatment: a
+  // numbered PPV is "UFC 331" etc. (name starts with a number), DWCS is
+  // Contender Series/Dana White's own separate check. A regular Fight Night
+  // matches neither and just keeps the app's normal green accent -- there's
+  // no "regular" class, green is simply the default look.
+  function isDwcsName(name){ return /contender\s+series|dana\s+white/i.test(name || ''); }
+  function specialClassFor(name){
+    if (/^UFC\s+\d+\b/i.test(String(name || '').trim())) return 'mf-numbered';
+    if (isDwcsName(name)) return 'mf-dwcs';
+    return '';
+  }
+
   function avatar(slug, name){
     var ini = window.GL_FIGHTER.initials(name);
     return (
@@ -185,17 +198,17 @@ function mountMatchup(container){
   // worker/index.js comment above), the locked teaser otherwise. Non-main
   // bouts always get the locked teaser regardless -- only ever the main
   // event is free, on any card.
-  function fightHTML(f, isMain, deepDive, breakdown, eventSlug){
+  function fightHTML(f, isMain, deepDive, breakdown, eventSlug, special){
     var res = f.result || null;
     var panelBody = res
       ? resultHTML(f, res)
       : (tapeHTML(f.tape) + (isMain ? breakdownHTML(f, breakdown, deepDive, eventSlug) : lockedTeaserHTML()));
     return (
-      '<div class="mf-card' + (isMain ? ' main' : '') + '">' +
+      '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + '">' +
         '<div class="mf-row">' +
           '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + '</div><div class="mf-rec">' + esc(f.rec1 || '') + '</div></div></div>' +
           '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + (res ? '' : '<div class="mf-odds"><b>' + esc(fmtOdds(f.o1)) + '</b> · <b>' + esc(fmtOdds(f.o2)) + '</b></div>') + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
-          '<div class="mf-side right"><div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + esc(f.rec2 || '') + '</div></div>' + avatar(f.s2, f.f2) + '</div>' +
+          '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + esc(f.rec2 || '') + '</div></div></div>' +
         '</div>' +
         '<div class="mf-panel" hidden>' + panelBody + '</div>' +
       '</div>'
@@ -204,11 +217,12 @@ function mountMatchup(container){
 
   function cardBodyHTML(c, deepDive, breakdown){
     if (!c || !c.fights || !c.fights.length) return '<p class="gl-muted">No card posted yet — check back on fight week.</p>';
+    var special = specialClassFor(c.event);
     var secOrder = ['Main Card', 'Prelims', 'Early Prelims', 'Preliminary Card'];
     var bySec = {};
     c.fights.forEach(function(f){ var s = f.section || 'Main Card'; (bySec[s] = bySec[s] || []).push(f); });
     return Object.keys(bySec).sort(function(a, b){ return (secOrder.indexOf(a) + 1 || 99) - (secOrder.indexOf(b) + 1 || 99); }).map(function(s){
-      return '<div class="mf-sechdr">' + esc(s) + '</div>' + bySec[s].map(function(f){ return fightHTML(f, !!f.main, deepDive, breakdown, c.slug); }).join('');
+      return '<div class="mf-sechdr">' + esc(s) + '</div>' + bySec[s].map(function(f){ return fightHTML(f, !!f.main, deepDive, breakdown, c.slug, special); }).join('');
     }).join('');
   }
 
@@ -245,9 +259,10 @@ function mountMatchup(container){
       : '';
     var slides = events.map(function(c){
       var when = fmtDate(c.prelimsAt || c.date, { month: 'short', day: 'numeric' });
+      var special = specialClassFor(c.event);
       return (
         '<div class="mf-ev-slide" data-slug="' + esc(c.slug) + '">' +
-          '<div class="mf-ev-slide-hdr">' +
+          '<div class="mf-ev-slide-hdr' + (special ? ' ' + special : '') + '">' +
             '<div class="mf-ev-slide-name">' + esc(c.event) + '</div>' +
             '<div class="mf-ev-slide-sub">' + esc([when, c.location || c.city].filter(Boolean).join(' · ')) + '</div>' +
           '</div>' +
@@ -440,8 +455,9 @@ function mountMatchup(container){
   }
 
   function eventHeaderHTML(card){
+    var special = card ? specialClassFor(card.event) : '';
     return (
-      '<div class="mf-event-header">' +
+      '<div class="mf-event-header' + (special ? ' ' + special : '') + '">' +
         '<div class="mf-event-info">' +
           '<h1 class="mf-event-name">' + (card ? esc(card.event) : 'No card yet') + '</h1>' +
           (card ? '<div class="mf-event-details">' + esc(fmtDate(card.prelimsAt || card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</div>' : '') +
