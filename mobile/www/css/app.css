@@ -430,19 +430,22 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   transition:border-color .15s, color .15s; margin-top:.15rem; white-space:nowrap;
 }
 .mf-info:hover, .mf-info.open{ border-color:var(--accent); color:var(--accent); }
-/* Slides open rather than popping instantly -- same grid-template-rows
-   0fr -> 1fr collapse trick as the site's own .scouting-fight-panel. The
-   border/padding that used to sit directly on .mf-panel now lives on the
-   ALWAYS-present .mf-panel-inner instead (min-height:0 lets it shrink to
-   nothing when its 0fr row has zero height; overflow:hidden on both
-   clips the content while collapsed). */
+/* Slides open rather than popping instantly. Animates max-height (set
+   inline by the toggle handler in matchup.js, measured from the panel's
+   actual scrollHeight) instead of the CSS grid-template-rows 0fr->1fr
+   collapse trick this used before -- that trick matched the site's own
+   .scouting-fight-panel, but this app's WKWebView doesn't always collapse
+   a 0fr row to a true zero height for a panel with real content in it, so
+   it was leaving a small residual gap under the panel even while
+   "closed". max-height:0 is unambiguous: there is no content-dependent
+   minimum for the browser to fall back to. */
 .mf-panel{
-  display:grid; grid-template-rows:0fr; opacity:0; overflow:hidden;
-  transition:grid-template-rows .3s ease, opacity .22s ease, margin-top .3s ease;
+  max-height:0; opacity:0; overflow:hidden;
+  transition:max-height .3s ease, opacity .22s ease, margin-top .3s ease;
   margin-top:0;
 }
-.mf-panel.open{ grid-template-rows:1fr; opacity:1; margin-top:.65rem; }
-.mf-panel-inner{ min-height:0; overflow:hidden; padding-top:.65rem; border-top:1px solid var(--border); }
+.mf-panel.open{ opacity:1; margin-top:.65rem; }
+.mf-panel-inner{ padding-top:.65rem; border-top:1px solid var(--border); }
 .mf-lock{ padding:.2rem 0; }
 .mf-lock-t{ font-size:.8rem; font-weight:700; line-height:1.4; }
 .mf-result{ font-size:.86rem; line-height:1.5; }

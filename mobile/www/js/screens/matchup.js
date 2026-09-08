@@ -524,12 +524,45 @@ function mountMatchup(container){
         window.GL_NATIVE.tap();
         var card = btn.closest('.mf-card');
         var panel = card.querySelector('.mf-panel');
-        // Slides open (CSS grid-template-rows 0fr -> 1fr collapse, same
-        // technique as the site's own .scouting-fight-panel) rather than
-        // popping instantly -- see .mf-panel/.mf-panel-inner in app.css.
-        var isOpen = panel.classList.toggle('open');
-        btn.textContent = 'Fight Info ' + (isOpen ? '⌃' : '⌄');
-        btn.classList.toggle('open', isOpen);
+        // Slides open/closed by animating max-height to a JS-measured pixel
+        // value rather than the CSS grid-template-rows 0fr->1fr trick this
+        // used before. That trick (matching the site's own
+        // .scouting-fight-panel) relies on the browser collapsing a 0fr row
+        // to a true zero height, which this app's WKWebView doesn't always
+        // do for a panel with real content -- it was leaving a small
+        // residual gap under the panel (visible as empty space below the
+        // Fight Info button, and below the Simulate Matchup bar sitting
+        // above this same closed panel) instead of collapsing flush. An
+        // explicit max-height, measured from the actual rendered content
+        // (scrollHeight) instead of a generic large number, animates over
+        // exactly the pixel range that's visible and guarantees a literal
+        // 0 when closed.
+        var isOpen = panel.classList.contains('open');
+        if (isOpen){
+          // Closing: give it an explicit starting height (it may currently
+          // be 'none' from the open-transition-end handler below) so the
+          // browser has something to transition FROM, force a reflow so
+          // that assignment actually takes before we change it again, then
+          // collapse to 0.
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+          void panel.offsetHeight;
+          panel.classList.remove('open');
+          panel.style.maxHeight = '0px';
+        } else {
+          panel.classList.add('open');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+          // Once the open transition finishes, release the fixed height so
+          // dynamically-loaded content (e.g. an image inside the panel)
+          // isn't ever clipped by a stale measurement.
+          var onEnd = function(e){
+            if (e.target !== panel || e.propertyName !== 'max-height') return;
+            if (panel.classList.contains('open')) panel.style.maxHeight = 'none';
+            panel.removeEventListener('transitionend', onEnd);
+          };
+          panel.addEventListener('transitionend', onEnd);
+        }
+        btn.textContent = 'Fight Info ' + (isOpen ? '⌄' : '⌃');
+        btn.classList.toggle('open', !isOpen);
       });
     });
 
