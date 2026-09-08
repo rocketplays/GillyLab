@@ -403,16 +403,23 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sr-common{ margin-bottom:.9rem; }
 .sr-common:last-child{ margin-bottom:0; }
 .sr-common-title{ font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:.5rem; }
+/* Grid items default to min-width:auto, so a long unbroken value (e.g. a
+   methods list like "Decision, TKO, Submission") forces its 1fr column
+   wider than the card, dragging the whole page into horizontal overflow --
+   this is why the Fight Info panel could open "wider than the screen".
+   min-width:0 lets the column actually shrink to its track size, and
+   overflow-wrap lets long content wrap instead of forcing that width. */
 .sr-cmp-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.4rem; padding:.3rem 0; font-size:.82rem; border-top:1px solid var(--border); }
 .sr-cmp-row:first-of-type{ border-top:none; }
-.sr-cmp-lbl{ color:var(--muted); font-size:.76rem; }
-.sr-cmp-val{ text-align:center; font-weight:700; }
+.sr-cmp-lbl{ color:var(--muted); font-size:.76rem; min-width:0; overflow-wrap:break-word; }
+.sr-cmp-val{ text-align:center; font-weight:700; min-width:0; overflow-wrap:break-word; }
 .sr-style-track{ position:relative; height:6px; background:var(--surface2); border-radius:3px; margin:.6rem 0 .3rem; }
 .sr-style-dot{ position:absolute; top:-4px; width:14px; height:14px; border-radius:50%; border:2px solid var(--bg); }
 .sr-style-dot.a{ background:var(--accent); }
 .sr-style-dot.b{ background:#ffcf7a; }
 .sr-style-ends{ display:flex; justify-content:space-between; font-size:.68rem; color:var(--muted); }
-.sr-style-legend{ display:flex; justify-content:space-between; font-size:.76rem; font-weight:700; margin-top:.3rem; }
+.sr-style-legend{ display:flex; justify-content:space-between; gap:.4rem; font-size:.76rem; font-weight:700; margin-top:.3rem; min-width:0; }
+.sr-style-legend .a, .sr-style-legend .b{ min-width:0; overflow-wrap:break-word; }
 .sr-style-legend .a{ color:var(--accent); }
 .sr-style-legend .b{ color:#ffcf7a; }
 .sr-path{ border-radius:8px; padding:.6rem .7rem; font-size:.8rem; line-height:1.4; margin-bottom:.5rem; }
@@ -423,6 +430,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sr-path.b .sr-path-name{ color:#ffcf7a; }
 .sr-common-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.4rem; padding:.3rem 0; font-size:.78rem; border-top:1px solid var(--border); }
 .sr-common-row:first-of-type{ border-top:none; }
+.sr-co-name, .sr-co-res{ min-width:0; overflow-wrap:break-word; }
 .sr-co-name{ color:var(--muted); }
 .sr-story-line{ font-size:.78rem; line-height:1.5; padding:.2rem 0; }
 .sr-story-line .a{ color:var(--accent); font-weight:700; margin-right:.3rem; }
