@@ -25,18 +25,44 @@ window.GL_ROUTER = (function(){
 
   function register(name, screen){ screens[name] = screen; }
 
-  // Rankings/Climb/Account/Simulator no longer have their own tab-bar
-  // button (see index.html's tab-bar comment + more-sheet.js) -- they live
-  // inside the "More" sheet instead. A screen registered with one of these
-  // as its own `tab` (unchanged -- e.g. rankings.js still says
-  // `tab: 'rankings'`) should still light up a bar button when it's the
-  // active screen; there's just no `[data-route="rankings"]` button left to
-  // light up, so it lights up "More" instead. Keeping each screen's own
-  // `tab` name semantic (not literally "more") means more-sheet.js can also
-  // use it to highlight which item is current inside the open sheet.
-  var MORE_ROUTES = ['rankings', 'climb', 'account', 'simulator'];
+  // Free users keep every one of the 7 original tabs as its own bar button
+  // (Home/Card/Pick'em/Climb/Rankings/Roster/Account) -- nothing moves into
+  // More for them. Premium accounts get the same 7 slots, but the last one
+  // swaps from "account" to "more" (js/more-sheet.js's sheet), which then
+  // holds Account plus the premium-only tools (Fight Simulator today).
+  // js/subscription.js calls setPremiumMode() once it knows the signed-in
+  // account's plan; isPremium starts false so a free/logged-out visitor
+  // (or the brief window before that check resolves) sees the plain
+  // Account tab, matching the free-user layout exactly.
+  var PREMIUM_ONLY_ROUTES = ['simulator'];
+  var isPremium = false;
+
+  function setPremiumMode(premium){
+    isPremium = !!premium;
+    var acctBtn = tabbarEl.querySelector('[data-route="account"]');
+    var moreBtn = tabbarEl.querySelector('[data-route="more"]');
+    if (acctBtn) acctBtn.hidden = isPremium;
+    if (moreBtn) moreBtn.hidden = !isPremium;
+    // Re-apply so a screen already showing (e.g. Account, mid-visit) gets
+    // re-highlighted on the tab that's now actually visible. A screen with
+    // no `tab` of its own (e.g. a pushed fighter profile) has nothing to
+    // re-target -- leave the bar as it is, same as go() would.
+    if (current && screens[current] && screens[current].tab) setActiveTab(screens[current].tab);
+  }
+
   function setActiveTab(name){
-    var target = MORE_ROUTES.indexOf(name) !== -1 ? 'more' : name;
+    var target = name;
+    // "account" is always a real tab button -- which one depends on plan.
+    // Premium-only routes (just "simulator" so far) have no button of their
+    // own for a free user (the screen shows its own locked/upsell state
+    // instead), so there's nothing to highlight; for premium, both it and
+    // "account" collapse onto "more".
+    if (name === 'account'){
+      target = isPremium ? 'more' : 'account';
+    } else if (PREMIUM_ONLY_ROUTES.indexOf(name) !== -1){
+      if (!isPremium) return; // leave the bar exactly as it was
+      target = 'more';
+    }
     var tabs = tabbarEl.querySelectorAll('.gl-tab');
     for (var i=0;i<tabs.length;i++){
       tabs[i].classList.toggle('active', tabs[i].getAttribute('data-route') === target);
@@ -121,5 +147,5 @@ window.GL_ROUTER = (function(){
     fromHash();
   }
 
-  return { register: register, go: go, back: back, init: init, current: function(){ return current; } };
+  return { register: register, go: go, back: back, init: init, current: function(){ return current; }, setPremiumMode: setPremiumMode };
 })();

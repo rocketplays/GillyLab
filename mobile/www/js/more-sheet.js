@@ -1,5 +1,9 @@
-// The tab bar's "More" overflow -- see index.html's tab-bar comment for why
-// Rankings/Climb/Account/Simulator live here instead of their own buttons.
+// The tab bar's "More" overflow -- PREMIUM ONLY. Free users keep Account as
+// its own direct tab (see index.html's tab-bar comment); for a premium
+// account, that slot becomes this "More" tab instead, holding Account plus
+// whatever premium-only tools don't get (or don't yet warrant) their own
+// bar button -- Fight Simulator today, more as they ship. Rankings/Climb
+// stay direct tabs for everyone, so they're not listed here.
 // A bottom sheet (slides up from behind the tab bar), not the site-borrowed
 // centered #mh-box dialog matchup.js's Deep Dive modal uses -- that CSS is
 // the SITE's own injected stylesheet (worker/matchup-free.js's hubCss) and
@@ -8,18 +12,9 @@
 // screens are, with the overlay/scroll-lock/open-close ANIMATION mechanics
 // borrowed from matchup.js's hubOpen/hubClose/hubLockScroll.
 window.GL_MORE = (function(){
-  // Order here is the order they appear in the sheet. Changing which items
-  // are "direct" tabs vs "in More" is just editing this array plus the
-  // static buttons in index.html -- nothing else to touch.
+  // Order here is the order they appear in the sheet. This curation is
+  // provisional -- to be revisited once more premium features land.
   var ITEMS = [
-    {
-      route: 'rankings', label: 'Rankings',
-      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M5 20V10M12 20V4M19 20v-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
-    },
-    {
-      route: 'climb', label: 'The Climb',
-      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>',
-    },
     {
       route: 'simulator', label: 'Fight Simulator', premium: true,
       icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.7v6.6l5.5-3.3z" fill="currentColor"/></svg>',
