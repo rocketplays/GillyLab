@@ -20,20 +20,20 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Know the fight before it starts" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tag">
-                                <rect key="frame" x="27" y="386" width="321" height="20"/>
+                                <rect key="frame" x="27" y="487" width="321" height="20"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                                <color key="textColor" red="0.53999999999999992" green="0.56078431370000002" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" red="0.0392156862745098" green="0.0392156862745098" blue="0.043137254901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="leading" secondItem="Gxr-0V-1cJ" secondAttribute="leading" id="c01-le-ad0"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="trailing" secondItem="Gxr-0V-1cJ" secondAttribute="trailing" id="c02-tr-ai1"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="top" secondItem="Gxr-0V-1cJ" secondAttribute="top" id="c03-to-p02"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="bottom" secondItem="Gxr-0V-1cJ" secondAttribute="bottom" id="c04-bo-t03"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="centerX" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" id="c05-cx-04"/>
-                            <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.16" constant="0.0" id="c06-cy-05"/>
+                            <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.46" constant="0.0" id="c06-cy-05"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="leadingMargin" constant="16" id="c07-lm-06"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="trailingMargin" constant="-16" id="c08-tm-07"/>
                         </constraints>
