@@ -6,9 +6,9 @@
   variants keep working automatically), just adds the "Know the fight before
   it starts" slogan under the GILLYLAB wordmark that's already baked into that
   image. The two spacer Views use weights instead of a fixed dp offset so the
-  slogan lands at the same ~65% height on any screen size, matching where
-  the wordmark actually sits in the source art, without pulling in a
-  ConstraintLayout dependency this module doesn't already have.
+  slogan lands right under the wordmark (which ends at ~65.5% of the image's
+  height) on any screen size, without pulling in a ConstraintLayout
+  dependency this module doesn't already have.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -29,23 +29,24 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="66" />
+            android:layout_weight="67" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
+            android:layout_marginTop="6dp"
             android:gravity="center_horizontal"
             android:text="Know the fight before it starts"
-            android:textColor="#8a8f99"
+            android:textColor="#ffffff"
             android:textSize="15sp"
             android:fontFamily="sans-serif-medium" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="34" />
+            android:layout_weight="33" />
 
     </LinearLayout>
 
