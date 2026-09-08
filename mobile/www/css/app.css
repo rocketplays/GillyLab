@@ -183,19 +183,14 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    a real dashboard-widget title, not a small muted eyebrow -- so Home looks
    like a hub with a teaser under each heading rather than a flat list. */
 .gl-dash-title{ font-size:1.1rem; margin:0; color:var(--text); }
-/* Scoped centering for a section head, used where the section's dividers
-   (border-top of this .gl-sec and the next one) run full-width but the
-   title itself is the section's focal point -- e.g. Home's Rankings
-   preview -- so the title should sit centered under/over those lines
-   rather than pinned left like the other, list-style sections. */
-.gl-dash-head--center{ text-align:center; }
-/* Pick'em folded into Home's main-event section: a lighter sub-block below
-   the fighter teaser/CTA, set off by its own thin divider so it still reads
-   as "this week's card, and here's your Pick'em status" rather than a
-   second independent category with its own big title. */
-.gl-dash-sub{ margin-top:1rem; padding-top:.9rem; border-top:1px solid var(--border); }
-.gl-dash-subhead{ margin-bottom:.1rem; }
-.gl-dash-subtitle{ font-size:.78rem; margin:0; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+/* Scoped vertical-rhythm fix for a section head, used where the gap from
+   the section's own top divider down to the title is otherwise noticeably
+   bigger than the gap from the title down to the first row below it (the
+   default 1.1rem section padding-top vs. gl-dash-head's .1rem margin-bottom)
+   -- e.g. Home's Rankings preview. Equalizes those two gaps so the title
+   sits evenly spaced between them; stays left-aligned like every other
+   section title. */
+.gl-dash-head--evenspace{ margin-bottom:1.1rem; }
 .gl-dash-row{
   display:flex; align-items:center; gap:.6rem; padding:.5rem 0;
   border-top:1px solid var(--border);
