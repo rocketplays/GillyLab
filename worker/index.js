@@ -40,6 +40,12 @@ import { bracketPage } from "./bracket-page.js";
 import { landingGridPage } from "./landing-grid.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
+// The exact CSS/markup/script /subscribe drops in for its feature-tile
+// carousel (see the landingGridPage comment above -- generated from this
+// same pages.js content, so it's the site's real premium feature preview,
+// not a hand-copied summary). Reused as-is for the app's own Go Premium
+// screen -- see /api/app/premium-features below.
+import { featuresCSS, featuresMarkup, featuresScript } from "./subscribe-features.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName, namesMatch } from "./pickem.mjs";
 import { pickemModel } from "./pickem-model.js";
 
@@ -2945,6 +2951,25 @@ export default {
         const fighter = lite && lite.bySlug && lite.bySlug[slug];
         if (!fighter) return json({ error: "not found" }, 404, cors);
         return json({ fighter }, 200, cors);
+      }
+      // The exact CSS/markup/script the website's own /subscribe page drops
+      // in for its feature-tile carousel (mockup graphics, colors, the
+      // horizontal swipe rail, tap-to-expand lightbox) -- shipped as-is so
+      // the app's Go Premium screen looks pixel-identical to the site's own
+      // premium feature grid instead of a hand-built approximation. Already
+      // premium-only (subscribe-features.js is built with
+      // window.__FX_PREMIUM_ONLY baked in -- see scripts/gen-showcase-proto.cjs),
+      // so this needs no extra flag-setting on the app side.
+      if (path === "/api/app/premium-features" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        // featuresScript() returns a full "<script>...</script>" HTML
+        // fragment meant to be dropped straight into server-rendered HTML
+        // (see subscribePage()) -- the app creates its own <script> element
+        // and sets its textContent to run this, so the wrapper tags (which
+        // would otherwise end up as literal text inside that element) are
+        // stripped here rather than in the client for every screen open.
+        const script = featuresScript().replace(/^\s*<script>/, "").replace(/<\/script>\s*$/, "");
+        return json({ css: featuresCSS, markup: featuresMarkup, script }, 200, cors);
       }
       if (path === "/api/app/refresh" && request.method === "GET") {
         const cors = appCorsHeaders(request);

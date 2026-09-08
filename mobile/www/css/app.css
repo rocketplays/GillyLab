@@ -560,20 +560,23 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-lock-id{ font-size:.68rem; color:var(--muted); line-height:1.4; }
 @media (max-width:360px){ .fp-lock-grid{ grid-template-columns:1fr; } }
 
-/* ---- Go Premium: feature tile grid, grouped like /subscribe's own three
-   groups (Before the fight / Betting tools / Complete fighter history) --
-   same titles/descriptions as worker/pages.js's `slides` array (the same
-   data the site's landing-page carousel and /subscribe's tile grid both
-   render from), laid out as a plain native grid instead of that page's
-   interactive screenshot carousel. Two columns is comfortable at phone
-   width for these short title+description tiles; one column only on the
-   narrowest phones, same breakpoint the Fighter profile's own locked
-   feature grid (.fp-lock-grid) uses. ---- */
-.pm-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
-.pm-tile{ background:var(--card); border:1px solid var(--border); border-radius:10px; padding:.75rem .8rem; }
-.pm-tile-t{ font-weight:700; font-size:.82rem; margin-bottom:.25rem; }
-.pm-tile-d{ font-size:.72rem; color:var(--muted); line-height:1.4; }
-@media (max-width:360px){ .pm-grid{ grid-template-columns:1fr; } }
+/* ---- Go Premium: wrapper glue for the site's own /subscribe feature-tile
+   carousel (fetched whole -- CSS/markup/script -- from
+   /api/app/premium-features and injected by premium.js). .sub-cx/.sub-cx-head
+   are the exact wrapper subscribePage() puts around this same markup on the
+   site (worker/pages.js): its own local CSS-variable overrides, since the
+   widget is also dropped into marketing pages with a different palette, and
+   the "SEE EVERYTHING PREMIUM UNLOCKS" label above the cards. Kept as its
+   own small rule here rather than folded into the fetched featuresCSS,
+   since it belongs to the PAGE embedding the widget, not the widget itself
+   -- same split the site itself uses. .fx-lb button undoes the app's global
+   `.gl-btn{width:100%}`-style full-width button convention from leaking
+   into the lightbox's own close button, same reason the site scopes that
+   reset to .fx-lb rather than to its own global button rule (its shell has
+   the same width:100% convention for its own CTAs). */
+.sub-cx{ --card:#14141a; --border:#2a2a32; --surface2:#18181d; --muted:#666672; --bg:#0a0a0b; margin:1.2rem 0 0; }
+.sub-cx-head{ text-align:center; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:.4rem; }
+.fx-lb button{ width:auto; margin-top:0; }
 
 /* ---- Rankings ---- */
 /* A proper two-segment control (each half the same fixed width) instead of

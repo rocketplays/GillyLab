@@ -57,6 +57,10 @@ window.GL_API = (function(){
     matchup: function(eventSlug){ return request('/api/app/matchup' + (eventSlug ? '?event=' + encodeURIComponent(eventSlug) : '')); },
     fighter: function(slug){ return request('/api/app/fighter?slug=' + encodeURIComponent(slug)); },
     fighterSearch: function(q){ return request('/api/fighter-search?q=' + encodeURIComponent(q)); },
+    // The site's own /subscribe feature-tile carousel (CSS/markup/script,
+    // already premium-only), reused as-is for Go Premium -- see
+    // worker/index.js's /api/app/premium-features and premium.js.
+    premiumFeatures: function(){ return request('/api/app/premium-features'); },
     request: request,
     BASE: BASE,
   };
