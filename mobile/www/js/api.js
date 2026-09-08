@@ -61,6 +61,12 @@ window.GL_API = (function(){
     // /api/app/fighter-extras). Rejects with a 401/403 for a logged-out or
     // non-subscribed caller; fighter.js treats that as "show the locked state".
     fighterExtras: function(slug){ return request('/api/app/fighter-extras?slug=' + encodeURIComponent(slug)); },
+    // Fight Simulator -- Premium-only (see worker/index.js's /api/app/fight-sim).
+    // nameA/nameB are fighter NAMES (as returned by fighterSearch below), not
+    // slugs. rounds is 3 or 5.
+    fightSim: function(nameA, nameB, rounds){
+      return request('/api/app/fight-sim?a=' + encodeURIComponent(nameA) + '&b=' + encodeURIComponent(nameB) + '&rounds=' + (rounds === 5 ? 5 : 3));
+    },
     fighterSearch: function(q){ return request('/api/fighter-search?q=' + encodeURIComponent(q)); },
     // The site's own /subscribe feature-tile carousel (CSS/markup/script,
     // already premium-only), reused as-is for Go Premium -- see

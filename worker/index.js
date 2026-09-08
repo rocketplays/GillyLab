@@ -20,6 +20,7 @@
 import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
 import fighterExtras from "./fighter-extras.js";
+import { runFightSim, fightSimKnowsFighter } from "./fight-sim.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -2974,6 +2975,35 @@ export default {
         if (!slug) return json({ error: "missing slug" }, 400, cors);
         const extras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || { accolades: [], tapeStudy: [] };
         return json(extras, 200, cors);
+      }
+      // Fight Simulator -- premium-only, same gate shape as fighter-extras
+      // above. runFightSim/fightSimKnowsFighter are real functions imported
+      // from worker/fight-sim.js (a build-time-generated module containing
+      // index.html's own pure sim math + baked FIGHTER_STATS/FIGHT_HISTORY --
+      // see scripts/gen-fight-sim.cjs), NOT computed per-request from
+      // index.html itself. `a`/`b` are fighter NAMES (matching
+      // /api/fighter-search's own `name` field, which the app's picker UI
+      // uses to find them), not slugs. `rounds` is 3 or 5; `n` is the Monte
+      // Carlo trial count, capped well below anything that could threaten
+      // the Worker's CPU budget -- this is cheap (a few thousand
+      // Math.random() draws against two precomputed distributions), nothing
+      // like parsing a multi-MB file.
+      if (path === "/api/app/fight-sim" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
+        const nameA = (url.searchParams.get("a") || "").trim();
+        const nameB = (url.searchParams.get("b") || "").trim();
+        if (!nameA || !nameB) return json({ error: "missing a/b fighter name" }, 400, cors);
+        if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
+        const rounds = url.searchParams.get("rounds") === "5" ? 5 : 3;
+        const n = Math.min(10000, Math.max(500, parseInt(url.searchParams.get("n"), 10) || 5000));
+        if (!fightSimKnowsFighter(nameA)) return json({ error: "unknown fighter: " + nameA }, 404, cors);
+        if (!fightSimKnowsFighter(nameB)) return json({ error: "unknown fighter: " + nameB }, 404, cors);
+        const result = runFightSim(nameA, nameB, rounds, n);
+        return json({ a: nameA, b: nameB, rounds, result }, 200, cors);
       }
       // Account screen: signed-in email, subscription status and member-since
       // date -- none of which the app currently has (GL_AUTH only tracks

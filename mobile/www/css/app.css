@@ -630,6 +630,28 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-tape-watch{ flex:0 0 auto; background:none; border:1px solid var(--accent); color:var(--accent); font:inherit; font-weight:700; font-size:.72rem; padding:.4rem .8rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
 .fp-tape-none{ flex:0 0 auto; font-size:.72rem; color:var(--muted); }
 
+/* ---- Fight Simulator ---- */
+.sim-picker{ margin-bottom:1rem; }
+/* .mf-search/.mf-search-input/.mf-search-results/.mf-search-item/.mfs-name/
+   .mfs-meta/.mf-search-empty are matchup.js's own fighter-search classes,
+   reused as-is here for the two picker inputs -- same endpoint
+   (/api/fighter-search), same look, no need for a second copy of this CSS. */
+.sim-rounds{ margin-bottom:0; }
+.sim-probbar{ display:flex; height:34px; border-radius:9px; overflow:hidden; margin-top:.5rem; }
+.sim-probbar-a{ background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.82rem; transition:width .25s ease; }
+.sim-probbar-b{ background:var(--surface2); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.82rem; transition:width .25s ease; }
+.sim-probbar-labels{ display:flex; justify-content:space-between; margin-top:.4rem; font-size:.76rem; font-weight:700; color:var(--muted); }
+.sim-result{ background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem 1.15rem; }
+.sim-result-cols{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.2rem; }
+.sim-col-h{ font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:.5rem; }
+.sim-methods{ display:flex; flex-direction:column; gap:.5rem; }
+.sim-method-row{ display:flex; align-items:center; gap:.4rem; }
+.sim-method-label{ flex:0 0 62px; font-size:.68rem; color:var(--muted); }
+.sim-method-track{ flex:1; height:8px; border-radius:5px; background:rgba(255,255,255,.06); overflow:hidden; }
+.sim-method-fill{ height:100%; background:var(--accent); border-radius:5px; }
+.sim-method-pct{ flex:0 0 30px; text-align:right; font-size:.7rem; font-weight:700; }
+@media (max-width:360px){ .sim-result-cols{ grid-template-columns:1fr; } }
+
 /* ---- Go Premium: wrapper glue for the site's own /subscribe feature-tile
    carousel (fetched whole -- CSS/markup/script -- from
    /api/app/premium-features and injected by premium.js). .sub-cx/.sub-cx-head

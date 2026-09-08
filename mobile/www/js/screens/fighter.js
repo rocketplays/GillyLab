@@ -116,6 +116,21 @@ window.GL_FIGHTER = (function(){
     );
   }
 
+  // Unlike Accolades/Tape Study (rendered inline from fetched data) or the
+  // remaining locked items (a plain, non-interactive grid), the Simulator is
+  // a real built feature that lives on its OWN route -- see
+  // screens/simulator.js -- so it gets its own small CTA card with a real
+  // button instead of a comingSoonHTML tile.
+  function simulatorCtaHTML(name){
+    return (
+      '<div class="fp-lock fp-lock--done">' +
+        '<div class="fp-lock-h"><span class="fp-lock-ico">🥊</span><div class="fp-lock-t">Fight Simulator</div></div>' +
+        '<p class="gl-muted" style="margin:.2rem 0 .8rem">See how ' + esc(name) + ' projects against anyone on the roster.</p>' +
+        '<button type="button" class="gl-btn gl-btn-primary" data-goto="simulator" data-sim-name="' + esc(name) + '">Run the Simulator</button>' +
+      '</div>'
+    );
+  }
+
   function accoladesHTML(list){
     if (!list || !list.length) return '<p class="gl-muted" style="margin:.4rem 0 0">No accolades recorded yet.</p>';
     return '<div class="fp-acc-list">' + list.map(function(a){
@@ -231,7 +246,7 @@ window.GL_FIGHTER = (function(){
     var rankLabel = f.rank && f.rank !== 'NR' ? (/C/.test(f.rank) ? 'Champion' : f.rank) : '';
     var metaBits = [f.record, f.division, f.country].filter(Boolean).join(' · ');
     var tail = subscribed
-      ? (extrasHTML(extras || {}) + comingSoonHTML(['Accolades', 'Tape study']))
+      ? (extrasHTML(extras || {}) + simulatorCtaHTML(f.name) + comingSoonHTML(['Accolades', 'Tape study', 'Fight simulator']))
       : lockedHTML();
     return (
       '<div class="fp-head">' +
@@ -293,6 +308,11 @@ window.GL_FIGHTER = (function(){
         if (goPrem) goPrem.addEventListener('click', function(){
           window.GL_NATIVE.tap();
           window.GL_ROUTER.go('premium');
+        });
+        var goSim = container.querySelector('[data-goto="simulator"]');
+        if (goSim) goSim.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          window.GL_ROUTER.go('simulator', { name: goSim.getAttribute('data-sim-name') });
         });
         if (subscribed) wireExtras(container);
       });
