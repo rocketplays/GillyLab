@@ -695,6 +695,7 @@ function buildMainTape(m) {
     lean: { a: ins.leanA, b: ins.leanB }, pace: { a: ins.paceA, b: ins.paceB },
     path: { a: ins.pathA, b: ins.pathB }, story: { a: ins.storyA || [], b: ins.storyB || [] },
     finishDur: _finishDur(m.f1, m.f2), common: _commonOpps(m.f1, m.f2),
+    promo: _promoStrength(m.f1, m.f2),
   };
 }
 // A single fighter's stat card — the profile's grouped median bars, WITHOUT the
@@ -813,6 +814,82 @@ function _commonOpps(nameA, nameB) {
     const a = resultsVs(histA, opp), b = resultsVs(histB, opp);
     return { opp, a: fmt(a), b: fmt(b), aCls: resCls(a), bCls: resCls(b) };
   });
+}
+// ── Regional promotion strength ── faithful port of index.html's own
+// PROMOTION_ALIASES/PROMOTION_TIERS/inferPromotion()/promotionTier() plus the
+// "Regional promotion strength" IIFE inside renderScouting() (index.html
+// ~114931-115002, ~130964-131020) -- pure data-crunching, no DOM touched by
+// the site's own version either, so this doesn't need the sandboxed-document
+// trick breakdownFor() above uses for renderMatchupBreakdown.
+const _PROMOTION_ALIASES = {
+  'dwcs': 'UFC', 'tuf': 'UFC', 'the ultimate fighter': 'UFC',
+  "dana white's contender series": 'UFC',
+  'one championship': 'ONE Championship', 'one fc': 'ONE Championship',
+  'one fighting championship': 'ONE Championship',
+};
+function _inferPromotion(eventName) {
+  let e = String(eventName == null ? '' : eventName).trim();
+  e = e.replace(/\s*\([^)]*\)\s*$/, '').trim();
+  if (!e) return 'Unknown';
+  if (/^UFC\b/i.test(e) || /^(DWCS|TUF|The Ultimate Fighter)\b/i.test(e)) return 'UFC';
+  e = e.replace(/^\d{4}\s+/, '');
+  const m = e.match(/^([A-Za-z0-9][A-Za-z0-9.&'%\-]*(?:\s+[A-Za-z][A-Za-z0-9.&'%\-]*)*?)(?=\s*:|\s+(?:\d|vs\.?|-)|$)/i);
+  const name = (m && m[1] && m[1].trim()) || e;
+  return _PROMOTION_ALIASES[name.toLowerCase()] || name;
+}
+const _EXCLUDED_ORGS = ['ufc', 'unknown', 'dwcs', 'tuf', 'the ultimate fighter', "dana white's contender series", 'road to ufc'];
+const _PROMOTION_TIERS = {
+  1: { label: 'Elite (Tier 1)', orgs: ['bellator', 'pfl', 'rizin', 'one championship', 'one'] },
+  2: { label: 'Near-elite (Tier 2)', orgs: ['pride', 'strikeforce', 'wec', 'ksw', 'aca', 'acb', 'wfca'] },
+  3: { label: 'Established feeder (Tier 3)', orgs: ['lfa', 'cage warriors', 'invicta fc', 'brave cf', 'm-1 global', 'shooto', 'shooto brazil', 'cffc', 'titan fc', 'wsof', 'road fc', 'pancrase', 'uae warriors', 'oktagon', 'ares fc', 'kotc', 'combate global', 'combate americas', 'combate', 'fight nights global', 'rcc', 'eagle fc', 'kok', 'legend fc', 'pfl europe', 'fury fc'] },
+  4: { label: 'Developmental (Tier 4)', orgs: ['wlf', 'afc', 'ces', 'uwc', 'fen', 'gladiator challenge', 'spf', 'stfc', 'tpf', 'rings', 'lfl', 'armmada', 'mfc', 'sfh', 'hexagone', 'sft', 'fcr', 'shamrock fc', 'xfc', 'wlmma', 'cxf', 'ckfc', 'deep', 'roc', 'fcc', 'sfc', 'wfc', 'pfc', 'gc', 'loc', 'jungle fight', 'fcoc', 'combat zone', 'cage titans', 'demo fight', 'sf', 'cfs', 'mma series', 'wow', 'kunlun fight', 'desert force', 'lights out', 'venator fc', 'efc', 'hkfc', 'mr. cage', 'fnc', 'a1 combat', 'naiza fc', 'kof', 'ocl', 'sbc', 'ufl', 'tuff-n-uff'] },
+};
+const _LOW_QUALITY_TIER = { tier: 5, label: 'Low quality (Tier 5)' };
+const _PROMO_TIER_LOOKUP = (() => {
+  const m = {};
+  Object.keys(_PROMOTION_TIERS).forEach((t) => { _PROMOTION_TIERS[t].orgs.forEach((o) => { m[o] = +t; }); });
+  return m;
+})();
+function _promotionTier(org) {
+  const key = String(org == null ? '' : org).trim().toLowerCase();
+  if (!key || _EXCLUDED_ORGS.indexOf(key) !== -1) return null;
+  const t = _PROMO_TIER_LOOKUP[key];
+  return t ? { tier: t, label: _PROMOTION_TIERS[t].label } : _LOW_QUALITY_TIER;
+}
+// Highest pre-UFC promotion tier reached, or null if nothing gradeable.
+// Mirrors bestTierOf() exactly (index.html ~130968-130989).
+function _bestPromoTierOf(hist) {
+  const orgOf = (f) => f.org || _inferPromotion(f.event);
+  const graded = hist.filter((f) => _promotionTier(orgOf(f)) !== null);
+  if (!graded.length) return null;
+  const counts = {};
+  graded.forEach((f) => { const o = orgOf(f); counts[o] = (counts[o] || 0) + 1; });
+  let bestOrg = null, bestTier = 6, bestCount = 0;
+  Object.keys(counts).forEach((org) => {
+    const t = _promotionTier(org).tier;
+    if (t < bestTier || (t === bestTier && counts[org] > bestCount)) { bestTier = t; bestOrg = org; bestCount = counts[org]; }
+  });
+  if (!bestOrg) return null;
+  return { org: bestOrg, tier: bestTier, label: _promotionTier(bestOrg).label, orgCount: bestCount, totalRegional: graded.length };
+}
+// Shown only when a fighter has a thin UFC resume (<=5 UFC bouts) -- a proven
+// veteran's panel shouldn't get cluttered with a decade-old regional
+// footnote. Simplified from the site's own thinA/thinB (which also checks
+// an isDWCS flag passed in from the calling fight row) since a fighter with
+// 0 UFC bouts already satisfies the <=5 threshold on their own -- DWCS
+// contestants are always thin by that measure before this function is ever
+// asked to look them up.
+const _PROMO_THIN_UFC_BOUTS = 5;
+function _promoStrength(nameA, nameB) {
+  const histA = _fhReal(nameA), histB = _fhReal(nameB);
+  const ufcBoutsOf = (h) => h.filter((f) => (f.org || _inferPromotion(f.event)) === 'UFC').length;
+  const thinA = ufcBoutsOf(histA) <= _PROMO_THIN_UFC_BOUTS;
+  const thinB = ufcBoutsOf(histB) <= _PROMO_THIN_UFC_BOUTS;
+  if (!thinA && !thinB) return null;
+  const resA = thinA ? _bestPromoTierOf(histA) : null;
+  const resB = thinB ? _bestPromoTierOf(histB) : null;
+  if (!resA && !resB) return null;
+  return { a: resA, b: resB };
 }
 // Normalizer matching index.html's _newsNorm (lowercase, strip accents/punct).
 function _newsNormG(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }

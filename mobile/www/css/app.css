@@ -402,47 +402,60 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 /* Mirrors the site's own .fight-row/.fighter-cell/.fight-center structure
    (index.html's fightRow(), the events-page tile) -- a real 3-column grid
    with a narrow, BORDERED center column, rather than a flex row with no
-   internal division. Values below are the site's own ultra-narrow-phone
-   breakpoint (index.html ~3465-3476, its tightest/most-mobile tuning, the
-   one that actually applies at this app's screen width) rather than its
-   desktop defaults: 62px center column, 30px avatars, uppercase Barlow
-   Condensed names -- this is what actually makes the site's tiles read as
-   "clean" at phone width, not just smaller versions of the desktop tile. */
-.mf-row{ display:grid; grid-template-columns:1fr 62px 1fr; align-items:center; }
-.mf-side{ display:flex; align-items:center; gap:.3rem; min-width:0; overflow:hidden; }
+   internal division. The site's OWN computed values at this app's screen
+   width are actually a merge of its two mobile breakpoints (max-width:768
+   AND max-width:480 both apply at once at a phone width, the narrower one
+   only overriding what it explicitly redeclares) -- notably fight-center's
+   72px width/padding is ONLY set at the 768 breakpoint and is NOT
+   redeclared at 480, so 62px (taken from 480 alone, this file's earlier
+   mistake) was actually narrower than the site ever runs, which is what
+   was driving the Fight Info button into the divider lines. Sized a
+   little past the site's own merged phone values on top of that (bigger
+   avatar/name/rank/record, wider center column) since matching them
+   exactly still read as too small in this app's own chrome. */
+.mf-row{ display:grid; grid-template-columns:1fr 78px 1fr; align-items:center; }
+.mf-side{ display:flex; align-items:center; gap:.4rem; min-width:0; overflow:hidden; }
 .mf-side.right{ flex-direction:row-reverse; text-align:right; }
-.mf-av{ position:relative; display:block; width:30px; height:30px; flex-shrink:0; }
+.mf-av{ position:relative; display:block; width:38px; height:38px; flex-shrink:0; }
 .mf-av-initials{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   border-radius:50%; background:var(--bg); border:1px solid var(--border);
-  color:var(--muted); font-weight:800; font-size:.6rem;
+  color:var(--muted); font-weight:800; font-size:.68rem;
 }
 .mf-av-photo{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; background:var(--bg); border:1px solid var(--border); }
 .mf-meta{ min-width:0; }
-.mf-rank{ font-size:.58rem; font-weight:600; color:var(--accent); letter-spacing:.1em; }
+.mf-rank{ font-size:.66rem; font-weight:600; color:var(--accent); letter-spacing:.08em; }
 .mf-name{
-  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.75rem;
-  letter-spacing:.02em; text-transform:uppercase; line-height:1.15;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.86rem;
+  letter-spacing:.02em; text-transform:uppercase; line-height:1.18;
   white-space:normal; overflow:visible; text-overflow:clip;
 }
 .mf-namebtn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:700; color:var(--text); cursor:pointer; text-align:inherit; }
 .mf-namebtn:active{ color:var(--accent); }
-.mf-rec{ font-size:.62rem; color:var(--muted); }
+/* Record + moneyline share one line, mirroring the site's own
+   mlRecHTML() (index.html:132849): "REC · ML" on the left, "ML · REC" on
+   the right (mf-odds handles the reversed order in matchup.js, see
+   fightHTML) -- rather than the odds living only in the center column,
+   detached from either fighter, the way this used to be laid out. */
+.mf-rec{ font-size:.7rem; color:var(--muted); }
+.mf-odds{ font-weight:700; color:var(--text); }
 .mf-center{
   flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:.15rem; padding:.5rem .2rem; border-left:1px solid var(--border); border-right:1px solid var(--border);
+  gap:.2rem; padding:.5rem .25rem; border-left:1px solid var(--border); border-right:1px solid var(--border);
 }
-.mf-vs{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.8rem; color:var(--muted); }
-.mf-wt{ font-size:.47rem; letter-spacing:0; color:var(--muted); text-align:center; line-height:1.2; max-width:none; }
-.mf-odds{ font-size:.68rem; color:var(--muted); white-space:nowrap; }
+.mf-vs{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.82rem; color:var(--muted); }
+.mf-wt{ font-size:.52rem; letter-spacing:0; color:var(--muted); text-align:center; line-height:1.2; max-width:none; }
 .mf-meth{ font-size:.7rem; font-weight:800; color:var(--accent); }
-/* Mirrors the site's own .fight-info-toggle exactly (small bordered pill,
-   muted until hovered/open) rather than the plain underlined text link this
-   used before. */
+/* Mirrors the site's own .fight-info-toggle -- small bordered pill, muted
+   until hovered/open -- sized to actually fit the 78px center column
+   (the site's own equivalent button shrinks to font-size:.52rem/padding
+   .18rem .32rem at this width; ours is a touch bigger for tap-target
+   legibility but still narrow enough not to collide with the column's own
+   side borders the way the previous, wider sizing did). */
 .mf-info{
   display:inline-block; background:none; border:1px solid var(--border); border-radius:4px;
-  color:var(--muted); font-family:'Barlow Condensed',sans-serif; font-size:.62rem;
-  letter-spacing:.07em; text-transform:uppercase; padding:.22rem .45rem; cursor:pointer;
+  color:var(--muted); font-family:'Barlow Condensed',sans-serif; font-size:.56rem;
+  letter-spacing:.05em; text-transform:uppercase; padding:.18rem .32rem; cursor:pointer;
   transition:border-color .15s, color .15s; margin-top:.15rem; white-space:nowrap;
 }
 .mf-info:hover, .mf-info.open{ border-color:var(--accent); color:var(--accent); }
@@ -658,18 +671,34 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    both matchup.js and (via similar naming) the fighter panel ---- */
 .sr-common{ margin-bottom:.9rem; }
 .sr-common:last-child{ margin-bottom:0; }
-.sr-common-title{ font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:.5rem; }
+.sr-common-title{ font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:.5rem; text-align:center; }
 /* Grid items default to min-width:auto, so a long unbroken value (e.g. a
    methods list like "Decision, TKO, Submission") forces its 1fr column
    wider than the card, dragging the whole page into horizontal overflow --
    this is why the Fight Info panel could open "wider than the screen".
    min-width:0 lets the column actually shrink to its track size, and
    overflow-wrap lets long content wrap instead of forcing that width. */
-.sr-cmp-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.4rem; padding:.3rem 0; font-size:.82rem; border-top:1px solid var(--border); }
+/* Mirrors the site's own scoped centering override for .sr-cmp-row inside
+   .scouting-fight-panel (index.html ~2642-2673): the label (1st DOM child)
+   is visually moved to the MIDDLE column via `order`, with both fighters'
+   values flanking it and everything centered -- rather than a plain left-
+   label/centered-values layout, which read as misaligned next to the
+   site's own version. DOM order stays [label, valA, valB] (matching the
+   site's own markup order too), only the visual order changes. */
+.sr-cmp-row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.85fr) minmax(0,1fr); gap:.4rem; padding:.3rem 0; font-size:.82rem; border-top:1px solid var(--border); }
 .sr-cmp-row:first-of-type{ border-top:none; }
-.sr-cmp-lbl{ color:var(--muted); font-size:.76rem; min-width:0; overflow-wrap:break-word; }
+.sr-cmp-row > :nth-child(1){ order:2; }
+.sr-cmp-row > :nth-child(2){ order:1; }
+.sr-cmp-row > :nth-child(3){ order:3; }
+.sr-cmp-lbl{ color:var(--muted); font-size:.76rem; min-width:0; overflow-wrap:break-word; text-align:center; }
 .sr-cmp-val{ text-align:center; font-weight:700; min-width:0; overflow-wrap:break-word; }
-.sr-style-track{ position:relative; height:6px; background:var(--surface2); border-radius:3px; margin:.6rem 0 .3rem; }
+/* Site's own track color is a translucent WHITE overlay (rgba(255,255,255,
+   .12), index.html:2850) rather than a flat dark var(--surface2) -- against
+   ANY dark card background a white-based overlay reads as a visibly
+   lighter track; a near-black-on-near-black flat color (var(--surface2)
+   is only one shade off var(--card)) was what made the bar blend in and
+   become hard to see. */
+.sr-style-track{ position:relative; height:6px; background:rgba(255,255,255,.14); border-radius:3px; margin:.6rem 0 .3rem; }
 .sr-style-dot{ position:absolute; top:-4px; width:14px; height:14px; border-radius:50%; border:2px solid var(--bg); }
 .sr-style-dot.a{ background:var(--accent); }
 .sr-style-dot.b{ background:#ffcf7a; }
@@ -688,7 +717,10 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sr-common-row:first-of-type{ border-top:none; }
 .sr-co-name, .sr-co-res{ min-width:0; overflow-wrap:break-word; }
 .sr-co-name{ color:var(--muted); }
-.sr-story-line{ font-size:.78rem; line-height:1.5; padding:.2rem 0; }
+/* Mirrors the site's own scoped centering override for .sr-story-line
+   inside .scouting-fight-panel (index.html ~2666, alongside the .sr-cmp-row
+   override above) rather than left-aligned storylines text. */
+.sr-story-line{ font-size:.78rem; line-height:1.5; padding:.2rem 0; text-align:center; }
 .sr-story-line .a{ color:var(--accent); font-weight:700; margin-right:.3rem; }
 .sr-story-line .b{ color:#ffcf7a; font-weight:700; margin-right:.3rem; }
 

@@ -71,6 +71,28 @@ function mountMatchup(container){
     return d.toLocaleDateString(undefined, opts || { month: 'short', day: 'numeric', year: 'numeric' });
   }
   function fmtOdds(v){ return (v == null || v === '') ? '—' : String(v); }
+  // Matches index.html's own PROMO_TIER_COLORS (~114998) exactly, for
+  // rendering the Regional promotion strength values below with the same
+  // tier-to-color mapping the site uses.
+  var PROMO_TIER_COLORS = { 1:'#00e668', 2:'#3ecbff', 3:'var(--accent)', 4:'#ffb020', 5:'#ff5c5c' };
+  // Mirrors the site's own mlRecHTML() (index.html:132849) -- moneyline odds
+  // shown inline with the record instead of detached in the center column:
+  // "REC · ML" on the left, "ML · REC" on the right (site does this because
+  // the right side is text-align:right, so the odds end up nearest the
+  // center either way; the app's markup order doesn't require the swap for
+  // that same visual reason, but keeps it anyway for exact parity). Unlike
+  // the site, this app's fight objects already carry o1/o2 synchronously
+  // (the worker merges consensus odds server-side, see /api/app/matchup),
+  // so there's no async placeholder-then-resolve step to replicate -- odds
+  // just render immediately, or fall back to '—' via fmtOdds() the same as
+  // the site's own "N/A" case. A decided fight (res truthy) drops the odds
+  // entirely and shows only the record, matching the site's f.completed check.
+  function mlRecHTML(f, side, rec, res){
+    var recEsc = esc(rec || '');
+    if (res) return recEsc;
+    var ml = '<span class="mf-odds">' + esc(fmtOdds(side === 2 ? f.o2 : f.o1)) + '</span>';
+    return side === 2 ? (ml + ' · ' + recEsc) : (recEsc + ' · ' + ml);
+  }
   function surname(n){
     var p = String(n || '').trim().split(/\s+/);
     var i = p.length - 1;
@@ -157,6 +179,24 @@ function mountMatchup(container){
         '</div>'
       );
     }
+    // Regional promotion strength -- mirrors index.html's renderScouting()
+    // IIFE of the same name (~130964-131020): shown only when at least one
+    // side has a thin UFC resume, so t.promo is already null from the data
+    // side (gen-landing-data.cjs's _promoStrength) when neither fighter
+    // qualifies -- nothing else to check here.
+    var promo = t.promo;
+    if (promo){
+      var promoVal = function(res){
+        if (!res) return '<div class="sr-cmp-val">—</div>';
+        var color = PROMO_TIER_COLORS[res.tier] || PROMO_TIER_COLORS[5];
+        return '<div class="sr-cmp-val" style="color:' + color + '">' + esc(res.label) + ' — ' + esc(res.org) + ' · ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's') + '</div>';
+      };
+      parts.push(
+        '<div class="sr-common"><div class="sr-common-title">Regional promotion strength</div>' +
+          '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Highest pre-UFC strength</div>' + promoVal(promo.a) + promoVal(promo.b) + '</div>' +
+        '</div>'
+      );
+    }
     var fd = t.finishDur;
     if (fd){
       parts.push(
@@ -235,9 +275,9 @@ function mountMatchup(container){
     return (
       '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + (canSim(f, special) ? ' mf-card--sim' : '') + '">' +
         '<div class="mf-row">' +
-          '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + '</div><div class="mf-rec">' + esc(f.rec1 || '') + '</div></div></div>' +
-          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + (res ? '' : '<div class="mf-odds"><b>' + esc(fmtOdds(f.o1)) + '</b> · <b>' + esc(fmtOdds(f.o2)) + '</b></div>') + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
-          '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + esc(f.rec2 || '') + '</div></div></div>' +
+          '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + '</div><div class="mf-rec">' + mlRecHTML(f, 1, f.rec1, res) + '</div></div></div>' +
+          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div><button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
+          '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + mlRecHTML(f, 2, f.rec2, res) + '</div></div></div>' +
         '</div>' +
         simBarHTML(f, special) +
         '<div class="mf-panel"><div class="mf-panel-inner">' + panelBody + '</div></div>' +
