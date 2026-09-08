@@ -12,6 +12,7 @@
 // copy below says so rather than implying it's synced.
 window.GL_ROUTER.register('home', {
   title: 'GillyLab',
+  brand: true,
   tab: 'home',
   render: function(container){
     container.innerHTML = '<p class="gl-muted">Loading…</p>';
@@ -45,7 +46,7 @@ window.GL_ROUTER.register('home', {
         }
       }
       return (
-        '<div class="gl-card gl-dash-card" id="homePickemCard">' +
+        '<div class="gl-sec" id="homePickemCard">' +
           head + body +
           '<button type="button" class="gl-btn gl-btn-primary" style="margin-top:.8rem" data-goto="pickem">' + cta + '</button>' +
         '</div>'
@@ -60,7 +61,7 @@ window.GL_ROUTER.register('home', {
       var head = '<div class="gl-dash-head"><span class="gl-label" style="margin:0">This Week’s Main Event</span></div>';
       if (!card || !main){
         return (
-          '<div class="gl-card gl-dash-card">' + head +
+          '<div class="gl-sec">' + head +
             '<p class="gl-muted" style="margin:.4rem 0 0">No card posted yet — check back on fight week.</p>' +
           '</div>'
         );
@@ -75,7 +76,7 @@ window.GL_ROUTER.register('home', {
         );
       };
       return (
-        '<div class="gl-card gl-dash-card">' +
+        '<div class="gl-sec gl-sec--first">' +
           head +
           '<div class="he-row">' +
             '<div class="he-side">' + av(main.s1, main.f1) + '<div class="he-name">' + esc(main.f1) + '</div></div>' +
@@ -103,7 +104,7 @@ window.GL_ROUTER.register('home', {
         }
       }
       return (
-        '<div class="gl-card gl-dash-card">' +
+        '<div class="gl-sec">' +
           '<div class="gl-dash-head"><span class="gl-label" style="margin:0">Active Roster</span></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View roster</button>' +
@@ -141,7 +142,7 @@ window.GL_ROUTER.register('home', {
         body = '<p class="gl-muted" style="margin:0">Rankings unavailable right now.</p>';
       }
       return (
-        '<div class="gl-card gl-dash-card">' +
+        '<div class="gl-sec">' +
           '<div class="gl-dash-head"><span class="gl-label" style="margin:0">' + (movers.length ? 'Biggest movers' : 'Pound-for-Pound') + '</span></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">See full rankings</button>' +
@@ -167,7 +168,7 @@ window.GL_ROUTER.register('home', {
         cta = 'Play The Climb';
       }
       return (
-        '<div class="gl-card gl-dash-card">' +
+        '<div class="gl-sec">' +
           '<div class="gl-dash-head"><span class="gl-label" style="margin:0">The Climb</span></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="climb">' + cta + '</button>' +
@@ -191,9 +192,9 @@ window.GL_ROUTER.register('home', {
         climbSection() +
         moversSection(rankingsData) +
         rosterSection(rosterData) +
-        '<div class="gl-card" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
+        '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
           '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
-          '<p style="margin-bottom:.8rem">Full fighter database, live odds, the simulator, and more.</p>' +
+          '<p style="margin-bottom:.8rem;color:var(--muted)">Full fighter database, live odds, the simulator, and more.</p>' +
           '<button type="button" class="gl-btn gl-btn-outline" data-goto="premium">See what’s included</button>' +
         '</div>';
       wire();

@@ -66,9 +66,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   width:2rem; height:2rem; display:flex; align-items:center; justify-content:center;
   border-radius:50%; cursor:pointer;
 }
+/* An author class selector (.gl-back{display:flex}) beats the UA [hidden]
+   rule at equal specificity, so backBtn.hidden = true was NOT actually
+   hiding the button -- it stayed visible via display:flex. This is why a
+   back arrow was showing up on Home even though router.js never sets
+   showBack for it. Needs its own explicit override. */
+.gl-back[hidden]{ display:none; }
 .gl-back:active{ background:var(--surface2); }
-.gl-topbar-title{ font-family:'Barlow Condensed',sans-serif; font-weight:900; letter-spacing:.1em; font-size:1rem; text-transform:uppercase; }
+.gl-topbar-title{ display:flex; align-items:center; gap:.4rem; font-family:'Barlow Condensed',sans-serif; font-weight:900; letter-spacing:.1em; font-size:1rem; text-transform:uppercase; }
 .gl-topbar-title .a{ color:var(--accent); }
+.gl-topbar-logo{ height:22px; width:auto; display:block; }
 .gl-topbar-spacer{ margin-left:auto; width:2rem; }
 
 /* ---- app content: fills between top bar and tab bar, scrolls on its own ---- */
@@ -150,7 +157,14 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 .gl-locked svg{ width:40px; height:40px; opacity:.6; }
 
-/* ---- Home: dashboard cards (this week's card, movers, Climb teaser) ---- */
+/* ---- Home: free-flowing dashboard sections (this week's card, movers,
+   Climb teaser, roster) -- plain content separated by divider lines with a
+   label per section, same treatment as Roster/Rankings/Fighter/Matchup got
+   (.ar-ch-wrap, .fsx-bio, .fp-head etc.) rather than a stack of grey boxes.
+   Only the bottom Go Premium callout stays boxed, matching the site's own
+   .rs-cta/.rk-cta pattern of boxing just the upsell. ---- */
+.gl-sec{ padding:1.1rem 0; border-top:1px solid var(--border); }
+.gl-sec:first-child, .gl-sec--first{ border-top:none; padding-top:0; }
 .gl-dash-card{ padding:1rem 1.1rem; }
 .gl-dash-head{ margin-bottom:.1rem; }
 .gl-dash-row{

@@ -24,7 +24,18 @@ window.GL_ROUTER = (function(){
     if (current && current !== name) previous = current;
     current = name;
     location.hash = '#/' + name;
-    topbarTitleEl.textContent = screen.title || 'GillyLab';
+    // A screen can ask for the site's own brand mark (logo + "GillyLab"
+    // wordmark, Lab in accent green) in the top bar instead of a plain text
+    // title -- see home.js. Mirrors .pk-brand from the website's own free
+    // pages exactly (worker/pages.js).
+    if (screen.brand){
+      var logoBase = (window.GL_API && window.GL_API.BASE) || '';
+      topbarTitleEl.innerHTML =
+        '<img class="gl-topbar-logo" src="' + logoBase + '/gl-logo.png?v=8" alt="">' +
+        '<span>GILLY<span class="a">LAB</span></span>';
+    } else {
+      topbarTitleEl.textContent = screen.title || 'GillyLab';
+    }
     backBtn.hidden = !screen.showBack;
     // A screen with no `tab` of its own (e.g. a fighter profile pushed from
     // Roster/Matchup/Rankings) leaves the tab bar exactly as it was --
