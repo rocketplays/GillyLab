@@ -43,6 +43,11 @@ window.GL_ROUTER.register('pickem', {
 function mountPickem(container){
   container.innerHTML = '<p class="gl-muted">Loading this week’s card…</p>';
 
+  // Same /photos/thumb/<slug>.png convention the website itself uses (see the
+  // PUBLIC_ASSETS allowlist in worker/index.js) -- absolute, since the app is
+  // a different origin. onerror="this.remove()" on each <img> above means a
+  // fighter with no photo on file just shows the name, not a broken-image icon.
+  var FIGHTER_PHOTO_BASE = window.GL_API.BASE + '/photos/thumb/';
   var CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
   var card = null, score = {}, picks = {}, name = null, locked = false;
   var submitted = false, dirty = false, inFlight = false;
@@ -65,6 +70,25 @@ function mountPickem(container){
   function isComplete(p){ return !!(p && p.winner && p.method && p.confidence && (p.method === 'Decision' || p.round)); }
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+
+  // Two-letter initials fallback (e.g. "Quentin Pasley" -> "QP") for a
+  // fighter with no photo on file. The initials sit underneath the <img> the
+  // whole time; onerror just hides the image so they show through, rather
+  // than leaving a blank gap where a photo would have been.
+  function initials(name){
+    var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+  function avatarHtml(slug, name){
+    return (
+      '<span class="pk-fighter-avatar">' +
+        '<span class="pk-fighter-initials">' + esc(initials(name)) + '</span>' +
+        (slug ? '<img class="pk-fighter-photo" src="' + FIGHTER_PHOTO_BASE + esc(slug) + '.png" alt="" onerror="this.style.display=\'none\'">' : '') +
+      '</span>'
+    );
+  }
 
   function renderShell(){
     var lockedNote = locked ? '<p class="gl-error" style="margin-top:.3rem">Picks are locked -- prelims have started.</p>' : '';
@@ -112,8 +136,14 @@ function mountPickem(container){
         '<div class="pk-bout gl-card" data-bout="' + b.id + '">' +
           '<div class="pk-bout-head"><span class="gl-label" style="margin:0">' + esc(b.wc || '') + '</span></div>' +
           '<div class="pk-fighters">' +
-            '<button type="button" class="pk-fighter' + (f1sel ? ' sel' : '') + '" data-pick="' + esc(b.f1) + '"' + (locked ? ' disabled' : '') + '>' + esc(b.f1) + '</button>' +
-            '<button type="button" class="pk-fighter' + (f2sel ? ' sel' : '') + '" data-pick="' + esc(b.f2) + '"' + (locked ? ' disabled' : '') + '>' + esc(b.f2) + '</button>' +
+            '<button type="button" class="pk-fighter' + (f1sel ? ' sel' : '') + '" data-pick="' + esc(b.f1) + '"' + (locked ? ' disabled' : '') + '>' +
+              avatarHtml(b.s1, b.f1) +
+              '<span>' + esc(b.f1) + '</span>' +
+            '</button>' +
+            '<button type="button" class="pk-fighter' + (f2sel ? ' sel' : '') + '" data-pick="' + esc(b.f2) + '"' + (locked ? ' disabled' : '') + '>' +
+              avatarHtml(b.s2, b.f2) +
+              '<span>' + esc(b.f2) + '</span>' +
+            '</button>' +
           '</div>' +
           (showDetail ?
             '<div class="pk-row"><span class="pk-row-label">Method</span><div class="pk-seg" data-role="method">' +
@@ -308,12 +338,7 @@ function mountPickem(container){
               '<strong>' + r.points + '</strong>' +
             '</div>';
           }).join('');
-      showPanel('<button type="button" class="gl-btn gl-btn-outline" id="pkBack" style="margin-bottom:.8rem">← Back to picks</button>' + body);
-      container.querySelector('#pkBack').addEventListener('click', function(){
-        var panel = container.querySelector('#pkPanel'), bouts = container.querySelector('#pkBouts'), bar = container.querySelector('.pk-submitbar'), subnav = container.querySelector('.pk-subnav'), nameCard = container.querySelector('#pkNameCard');
-        panel.hidden = true;
-        [bouts, bar, subnav, nameCard].forEach(function(el){ if (el) el.hidden = false; });
-      });
+      showPanel(body);
     }).catch(function(){
       showPanel('<p class="gl-error">Leaderboard unavailable right now.</p>');
     });
@@ -332,12 +357,7 @@ function mountPickem(container){
               '<strong style="color:' + (pts >= 0 ? 'var(--accent)' : 'var(--bad)') + '">' + (pts > 0 ? '+' : '') + pts + '</strong>' +
             '</div>';
           }).join('');
-      showPanel('<button type="button" class="gl-btn gl-btn-outline" id="pkBack" style="margin-bottom:.8rem">← Back to picks</button>' + body);
-      container.querySelector('#pkBack').addEventListener('click', function(){
-        var panel = container.querySelector('#pkPanel'), bouts = container.querySelector('#pkBouts'), bar = container.querySelector('.pk-submitbar'), subnav = container.querySelector('.pk-subnav'), nameCard = container.querySelector('#pkNameCard');
-        panel.hidden = true;
-        [bouts, bar, subnav, nameCard].forEach(function(el){ if (el) el.hidden = false; });
-      });
+      showPanel(body);
     }).catch(function(){
       showPanel('<p class="gl-error">History unavailable right now.</p>');
     });

@@ -88,6 +88,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
   font-family:'Barlow Condensed',sans-serif; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
   font-size:.9rem; padding:.85rem 1.2rem; border-radius:10px; border:none; cursor:pointer; width:100%;
+  text-align:center; line-height:1.15;
 }
 .gl-btn-primary{ background:var(--accent); color:var(--on-accent); }
 .gl-btn-primary:active{ opacity:.85; }
@@ -123,10 +124,23 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .pk-bout-head{ margin-bottom:.6rem; }
 .pk-fighters{ display:flex; gap:.6rem; margin-bottom:.6rem; }
 .pk-fighter{
-  flex:1; background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:.4rem;
+  background:var(--surface2); border:1px solid var(--border); color:var(--text);
   border-radius:8px; padding:.7rem .5rem; font-size:.86rem; font-weight:600; text-align:center; cursor:pointer;
 }
 .pk-fighter.sel{ border-color:var(--accent); background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 14%, transparent), color-mix(in srgb, var(--accent) 5%, transparent)); color:var(--accent); }
+.pk-fighter-avatar{ position:relative; display:block; width:44px; height:44px; }
+.pk-fighter-initials{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; background:var(--bg); border:1px solid var(--border);
+  color:var(--muted); font-weight:800; font-size:.78rem; letter-spacing:.02em;
+}
+.pk-fighter-photo{
+  position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover;
+  background:var(--bg); border:1px solid var(--border);
+}
+.pk-fighter.sel .pk-fighter-initials,
+.pk-fighter.sel .pk-fighter-photo{ border-color:var(--accent); }
 .pk-row{ display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem; }
 .pk-row-label{ font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:700; width:4.6rem; flex-shrink:0; }
 .pk-seg{ display:flex; gap:.4rem; flex:1; }
@@ -137,8 +151,19 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .pk-seg button.sel{ border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); }
 .pk-bout-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:.5rem; gap:.5rem; }
 .pk-clear{ background:none; border:none; color:var(--muted); font-size:.78rem; text-decoration:underline; cursor:pointer; padding:0; flex-shrink:0; }
+/* A real position:fixed bar pinned directly above the tab bar -- NOT
+   position:sticky inside .gl-app's scrolling column. Sticky was leaving a
+   visible gap: it sticks to the padding EDGE of its scrolling ancestor, but
+   .gl-app's own bottom padding (2rem, for normal screens that scroll past
+   their last card) still sat below it, unscrollable and empty. #pkBouts
+   gets matching bottom padding instead, so the last bout card clears this
+   bar by the same amount a sticky footer would have reserved. */
 .pk-submitbar{
-  position:sticky; bottom:0; background:var(--bg); border-top:1px solid var(--border);
-  padding:.8rem 0 .2rem; margin-top:.6rem; display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+  position:fixed; left:0; right:0;
+  bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  background:var(--bg); border-top:1px solid var(--border);
+  padding:.8rem 1.1rem; display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+  z-index:5;
 }
-.pk-submitbar .gl-btn{ width:auto; padding:.7rem 1.2rem; }
+.pk-submitbar .gl-btn{ width:auto; padding:.7rem 1.2rem; flex-shrink:0; }
+#pkBouts{ padding-bottom:4.5rem; }
