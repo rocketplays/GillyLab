@@ -133331,6 +133331,194 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // by either of the two named methods. Placed after `method`, before
   // `roundProps`, to match the tab order in the UI.
   const MANUAL_PROP_ODDS = {
+    // DWCS 2026 Week 5 (Sep 8, 2026) — sourced from fightodds.io, current-column
+    // reads, Sep 8 2026. Method/round/double-chance props always fill in (no
+    // book prices these on the live feed); ML only fills books data/odds.json
+    // was missing at read time (betonlineag + fanduel were already live on
+    // most of these fights; Kwon vs Gomes had zero live books, so all 5 are
+    // manual there). f1/f2 assigned per pairKey()'s alphabetical-last-name rule.
+    //
+    // Pasley vs Berisha — f1 = Berisha, f2 = Pasley.
+    'berisha|pasley': {
+      rounds: 3,
+      ml: {
+        draftkings: { f1: -148, f2: 124 },
+        betmgm:     { f1: -150, f2: 125 },
+        bovada:     { f1: -147, f2: 127 },
+      },
+      method: {
+        bovada:     { f1: { ko: 175, sub: 400, dec: 900 },  f2: { ko: 215, sub: 800, dec: 1400 } },
+        draftkings: { f1: { ko: 165, sub: 350, dec: 800 },  f2: { ko: 200, sub: 750, dec: 1400 } },
+        fanduel:    { f1: { ko: 180, sub: 400, dec: 900 },  f2: { ko: 220, sub: 800, dec: 1300 } },
+        betmgm:     { f1: { ko: 150, sub: 350, dec: 800 },  f2: { ko: 200, sub: 750, dec: 1400 } },
+      },
+      doubleChance: {
+        bovada:     { f1: { koDec: 125, koSub: -120 }, f2: { koDec: 175, koSub: 145 } },
+        draftkings: { f1: { koDec: 115, koSub: -115 }, f2: { koDec: 165, koSub: 150 } },
+        fanduel:    { f1: { koDec: 125, koSub: -125 }, f2: { koDec: 170, koSub: 145 } },
+        betmgm:     { f1: { koSub: -120 }, f2: { koSub: 125 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 140, r2: 650, r3: 1400 }, f2: { r1: 240, r2: 800, r3: 1600 } },
+        fanduel:    { f1: { r1: 170, r2: 650, r3: 1500 }, f2: { r1: 270, r2: 900, r3: 1700 } },
+        betmgm:     { f1: { r1: 150, r2: 650, r3: 1400 }, f2: { r1: 225, r2: 800, r3: 1600 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -310, under: 225 }, draftkings: { over: -320, under: 225 } },
+        '1.5': {
+          betonlineag: { over: 177, under: -210 },
+          bovada:      { over: 180, under: -240 },
+          draftkings:  { over: 175, under: -230 },
+          fanduel:     { over: 184, under: -230 },
+          betmgm:      { over: 175, under: -250 },
+        },
+        '2.5': { bovada: { over: 400, under: -650 } },
+      },
+    },
+    // Reginaldo Junior vs Isaac Moreno — f1 = Junior, f2 = Moreno.
+    'junior|moreno': {
+      rounds: 3,
+      ml: {
+        draftkings: { f1: 110, f2: -130 },
+        betmgm:     { f1: 110, f2: -135 },
+        bovada:     { f1: 108, f2: -128 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 325, sub: 475, dec: 400 }, f2: { ko: 215, sub: 900,  dec: 275 } },
+        bovada:      { f1: { ko: 400, sub: 500, dec: 500 }, f2: { ko: 230, sub: 1400, dec: 300 } },
+        draftkings:  { f1: { ko: 350, sub: 450, dec: 550 }, f2: { ko: 215, sub: 1400, dec: 275 } },
+        fanduel:     { f1: { ko: 400, sub: 480, dec: 500 }, f2: { ko: 230, sub: 1400, dec: 310 } },
+        betmgm:      { f1: { ko: 325, sub: 450, dec: 550 }, f2: { ko: 200, sub: 1300, dec: 275 } },
+      },
+      doubleChance: {
+        bovada:     { f1: { koDec: 185, koSub: 185 }, f2: { koDec: -110, koSub: 180 } },
+        draftkings: { f1: { koDec: 195, koSub: 185 }, f2: { koDec: -125, koSub: 185 } },
+        fanduel:    { f1: { koDec: 190, koSub: 180 }, f2: { koDec: -120, koSub: 180 } },
+        betmgm:     { f1: { koSub: 175 }, f2: { koSub: 175 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 450, r2: 650, r3: 900 },  f2: { r1: 450, r2: 650, r3: 900 } },
+        fanduel:    { f1: { r1: 480, r2: 700, r3: 1200 }, f2: { r1: 500, r2: 650, r3: 1200 } },
+        betmgm:     { f1: { r1: 450, r2: 650, r3: 900 },  f2: { r1: 450, r2: 650, r3: 900 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1000, under: 550 }, draftkings: { over: -1100, under: 550 } },
+        '1.5': {
+          betonlineag: { over: -160, under: 136 },
+          bovada:      { over: -175, under: 135 },
+          draftkings:  { over: -180, under: 140 },
+        },
+        '2.5': { fanduel: { over: 124, under: -150 }, betmgm: { over: 110, under: -150 } },
+      },
+    },
+    // Christian Echols vs Martin Kozák — f1 = Echols, f2 = Kozak.
+    'echols|kozák': {
+      rounds: 3,
+      ml: {
+        draftkings: { f1: 425, f2: -575 },
+        betmgm:     { f1: 400, f2: -550 },
+        bovada:     { f1: 395, f2: -525 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 1000, sub: 750, dec: 1200 }, f2: { ko: -225, sub: 600, dec: 500 } },
+        bovada:      { f1: { ko: 1400, sub: 900, dec: 1400 }, f2: { ko: -200, sub: 750, dec: 600 } },
+        draftkings:  { f1: { ko: 1200, sub: 900, dec: 1400 }, f2: { ko: -225, sub: 700, dec: 600 } },
+        fanduel:     { f1: { ko: 1200, sub: 950, dec: 1300 }, f2: { ko: -185, sub: 750, dec: 600 } },
+        betmgm:      { f1: { ko: 1200, sub: 900, dec: 1400 }, f2: { ko: -250, sub: 600, dec: 600 } },
+      },
+      doubleChance: {
+        bovada:     { f1: { koDec: 700, koSub: 525 }, f2: { koDec: -325, koSub: -300 } },
+        draftkings: { f1: { koDec: 700, koSub: 600 }, f2: { koDec: -450, koSub: -300 } },
+        fanduel:    { f1: { koDec: 700, koSub: 550 }, f2: { koDec: -320, koSub: -280 } },
+        betmgm:     { f1: { koSub: 500 }, f2: { koSub: -325 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 1000, r2: 1600, r3: 2800 }, f2: { r1: -135, r2: 500, r3: 1200 } },
+        fanduel:    { f1: { r1: 1100, r2: 1700, r3: 3300 }, f2: { r1: -125, r2: 470, r3: 1700 } },
+        betmgm:     { f1: { r1: 1000, r2: 1600, r3: 2800 }, f2: { r1: -140, r2: 500, r3: 1200 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -285, under: 210 }, draftkings: { over: -290, under: 205 } },
+        '1.5': {
+          betonlineag: { over: 193, under: -230 },
+          bovada:      { over: 180, under: -240 },
+          draftkings:  { over: 165, under: -215 },
+          fanduel:     { over: 176, under: -220 },
+          betmgm:      { over: 160, under: -225 },
+        },
+        '2.5': { bovada: { over: 325, under: -500 } },
+      },
+    },
+    // Won Il Kwon vs Apollo Gomes — f1 = Gomes, f2 = Kwon. odds.json had zero
+    // live books for this fight at read time, so all 5 books are manual here.
+    'gomes|kwon': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: 119, f2: -139 },
+        bovada:      { f1: 110, f2: -130 },
+        draftkings:  { f1: 120, f2: -142 },
+        fanduel:     { f1: 108, f2: -126 },
+        betmgm:      { f1: 115, f2: -140 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 450, sub: 500, dec: 300 }, f2: { ko: 130, sub: 1600, dec: 400 } },
+        bovada:      { f1: { ko: 500, sub: 550, dec: 350 }, f2: { ko: 160, sub: 2000, dec: 450 } },
+        draftkings:  { f1: { ko: 500, sub: 550, dec: 350 }, f2: { ko: 130, sub: 1600, dec: 450 } },
+        betmgm:      { f1: { ko: 350, sub: 550, dec: 350 }, f2: { ko: 125, sub: 1600, dec: 450 } },
+      },
+      doubleChance: {
+        bovada:     { f1: { koDec: 175, koSub: 230 }, f2: { koDec: -120, koSub: 135 } },
+        draftkings: { f1: { koDec: 175, koSub: 275 }, f2: { koDec: -135, koSub: 120 } },
+        betmgm:     { f1: { koSub: 275 }, f2: { koSub: 100 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 550, r2: 850, r3: 1400 }, f2: { r1: 275, r2: 450, r3: 900 } },
+        betmgm:     { f1: { r1: 550, r2: 850, r3: 1400 }, f2: { r1: 275, r2: 450, r3: 900 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -800, under: 475 }, draftkings: { over: -900, under: 475 } },
+        '1.5': {
+          betonlineag: { over: -141, under: 121 },
+          bovada:      { over: -150, under: 115 },
+          draftkings:  { over: -160, under: 124 },
+          betmgm:      { over: -170, under: 125 },
+        },
+        '2.5': { bovada: { over: 130, under: -170 } },
+      },
+    },
+    // Colton Loud vs Christian Natividad — f1 = Loud, f2 = Natividad.
+    'loud|natividad': {
+      rounds: 3,
+      ml: {
+        draftkings: { f1: 245, f2: -305 },
+        betmgm:     { f1: 240, f2: -300 },
+        bovada:     { f1: 255, f2: -310 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 600, sub: 700, dec: 900 },  f2: { ko: 140, sub: 600, dec: 175 } },
+        bovada:      { f1: { ko: 650, sub: 800, dec: 1000 }, f2: { ko: 150, sub: 900, dec: 200 } },
+        draftkings:  { f1: { ko: 600, sub: 800, dec: 900 },  f2: { ko: 130, sub: 800, dec: 200 } },
+        betmgm:      { f1: { ko: 600, sub: 800, dec: 900 },  f2: { ko: 125, sub: 800, dec: 200 } },
+      },
+      doubleChance: {
+        bovada:     { f1: { koDec: 375, koSub: 330 }, f2: { koDec: -225, koSub: 110 } },
+        draftkings: { f1: { koDec: 370, koSub: 350 }, f2: { koDec: -275, koSub: 110 } },
+        betmgm:     { f1: { koSub: 350 }, f2: { koSub: 100 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 750, r2: 1000, r3: 1600 }, f2: { r1: 275, r2: 450, r3: 700 } },
+        betmgm:     { f1: { r1: 750, r2: 1000, r3: 1600 }, f2: { r1: 275, r2: 450, r3: 700 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1000, under: 550 }, draftkings: { over: -1100, under: 550 } },
+        '1.5': {
+          betonlineag: { over: -165, under: 140 },
+          bovada:      { over: -175, under: 135 },
+          draftkings:  { over: -180, under: 140 },
+        },
+        '2.5': { betmgm: { over: 110, under: -150 } },
+      },
+    },
     // UFC 330 — Turner vs Fernandes (3 rounds). Method + round props + rounds O/U
     // from fightodds.io (BetOnline / DraftKings / FanDuel / BetMGM; Bovada had a
     // moneyline but posted no prop lines at all for this fight). f1 = Fernandes,
