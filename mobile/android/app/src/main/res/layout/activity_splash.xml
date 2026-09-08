@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Custom splash layout for the Capacitor SplashScreen plugin (see
+  capacitor.config.json -> plugins.SplashScreen.layoutName). Reuses the exact
+  same drawable/splash asset as the plain-ImageView default (all density/night
+  variants keep working automatically), just adds the "Know the fight before
+  it starts" slogan under the GILLYLAB wordmark that's already baked into that
+  image. The two spacer Views use weights instead of a fixed dp offset so the
+  slogan lands at the same ~65% height on any screen size, matching where
+  the wordmark actually sits in the source art, without pulling in a
+  ConstraintLayout dependency this module doesn't already have.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/splash"
+        android:contentDescription="@null" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="66" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="center_horizontal"
+            android:text="Know the fight before it starts"
+            android:textColor="#8a8f99"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif-medium" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="34" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -15,6 +15,8 @@
       "launchShowDuration": 400,
       "backgroundColor": "#0a0a0b",
       "androidScaleType": "CENTER_CROP",
+      "androidSplashResourceName": "splash",
+      "layoutName": "activity_splash",
       "showSpinner": false
     },
     "StatusBar": {
