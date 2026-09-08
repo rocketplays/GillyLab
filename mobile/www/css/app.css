@@ -75,15 +75,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    button: an author class beats the UA [hidden] rule, so this needs its
    own explicit override or backBtn.hidden=true silently does nothing. */
 .gl-back-inline[hidden]{ display:none; }
-/* A screen that wants to own the whole content area itself (Climb, loaded
-   in an iframe with its own fonts/background/scrolling) instead of sitting
-   inside the app's default padded, scrolling column. */
-.gl-app.gl-app--fullbleed{ padding:0; overflow:hidden; }
-/* #app is a plain block div by default (content just flows under the brand
-   mark and the whole column scrolls). Fullbleed screens hide the brand mark
-   and need #app to actually fill .gl-app's fixed height, since the embed
-   iframe below sizes itself to 100% of its immediate parent. */
-.gl-app.gl-app--fullbleed #app{ height:100%; }
+/* A screen that wants to own the rest of the content area itself (Climb,
+   loaded in an iframe with its own fonts/background/scrolling) instead of
+   sitting inside the app's default padded, scrolling column. The brand
+   mark still shows above it (flex column: brand row, then #app filling
+   whatever's left) -- Climb's own in-game title was removed for exactly
+   this reason (see scripts/gen-climb-app-page.cjs), so this is the only
+   header the screen gets. Without this the iframe used to butt straight up
+   against the safe-area/notch, since fullbleed zeroes .gl-app's own padding. */
+.gl-app.gl-app--fullbleed{ padding:0; overflow:hidden; display:flex; flex-direction:column; }
+.gl-app.gl-app--fullbleed #app{ flex:1 1 auto; min-height:0; }
 .gl-embed-frame{ display:block; width:100%; height:100%; border:none; background:var(--bg); }
 
 /* ---- centered brand mark at the top of every page (see index.html) ---- */
@@ -94,7 +95,14 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 .gl-page-brand .a{ color:var(--accent); }
 .gl-page-brand-logo{ height:24px; width:auto; display:block; }
-.gl-app--fullbleed .gl-page-brand{ display:none; }
+/* On fullbleed screens .gl-app itself has zero padding, so the brand row
+   carries its own horizontal padding + safe-area-aware top padding here
+   instead, plus a divider so it still reads as a header above the game. */
+.gl-app--fullbleed .gl-page-brand{
+  flex:0 0 auto; margin:0;
+  padding:calc(env(safe-area-inset-top) + .9rem) 1.1rem .8rem;
+  border-bottom:1px solid var(--border);
+}
 
 /* ---- bottom tab bar ---- */
 .gl-tabbar{
@@ -171,6 +179,10 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-sec:first-child, .gl-sec--first{ border-top:none; padding-top:0; }
 .gl-dash-card{ padding:1rem 1.1rem; }
 .gl-dash-head{ margin-bottom:.1rem; }
+/* Each section's own name (Pick'em, The Climb, Active Roster, ...) reads as
+   a real dashboard-widget title, not a small muted eyebrow -- so Home looks
+   like a hub with a teaser under each heading rather than a flat list. */
+.gl-dash-title{ font-size:1.1rem; margin:0; color:var(--text); }
 .gl-dash-row{
   display:flex; align-items:center; gap:.6rem; padding:.5rem 0;
   border-top:1px solid var(--border);
@@ -464,11 +476,19 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .rk-toggle{ display:inline-flex; gap:4px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; }
 .rk-toggle button{ background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.45rem .8rem; border-radius:7px; cursor:pointer; }
 .rk-toggle button.sel{ background:var(--accent); color:var(--on-accent); }
-.rk-tabs{ display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:.9rem; }
+/* A phone's viewport is much narrower than the site's own desktop/tablet
+   column, so the same wrapped chip grid that works there reads as cramped
+   here -- ~18 divisions wrapping into a tight 3-4-per-row block. A single
+   horizontally-scrolling row with roomier chips reads much less packed. */
+.rk-tabs{
+  display:flex; flex-wrap:nowrap; gap:.5rem; margin:0 -1.1rem .9rem; padding:0 1.1rem .2rem;
+  overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+}
+.rk-tabs::-webkit-scrollbar{ display:none; }
 .rk-tab{
-  background:var(--card); border:1px solid var(--border); color:var(--muted); border-radius:6px;
-  padding:.4rem .65rem; font:inherit; font-size:.66rem; letter-spacing:.06em; text-transform:uppercase;
-  font-weight:700; cursor:pointer; white-space:nowrap;
+  background:var(--card); border:1px solid var(--border); color:var(--muted); border-radius:8px;
+  padding:.55rem .95rem; font:inherit; font-size:.74rem; letter-spacing:.05em; text-transform:uppercase;
+  font-weight:700; cursor:pointer; white-space:nowrap; flex:0 0 auto;
 }
 .rk-tab.sel{ color:var(--accent); border-color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); }
 .rk-panel-title{ font-weight:800; font-size:1.05rem; margin:.2rem 0 .6rem; }

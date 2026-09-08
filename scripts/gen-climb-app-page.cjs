@@ -24,6 +24,13 @@
  *     URLs -- same treatment gen-bracket-page.cjs's fighter photos already
  *     get, for the same reason.
  *
+ *  3. The prototype's own "The Climb" h1 + tagline are dropped. The app
+ *     shell already puts its own GillyLab brand header above this iframe
+ *     (see mobile/www/js/screens/climb.js's fullbleed handling in app.css) --
+ *     keeping the in-page title too was double branding stacked right under
+ *     the safe-area/notch. The "Build a fighter..." explainer paragraph
+ *     stays; that's instructions, not chrome.
+ *
  * This file is loaded inside an <iframe> by mobile/www/js/screens/climb.js,
  * not injected into the app's own DOM -- the game's CSS assumes it owns the
  * whole page (its own fonts, background, viewport), which an iframe gives it
@@ -42,7 +49,10 @@ let html = fs.readFileSync(SRC, "utf8");
 // Same guard reasoning as the other gen-*.cjs scripts: a marker or hook that
 // silently goes missing ships a broken page, and nothing about playing the
 // game would tell you.
-for (const needle of ["/gl-sheet.js", "fetch('/data/climb.json')", "fetch('/api/activity/climb-run'"]) {
+const CLIMB_H1 = '<h1>The <span class="g">Climb</span></h1>';
+const CLIMB_TAG = '<p class="tag">Can you become a UFC champion?</p>';
+
+for (const needle of ["/gl-sheet.js", "fetch('/data/climb.json')", "fetch('/api/activity/climb-run'", CLIMB_H1, CLIMB_TAG]) {
   if (!html.includes(needle)) {
     console.error("gen-climb-app-page: expected to find " + JSON.stringify(needle) + " in the prototype — refusing to generate (the source file changed shape; update this script's rewrites to match)");
     process.exit(1);
@@ -61,7 +71,9 @@ html = html
   .replace(
     /\$\('#app'\)\.innerHTML='<div class="load">Could not load \/data\/climb\.json — '\+e\.message\+[\s\S]*?<\/div>';/,
     "$('#app').innerHTML='<div class=\"load\">Couldn\\'t load The Climb — check your connection and try again.</div>';"
-  );
+  )
+  .replace(CLIMB_H1, '')
+  .replace(CLIMB_TAG, '');
 
 fs.writeFileSync(OUT, html);
 console.log("mobile/www/climb-game.html: " + fs.statSync(OUT).size + " bytes from " + html.length + " bytes of prototype");

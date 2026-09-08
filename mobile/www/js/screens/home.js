@@ -23,8 +23,8 @@ window.GL_ROUTER.register('home', {
       var loggedIn = window.GL_AUTH.isLoggedIn();
       var head =
         '<div class="gl-dash-head">' +
-          '<span class="gl-label" style="margin:0">This week’s card</span>' +
-          '<h3 style="margin:.2rem 0 0">' + esc(card.name) + '</h3>' +
+          '<h2 class="gl-dash-title">Pick’em</h2>' +
+          '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(card.name) + '</p>' +
         '</div>';
       var body, cta;
       if (!loggedIn){
@@ -47,7 +47,7 @@ window.GL_ROUTER.register('home', {
       return (
         '<div class="gl-sec" id="homePickemCard">' +
           head + body +
-          '<button type="button" class="gl-btn gl-btn-primary" style="margin-top:.8rem" data-goto="pickem">' + cta + '</button>' +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="pickem">' + cta + '</button>' +
         '</div>'
       );
     }
@@ -57,7 +57,7 @@ window.GL_ROUTER.register('home', {
     // spot the premium in-app home page gives its own featured event.
     function mainEventSection(card){
       var main = card && (card.fights || [])[0];
-      var head = '<div class="gl-dash-head"><span class="gl-label" style="margin:0">This Week’s Main Event</span></div>';
+      var head = '<div class="gl-dash-head"><h2 class="gl-dash-title">This Week’s Main Event</h2></div>';
       if (!card || !main){
         return (
           '<div class="gl-sec">' + head +
@@ -83,7 +83,7 @@ window.GL_ROUTER.register('home', {
             '<div class="he-side">' + av(main.s2, main.f2) + '<div class="he-name">' + esc(main.f2) + '</div></div>' +
           '</div>' +
           '<p class="gl-muted" style="margin:.6rem 0 0;text-align:center">' + esc(card.event) + '</p>' +
-          '<button type="button" class="gl-btn gl-btn-primary" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
         '</div>'
       );
     }
@@ -104,7 +104,7 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><span class="gl-label" style="margin:0">Active Roster</span></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">Active Roster</h2></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View roster</button>' +
         '</div>'
@@ -142,7 +142,7 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><span class="gl-label" style="margin:0">' + (movers.length ? 'Biggest movers' : 'Pound-for-Pound') + '</span></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">' + (movers.length ? 'Biggest Movers' : 'Pound-for-Pound') + '</h2></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">See full rankings</button>' +
         '</div>'
@@ -168,7 +168,7 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><span class="gl-label" style="margin:0">The Climb</span></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">The Climb</h2></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="climb">' + cta + '</button>' +
         '</div>'
