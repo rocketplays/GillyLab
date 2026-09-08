@@ -96,6 +96,13 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   color:var(--text); border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
 }
 .gl-btn-outline:active{ border-color:var(--accent); }
+/* Looks disabled (dimmed) but stays clickable -- see pickem.js's submit
+   button. A real `disabled` attribute never fires a click at all, so a
+   tap on a not-ready-yet submit button would look exactly like a bug
+   (nothing happens, no explanation). This lets the click handler run and
+   say what's missing instead. */
+.gl-btn-notready{ opacity:.45; }
+.gl-btn-notready:active{ opacity:.45; }
 .gl-field{
   width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text);
   border-radius:8px; padding:.8rem .9rem; font-size:.95rem; margin-bottom:.7rem;

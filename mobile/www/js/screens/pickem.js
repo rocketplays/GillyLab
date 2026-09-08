@@ -45,7 +45,7 @@ function mountPickem(container){
 
   var CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
   var card = null, score = {}, picks = {}, name = null, locked = false;
-  var submitted = false, dirty = false;
+  var submitted = false, dirty = false, inFlight = false;
 
   function sideOf(bout, winnerName){ return winnerName === bout.f1 ? 'f1' : 'f2'; }
   function partsFor(id, side, method, round){
@@ -189,10 +189,27 @@ function mountPickem(container){
     var info = container.querySelector('#pkBarInfo');
     if (info) info.textContent = done + '/' + total + ' picks · +' + stake + ' possible';
     var btn = container.querySelector('#pkSubmit');
-    if (btn && btn.textContent.indexOf('Submitting') < 0){
-      if (locked){ btn.textContent = 'Locked'; btn.disabled = true; }
-      else if (submitted && !dirty){ btn.textContent = 'Picks submitted ✓'; btn.disabled = true; }
-      else { btn.textContent = submitted ? 'Update picks' : 'Submit picks'; btn.disabled = done < total || !name; }
+    // inFlight is an explicit flag, not text-sniffing -- the whole point of
+    // this branch existing is so the *same* call that clears "Submitting…"
+    // (the save's success/failure handler) can still update the label. The
+    // old version checked the button's own text for "Submitting" to avoid
+    // clobbering it mid-request, which also blocked the one call meant to
+    // clear it -- the button froze on "Submitting…" forever even though the
+    // save had already succeeded (confirmed: state was correct on the next
+    // screen render, only the live label was stuck).
+    if (btn && !inFlight){
+      if (locked){ btn.textContent = 'Locked'; btn.disabled = true; btn.classList.remove('gl-btn-notready'); }
+      else if (submitted && !dirty){ btn.textContent = 'Picks submitted ✓'; btn.disabled = true; btn.classList.remove('gl-btn-notready'); }
+      else {
+        btn.textContent = submitted ? 'Update picks' : 'Submit picks';
+        // Not a real `disabled` -- a genuinely disabled button never fires a
+        // click at all, which means tapping it looks exactly like a bug
+        // (nothing happens, no explanation). Left clickable and just dimmed,
+        // so the click handler itself can tell the person what's missing.
+        var notReady = done < total || !name;
+        btn.disabled = false;
+        btn.classList.toggle('gl-btn-notready', notReady);
+      }
     }
   }
 
@@ -219,6 +236,22 @@ function mountPickem(container){
     if (submitBtn){
       submitBtn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
+        if (inFlight || submitBtn.disabled) return;
+        // Not truly disabled (see updateBar) -- just dimmed -- specifically
+        // so this branch can run and explain why, instead of a real
+        // `disabled` button silently swallowing the tap.
+        if (submitBtn.classList.contains('gl-btn-notready')){
+          var total = card.bouts.length, done = 0;
+          card.bouts.forEach(function(b){ if (isComplete(picks[b.id])) done++; });
+          var msg = !name ? 'Save a display name above first.'
+            : done < total ? 'Finish every fight before submitting (' + done + '/' + total + ' done).'
+            : '';
+          if (msg){
+            var info = container.querySelector('#pkBarInfo');
+            if (info) info.innerHTML = '<span class="gl-error" style="margin:0">' + esc(msg) + '</span>';
+          }
+          return;
+        }
         var payload = { eventSlug: card.slug, eventName: card.name, eventDate: card.date, prelimsAt: card.prelimsAt, picks: [] };
         card.bouts.forEach(function(b){
           var p = picks[b.id]; if (!isComplete(p)) return;
@@ -226,14 +259,17 @@ function mountPickem(container){
           payload.picks.push({ f1:b.f1, f2:b.f2, winner:p.winner, method:p.method, round: p.method !== 'Decision' ? p.round : null, confidence:p.confidence, wPts:pt.wPts, mPts:pt.mPts, rPts:pt.rPts });
         });
         if (!payload.picks.length) return;
+        inFlight = true;
         submitBtn.disabled = true; submitBtn.textContent = 'Submitting…';
         window.GL_API.pickemSave(payload).then(function(res){
-          if (res && res.ok){ submitted = true; dirty = false; updateBar(); }
-          else { submitBtn.textContent = 'Submit picks'; updateBar(); }
+          inFlight = false;
+          if (res && res.ok){ submitted = true; dirty = false; }
+          updateBar();
         }).catch(function(err){
+          inFlight = false;
           if (err && err.data && err.data.error === 'needs-name'){ name = null; renderShell(); return; }
           if (err && err.data && err.data.locked){ locked = true; }
-          submitBtn.textContent = 'Submit picks'; updateBar();
+          updateBar();
         });
       });
     }
