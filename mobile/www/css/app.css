@@ -604,6 +604,31 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-lock-it{ font-weight:700; font-size:.78rem; margin-bottom:.15rem; }
 .fp-lock-id{ font-size:.68rem; color:var(--muted); line-height:1.4; }
 @media (max-width:360px){ .fp-lock-grid{ grid-template-columns:1fr; } }
+/* Same boxed treatment as .fp-lock for the "more on the way" list shown to
+   already-subscribed users -- just no CTA button, so no extra bottom margin
+   is needed on the grid. */
+.fp-lock--done .fp-lock-grid{ margin-bottom:0; }
+
+/* ---- Fighter profile: Premium Accolades + Tape Study ---- */
+.fp-extras{ margin-top:1.2rem; }
+.fp-tabs{ display:flex; gap:4px; max-width:min(100%, 320px); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:.8rem; }
+.fp-tab{ flex:1; text-align:center; background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.5rem .6rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
+.fp-tab.sel{ background:var(--accent); color:var(--on-accent); }
+
+.fp-acc-list{ display:flex; flex-direction:column; gap:.7rem; }
+.fp-acc-row{ display:flex; gap:.6rem; align-items:flex-start; }
+.fp-acc-icon{ flex:0 0 auto; font-size:1.1rem; line-height:1.3; }
+.fp-acc-title{ font-size:.85rem; line-height:1.4; }
+.fp-acc-detail{ font-size:.74rem; color:var(--muted); margin-top:.15rem; line-height:1.4; }
+
+.fp-tape-sec{ font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:.9rem 0 .4rem; }
+.fp-tape-sec:first-child{ margin-top:0; }
+.fp-tape-row{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.55rem 0; border-top:1px solid var(--border); }
+.fp-tape-row:first-of-type, .fp-tape-sec + .fp-tape-row{ border-top:none; }
+.fp-tape-opp{ font-weight:700; font-size:.84rem; }
+.fp-tape-meta{ font-size:.72rem; color:var(--muted); margin-top:.1rem; }
+.fp-tape-watch{ flex:0 0 auto; background:none; border:1px solid var(--accent); color:var(--accent); font:inherit; font-weight:700; font-size:.72rem; padding:.4rem .8rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
+.fp-tape-none{ flex:0 0 auto; font-size:.72rem; color:var(--muted); }
 
 /* ---- Go Premium: wrapper glue for the site's own /subscribe feature-tile
    carousel (fetched whole -- CSS/markup/script -- from

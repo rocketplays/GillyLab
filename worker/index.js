@@ -19,6 +19,7 @@
 
 import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
+import fighterExtras from "./fighter-extras.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -2952,6 +2953,27 @@ export default {
         const fighter = lite && lite.bySlug && lite.bySlug[slug];
         if (!fighter) return json({ error: "not found" }, 404, cors);
         return json({ fighter }, 200, cors);
+      }
+      // Career Accolades + Tape Study for a fighter -- premium-only, unlike
+      // /api/app/fighter above. This is the ACCOLADES/TAPE_STUDY data that on
+      // the website only ever reaches a browser inside the paywall-gated
+      // index.html itself; /api/app/* routes don't inherit that static-file
+      // gate (see /api/app/fighter's own "no session required" comment), so
+      // this route needs its own explicit readSession + subscribed check --
+      // the same shape as betsSession(), just inlined since this is the only
+      // caller. Bundled at build time by scripts/gen-app-fighter-extras.cjs
+      // (see worker/fighter-extras.js) rather than parsed from index.html
+      // per request, same tradeoff as matchupFree/landingData.
+      if (path === "/api/app/fighter-extras" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
+        const slug = (url.searchParams.get("slug") || "").trim().toLowerCase();
+        if (!slug) return json({ error: "missing slug" }, 400, cors);
+        const extras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || { accolades: [], tapeStudy: [] };
+        return json(extras, 200, cors);
       }
       // Account screen: signed-in email, subscription status and member-since
       // date -- none of which the app currently has (GL_AUTH only tracks

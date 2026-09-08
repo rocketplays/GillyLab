@@ -57,6 +57,10 @@ window.GL_API = (function(){
     roster: function(){ return request('/api/app/roster'); },
     matchup: function(eventSlug){ return request('/api/app/matchup' + (eventSlug ? '?event=' + encodeURIComponent(eventSlug) : '')); },
     fighter: function(slug){ return request('/api/app/fighter?slug=' + encodeURIComponent(slug)); },
+    // Career Accolades + Tape Study -- Premium-only (see worker/index.js's
+    // /api/app/fighter-extras). Rejects with a 401/403 for a logged-out or
+    // non-subscribed caller; fighter.js treats that as "show the locked state".
+    fighterExtras: function(slug){ return request('/api/app/fighter-extras?slug=' + encodeURIComponent(slug)); },
     fighterSearch: function(q){ return request('/api/fighter-search?q=' + encodeURIComponent(q)); },
     // The site's own /subscribe feature-tile carousel (CSS/markup/script,
     // already premium-only), reused as-is for Go Premium -- see
