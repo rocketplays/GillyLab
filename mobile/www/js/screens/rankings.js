@@ -91,8 +91,7 @@ function mountRankings(container){
         '</div>' +
       '</div>' +
       '<div class="rk-tabs">' + tabsHTML() + '</div>' +
-      '<div id="rkPanel">' + panelHTML() + '</div>' +
-      '<div id="rkFighterPanel" hidden></div>';
+      '<div id="rkPanel">' + panelHTML() + '</div>';
     wire();
   }
 
@@ -119,26 +118,12 @@ function mountRankings(container){
     container.querySelectorAll('[data-slug]').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
-        openFighter(btn.getAttribute('data-slug'));
+        // A full navigation to the 'fighter' route -- its own back button
+        // returns here, mirroring the website's real page change instead of
+        // a panel dropped on top of the rankings list.
+        window.GL_ROUTER.go('fighter', { slug: btn.getAttribute('data-slug') });
       });
     });
-  }
-
-  function openFighter(slug){
-    var panel = container.querySelector('#rkFighterPanel');
-    var rkTabs = container.querySelector('.rk-tabs');
-    var rkPanel = container.querySelector('#rkPanel');
-    var topCard = container.querySelector('.gl-card');
-    if (!panel) return;
-    [rkTabs, rkPanel, topCard].forEach(function(el){ if (el) el.hidden = true; });
-    panel.hidden = false;
-    panel.innerHTML = '<button type="button" class="gl-btn gl-btn-outline" id="rkBack" style="margin-bottom:.8rem">← Back to rankings</button><div id="rkFighterHost"></div>';
-    panel.querySelector('#rkBack').addEventListener('click', function(){
-      window.GL_NATIVE.tap();
-      panel.hidden = true;
-      [rkTabs, rkPanel, topCard].forEach(function(el){ if (el) el.hidden = false; });
-    });
-    window.GL_FIGHTER.load(panel.querySelector('#rkFighterHost'), slug);
   }
 
   function load(){

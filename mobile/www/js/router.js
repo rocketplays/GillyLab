@@ -6,6 +6,7 @@
 window.GL_ROUTER = (function(){
   var screens = {};       // routeName -> { title, render(container, params), tab }
   var current = null;
+  var previous = null;    // last DIFFERENT route, for back() -- see fighter.js
   var appEl, topbarTitleEl, backBtn, tabbarEl;
 
   function register(name, screen){ screens[name] = screen; }
@@ -20,11 +21,16 @@ window.GL_ROUTER = (function(){
   function go(name, params){
     var screen = screens[name];
     if (!screen){ console.error('GL_ROUTER: unknown route', name); return; }
+    if (current && current !== name) previous = current;
     current = name;
     location.hash = '#/' + name;
     topbarTitleEl.textContent = screen.title || 'GillyLab';
     backBtn.hidden = !screen.showBack;
-    setActiveTab(screen.tab || name);
+    // A screen with no `tab` of its own (e.g. a fighter profile pushed from
+    // Roster/Matchup/Rankings) leaves the tab bar exactly as it was --
+    // otherwise every tab would go dark the moment you tapped into a
+    // profile, since no tab button matches a route name like "fighter".
+    if (screen.tab) setActiveTab(screen.tab);
     // Reset per-screen modifier classes (e.g. fullbleed) before the next
     // screen renders, so nothing leaks from whichever screen was up before.
     appEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '');
@@ -32,6 +38,14 @@ window.GL_ROUTER = (function(){
     appEl.scrollTop = 0;
     screen.render(appEl, params || {});
   }
+
+  // Real "go back to wherever this screen was pushed from" -- used by the
+  // back button so a fighter profile opened from Matchup returns to
+  // Matchup, one opened from Roster returns to Roster, etc., rather than
+  // always dumping the visitor back on Home. Mirrors the website itself:
+  // clicking a fighter is a full page navigation with a real back button,
+  // not a panel layered over the page you were on.
+  function back(){ go(previous || 'home'); }
 
   function fromHash(){
     var name = (location.hash || '#/home').replace(/^#\//, '') || 'home';
@@ -54,11 +68,11 @@ window.GL_ROUTER = (function(){
     });
     backBtn.addEventListener('click', function(){
       window.GL_NATIVE.tap();
-      go('home');
+      back();
     });
     window.addEventListener('hashchange', fromHash);
     fromHash();
   }
 
-  return { register: register, go: go, init: init };
+  return { register: register, go: go, back: back, init: init };
 })();

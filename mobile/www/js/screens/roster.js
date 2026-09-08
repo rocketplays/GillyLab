@@ -66,8 +66,7 @@ function mountRoster(container){
     container.innerHTML =
       '<div class="gl-card"><h3 style="margin:0 0 .3rem">' + fighters.length + ' fighters on the active roster</h3><p class="gl-muted" style="margin:0">Kept up to date with the week’s signings and releases.</p></div>' +
       changesHTML() +
-      '<div id="arList">' + listHTML() + '</div>' +
-      '<div id="arPanel" hidden></div>';
+      '<div id="arList">' + listHTML() + '</div>';
     wireList();
   }
 
@@ -81,27 +80,15 @@ function mountRoster(container){
         wireList();
       });
     });
+    // A full navigation to the 'fighter' route (its own back button returns
+    // here) -- mirrors the website: clicking a fighter is a real page
+    // change, not a panel dropped on top of the roster list.
     container.querySelectorAll('[data-slug]').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
-        openFighter(btn.getAttribute('data-slug'));
+        window.GL_ROUTER.go('fighter', { slug: btn.getAttribute('data-slug') });
       });
     });
-  }
-
-  function openFighter(slug){
-    var listHost = container.querySelector('#arList');
-    var panel = container.querySelector('#arPanel');
-    if (!panel) return;
-    if (listHost) listHost.hidden = true;
-    panel.hidden = false;
-    panel.innerHTML = '<button type="button" class="gl-btn gl-btn-outline" id="arBack" style="margin-bottom:.8rem">← Back to roster</button><div id="arFighterHost"></div>';
-    panel.querySelector('#arBack').addEventListener('click', function(){
-      window.GL_NATIVE.tap();
-      panel.hidden = true;
-      if (listHost) listHost.hidden = false;
-    });
-    window.GL_FIGHTER.load(panel.querySelector('#arFighterHost'), slug);
   }
 
   window.GL_API.roster().then(function(res){

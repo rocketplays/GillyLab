@@ -2810,6 +2810,52 @@ export default {
         // breakdownHTML instead of the locked-teaser panel.
         const breakdown = (!isOtherEvent && currentCard && currentCard.main) ? currentCard.main : null;
 
+        // ── Upcoming-events carousel — the app equivalent of matchupPage's own
+        // full-card carousel (worker/pages.js, "carouselRaws"): FULL fight
+        // cards, not name-only chips, for every announced event AFTER the
+        // featured one. Same three exclusions that page applies: hasBouts
+        // (an event ESPN created but hasn't published a card for yet — this
+        // is what actually hides DWCS until fight week, never a name match),
+        // not Road to UFC (a separate contender tournament), and strictly
+        // later than the featured card (by its prelims bell, not just its
+        // raw startsAt, so the featured card can't duplicate itself as
+        // carousel slide #1 — see matchupPage's own `featuredTime` comment).
+        // Capped at 12 for the same reason that page caps there: each entry
+        // is a full per-bout render, so the payload scales with this number.
+        // Relative to `currentCard` (the site's actual real current card),
+        // NOT `card` (which is whatever's being browsed right now -- a past
+        // result or another upcoming pick) -- matchupPage's own carousel is
+        // "what's next after this week's real card" regardless of what
+        // you're currently looking at, so it doesn't disappear or shift
+        // while browsing past results.
+        const hasBouts = (raw) => !!(raw && raw.bouts && raw.bouts.length);
+        const isRoadToUFCRaw = (raw) => /road\s+to\s+(the\s+)?ufc/i.test((raw && (raw.espnName || raw.title || raw.shortTitle || raw.name)) || "");
+        const hasResults = (raw) => !!(raw && (raw.bouts || []).some((b) => b.winnerFighterSlug || (b.fighters || []).some((f) => String(f.outcome || "").toLowerCase() === "win")));
+        const featuredTime = currentCard && currentCard.prelimsAt ? Date.parse(currentCard.prelimsAt) : (currentCard && currentCard.date ? Date.parse(currentCard.date) : NaN);
+        const carouselRaws = upcomingEvents
+          .filter(hasBouts)
+          .filter((raw) => !isRoadToUFCRaw(raw))
+          .filter((raw) => !currentCard || raw.slug !== currentCard.slug)
+          .filter((raw) => !currentCard || !isFinite(featuredTime) || Date.parse(raw.startsAt || 0) > featuredTime)
+          .slice(0, 12);
+        const carousel = carouselRaws.map((raw) => {
+          const c = eventToCard(raw, fighterLiteBySlug, false, oddsData);
+          return Object.assign({}, c, {
+            fights: (c.fights || []).map((f) => Object.assign({}, f, {
+              s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
+              s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
+            })),
+          });
+        });
+
+        // Past-events list — same filters as matchupPage's own pastOptions
+        // dropdown (has bouts, has an actual decided result, not Road to
+        // UFC), capped the same at 24, instead of every past event ever
+        // recorded.
+        const pastFiltered = pastEvents
+          .filter(hasBouts).filter(hasResults).filter((raw) => !isRoadToUFCRaw(raw))
+          .slice(0, 24);
+
         const liteEvent = (e) => ({
           slug: e.slug || e.id || "",
           event: e.espnName || e.title || e.shortTitle || "UFC Event",
@@ -2821,8 +2867,8 @@ export default {
           isPast: isPastView,
           deepDive,
           breakdown,
-          upcoming: upcomingEvents.map(liteEvent),
-          past: pastEvents.map(liteEvent),
+          carousel,
+          past: pastFiltered.map(liteEvent),
         }, 200, cors);
       }
 
@@ -3060,8 +3106,12 @@ export default {
       // Fighter search for /matchup's search bar — server-filtered so the client
       // never has to download fighter-lite.json's 3,100+ entries just to type a name.
       if (path === "/api/fighter-search" && request.method === "GET") {
+        // CORS-enabled (not just same-origin from the website's own /matchup
+        // search bar) so the app's Matchup screen can reuse this exact
+        // endpoint instead of a second, drifting copy of the same lookup.
+        const cors = appCorsHeaders(request);
         const q = (url.searchParams.get("q") || "").trim().toLowerCase();
-        if (q.length < 2) return json({ results: [] });
+        if (q.length < 2) return json({ results: [] }, 200, cors);
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
         const bySlug = (lite && lite.bySlug) || {};
         const results = [];
@@ -3072,7 +3122,7 @@ export default {
             if (results.length >= 12) break;
           }
         }
-        return json({ results });
+        return json({ results }, 200, cors);
       }
       // Lite fighter profiles (unlinked from the funnel; discoverable via sitemap).
       if (path.startsWith("/fighter/")) {

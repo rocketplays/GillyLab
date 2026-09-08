@@ -1,20 +1,30 @@
-// Matchup hub -- free on the website at /matchup, no account needed. Pulls
-// GET /api/app/matchup (worker/index.js), which mirrors the website page's
-// own data pipeline (currentLanding/eventToCard/live-result merge/odds
-// backfill) but hands back JSON instead of server-rendered HTML: the
-// featured card (or whichever upcoming/past event was picked), a free tale
-// of the tape on every bout, the full pre-fight breakdown when it's actually
-// precomputed for the site's own current main event, and whether the free
-// "Analytics Deep Dive" is available for it.
+// Matchup hub -- free on the website at /matchup, no account needed. Built to
+// mirror the real page's UX, not just its data: a fighter search bar at top
+// (debounced against /api/fighter-search, same endpoint the website's own
+// search bar calls), a single dropdown to jump to a past event's results
+// (matching the site's native <select>, not a row of toggle buttons), the
+// featured card with a free tale of the tape on every bout, and a swipeable
+// carousel of FULL upcoming fight cards below it -- not name-only chips that
+// have to be tapped and re-fetched one at a time. Tapping any fighter is a
+// full navigation to the 'fighter' route (GL_ROUTER.go), same as the website
+// fully replacing the page for a profile instead of layering a panel on top
+// of whatever you were looking at.
+//
+// GET /api/app/matchup (worker/index.js) mirrors the website page's own data
+// pipeline (currentLanding/eventToCard/live-result merge/odds backfill) but
+// hands back JSON: the featured card (or whichever past event was picked),
+// the same full-card carousel matchupPage itself builds for upcoming events,
+// the full pre-fight breakdown when it's actually precomputed for the site's
+// current main event, and whether the free "Analytics Deep Dive" is
+// available for it.
 //
 // The deep dive itself is NOT reimplemented natively -- it's raw HTML/CSS
 // gen-matchup-free.cjs pre-renders from the live site's own build (see
 // worker/matchup-free.js), meant to be dropped into a page that already
-// carries its supporting styles/scripts. Rendering that blob's markup here
-// with no idea what selectors it depends on is how you get a broken-looking
-// "free" feature. Opening the real page in the system browser (same
-// external link-out pattern already used for Premium/subscribe) shows the
-// exact same free content with zero risk of it rendering wrong.
+// carries its supporting styles/scripts. Opening the real page in the
+// system browser (same external link-out pattern already used for
+// Premium/subscribe) shows the exact same free content with zero risk of
+// it rendering wrong.
 window.GL_ROUTER.register('matchup', {
   title: 'Matchup',
   tab: 'matchup',
@@ -27,14 +37,14 @@ function mountMatchup(container){
   container.innerHTML = '<p class="gl-muted">Loading the card…</p>';
 
   var data = null;       // last successful /api/app/matchup response
-  var showingPast = false;
+  var searchSeq = 0;     // ignore a stale search response that resolves late
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
-  function fmtDate(iso){
+  function fmtDate(iso, opts){
     if (!iso) return '';
     var d = new Date(iso);
     if (isNaN(d.getTime())) return String(iso);
-    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    return d.toLocaleDateString(undefined, opts || { month: 'short', day: 'numeric', year: 'numeric' });
   }
   function fmtOdds(v){ return (v == null || v === '') ? '—' : String(v); }
   function surname(n){
@@ -147,11 +157,14 @@ function mountMatchup(container){
     return '<div class="mf-result"><span class="mf-res-tag">Result</span><strong>' + esc(res.winner) + '</strong> def. ' + esc(loser) + (meth ? ' <span class="mf-res-meth">' + meth + '</span>' : '') + '</div>';
   }
 
+  // Same renderer for the featured card AND every carousel slide -- a slide's
+  // own "main event" only ever gets the free tale of the tape + locked
+  // teaser (its `t`/`deepDive` are always null here, exactly like
+  // matchupPage's own `(f.main && ownerCard.main)` gate: the full breakdown
+  // and Analytics Deep Dive are precomputed for the site's current card
+  // only, never for a carousel pick).
   function fightHTML(f, isMain, deepDive, breakdown){
     var res = f.result || null;
-    var oddsOrRes = res
-      ? '<div class="mf-meth">' + esc(res.winner === f.f1 ? 'WIN' : (res.winner ? 'LOSS' : '')) + '</div>'
-      : '<div class="mf-odds"><b>' + esc(fmtOdds(f.o1)) + '</b> · <b>' + esc(fmtOdds(f.o2)) + '</b></div>';
     var panelBody = res
       ? resultHTML(f, res)
       : (tapeHTML(f.tape) + (isMain ? breakdownHTML(f, breakdown, deepDive) : lockedTeaserHTML()));
@@ -159,7 +172,7 @@ function mountMatchup(container){
       '<div class="mf-card' + (isMain ? ' main' : '') + '">' +
         '<div class="mf-row">' +
           '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + '</div><div class="mf-rec">' + esc(f.rec1 || '') + '</div></div></div>' +
-          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div><button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
+          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + (res ? '' : '<div class="mf-odds"><b>' + esc(fmtOdds(f.o1)) + '</b> · <b>' + esc(fmtOdds(f.o2)) + '</b></div>') + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
           '<div class="mf-side right"><div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + esc(f.rec2 || '') + '</div></div>' + avatar(f.s2, f.f2) + '</div>' +
         '</div>' +
         '<div class="mf-panel" hidden>' + panelBody + '</div>' +
@@ -167,38 +180,87 @@ function mountMatchup(container){
     );
   }
 
-  function eventChip(e, isActive){
-    return '<button type="button" class="mf-chip' + (isActive ? ' active' : '') + '" data-slug="' + esc(e.slug) + '">' + esc(e.event) + '<span class="mf-chip-d">' + esc(fmtDate(e.date)) + '</span></button>';
-  }
-
-  function bodyHTML(){
-    var card = data.card;
-    if (!card || !card.fights || !card.fights.length) return '<p class="gl-muted">No card posted yet — check back on fight week.</p>';
+  function cardBodyHTML(c, deepDive, breakdown){
+    if (!c || !c.fights || !c.fights.length) return '<p class="gl-muted">No card posted yet — check back on fight week.</p>';
     var secOrder = ['Main Card', 'Prelims', 'Early Prelims', 'Preliminary Card'];
     var bySec = {};
-    card.fights.forEach(function(f){ var s = f.section || 'Main Card'; (bySec[s] = bySec[s] || []).push(f); });
+    c.fights.forEach(function(f){ var s = f.section || 'Main Card'; (bySec[s] = bySec[s] || []).push(f); });
     return Object.keys(bySec).sort(function(a, b){ return (secOrder.indexOf(a) + 1 || 99) - (secOrder.indexOf(b) + 1 || 99); }).map(function(s){
-      return '<div class="mf-sechdr">' + esc(s) + '</div>' + bySec[s].map(function(f){ return fightHTML(f, !!f.main, data.deepDive, data.breakdown); }).join('');
+      return '<div class="mf-sechdr">' + esc(s) + '</div>' + bySec[s].map(function(f){ return fightHTML(f, !!f.main, deepDive, breakdown); }).join('');
     }).join('');
+  }
+
+  function pastSelectHTML(){
+    var past = data.past || [];
+    if (!past.length) return '';
+    var upcomingLabel = data.isPast ? '← Back to this week’s card' : 'Upcoming — ' + (data.card ? data.card.event : 'Next Card');
+    var options = '<option value="">' + esc(upcomingLabel) + '</option>' + past.map(function(e){
+      var label = [e.event, fmtDate(e.date, { month: 'short', day: 'numeric', year: 'numeric' })].filter(Boolean).join(' — ');
+      return '<option value="' + esc(e.slug) + '"' + (data.isPast && data.card && data.card.slug === e.slug ? ' selected' : '') + '>' + esc(label) + '</option>';
+    }).join('');
+    return (
+      '<div class="mf-past-top">' +
+        '<label for="mfPastSelect" class="mf-past-label">View past event</label>' +
+        '<select id="mfPastSelect" class="mf-past-select">' + options + '</select>' +
+      '</div>'
+    );
+  }
+
+  function searchHTML(){
+    return (
+      '<div class="mf-search">' +
+        '<input type="search" id="mfSearchInput" class="mf-search-input" placeholder="Search any fighter for their lite profile…" autocomplete="off">' +
+        '<div id="mfSearchResults" class="mf-search-results" hidden></div>' +
+      '</div>'
+    );
+  }
+
+  function carouselHTML(){
+    var events = data.carousel || [];
+    if (!events.length) return '';
+    var dots = events.length > 1
+      ? '<div class="mf-car-dots" id="mfCarDots">' + events.map(function(_, i){ return '<button type="button" class="mf-car-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '"></button>'; }).join('') + '</div>'
+      : '';
+    var slides = events.map(function(c){
+      var when = fmtDate(c.prelimsAt || c.date, { month: 'short', day: 'numeric' });
+      return (
+        '<div class="mf-ev-slide" data-slug="' + esc(c.slug) + '">' +
+          '<div class="mf-ev-slide-hdr">' +
+            '<div class="mf-ev-slide-name">' + esc(c.event) + '</div>' +
+            '<div class="mf-ev-slide-sub">' + esc([when, c.location || c.city].filter(Boolean).join(' · ')) + '</div>' +
+          '</div>' +
+          cardBodyHTML(c, { available: false }, null) +
+        '</div>'
+      );
+    }).join('');
+    return (
+      '<div class="mf-car-hdr">' +
+        '<div class="mf-car-hdr-label">Upcoming Events</div>' +
+        '<div class="mf-car-hdr-line"></div>' +
+        '<div class="mf-car-hdr-btns">' +
+          '<button type="button" class="mf-car-btn" id="mfCarPrev" aria-label="Previous event">‹</button>' +
+          '<button type="button" class="mf-car-btn" id="mfCarNext" aria-label="Next event">›</button>' +
+        '</div>' +
+      '</div>' +
+      dots +
+      '<div class="mf-carousel-full" id="mfCarouselFull">' + slides + '</div>'
+    );
   }
 
   function render(){
     var card = data.card;
-    var chips = (showingPast ? data.past : data.upcoming) || [];
     container.innerHTML =
+      searchHTML() +
+      pastSelectHTML() +
       '<div class="gl-card" style="margin-bottom:.7rem">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">' +
           '<h2 class="gl-heading" style="margin:0;font-size:1.15rem">' + (card ? esc(card.event) : 'No card yet') + '</h2>' +
           '<button type="button" class="gl-btn gl-btn-outline" id="mfRosterBtn" style="width:auto;padding:.5rem .8rem;font-size:.72rem">Roster</button>' +
         '</div>' +
-        (card ? '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(fmtDate(card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</p>' : '') +
+        (card ? '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(fmtDate(card.prelimsAt || card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</p>' : '') +
       '</div>' +
-      '<div class="mf-chiprow-head">' +
-        '<button type="button" class="gl-btn gl-btn-outline mf-pastbtn' + (!showingPast ? ' active' : '') + '" data-past="0">Upcoming</button>' +
-        '<button type="button" class="gl-btn gl-btn-outline mf-pastbtn' + (showingPast ? ' active' : '') + '" data-past="1">Past events</button>' +
-      '</div>' +
-      (chips.length ? '<div class="mf-chiprow">' + chips.map(function(e){ return eventChip(e, card && e.slug === card.slug); }).join('') + '</div>' : '') +
-      '<div id="mfBody">' + bodyHTML() + '</div>';
+      '<div id="mfBody">' + cardBodyHTML(card, data.deepDive, data.breakdown) + '</div>' +
+      carouselHTML();
     wire();
   }
 
@@ -206,19 +268,10 @@ function mountMatchup(container){
     var rosterBtn = container.querySelector('#mfRosterBtn');
     if (rosterBtn) rosterBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('roster'); });
 
-    container.querySelectorAll('.mf-pastbtn').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
-        showingPast = btn.getAttribute('data-past') === '1';
-        render();
-      });
-    });
-
-    container.querySelectorAll('.mf-chip').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
-        load(btn.getAttribute('data-slug'));
-      });
+    var pastSelect = container.querySelector('#mfPastSelect');
+    if (pastSelect) pastSelect.addEventListener('change', function(){
+      window.GL_NATIVE.tap();
+      load(pastSelect.value || undefined);
     });
 
     container.querySelectorAll('[data-toggle]').forEach(function(btn){
@@ -227,7 +280,7 @@ function mountMatchup(container){
         var card = btn.closest('.mf-card');
         var panel = card.querySelector('.mf-panel');
         panel.hidden = !panel.hidden;
-        btn.textContent = (panel.hidden ? 'Fight Info' : 'Hide Info') + ' ⌄';
+        btn.textContent = 'Fight Info ' + (panel.hidden ? '⌄' : '⌃');
       });
     });
 
@@ -235,10 +288,10 @@ function mountMatchup(container){
       btn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
     });
 
-    container.querySelectorAll('[data-slug].mf-namebtn').forEach(function(btn){
+    container.querySelectorAll('.mf-namebtn[data-slug]').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
-        openFighter(btn.getAttribute('data-slug'));
+        window.GL_ROUTER.go('fighter', { slug: btn.getAttribute('data-slug') });
       });
     });
 
@@ -249,29 +302,88 @@ function mountMatchup(container){
         window.GL_NATIVE.openExternal(window.GL_API.BASE + '/matchup' + (slug ? '?event=' + encodeURIComponent(slug) : ''));
       });
     });
+
+    wireSearch();
+    wireCarousel();
   }
 
-  function openFighter(slug){
-    var body = container.querySelector('#mfBody');
-    var chiprow = container.querySelector('.mf-chiprow');
-    var chiphead = container.querySelector('.mf-chiprow-head');
-    var existing = container.querySelector('#mfFighterPanel');
-    if (existing) existing.remove();
-    if (body) body.hidden = true;
-    if (chiprow) chiprow.hidden = true;
-    if (chiphead) chiphead.hidden = true;
-    var panel = document.createElement('div');
-    panel.id = 'mfFighterPanel';
-    panel.innerHTML = '<button type="button" class="gl-btn gl-btn-outline" id="mfFighterBack" style="margin-bottom:.8rem">← Back to card</button><div id="mfFighterHost"></div>';
-    container.appendChild(panel);
-    panel.querySelector('#mfFighterBack').addEventListener('click', function(){
-      window.GL_NATIVE.tap();
-      panel.remove();
-      if (body) body.hidden = false;
-      if (chiprow) chiprow.hidden = false;
-      if (chiphead) chiphead.hidden = false;
+  function wireSearch(){
+    var input = container.querySelector('#mfSearchInput');
+    var box = container.querySelector('#mfSearchResults');
+    if (!input || !box) return;
+    var timer = null;
+
+    function hide(){ box.hidden = true; box.innerHTML = ''; }
+    function show(html){ box.innerHTML = html; box.hidden = false; }
+
+    input.addEventListener('input', function(){
+      var q = input.value.trim();
+      if (timer) clearTimeout(timer);
+      if (q.length < 2){ hide(); return; }
+      timer = setTimeout(function(){
+        var mySeq = ++searchSeq;
+        window.GL_API.fighterSearch(q).then(function(res){
+          if (mySeq !== searchSeq) return; // a newer keystroke's request already won
+          var list = res.results || [];
+          if (!list.length){ show('<div class="mf-search-empty">No fighters found</div>'); return; }
+          show(list.map(function(f){
+            return '<button type="button" class="mf-search-item" data-slug="' + esc(f.slug) + '">' +
+              '<span class="mfs-name">' + esc(f.name) + '</span>' +
+              '<span class="mfs-meta">' + esc([f.division, f.record].filter(Boolean).join(' · ')) + '</span>' +
+            '</button>';
+          }).join(''));
+          box.querySelectorAll('[data-slug]').forEach(function(btn){
+            btn.addEventListener('click', function(){
+              window.GL_NATIVE.tap();
+              hide();
+              input.value = '';
+              window.GL_ROUTER.go('fighter', { slug: btn.getAttribute('data-slug') });
+            });
+          });
+        }).catch(function(){ hide(); });
+      }, 200);
     });
-    window.GL_FIGHTER.load(panel.querySelector('#mfFighterHost'), slug);
+    input.addEventListener('focus', function(){ if (input.value.trim().length >= 2 && box.innerHTML) box.hidden = false; });
+    document.addEventListener('click', function(e){ if (e.target !== input && !box.contains(e.target)) hide(); });
+  }
+
+  // Prev/next + dots, one slide (clientWidth) at a time, wrapping at either
+  // end -- same as matchupPage's own carousel controller. Touch/trackpad
+  // swipe already works via CSS scroll-snap; these are the tap affordance
+  // and the position indicator.
+  function wireCarousel(){
+    var track = container.querySelector('#mfCarouselFull');
+    var prev = container.querySelector('#mfCarPrev');
+    var next = container.querySelector('#mfCarNext');
+    var dotsWrap = container.querySelector('#mfCarDots');
+    if (!track || !prev || !next) return;
+    var dots = dotsWrap ? Array.prototype.slice.call(dotsWrap.querySelectorAll('.mf-car-dot')) : [];
+    var slideCount = track.children.length;
+    var curIdx = 0, scrolling = false, fallbackTimer = null;
+
+    function clamp(i){ if (!slideCount) return 0; return ((i % slideCount) + slideCount) % slideCount; }
+    function updateDots(){ dots.forEach(function(d, i){ d.classList.toggle('active', i === curIdx); }); }
+    function goTo(i, smooth){
+      curIdx = clamp(i);
+      scrolling = true;
+      track.scrollTo({ left: curIdx * track.clientWidth, behavior: smooth === false ? 'auto' : 'smooth' });
+      updateDots();
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      fallbackTimer = setTimeout(function(){ scrolling = false; }, 600);
+    }
+    prev.addEventListener('click', function(){ window.GL_NATIVE.tap(); if (!scrolling && slideCount > 1) goTo(curIdx - 1); });
+    next.addEventListener('click', function(){ window.GL_NATIVE.tap(); if (!scrolling && slideCount > 1) goTo(curIdx + 1); });
+    dots.forEach(function(d){ d.addEventListener('click', function(){ window.GL_NATIVE.tap(); if (!scrolling) goTo(parseInt(d.getAttribute('data-i'), 10) || 0); }); });
+
+    var scrollTimer = null;
+    track.addEventListener('scroll', function(){
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function(){
+        scrolling = false;
+        curIdx = clamp(Math.round(track.scrollLeft / Math.max(1, track.clientWidth)));
+        updateDots();
+      }, 120);
+    });
   }
 
   function load(eventSlug){

@@ -257,6 +257,56 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 .mf-dd-go{ font-size:1.1rem; }
 
+/* ---- Matchup: fighter search bar ---- */
+.mf-search{ position:relative; margin-bottom:.8rem; }
+.mf-search-input{
+  width:100%; background:var(--card); border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-family:inherit; font-size:16px; padding:.75rem .9rem; box-sizing:border-box;
+}
+.mf-search-input:focus{ outline:none; border-color:var(--accent); }
+.mf-search-results{
+  position:absolute; left:0; right:0; top:calc(100% + 6px); background:var(--card); border:1px solid var(--border);
+  border-radius:10px; max-height:280px; overflow-y:auto; z-index:20; box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.mf-search-item{
+  display:flex; align-items:center; justify-content:space-between; gap:.6rem; width:100%; text-align:left;
+  background:none; border:none; border-bottom:1px solid var(--border); color:var(--text);
+  font:inherit; padding:.6rem .9rem; cursor:pointer;
+}
+.mf-search-item:last-child{ border-bottom:none; }
+.mf-search-item:active{ background:var(--surface2); }
+.mfs-name{ font-weight:700; font-size:.85rem; }
+.mfs-meta{ color:var(--muted); font-size:.72rem; white-space:nowrap; }
+.mf-search-empty{ padding:.7rem .9rem; color:var(--muted); font-size:.82rem; }
+
+/* ---- Matchup: past-event dropdown (native <select>, mirrors the website) ---- */
+.mf-past-top{ margin-bottom:.8rem; }
+.mf-past-label{ display:block; font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:700; margin-bottom:.3rem; }
+.mf-past-select{
+  width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  border-radius:8px; padding:.65rem .8rem; font:inherit; font-size:.88rem;
+}
+
+/* ---- Matchup: upcoming-events carousel (full fight cards, one per slide) ---- */
+.mf-car-hdr{ display:flex; align-items:center; gap:.7rem; margin:1.4rem 0 .6rem; }
+.mf-car-hdr-label{ font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); white-space:nowrap; }
+.mf-car-hdr-line{ flex:1; height:1px; background:var(--border); }
+.mf-car-hdr-btns{ display:flex; gap:.4rem; }
+.mf-car-btn{
+  width:1.7rem; height:1.7rem; border-radius:50%; background:var(--surface2); border:1px solid var(--border);
+  color:var(--text); font-size:1rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.mf-car-btn:active{ border-color:var(--accent); color:var(--accent); }
+.mf-car-dots{ display:flex; justify-content:center; gap:.35rem; margin-bottom:.7rem; }
+.mf-car-dot{ width:6px; height:6px; border-radius:50%; background:var(--border); border:none; padding:0; }
+.mf-car-dot.active{ background:var(--accent); width:16px; border-radius:3px; }
+.mf-carousel-full{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; margin:0 -1.1rem; }
+.mf-carousel-full::-webkit-scrollbar{ display:none; }
+.mf-ev-slide{ min-width:100%; flex-shrink:0; scroll-snap-align:start; padding:0 1.1rem; box-sizing:border-box; }
+.mf-ev-slide-hdr{ margin-bottom:.7rem; }
+.mf-ev-slide-name{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.05rem; text-transform:uppercase; letter-spacing:.01em; }
+.mf-ev-slide-sub{ color:var(--muted); font-size:.78rem; margin-top:.1rem; }
+
 /* ---- shared "common" sub-blocks (tale of the tape / breakdown), used by
    both matchup.js and (via similar naming) the fighter panel ---- */
 .sr-common{ margin-bottom:.9rem; }

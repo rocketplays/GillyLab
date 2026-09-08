@@ -1,15 +1,25 @@
-// Shared fighter-lite profile renderer -- used as an in-place "panel" by both
-// roster.js and matchup.js (same showPanel-over-the-list pattern pickem.js
-// uses for its Leaderboard/History views), not a separate router route. A
-// fighter can be reached from either screen, and neither one needs its own
-// concept of "which screen sent me here" if the panel just renders into
-// whichever container the caller hands it and lets the caller own its own
-// back button.
+// Fighter lite profile -- a real full-screen route (registered below), not a
+// panel layered over whatever screen sent you here. That mirrors the
+// website exactly: clicking a fighter on /roster, /matchup or /rankings is a
+// full page navigation to /fighter/<slug> with its own back button, not an
+// accordion that leaves the previous page's header/list still sitting there
+// underneath. Roster/Matchup/Rankings all just do
+// `window.GL_ROUTER.go('fighter', { slug: slug })` and the router's own
+// back-stack (see router.js's `previous`/`back()`) returns to whichever one
+// of them sent you here.
 //
 // Data comes from GET /api/app/fighter?slug=... (worker/index.js), which is
 // the exact same data/fighter-lite.json entry the website's own /fighter/
 // <slug> page renders -- same bio, same division-relative stat bars, same
 // "the rest is Premium" locked grid.
+window.GL_ROUTER.register('fighter', {
+  title: 'Fighter',
+  showBack: true,
+  render: function(container, params){
+    window.GL_FIGHTER.load(container, params && params.slug);
+  }
+});
+
 window.GL_FIGHTER = (function(){
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
   function initials(name){
@@ -109,6 +119,11 @@ window.GL_FIGHTER = (function(){
     container.innerHTML = '<p class="gl-muted">Loading fighter…</p>';
     window.GL_API.fighter(slug).then(function(res){
       container.innerHTML = renderHTML(res.fighter);
+      // Same touch as the website's per-fighter <title> -- the top bar names
+      // the actual fighter once loaded instead of sitting on the generic
+      // "Fighter" placeholder the whole time.
+      var titleEl = document.getElementById('topbarTitle');
+      if (titleEl && res.fighter && res.fighter.name) titleEl.textContent = res.fighter.name;
       var goPrem = container.querySelector('[data-goto="premium"]');
       if (goPrem) goPrem.addEventListener('click', function(){
         window.GL_NATIVE.tap();

@@ -56,6 +56,7 @@ window.GL_API = (function(){
     roster: function(){ return request('/api/app/roster'); },
     matchup: function(eventSlug){ return request('/api/app/matchup' + (eventSlug ? '?event=' + encodeURIComponent(eventSlug) : '')); },
     fighter: function(slug){ return request('/api/app/fighter?slug=' + encodeURIComponent(slug)); },
+    fighterSearch: function(q){ return request('/api/fighter-search?q=' + encodeURIComponent(q)); },
     request: request,
     BASE: BASE,
   };
