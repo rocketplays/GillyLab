@@ -2548,6 +2548,7 @@ export default {
       if (path === "/api/magic/start" && request.method === "POST") return handleMagicStart(request, env);
       if (path === "/api/magic/verify") return handleMagicVerify(request, env, url);
       if (path === "/api/change-password" && request.method === "POST") return handleChangePassword(request, env);
+      if (path === "/api/delete-account" && request.method === "POST") return handleDeleteAccount(request, env);
       if (path === "/api/reset/start" && request.method === "POST") return handleResetStart(request, env);
       if (path === "/api/reset/complete" && request.method === "POST") return handleResetComplete(request, env);
       if (path === "/api/contact" && request.method === "POST") return handleContact(request, env);
@@ -2951,6 +2952,22 @@ export default {
         const fighter = lite && lite.bySlug && lite.bySlug[slug];
         if (!fighter) return json({ error: "not found" }, 404, cors);
         return json({ fighter }, 200, cors);
+      }
+      // Account screen: signed-in email, subscription status and member-since
+      // date -- none of which the app currently has (GL_AUTH only tracks
+      // email + a bearer token, and the token's own `sub` claim is a
+      // point-in-time snapshot from whenever it was last issued, not
+      // something to trust for display). Session required.
+      if (path === "/api/app/account" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Not signed in" }, 401, cors);
+        const u = await getUser(env, s.email);
+        return json({
+          email: s.email,
+          subscribed: !!(u && u.subscribed),
+          memberSince: (u && u.createdAt) || null,
+        }, 200, cors);
       }
       // The exact CSS/markup/script the website's own /subscribe page drops
       // in for its feature-tile carousel (mockup graphics, colors, the
@@ -3706,17 +3723,48 @@ async function handlePortal(request, env) {
 }
 
 // Change password for a logged-in user — requires the current password.
+// cors is threaded through every response (not just success) since this is
+// now also called cross-origin from the app (see api.js's changePassword) --
+// previously fine when it only ran same-origin from the website's own JS.
 async function handleChangePassword(request, env) {
+  const cors = appCorsHeaders(request);
   const s = await readSession(request, env);
-  if (!s) return json({ error: "Please log in again." }, 401);
+  if (!s) return json({ error: "Please log in again." }, 401, cors);
   const { current, password } = await readBody(request);
-  if (!password || password.length < 8) return json({ error: "New password must be at least 8 characters." }, 400);
+  if (!password || password.length < 8) return json({ error: "New password must be at least 8 characters." }, 400, cors);
   const u = await getUser(env, s.email);
-  if (!u || !(await verifyPassword(current, u.passHash, u.passSalt))) return json({ error: "Your current password is incorrect." }, 401);
+  if (!u || !(await verifyPassword(current, u.passHash, u.passSalt))) return json({ error: "Your current password is incorrect." }, 401, cors);
   const { passHash, passSalt } = await hashPassword(password);
   u.passHash = passHash; u.passSalt = passSalt;
   await putUser(env, s.email, u);
-  return json({ ok: true });
+  return json({ ok: true }, 200, cors);
+}
+
+// Permanently delete a logged-in user's account. Cancels any active Stripe
+// subscription FIRST (a subscription that keeps billing an account this
+// endpoint just erased is an unrecoverable mess -- if Stripe fails, the
+// account is left alone and the caller can retry rather than silently
+// eating the failure), then removes the KV user record and its
+// customer-id -> email mapping, and clears the session cookie so the app
+// can't keep sending a token for an account that no longer exists.
+async function handleDeleteAccount(request, env) {
+  const cors = appCorsHeaders(request);
+  const s = await readSession(request, env);
+  if (!s) return json({ error: "Please log in again." }, 401, cors);
+  const e = normEmail(s.email);
+  const u = await getUser(env, e);
+  if (!u) return json({ error: "Account not found." }, 404, cors);
+  if (u.stripeCustomerId) {
+    try {
+      const found = await stripe(env, "subscriptions?customer=" + encodeURIComponent(u.stripeCustomerId) + "&status=active&limit=10", "GET");
+      for (const sub of (found.data || [])) await stripe(env, "subscriptions/" + sub.id, "DELETE");
+    } catch (err) {
+      return json({ error: "Couldn't cancel your subscription just now — please try again in a moment, or cancel it from Manage Subscription first." }, 502, cors);
+    }
+  }
+  await env.USERS.delete("u:" + e);
+  if (u.stripeCustomerId) await env.USERS.delete("cust:" + u.stripeCustomerId);
+  return json({ ok: true }, 200, { "Set-Cookie": clearCookie(), ...cors });
 }
 
 // Forgot password — email a reset link (mirrors magic-link, distinct "r:" token).

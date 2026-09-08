@@ -167,6 +167,51 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   display:flex; flex-direction:column; align-items:center; text-align:center; gap:.8rem;
   padding:2.5rem 1rem; color:var(--muted);
 }
+
+/* ---- Account screen ---- */
+.acct-badge{
+  flex-shrink:0; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--surface2);
+  border:1px solid var(--border); border-radius:999px; padding:.3rem .7rem;
+}
+.acct-badge--premium{ color:var(--on-accent); background:var(--accent); border-color:var(--accent); }
+.acct-stat{
+  display:flex; align-items:baseline; justify-content:space-between; gap:.6rem;
+  padding:.55rem 0; border-top:1px solid var(--border);
+}
+.acct-stat:first-of-type{ border-top:none; }
+.acct-stat-label{ font-weight:700; font-size:.85rem; }
+.acct-stat-value{ font-size:.85rem; color:var(--text); text-align:right; }
+.acct-stat-sub{ display:block; font-size:.72rem; color:var(--muted); margin-top:.1rem; }
+/* Go Premium / Manage Subscription -- deliberately its own bold, boxed
+   block rather than folded into the signed-in card or the settings list,
+   per feedback that it needs to actually stand out, not read as one more
+   row among several. The upsell variant leans on the accent color hard
+   (gradient + accent border) specifically so it reads as the one thing on
+   this screen worth tapping if you're free; the already-subscribed variant
+   is calmer (plain card + a green "Premium Active" pill) since there's
+   nothing left to sell, just billing to manage. */
+.acct-premium-box{
+  border-radius:14px; padding:1.1rem 1.2rem; margin:1.1rem 0; text-align:left;
+  background:var(--card); border:1px solid var(--border);
+}
+.acct-premium-box--upsell{
+  background:linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, var(--card)), var(--card));
+  border:1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+.acct-premium-box h3{ color:var(--accent); font-size:1.05rem; }
+.acct-premium-box p{ color:var(--muted); font-size:.85rem; line-height:1.5; }
+.acct-premium-badge{
+  display:inline-block; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.68rem;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--on-accent); background:var(--accent);
+  border-radius:999px; padding:.25rem .6rem; margin-bottom:.2rem;
+}
+/* Danger zone: a red-tinted border sets it apart from the rest of the
+   settings list at a glance, same intent as the top-level color-coding
+   used elsewhere in the app (e.g. the Card page's numbered/DWCS events). */
+.acct-danger{ border:1px solid color-mix(in srgb, var(--bad) 30%, var(--border)); border-radius:12px; padding:1rem 1.1rem; margin-top:1.4rem; }
+.acct-danger-btn{ background:color-mix(in srgb, var(--bad) 12%, transparent); color:var(--bad); border:1px solid color-mix(in srgb, var(--bad) 45%, transparent); }
+.acct-danger-btn:active{ background:color-mix(in srgb, var(--bad) 20%, transparent); }
 .gl-locked svg{ width:40px; height:40px; opacity:.6; }
 
 /* ---- Home: free-flowing dashboard sections (this week's card, movers,

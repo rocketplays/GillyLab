@@ -50,6 +50,7 @@ window.GL_API = (function(){
     pickemSave: function(payload){ return request('/api/pickem/save', { method:'POST', body:payload }); },
     pickemLeaderboard: function(scope){ return request('/api/pickem/leaderboard?scope=' + encodeURIComponent(scope || 'all')); },
     pickemHistory: function(eventSlug){ return request('/api/pickem/history' + (eventSlug ? '?event=' + encodeURIComponent(eventSlug) : '')); },
+    pickemPlayer: function(name){ return request('/api/pickem/player?name=' + encodeURIComponent(name)); },
     // Roster / Matchup / Fighter profile -- free pages on the website, no
     // session required. See worker/index.js's /api/app/roster, /api/app/matchup,
     // /api/app/fighter.
@@ -61,6 +62,11 @@ window.GL_API = (function(){
     // already premium-only), reused as-is for Go Premium -- see
     // worker/index.js's /api/app/premium-features and premium.js.
     premiumFeatures: function(){ return request('/api/app/premium-features'); },
+    // Account screen -- see worker/index.js's /api/app/account,
+    // /api/change-password, /api/delete-account.
+    account: function(){ return request('/api/app/account'); },
+    changePassword: function(current, password){ return request('/api/change-password', { method:'POST', body:{ current:current, password:password } }); },
+    deleteAccount: function(){ return request('/api/delete-account', { method:'POST' }); },
     request: request,
     BASE: BASE,
   };
