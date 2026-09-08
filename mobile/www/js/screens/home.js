@@ -52,15 +52,61 @@ window.GL_ROUTER.register('home', {
       );
     }
 
-    function matchupTeaserSection(card){
-      if (!card) return '';
-      var main = (card.fights || [])[0];
+    // The top of Home -- a side-by-side main-event teaser (both fighters'
+    // photos, tap "View Full Card" for the real Card/Matchup screen), same
+    // spot the premium in-app home page gives its own featured event.
+    function mainEventSection(card){
+      var main = card && (card.fights || [])[0];
+      var head = '<div class="gl-dash-head"><span class="gl-label" style="margin:0">This Week’s Main Event</span></div>';
+      if (!card || !main){
+        return (
+          '<div class="gl-card gl-dash-card">' + head +
+            '<p class="gl-muted" style="margin:.4rem 0 0">No card posted yet — check back on fight week.</p>' +
+          '</div>'
+        );
+      }
+      var av = function(slug, name){
+        var ini = window.GL_FIGHTER.initials(name);
+        return (
+          '<div class="he-av">' +
+            '<span class="he-av-initials">' + esc(ini) + '</span>' +
+            (slug ? '<img class="he-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(slug) + '.png" alt="" onerror="this.style.display=\'none\'">' : '') +
+          '</div>'
+        );
+      };
       return (
         '<div class="gl-card gl-dash-card">' +
-          '<div class="gl-dash-head"><span class="gl-label" style="margin:0">Full card &amp; tale of the tape</span></div>' +
-          (main ? '<p style="margin:.4rem 0 0"><strong>' + esc(main.f1) + '</strong> vs <strong>' + esc(main.f2) + '</strong> headlines ' + esc(card.event) + '.</p>'
-                : '<p class="gl-muted" style="margin:.4rem 0 0">' + esc(card.event) + '</p>') +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">See the full matchup breakdown</button>' +
+          head +
+          '<div class="he-row">' +
+            '<div class="he-side">' + av(main.s1, main.f1) + '<div class="he-name">' + esc(main.f1) + '</div></div>' +
+            '<div class="he-vs">VS</div>' +
+            '<div class="he-side">' + av(main.s2, main.f2) + '<div class="he-name">' + esc(main.f2) + '</div></div>' +
+          '</div>' +
+          '<p class="gl-muted" style="margin:.6rem 0 0;text-align:center">' + esc(card.event) + '</p>' +
+          '<button type="button" class="gl-btn gl-btn-primary" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
+        '</div>'
+      );
+    }
+
+    function rosterSection(rosterData){
+      var fighters = (rosterData && rosterData.fighters) || [];
+      var weeks = (rosterData && rosterData.changes) || [];
+      var w = weeks[0];
+      var body;
+      if (!fighters.length){
+        body = '<p class="gl-muted" style="margin:.4rem 0 0">Roster unavailable right now.</p>';
+      } else {
+        body = '<p style="margin:.4rem 0 0">' + fighters.length + ' fighters on the active roster</p>';
+        if (w && ((w.added && w.added.length) || (w.removed && w.removed.length))){
+          body += '<p class="gl-muted" style="margin:.2rem 0 0;font-size:.82rem">' +
+            (w.added ? w.added.length : 0) + ' added &nbsp;·&nbsp; ' + (w.removed ? w.removed.length : 0) + ' removed this week</p>';
+        }
+      }
+      return (
+        '<div class="gl-card gl-dash-card">' +
+          '<div class="gl-dash-head"><span class="gl-label" style="margin:0">Active Roster</span></div>' +
+          body +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View roster</button>' +
         '</div>'
       );
     }
@@ -135,12 +181,16 @@ window.GL_ROUTER.register('home', {
       });
     }
 
-    function render(pickemCard, pickemMine, rankingsData, matchupCard){
+    // Order mirrors the tab bar below Home: Card, Pick'em, Climb, Rankings,
+    // Roster -- each with its own small preview -- so Home reads as a
+    // dashboard over the rest of the app rather than an arbitrary list.
+    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData){
       container.innerHTML =
+        mainEventSection(matchupCard) +
         (pickemCard ? pickemSection(pickemCard, pickemMine) : '') +
-        matchupTeaserSection(matchupCard) +
-        moversSection(rankingsData) +
         climbSection() +
+        moversSection(rankingsData) +
+        rosterSection(rosterData) +
         '<div class="gl-card" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
           '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
           '<p style="margin-bottom:.8rem">Full fighter database, live odds, the simulator, and more.</p>' +
@@ -155,13 +205,14 @@ window.GL_ROUTER.register('home', {
         window.GL_API.pickemCard().catch(function(){ return null; }),
         window.GL_API.rankings().catch(function(){ return null; }),
         window.GL_API.matchup().catch(function(){ return null; }),
+        window.GL_API.roster().catch(function(){ return null; }),
       ]).then(function(results){
-        var cardRes = results[0], rankingsData = results[1], matchupRes = results[2];
+        var cardRes = results[0], rankingsData = results[1], matchupRes = results[2], rosterData = results[3];
         var card = cardRes && cardRes.card;
         var matchupCard = matchupRes && matchupRes.card;
-        if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard);
+        if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData);
         return window.GL_API.pickemMine(card.slug).catch(function(){ return null; }).then(function(mine){
-          render(card, mine, rankingsData, matchupCard);
+          render(card, mine, rankingsData, matchupCard, rosterData);
         });
       });
     });

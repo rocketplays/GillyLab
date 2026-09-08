@@ -26,7 +26,7 @@
 // Premium/subscribe) shows the exact same free content with zero risk of
 // it rendering wrong.
 window.GL_ROUTER.register('matchup', {
-  title: 'Matchup',
+  title: 'Card',
   tab: 'matchup',
   render: function(container){
     mountMatchup(container);
