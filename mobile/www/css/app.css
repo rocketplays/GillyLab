@@ -574,7 +574,23 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    into the lightbox's own close button, same reason the site scopes that
    reset to .fx-lb rather than to its own global button rule (its shell has
    the same width:100% convention for its own CTAs). */
-.sub-cx{ --card:#14141a; --border:#2a2a32; --surface2:#18181d; --muted:#666672; --bg:#0a0a0b; margin:1.2rem 0 0; }
+.sub-cx{
+  --card:#14141a; --border:#2a2a32; --surface2:#18181d; --muted:#666672; --bg:#0a0a0b; margin:1.2rem 0 0;
+  /* Full-bleed to the true viewport edges instead of stopping at #app's own
+     1.1rem side padding -- the site's own @media(max-width:720px) version of
+     this same rule (see the comment on it in worker/pages.js: cards were
+     sized to the viewport as 86vw, so confining the row to a padded column
+     left them wider than their container and killed the "next card peeks
+     over the edge" cue entirely, which is exactly the "doesn't peek, so it's
+     not clear there's more to swipe to" bug). Always on here (not media-
+     gated) since the app is never wider than that breakpoint. Math: #app's
+     own width is 100vw minus .gl-app's 1.1rem side padding, so 50% of THAT
+     minus 50vw comes out to exactly -1.1rem -- which cancels the padding and
+     pulls .sub-cx flush to the real screen edges, letting .fx-wrap's own
+     22px inset (already in the fetched featuresCSS) space the cards in from
+     there instead. */
+  width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw);
+}
 .sub-cx-head{ text-align:center; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:.4rem; }
 .fx-lb button{ width:auto; margin-top:0; }
 
