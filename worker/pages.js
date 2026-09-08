@@ -143,7 +143,7 @@ export const climbTabs = () => freeTabs("/theclimb");
 // links line up with the /fighter/<slug> pages). Only ever LINK when the slug is
 // known to exist (checked against the fighter-lite slug set) so clicks never 404.
 const SLUG_MAP = { "ł": "l", "Ł": "l", "đ": "d", "Đ": "d", "ø": "o", "Ø": "o", "æ": "ae", "Æ": "ae", "œ": "oe", "Œ": "oe", "ß": "ss", "ı": "i", "İ": "i" };
-function nameToSlug(name) {
+export function nameToSlug(name) {
   return String(name).toLowerCase()
     .replace(/\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$/i, "")
     .replace(/[łŁđĐøØæÆœŒßıİ]/g, (ch) => SLUG_MAP[ch] || ch)
@@ -153,7 +153,7 @@ function nameToSlug(name) {
 }
 // Resolve a display name to an existing profile slug, or "" if none. `extra`
 // slugs (e.g. a page's own photo slug) are tried as fallbacks.
-function profileSlugFor(name, slugSet, ...extra) {
+export function profileSlugFor(name, slugSet, ...extra) {
   if (!slugSet || !slugSet.size) return "";
   const cands = [nameToSlug(name), ...extra.filter(Boolean)];
   for (const c of cands) if (c && slugSet.has(c)) return c;
@@ -331,7 +331,7 @@ export const cardHoldMsFor = (name) => isDWCSTitle(name) ? DWCS_CARD_HOLD_MS : C
 // request — not in the generator, which only runs twice a day and would therefore flip
 // /matchup whenever a build landed, drifting hours out of step with the app and
 // /pickem. Returns landingData unchanged once the hold has expired.
-function currentLanding() {
+export function currentLanding() {
   const h = landingData && landingData.held;
   const t = h && h.startsAt ? Date.parse(h.startsAt) : NaN;
   if (!h || !isFinite(t) || t + cardHoldMsFor(h.card && h.card.event) < Date.now()) return landingData;
@@ -2618,7 +2618,7 @@ ${AURORA_CSS}
 // so any card built via eventToCard() that read straight off `b.odds` showed
 // no odds on any bout, ever. oddsData is the raw parsed data/odds.json array,
 // The Odds API's shape (home_team/away_team + per-book h2h outcomes).
-function pagesConsensusOdds(oddsData, nameA, nameB) {
+export function pagesConsensusOdds(oddsData, nameA, nameB) {
   if (!Array.isArray(oddsData) || !oddsData.length) return null;
   // Strip accents before lowercasing — ESPN's fighterName carries them ("Uroš
   // Medić"), while The Odds API's home_team/away_team is plain ASCII ("Uros
@@ -2674,7 +2674,7 @@ const SLUG_ALIASES = {
   "matt-adams": "Matthew Adams",
   "joe-kropschot": "Joseph Kropschot",
 };
-function eventToCard(raw, liteBySlug, isPast, oddsData) {
+export function eventToCard(raw, liteBySlug, isPast, oddsData) {
   const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
   const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
   const bouts = (raw.bouts || [])

@@ -165,15 +165,28 @@ should -- that needs a real build, which needs Xcode/Android Studio.
    `@capacitor/app`'s resume event, since adding that plugin is a native-
    platform change (Podfile/Gradle) unverified in this sandbox -- plain
    `visibilitychange` already works in a Capacitor WebView.
-6. **Roster + Matchup-style free browsing.** Not started. The spec calls
-   for "an entire free section, structured like it currently is" -- the app
-   is still missing the Active Roster page and a Matchup-equivalent screen
-   (fighter profiles, fight info dropdowns, etc.) that the website has on
-   `/roster` and `/matchup`. Both are free/logged-out-browsable on the
-   website already (`/data/roster.json` is in the public-assets allowlist
-   near the top of `worker/index.js`), so this should mostly be new app-side
-   UI consuming existing data, not new backend work -- check whether
-   `/matchup`'s own data needs a small `/api/app/*`-style endpoint the way
-   Rankings and Pick'em's card did, or whether it's already served plainly
-   enough to fetch directly. Per the note above: build as a real screen,
-   not an iframe of the live page.
+6. **Roster + Matchup-style free browsing.** Done. Three new JSON endpoints
+   in `worker/index.js` (`GET /api/app/roster`, `GET /api/app/matchup`
+   with an optional `?event=<slug>`, `GET /api/app/fighter?slug=<slug>`)
+   reuse the same data/pipeline the website's `/roster`, `/matchup`, and
+   `/fighter/<slug>` pages render server-side -- `nameToSlug`,
+   `profileSlugFor`, `eventToCard`, `pagesConsensusOdds`, and
+   `currentLanding` were exported from `worker/pages.js` for this rather
+   than reimplemented. `mobile/www/js/screens/roster.js` (A-Z filtered
+   fighter list + this week's signings/releases) and `matchup.js`
+   (upcoming/past event switcher, tale of the tape free on every bout, the
+   full pre-fight breakdown + "Analytics Deep Dive" only when they're
+   actually precomputed for the site's current main event, same gates the
+   website page itself uses) are real native screens, not iframes.
+   `fighter.js` is a shared panel (not a router route) both screens push
+   into for a tapped fighter's lite profile, with the same "rest is
+   Premium" locked grid the website's `/fighter/<slug>` shows. The
+   Analytics Deep Dive itself opens the live `/matchup?event=` page in the
+   system browser (`GL_NATIVE.openExternal`, same pattern as Premium/
+   subscribe) rather than trying to render its pre-built HTML/CSS blob
+   in-app with no idea what it depends on. A "Matchup" tab was added to
+   the bottom bar; Roster is reached from a button inside Matchup (and a
+   Home dashboard card), not its own tab -- six tabs was already enough.
+   Not yet verified on-device; test the event switcher, the deep-dive
+   external link, and a fighter with no photo (initials fallback) before
+   calling this fully done.

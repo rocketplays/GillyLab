@@ -17,7 +17,8 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
+import matchupFree from "./matchup-free.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -2577,33 +2578,74 @@ export default {
       // static asset CORS just for this one screen is a bigger blast radius
       // than one small purpose-built endpoint). Trimmed to the pound-for-
       // pound board and the fields the Rankings screen actually renders.
+      // Full rankings — every division, both sources (UFC Media Panel /
+      // Meta AI), photos and country flags, resolved to a /fighter/<slug>
+      // profile the same way the website's own rankingsPage does. Was
+      // previously hardcoded to the Men's Pound-for-Pound top 15 from the
+      // media panel only, with no division switcher, no source toggle, and
+      // no photos -- a stub built alongside the Home dashboard before the
+      // rest of the app had a real Rankings screen to match. This mirrors
+      // rankingsPage's own rowHTML/showDiv logic in worker/pages.js instead.
       if (path === "/api/app/rankings" && request.method === "GET") {
         const cors = appCorsHeaders(request);
-        const raw = await loadAssetJson(env, url, "/data/rankings.json");
+        const source = (url.searchParams.get("source") || "media").toLowerCase() === "meta" ? "meta" : "media";
+        const [raw, exRaw, profileSlugs] = await Promise.all([
+          loadAssetJson(env, url, source === "meta" ? "/data/rankings-meta.json" : "/data/rankings.json"),
+          loadAssetJson(env, url, "/data/rankings-extra.json"),
+          loadProfileSlugs(env, url),
+        ]);
         if (!raw || !Array.isArray(raw.data)) return json({ error: "Rankings unavailable" }, 502, cors);
-        const rows = raw.data
-          .filter((r) => r.normalizedDivision === "mens-pound-for-pound-top-rank")
-          .sort((a, b) => (a.rank || 0) - (b.rank || 0))
-          .map((r) => ({ rank: r.rank, name: r.fighterName || (r.fighter && r.fighter.name) || "" }));
-        // "Top movers" for the app's Home dashboard: rankChange is only
-        // populated for a fraction of fighters at any given sync (the
-        // upstream UFC.com feed doesn't set it for everyone every week, and
-        // right now it happens to be null across the whole pound-for-pound
-        // board specifically) — so this pulls from every division, not just
-        // p4p, and just returns whichever fighters DO have a real number,
-        // biggest movement first. An empty array here is a legitimate,
-        // expected state, not a bug — the Home screen has to handle it.
+        const EX = (exRaw && exRaw.bySlug) || {};
+        const PORDER = ["Men's Pound-for-Pound Top Rank", "Women's Pound-for-Pound Top Rank", "Heavyweight", "Light Heavyweight", "Middleweight", "Welterweight", "Lightweight", "Featherweight", "Bantamweight", "Flyweight", "Women's Strawweight", "Women's Flyweight", "Women's Bantamweight"];
+        const byDiv = {};
+        raw.data.forEach((e) => { (byDiv[e.division] = byDiv[e.division] || []).push(e); });
+        const tabs = PORDER.filter((d) => byDiv[d] && byDiv[d].length);
+        Object.keys(byDiv).forEach((d) => { if (!tabs.includes(d)) tabs.push(d); });
+        const shapeEntry = (e) => {
+          const ex = EX[e.fighterSlug] || {};
+          const name = ex.name || e.fighterName || "";
+          return {
+            rank: e.rank != null ? e.rank : null,
+            name,
+            isChampion: !!e.isChampion,
+            photo: ex.photo || e.fighterSlug || null,
+            imageUrl: e.imageUrl && e.imageUrl.length > 10 ? e.imageUrl : null,
+            flag: e.flag || ex.flag || null,
+            slug: profileSlugFor(name, profileSlugs) || null,
+            rankChange: typeof e.rankChange === "number" ? e.rankChange : null,
+            isNewEntry: !!e.isNewEntry || String(e.rankChangeText || "").toUpperCase() === "NEW",
+          };
+        };
+        const divisions = {};
+        tabs.forEach((d) => {
+          divisions[d] = byDiv[d].slice()
+            .sort((a, b) => (a.isChampion ? -1 : 0) - (b.isChampion ? -1 : 0) || (a.rank || 99) - (b.rank || 99))
+            .map(shapeEntry);
+        });
+        // "Top movers" for the app's Home dashboard -- rankChange is only
+        // populated for a fraction of fighters at any given sync, so this
+        // pulls from every division and just returns whichever fighters DO
+        // have a real number, biggest movement first. An empty array here
+        // is a legitimate, expected state, not a bug.
         const movers = raw.data
           .filter((r) => typeof r.rankChange === "number" && r.rankChange !== 0)
           .sort((a, b) => Math.abs(b.rankChange) - Math.abs(a.rankChange))
           .slice(0, 8)
           .map((r) => ({
-            name: r.fighterName || (r.fighter && r.fighter.name) || "",
+            name: (EX[r.fighterSlug] && EX[r.fighterSlug].name) || r.fighterName || (r.fighter && r.fighter.name) || "",
             division: r.division || "",
             rank: r.rank,
             change: r.rankChange,
           }));
-        return json({ generatedAt: raw.meta && raw.meta.generatedAt, rows, movers }, 200, cors);
+        return json({
+          source,
+          generatedAt: raw.meta && raw.meta.generatedAt,
+          date: raw.meta && raw.meta.latestSnapshotDate,
+          tabs,
+          divisions,
+          movers,
+          rows: divisions[tabs[0]] || [],
+        }, 200, cors);
       }
       // Deliberately public, unlike the website's /data/climb.json (gated a
       // few hundred lines below — see readSession there): the app is
@@ -2655,6 +2697,145 @@ export default {
           });
         }
         return json({ card, score: scoreById }, 200, cors);
+      }
+
+      // Active Roster, free on the website at /roster -- same data, reshaped as
+      // JSON for the app instead of server-rendered HTML. No session required:
+      // this is a free PAGE (like /roster itself), not a free FEATURE gated
+      // behind an account (unlike Pick'em above).
+      if (path === "/api/app/roster" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const [ro, profileSlugs] = await Promise.all([
+          loadAssetJson(env, url, "/data/roster.json"),
+          loadProfileSlugs(env, url),
+        ]);
+        const withSlug = (n) => ({ name: n, slug: profileSlugFor(n, profileSlugs) || null });
+        const fighters = ((ro && ro.fighters) || []).map(withSlug);
+        const changes = ((ro && ro.changes) || []).map((w) => ({
+          week: w.week,
+          added: (w.added || []).map(withSlug),
+          removed: (w.removed || []).map(withSlug),
+        }));
+        return json({ fighters, changes }, 200, cors);
+      }
+
+      // Matchup hub, free on the website at /matchup -- upcoming/past card
+      // carousel + the featured card's fights (tale of the tape free on every
+      // bout; the full pre-fight breakdown and the "Analytics Deep Dive" only
+      // when they're actually available for THIS card, same gates the website
+      // page itself uses). No session required.
+      if (path === "/api/app/matchup" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const wantSlug = (url.searchParams.get("event") || "").trim().toLowerCase();
+        const [profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw] = await Promise.all([
+          loadProfileSlugs(env, url),
+          loadAssetJson(env, url, "/data/event.json"),
+          loadAssetJson(env, url, "/data/event-recent.json"),
+          loadAssetJson(env, url, "/data/fighter-lite.json"),
+          loadAssetJson(env, url, "/data/odds.json"),
+        ]);
+        const upcomingEvents = ((upcomingRaw && upcomingRaw.data) || []).slice().sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
+        const pastEvents = ((pastRaw && pastRaw.data) || []).slice().sort((a, b) => Date.parse(b.startsAt || 0) - Date.parse(a.startsAt || 0));
+        const fighterLiteBySlug = (lite && lite.bySlug) || {};
+        const oddsData = Array.isArray(oddsRaw) ? oddsRaw : [];
+
+        const currentCard = (currentLanding() || {}).card || null;
+        let overrideRaw = null, overrideIsPast = false;
+        if (wantSlug) {
+          overrideRaw = upcomingEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null;
+          if (!overrideRaw) { overrideRaw = pastEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null; overrideIsPast = !!overrideRaw; }
+        }
+        const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
+        let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData) : currentCard;
+        const isPastView = isOtherEvent && overrideIsPast;
+
+        // Same request-time freshness merge matchupPage does for the site's OWN
+        // featured card (never for a carousel/override pick, which was just
+        // rebuilt straight from the live raw event above and needs none of
+        // this): live results not yet baked into the twice-daily snapshot, and
+        // odds for a bout that priced after the snapshot was generated.
+        if (card && !isOtherEvent) {
+          card = Object.assign({}, card, { fights: (card.fights || []).map((f) => Object.assign({}, f)) });
+          const liveRaw = (upcomingEvents || []).find((e) => e && e.slug === card.slug);
+          const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+          if (liveRaw) (card.fights || []).forEach((f) => {
+            if (f.result) return;
+            const lb = (liveRaw.bouts || []).find((b) => {
+              const names = (b.fighters || []).map((x) => lastName(x.fighterName));
+              return names.length === 2 && names.includes(lastName(f.f1)) && names.includes(lastName(f.f2));
+            });
+            if (!lb) return;
+            const winnerSlug = lb.winnerFighterSlug || null;
+            const winnerFighter = winnerSlug ? (lb.fighters || []).find((x) => x.fighterSlug === winnerSlug) : null;
+            const method = [lb.method, lb.methodDetails].filter(Boolean).join(" — ");
+            if (winnerFighter) {
+              f.result = { winner: winnerFighter.fighterName, method, round: lb.resultRound || null, time: lb.resultTime || null, voided: false };
+            } else if (/draw|no\s*contest/i.test(lb.method || "")) {
+              f.result = { voided: true, draw: /draw/i.test(lb.method || ""), method, round: lb.resultRound || null };
+            }
+          });
+          (card.fights || []).forEach((f) => {
+            if (f.o1 != null && f.o2 != null) return;
+            const consensus = pagesConsensusOdds(oddsData, f.f1, f.f2);
+            if (consensus) { f.o1 = consensus.a; f.o2 = consensus.b; }
+          });
+        }
+
+        // Resolve each fight's actual profile slug the same way rowHTML does
+        // (profileSlugFor checked against the real slug set, falling back to
+        // the ESPN slug eventToCard put on f.s1/f.s2) so the app only ever
+        // links to a fighter profile that's guaranteed to exist.
+        if (card) {
+          card = Object.assign({}, card, {
+            fights: (card.fights || []).map((f) => Object.assign({}, f, {
+              s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
+              s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
+            })),
+          });
+        }
+
+        // The free "Analytics Deep Dive" is only ever generated (twice daily,
+        // by scripts/gen-matchup-free.cjs) for the site's OWN current main
+        // event -- never for a carousel/past pick. Same freshness gate
+        // matchupPage's ddFresh uses.
+        const isDwcsCard = /contender\s+series|dana\s+white/i.test((card && card.event) || "");
+        const free = matchupFree || null;
+        const ddFresh = !isOtherEvent && !isDwcsCard && !!(free && free.striking && free.striking.all && free.grappling && free.grappling.all && card && free.slug === card.slug);
+        const deepDive = ddFresh ? { available: true, n1: free.n1, n2: free.n2, striking: free.striking.all, grappling: free.grappling.all } : { available: false };
+
+        // The full pre-fight breakdown (style/pace/path to victory/storylines/
+        // common opponents/finish rate) is precomputed only for the site's
+        // currently-held card's main event -- never for other events. Same
+        // `(f.main && ownerCard.main)` gate rowHTML uses before calling
+        // breakdownHTML instead of the locked-teaser panel.
+        const breakdown = (!isOtherEvent && currentCard && currentCard.main) ? currentCard.main : null;
+
+        const liteEvent = (e) => ({
+          slug: e.slug || e.id || "",
+          event: e.espnName || e.title || e.shortTitle || "UFC Event",
+          date: e.startsAt || null,
+          city: e.city || null,
+        });
+        return json({
+          card,
+          isPast: isPastView,
+          deepDive,
+          breakdown,
+          upcoming: upcomingEvents.map(liteEvent),
+          past: pastEvents.map(liteEvent),
+        }, 200, cors);
+      }
+
+      // Lite fighter profile, free on the website at /fighter/<slug> -- same
+      // data, reshaped as JSON. No session required.
+      if (path === "/api/app/fighter" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const slug = (url.searchParams.get("slug") || "").trim().toLowerCase();
+        if (!slug) return json({ error: "missing slug" }, 400, cors);
+        const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+        const fighter = lite && lite.bySlug && lite.bySlug[slug];
+        if (!fighter) return json({ error: "not found" }, 404, cors);
+        return json({ fighter }, 200, cors);
       }
       if (path === "/api/app/refresh" && request.method === "GET") {
         const cors = appCorsHeaders(request);

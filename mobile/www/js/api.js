@@ -34,7 +34,7 @@ window.GL_API = (function(){
   return {
     login: function(email, password){ return request('/api/login', { method:'POST', body:{ email:email, password:password } }); },
     signup: function(email, password){ return request('/api/signup', { method:'POST', body:{ email:email, password:password } }); },
-    rankings: function(){ return request('/api/app/rankings'); },
+    rankings: function(source){ return request('/api/app/rankings' + (source ? '?source=' + encodeURIComponent(source) : '')); },
     refresh: function(){ return request('/api/app/refresh'); },
     // Pick'em -- same JSON endpoints the website's own /pickem page calls
     // client-side, now CORS-enabled for the app's origin (see appCorsHeaders
@@ -50,6 +50,12 @@ window.GL_API = (function(){
     pickemSave: function(payload){ return request('/api/pickem/save', { method:'POST', body:payload }); },
     pickemLeaderboard: function(scope){ return request('/api/pickem/leaderboard?scope=' + encodeURIComponent(scope || 'all')); },
     pickemHistory: function(eventSlug){ return request('/api/pickem/history' + (eventSlug ? '?event=' + encodeURIComponent(eventSlug) : '')); },
+    // Roster / Matchup / Fighter profile -- free pages on the website, no
+    // session required. See worker/index.js's /api/app/roster, /api/app/matchup,
+    // /api/app/fighter.
+    roster: function(){ return request('/api/app/roster'); },
+    matchup: function(eventSlug){ return request('/api/app/matchup' + (eventSlug ? '?event=' + encodeURIComponent(eventSlug) : '')); },
+    fighter: function(slug){ return request('/api/app/fighter?slug=' + encodeURIComponent(slug)); },
     request: request,
     BASE: BASE,
   };
