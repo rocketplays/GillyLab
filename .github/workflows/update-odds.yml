@@ -313,6 +313,16 @@ jobs:
       - name: Regenerate landing-page data snapshot
         run: node scripts/gen-landing-data.cjs || true
 
+      # Regenerate the app's premium Career Accolades + Tape Study bundle
+      # (worker/fighter-extras.js) from index.html's ACCOLADES/TAPE_STUDY/
+      # FIGHT_HISTORY. MUST RUN AFTER gen-landing-data.cjs -- it reads
+      # data/fighter-lite.json's bySlug for the name<->slug mapping, so a
+      # stale fighter-lite.json here would mean new fighters silently get no
+      # extras. Non-fatal: a missing/unreadable fighter yields an empty
+      # extras entry for that slug, not a broken deploy.
+      - name: Regenerate app premium fighter-extras bundle
+        run: node scripts/gen-app-fighter-extras.cjs || true
+
       # Regenerate gl-sheet.js (the share-sheet renderer) from index.html so the free
       # /pickem "Share picks" image stays byte-identical to the in-app premium sheet.
       # Generated, never forked — index.html is the single source of truth.
@@ -506,6 +516,7 @@ jobs:
           node scripts/append-card-history.cjs || true
           python3 gillylab_update_records.py || true
           node scripts/gen-landing-data.cjs || true
+          node scripts/gen-app-fighter-extras.cjs || true
           node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-climb-page.cjs
           node scripts/gen-bracket-page.cjs
