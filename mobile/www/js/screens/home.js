@@ -111,6 +111,24 @@ window.GL_ROUTER.register('home', {
       );
     }
 
+    // Small circular avatar (photo, falling back to initials) -- reuses
+    // Rankings' own .rk-av/.rk-av-initials/.rk-av-photo styling rather than
+    // inventing a third avatar size, since this list is basically a 3-row
+    // slice of that same screen.
+    function moverAvatar(name, photo){
+      var ini = window.GL_FIGHTER.initials(name);
+      return (
+        '<span class="rk-av">' +
+          '<span class="rk-av-initials">' + esc(ini) + '</span>' +
+          (photo ? '<img class="rk-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(photo) + '.png" alt="" onerror="this.style.display=\'none\'">' : '') +
+        '</span>'
+      );
+    }
+    function moverName(name, slug){
+      return slug
+        ? '<button type="button" class="gl-dash-row-name gl-link-btn" style="text-decoration:none;color:inherit" data-slug="' + esc(slug) + '">' + esc(name) + '</button>'
+        : '<span class="gl-dash-row-name">' + esc(name) + '</span>';
+    }
     function moversSection(rankingsData){
       var movers = (rankingsData && rankingsData.movers) || [];
       var rows = (rankingsData && rankingsData.rows) || [];
@@ -120,8 +138,9 @@ window.GL_ROUTER.register('home', {
           var up = m.change > 0;
           return (
             '<div class="gl-dash-row">' +
+              moverAvatar(m.name, m.photo) +
               '<span class="gl-dash-arrow ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(m.change) + '</span>' +
-              '<span class="gl-dash-row-name">' + esc(m.name) + '</span>' +
+              moverName(m.name, m.slug) +
               '<span class="gl-muted" style="font-size:.78rem">' + esc(m.division) + '</span>' +
             '</div>'
           );
@@ -133,7 +152,8 @@ window.GL_ROUTER.register('home', {
           return (
             '<div class="gl-dash-row">' +
               '<span class="gl-dash-rank">#' + r.rank + '</span>' +
-              '<span class="gl-dash-row-name">' + esc(r.name) + '</span>' +
+              moverAvatar(r.name, r.photo) +
+              moverName(r.name, r.slug) +
             '</div>'
           );
         }).join('');
@@ -178,6 +198,15 @@ window.GL_ROUTER.register('home', {
     function wire(){
       container.querySelectorAll('[data-goto]').forEach(function(el){
         el.addEventListener('click', go(el.getAttribute('data-goto')));
+      });
+      // Movers' names are tappable straight to their fighter profile, same as
+      // everywhere else in the app (Roster/Matchup/Rankings) -- a full route
+      // navigation with its own back button, not a panel over Home.
+      container.querySelectorAll('[data-slug]').forEach(function(el){
+        el.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          window.GL_ROUTER.go('fighter', { slug: el.getAttribute('data-slug') });
+        });
       });
     }
 

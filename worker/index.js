@@ -2631,12 +2631,20 @@ export default {
           .filter((r) => typeof r.rankChange === "number" && r.rankChange !== 0)
           .sort((a, b) => Math.abs(b.rankChange) - Math.abs(a.rankChange))
           .slice(0, 8)
-          .map((r) => ({
-            name: (EX[r.fighterSlug] && EX[r.fighterSlug].name) || r.fighterName || (r.fighter && r.fighter.name) || "",
-            division: r.division || "",
-            rank: r.rank,
-            change: r.rankChange,
-          }));
+          .map((r) => {
+            const name = (EX[r.fighterSlug] && EX[r.fighterSlug].name) || r.fighterName || (r.fighter && r.fighter.name) || "";
+            return {
+              name,
+              division: r.division || "",
+              rank: r.rank,
+              change: r.rankChange,
+              // Same photo/slug resolution as shapeEntry() above -- Home's
+              // dashboard shows an avatar next to each mover now, not just
+              // the arrow+name+division text.
+              photo: (EX[r.fighterSlug] && EX[r.fighterSlug].photo) || r.fighterSlug || null,
+              slug: profileSlugFor(name, profileSlugs) || null,
+            };
+          });
         return json({
           source,
           generatedAt: raw.meta && raw.meta.generatedAt,
