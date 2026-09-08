@@ -9,7 +9,6 @@
   --bad:#ff3d00;
   --on-accent:#04140a;
   --tabbar-h:56px;
-  --topbar-h:52px;
 }
 *{box-sizing:border-box}
 /* The site's actual visual identity is almost entirely this background --
@@ -46,45 +45,36 @@ body{ background:transparent; }
 }
 /* No text selection / long-press callout on the chrome -- one of the
    details that makes a webview read as "a website" if left default. */
-.gl-tabbar, .gl-topbar, button{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+.gl-tabbar, button{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 button{ font-family:inherit; }
 
 h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:800; text-transform:uppercase; letter-spacing:.01em; }
 
-/* ---- top bar: safe-area aware, sits above the notch/status bar ---- */
-.gl-topbar{
-  position:fixed; top:0; left:0; right:0; z-index:10;
-  height:calc(var(--topbar-h) + env(safe-area-inset-top));
-  padding-top:env(safe-area-inset-top);
-  display:flex; align-items:center; gap:.5rem; padding-left:1rem; padding-right:1rem;
-  background:color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-}
-.gl-back{
-  background:none; border:none; color:var(--text); font-size:1.3rem; line-height:1;
-  width:2rem; height:2rem; display:flex; align-items:center; justify-content:center;
-  border-radius:50%; cursor:pointer;
-}
-/* An author class selector (.gl-back{display:flex}) beats the UA [hidden]
-   rule at equal specificity, so backBtn.hidden = true was NOT actually
-   hiding the button -- it stayed visible via display:flex. This is why a
-   back arrow was showing up on Home even though router.js never sets
-   showBack for it. Needs its own explicit override. */
-.gl-back[hidden]{ display:none; }
-.gl-back:active{ background:var(--surface2); }
-.gl-topbar-title{ font-family:'Barlow Condensed',sans-serif; font-weight:900; letter-spacing:.1em; font-size:1rem; text-transform:uppercase; }
-.gl-topbar-title .a{ color:var(--accent); }
-.gl-topbar-spacer{ margin-left:auto; width:2rem; }
-
-/* ---- app content: fills between top bar and tab bar, scrolls on its own ---- */
+/* ---- app content: fills the screen down to the tab bar. No fixed top bar
+   -- the tab bar already shows what section you're in, so a persistent
+   black title strip would just eat vertical space for nothing. Safe-area
+   inset is handled as top padding on this scrolling column instead of a
+   fixed header's own height. ---- */
 .gl-app{
-  position:fixed; left:0; right:0;
-  top:calc(var(--topbar-h) + env(safe-area-inset-top));
+  position:fixed; left:0; right:0; top:0;
   bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom));
   overflow-y:auto; -webkit-overflow-scrolling:touch;
-  padding:1.1rem 1.1rem 2rem;
+  padding:calc(env(safe-area-inset-top) + 1.1rem) 1.1rem 2rem;
 }
+/* Back button: plain scrolling content at the top-left, same as the
+   premium in-app SPA's own .back-btn (index.html) -- not a fixed bar, so it
+   scrolls away with the rest of the page instead of pinning itself onscreen. */
+.gl-back-inline{
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.8rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  background:none; border:none; padding:0; margin:0 0 1.1rem; cursor:pointer;
+}
+.gl-back-inline:active{ color:var(--text); }
+/* Same [hidden]-vs-class-selector specificity issue as the old fixed back
+   button: an author class beats the UA [hidden] rule, so this needs its
+   own explicit override or backBtn.hidden=true silently does nothing. */
+.gl-back-inline[hidden]{ display:none; }
 /* A screen that wants to own the whole content area itself (Climb, loaded
    in an iframe with its own fonts/background/scrolling) instead of sitting
    inside the app's default padded, scrolling column. */

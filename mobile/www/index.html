@@ -16,23 +16,18 @@
   <div id="bgfx"></div>
   <div id="bgedge"></div>
 
-  <!-- App-only chrome: a small top bar for screen titles/back actions. Not
-       the website's nav -- this app has no address bar, no page reloads, so
-       there's no need for the site's own top nav links here. -->
-  <header class="gl-topbar" id="topbar">
-    <button class="gl-back" id="backBtn" hidden aria-label="Back">&larr;</button>
-    <div class="gl-topbar-title" id="topbarTitle">GillyLab</div>
-    <div class="gl-topbar-spacer"></div>
-  </header>
-
-  <!-- Centered brand mark at the top of every page's scrollable content
-       (not the fixed top bar) -- so it scrolls away as you scroll, per the
-       site's own free pages having their logo+wordmark up top. Lives on
-       #appScroll as a sibling of #app, which is all any screen's own
-       render() ever touches, so it survives every screen's full innerHTML
-       replacement automatically. Hidden on fullbleed screens (Climb's
-       iframe) via .gl-app--fullbleed .gl-page-brand in app.css. -->
+  <!-- No fixed top bar -- the bottom tab bar already shows what section
+       you're in, so a persistent black title strip is redundant. Instead,
+       both the back button and the brand mark below are plain scrolling
+       content at the top of #appScroll (mirrors the premium in-app SPA's
+       own .back-btn: top-left, inline, scrolls away with the page instead
+       of sitting in a sticky bar -- see index.html's own .back-btn / #app.js
+       fighterGoBack()). Lives as a sibling of #app, which is all any
+       screen's own render() ever touches, so both survive a screen's full
+       innerHTML replacement automatically. Hidden on fullbleed screens
+       (Climb's iframe) via .gl-app--fullbleed in app.css. -->
   <main class="gl-app" id="appScroll">
+    <button class="gl-back-inline" id="pageBackBtn" hidden aria-label="Back">&larr; Back</button>
     <div class="gl-page-brand">
       <img class="gl-page-brand-logo" src="https://gillylab.com/gl-logo.png?v=8" alt="">
       <span>GILLY<span class="a">LAB</span></span>

@@ -2,12 +2,13 @@
 // app's screens as a real SPA (per the architecture decision) is that
 // switching screens never does a full page load -- no browser-style white
 // flash, no lost scroll-position jank. Route changes just swap the content
-// of #app and update the tab bar / top bar to match.
+// of #app and update the tab bar / inline back button to match. There's no
+// fixed top bar -- see index.html/app.css.
 window.GL_ROUTER = (function(){
   var screens = {};       // routeName -> { title, render(container, params), tab }
   var current = null;
   var previous = null;    // last DIFFERENT route, for back() -- see fighter.js
-  var appEl, appScrollEl, topbarTitleEl, backBtn, tabbarEl;
+  var appEl, appScrollEl, backBtn, tabbarEl;
 
   function register(name, screen){ screens[name] = screen; }
 
@@ -24,7 +25,9 @@ window.GL_ROUTER = (function(){
     if (current && current !== name) previous = current;
     current = name;
     location.hash = '#/' + name;
-    topbarTitleEl.textContent = screen.title || 'GillyLab';
+    // No fixed top bar -- the back button is plain scrolling content at the
+    // top of the page (see .gl-back-inline / index.html), same as it works
+    // on the premium in-app SPA.
     backBtn.hidden = !screen.showBack;
     // A screen with no `tab` of its own (e.g. a fighter profile pushed from
     // Roster/Matchup/Rankings) leaves the tab bar exactly as it was --
@@ -61,8 +64,7 @@ window.GL_ROUTER = (function(){
   function init(){
     appScrollEl = document.getElementById('appScroll');
     appEl = document.getElementById('app');
-    topbarTitleEl = document.getElementById('topbarTitle');
-    backBtn = document.getElementById('backBtn');
+    backBtn = document.getElementById('pageBackBtn');
     tabbarEl = document.getElementById('tabbar');
 
     tabbarEl.querySelectorAll('.gl-tab').forEach(function(btn){

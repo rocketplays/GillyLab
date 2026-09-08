@@ -123,11 +123,6 @@ window.GL_FIGHTER = (function(){
     container.innerHTML = '<p class="gl-muted">Loading fighter…</p>';
     window.GL_API.fighter(slug).then(function(res){
       container.innerHTML = renderHTML(res.fighter);
-      // Same touch as the website's per-fighter <title> -- the top bar names
-      // the actual fighter once loaded instead of sitting on the generic
-      // "Fighter" placeholder the whole time.
-      var titleEl = document.getElementById('topbarTitle');
-      if (titleEl && res.fighter && res.fighter.name) titleEl.textContent = res.fighter.name;
       var goPrem = container.querySelector('[data-goto="premium"]');
       if (goPrem) goPrem.addEventListener('click', function(){
         window.GL_NATIVE.tap();
