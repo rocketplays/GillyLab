@@ -116,12 +116,28 @@ window.GL_FIGHTER = (function(){
     );
   }
 
+  // GL_FIGHTER is a singleton (registered once, reused for every navigation
+  // to 'fighter'), so two overlapping loads can genuinely happen -- e.g. a
+  // double-tap firing GL_ROUTER.go('fighter', ...) twice in a row, or
+  // tapping a second fighter before the first profile finished loading.
+  // Without a sequence guard, whichever request's promise resolves LAST
+  // wins, in real (network) order rather than call order -- so an older
+  // request's .catch() can fire (and briefly paint the connection-error
+  // message) after a newer request already started, right before that
+  // newer request's own .then() overwrites it with the real profile a
+  // moment later. That's the "red error flashes then goes away" bug.
+  // Same fix as matchup.js's own searchSeq: only the most recent load()
+  // call is allowed to touch the DOM.
+  var loadSeq = 0;
+
   // Renders straight into `container` (loading state, then result), and wires
   // the profile's own "Go Premium" button. Callers own the back button and
   // list-vs-panel visibility around this -- see roster.js/matchup.js.
   function load(container, slug){
+    var mySeq = ++loadSeq;
     container.innerHTML = '<p class="gl-muted">Loading fighter…</p>';
     window.GL_API.fighter(slug).then(function(res){
+      if (mySeq !== loadSeq) return; // a newer profile request already won
       container.innerHTML = renderHTML(res.fighter);
       var goPrem = container.querySelector('[data-goto="premium"]');
       if (goPrem) goPrem.addEventListener('click', function(){
@@ -129,6 +145,7 @@ window.GL_FIGHTER = (function(){
         window.GL_ROUTER.go('premium');
       });
     }).catch(function(){
+      if (mySeq !== loadSeq) return;
       container.innerHTML = '<p class="gl-error">Couldn’t load this fighter’s profile — check your connection and try again.</p>';
     });
   }

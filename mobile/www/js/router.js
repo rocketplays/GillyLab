@@ -9,6 +9,19 @@ window.GL_ROUTER = (function(){
   var current = null;
   var previous = null;    // last DIFFERENT route, for back() -- see fighter.js
   var appEl, appScrollEl, backBtn, tabbarEl;
+  // go() writes location.hash itself (so the URL reflects the current
+  // screen), but a hash write fires the browser's own 'hashchange' event --
+  // which the router also listens for, to handle back/forward and direct
+  // hash navigation. Without this flag, every go(name, params) call
+  // re-triggered itself a moment later via that event, through fromHash(),
+  // which only ever knows the bare route name and has no way to recover
+  // `params` (e.g. a fighter's slug) from the hash. That second, param-less
+  // render started a second load with an undefined slug, which failed fast
+  // and briefly showed a "check your connection" error right before the
+  // FIRST (correct) request finished and overwrote it -- the "red error
+  // flashes then disappears" bug. Set right before a hash write that we
+  // triggered ourselves, so the resulting 'hashchange' is ignored once.
+  var ignoreNextHashChange = false;
 
   function register(name, screen){ screens[name] = screen; }
 
@@ -24,7 +37,16 @@ window.GL_ROUTER = (function(){
     if (!screen){ console.error('GL_ROUTER: unknown route', name); return; }
     if (current && current !== name) previous = current;
     current = name;
-    location.hash = '#/' + name;
+    var newHash = '#/' + name;
+    // Only when the hash is actually changing -- if it's already what we
+    // want (e.g. re-opening a different fighter while the hash is still
+    // "#/fighter"), no hashchange fires at all, so setting the flag here
+    // unconditionally would wrongly swallow the NEXT real one (a manual
+    // hash edit or a back/forward gesture).
+    if (location.hash !== newHash){
+      ignoreNextHashChange = true;
+      location.hash = newHash;
+    }
     // No fixed top bar -- the back button is plain scrolling content at the
     // top of the page (see .gl-back-inline / index.html), same as it works
     // on the premium in-app SPA.
@@ -77,7 +99,10 @@ window.GL_ROUTER = (function(){
       window.GL_NATIVE.tap();
       back();
     });
-    window.addEventListener('hashchange', fromHash);
+    window.addEventListener('hashchange', function(){
+      if (ignoreNextHashChange){ ignoreNextHashChange = false; return; }
+      fromHash();
+    });
     fromHash();
   }
 
