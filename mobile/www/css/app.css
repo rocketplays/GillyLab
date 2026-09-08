@@ -109,3 +109,29 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   padding:2.5rem 1rem; color:var(--muted);
 }
 .gl-locked svg{ width:40px; height:40px; opacity:.6; }
+
+/* ---- Pick'em: bout cards, winner/method/round/confidence pickers ---- */
+.pk-subnav{ display:flex; gap:.6rem; margin-bottom:.9rem; }
+.pk-bout{ padding:.9rem 1rem; }
+.pk-bout-head{ margin-bottom:.6rem; }
+.pk-fighters{ display:flex; gap:.6rem; margin-bottom:.6rem; }
+.pk-fighter{
+  flex:1; background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  border-radius:8px; padding:.7rem .5rem; font-size:.86rem; font-weight:600; text-align:center; cursor:pointer;
+}
+.pk-fighter.sel{ border-color:var(--accent); background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 14%, transparent), color-mix(in srgb, var(--accent) 5%, transparent)); color:var(--accent); }
+.pk-row{ display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem; }
+.pk-row-label{ font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:700; width:4.6rem; flex-shrink:0; }
+.pk-seg{ display:flex; gap:.4rem; flex:1; }
+.pk-seg button{
+  flex:1; background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  border-radius:7px; padding:.5rem .3rem; font-size:.78rem; font-weight:600; cursor:pointer;
+}
+.pk-seg button.sel{ border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); }
+.pk-bout-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:.5rem; gap:.5rem; }
+.pk-clear{ background:none; border:none; color:var(--muted); font-size:.78rem; text-decoration:underline; cursor:pointer; padding:0; flex-shrink:0; }
+.pk-submitbar{
+  position:sticky; bottom:0; background:var(--bg); border-top:1px solid var(--border);
+  padding:.8rem 0 .2rem; margin-top:.6rem; display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+}
+.pk-submitbar .gl-btn{ width:auto; padding:.7rem 1.2rem; }

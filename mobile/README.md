@@ -74,6 +74,20 @@ built this.
   pragmatic middle ground for "Capacitor done properly" -- a real native tab
   bar plugin is a further upgrade if the HTML version doesn't feel close
   enough once it's actually on a device.
+- **Never iframe a page that needs a login.** Confirmed on a real device:
+  `SameSite=Lax` cookies are never sent on a cross-origin iframe navigation,
+  by spec, in every browser engine -- not an edge case, not something that
+  might work on some devices. Pick'em originally iframed the live
+  `gillylab.com/pickem` page and it never once saw a logged-in visitor; see
+  `pickem.js` for the fix (a real screen calling the JSON APIs with the
+  bearer token, same mechanism as Rankings/Climb). Climb's iframe is fine
+  and doesn't need to change -- it loads a file bundled inside the app
+  itself (same origin) and only calls the deliberately public
+  `/api/app/climb` endpoint, so no cookie is ever involved. The rule for any
+  future screen (Legends Bracket, the roster/matchup-style pages below):
+  iframing a same-origin bundled file or a genuinely public endpoint is
+  fine; iframing a live page that depends on the visitor's login never
+  works from inside this app, no matter how it's coaxed.
 
 ## Backend changes made to support the app (worker/index.js)
 
@@ -123,13 +137,15 @@ should -- that needs a real build, which needs Xcode/Android Studio.
    `scripts/gen-climb-app-page.cjs` -- same balance/tuning as the website,
    fetching a new ungated `GET /api/app/climb` endpoint so it's playable
    with no account, per spec.
-3. **Pick'em / Legends Bracket screens.** Pick'em done -- `pickem.js` shows
-   a login/signup form when logged out, else iframes the real, live
-   `/pickem` page (no reimplementation of its server-side scoring/card
-   logic). Relies on the `gl_session` cookie riding along on the iframe's
-   cross-site navigation, which is spec-correct for `SameSite=Lax` but
-   still needs on-device confirmation (see #1). Legends Bracket screen not
-   started.
+3. **Pick'em / Legends Bracket screens.** Pick'em done -- as a real native
+   screen (`pickem.js`), not an iframe. The original iframe-the-live-page
+   version was confirmed broken on a real device (see the "never iframe a
+   page that needs a login" note above); it's since been rebuilt to call
+   the same JSON endpoints the live page's own client script uses
+   (`GET /api/app/pickem-card`, `/api/pickem/mine`, `/save`,
+   `/leaderboard`, `/history`) with the app's bearer token, same mechanism
+   as Rankings/Climb. Legends Bracket screen not started -- build it the
+   same way from the start, not as an iframe.
 4. **App icon / splash art.** Done. Source art in `assets/icon.png`,
    `assets/splash.png`, `assets/splash-dark.png`, generated from the
    GillyLab mark; all platform-specific resolutions (Android mipmaps/
@@ -149,3 +165,15 @@ should -- that needs a real build, which needs Xcode/Android Studio.
    `@capacitor/app`'s resume event, since adding that plugin is a native-
    platform change (Podfile/Gradle) unverified in this sandbox -- plain
    `visibilitychange` already works in a Capacitor WebView.
+6. **Roster + Matchup-style free browsing.** Not started. The spec calls
+   for "an entire free section, structured like it currently is" -- the app
+   is still missing the Active Roster page and a Matchup-equivalent screen
+   (fighter profiles, fight info dropdowns, etc.) that the website has on
+   `/roster` and `/matchup`. Both are free/logged-out-browsable on the
+   website already (`/data/roster.json` is in the public-assets allowlist
+   near the top of `worker/index.js`), so this should mostly be new app-side
+   UI consuming existing data, not new backend work -- check whether
+   `/matchup`'s own data needs a small `/api/app/*`-style endpoint the way
+   Rankings and Pick'em's card did, or whether it's already served plainly
+   enough to fetch directly. Per the note above: build as a real screen,
+   not an iframe of the live page.

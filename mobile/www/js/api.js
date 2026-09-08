@@ -36,6 +36,20 @@ window.GL_API = (function(){
     signup: function(email, password){ return request('/api/signup', { method:'POST', body:{ email:email, password:password } }); },
     rankings: function(){ return request('/api/app/rankings'); },
     refresh: function(){ return request('/api/app/refresh'); },
+    // Pick'em -- same JSON endpoints the website's own /pickem page calls
+    // client-side, now CORS-enabled for the app's origin (see appCorsHeaders
+    // in worker/index.js). Replaces the earlier iframe-the-live-page
+    // approach, which turned out to be broken: the SameSite=Lax session
+    // cookie never reaches a cross-origin iframe navigation (confirmed on a
+    // real device, not just reasoned about). These are plain fetch() calls
+    // instead, authenticated with the same bearer token as everything else.
+    pickemCard: function(){ return request('/api/app/pickem-card'); },
+    pickemName: function(){ return request('/api/pickem/name'); },
+    pickemSetName: function(name){ return request('/api/pickem/name', { method:'POST', body:{ name:name } }); },
+    pickemMine: function(eventSlug){ return request('/api/pickem/mine?event=' + encodeURIComponent(eventSlug)); },
+    pickemSave: function(payload){ return request('/api/pickem/save', { method:'POST', body:payload }); },
+    pickemLeaderboard: function(scope){ return request('/api/pickem/leaderboard?scope=' + encodeURIComponent(scope || 'all')); },
+    pickemHistory: function(eventSlug){ return request('/api/pickem/history' + (eventSlug ? '?event=' + encodeURIComponent(eventSlug) : '')); },
     request: request,
     BASE: BASE,
   };

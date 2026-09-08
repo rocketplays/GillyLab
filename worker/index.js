@@ -527,41 +527,44 @@ async function pickemSession(request, env) {
 async function getDisplayName(env, email) { const p = await pkGet(env, "pf:" + email); return (p && p.name) || null; }
 
 async function handlePickemGetName(request, env) {
+  const cors = appCorsHeaders(request);
   const s = await pickemSession(request, env);
-  if (!s) return json({ error: "unauthorized" }, 401);
-  return json({ name: await getDisplayName(env, s.email) });
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
+  return json({ name: await getDisplayName(env, s.email) }, 200, cors);
 }
 async function handlePickemSetName(request, env) {
+  const cors = appCorsHeaders(request);
   const s = await pickemSession(request, env);
-  if (!s) return json({ error: "unauthorized" }, 401);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
   const { name } = await readBody(request);
   const clean = cleanName(name);
-  if (!clean) return json({ error: "Pick a name 2–20 characters long (letters, numbers, spaces, _ . -)." }, 400);
+  if (!clean) return json({ error: "Pick a name 2–20 characters long (letters, numbers, spaces, _ . -)." }, 400, cors);
   const lower = clean.toLowerCase();
   const owner = await env.PICKS.get("nm:" + lower);
-  if (owner && owner !== s.email) return json({ error: "That name is taken — try another." }, 409);
+  if (owner && owner !== s.email) return json({ error: "That name is taken — try another." }, 409, cors);
   const prev = await getDisplayName(env, s.email);
   if (prev && prev.toLowerCase() !== lower) await env.PICKS.delete("nm:" + prev.toLowerCase());
   await env.PICKS.put("nm:" + lower, s.email);
   await pkPut(env, "pf:" + s.email, { name: clean });
   const ag = await pkGet(env, "ag:" + s.email);
   if (ag) { ag.name = clean; await pkPut(env, "ag:" + s.email, ag); }   // keep leaderboard name fresh
-  return json({ name: clean });
+  return json({ name: clean }, 200, cors);
 }
 
 // Save/overwrite this user's picks for an event. Rejected once the prelims have
 // started — that's the lock. Component points are clamped so a tampered client
 // can't inflate a score.
 async function handlePickemSave(request, env) {
+  const cors = appCorsHeaders(request);
   const s = await pickemSession(request, env);
-  if (!s) return json({ error: "unauthorized" }, 401);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
   const name = await getDisplayName(env, s.email);
-  if (!name) return json({ error: "needs-name" }, 428);   // client must set a display name first
+  if (!name) return json({ error: "needs-name" }, 428, cors);   // client must set a display name first
   const body = await readBody(request);
   const slug = String(body.eventSlug || "").slice(0, 120);
-  if (!slug) return json({ error: "missing event" }, 400);
+  if (!slug) return json({ error: "missing event" }, 400, cors);
   const prelimsAt = Date.parse(body.prelimsAt);
-  if (isFinite(prelimsAt) && Date.now() >= prelimsAt) return json({ error: "locked", locked: true }, 403);
+  if (isFinite(prelimsAt) && Date.now() >= prelimsAt) return json({ error: "locked", locked: true }, 403, cors);
   const CONF = { High: 1, Med: 1, Low: 1 }, METHOD = { "KO/TKO": 1, "Submission": 1, "Decision": 1 };
   const picks = (Array.isArray(body.picks) ? body.picks : []).slice(0, 20).map(p => {
     const winner = String(p.winner || ""), f1 = String(p.f1 || ""), f2 = String(p.f2 || "");
@@ -573,23 +576,24 @@ async function handlePickemSave(request, env) {
       wPts: clampNum(p.wPts, 0, 60), mPts: clampNum(p.mPts, 0, 20), rPts: clampNum(p.rPts, 0, 20),
     };
   }).filter(Boolean);
-  if (!picks.length) return json({ error: "no valid picks" }, 400);
+  if (!picks.length) return json({ error: "no valid picks" }, 400, cors);
   await pkPut(env, "pk:" + slug + ":" + s.email, {
     name, submittedAt: Date.now(), prelimsAt: body.prelimsAt || null,
     eventName: String(body.eventName || "").slice(0, 160), eventDate: String(body.eventDate || "").slice(0, 60),
     slug, picks,
   });
-  return json({ ok: true, saved: picks.length });
+  return json({ ok: true, saved: picks.length }, 200, cors);
 }
 
 // The user's own stored picks for an event (to restore + show a locked state).
 async function handlePickemMine(request, env, url) {
+  const cors = appCorsHeaders(request);
   const s = await pickemSession(request, env);
-  if (!s) return json({ error: "unauthorized" }, 401);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
   const slug = url.searchParams.get("event") || "";
   const rec = slug ? await pkGet(env, "pk:" + slug + ":" + s.email) : null;
   const locked = !!(rec && rec.prelimsAt && Date.now() >= Date.parse(rec.prelimsAt));
-  return json({ record: rec, locked });
+  return json({ record: rec, locked }, 200, cors);
 }
 
 // Finalized results, written by the results workflow and read from the bundle:
@@ -2008,48 +2012,51 @@ async function pickemBoardData(env, url) {
 }
 
 async function handlePickemHistory(request, env, url) {
+  const cors = appCorsHeaders(request);
   const s = await pickemSession(request, env);
-  if (!s) return json({ error: "unauthorized" }, 401);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
   // ?event=slug -> per-bout breakdown of that card for this user (drill-down).
   const slug = url.searchParams.get("event");
   if (slug) {
     await ensureGraded(env, url);
     const rec = await pkGet(env, "pk:" + slug + ":" + s.email);
-    if (!rec) return json({ error: "no picks for that event" }, 404);
+    if (!rec) return json({ error: "no picks for that event" }, 404, cors);
     const results = await loadResults(env, url);
     const ev = (results.events || []).find(e => e.slug === slug);
     const closing = await loadClosingOdds(env, url);
     const card = ev ? gradeCard(rec, withClosingOdds(ev.bouts, closing)) : { bouts: rec.picks.map(p => ({ ...p, pending: true, points: 0 })), total: 0, correct: 0 };
-    return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts: card.bouts });
+    return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts: card.bouts }, 200, cors);
   }
   const { ordered, aggs } = await pickemBoardData(env, url);
   const ag = (await pkGet(env, "ag:" + s.email)) || { name: await getDisplayName(env, s.email), byEvent: {} };
   const ranks = ag.name ? playerRanks(aggs, ordered, ag.name) : { all: null, last5: null };
-  return json({ ...userHistory(ag, ordered), rankAll: ranks.all, rankLast5: ranks.last5 });
+  return json({ ...userHistory(ag, ordered), rankAll: ranks.all, rankLast5: ranks.last5 }, 200, cors);
 }
 async function handlePickemLeaderboard(request, env, url) {
+  const cors = appCorsHeaders(request);
   const s = await pickemSession(request, env);
-  if (!s) return json({ error: "unauthorized" }, 401);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
   const scope = url.searchParams.get("scope") || "all";
   const myName = await getDisplayName(env, s.email);
   // The "current" scope grades the in-progress card live from the ESPN feed.
-  if (scope === "current") return json(await currentBoard(env, url, myName));
+  if (scope === "current") return json(await currentBoard(env, url, myName), 200, cors);
   const { ordered, aggs } = await pickemBoardData(env, url);
   const rows = buildLeaderboard(aggs, ordered, scope);
-  return json({ scope, rows: rows.slice(0, 100), me: myName ? (rows.find(r => r.name === myName) || null) : null });
+  return json({ scope, rows: rows.slice(0, 100), me: myName ? (rows.find(r => r.name === myName) || null) : null }, 200, cors);
 }
 // Public (subscriber) profile for any player by display name.
 async function handlePickemPlayer(request, env, url) {
+  const cors = appCorsHeaders(request);
   const s = await pickemSession(request, env);
-  if (!s) return json({ error: "unauthorized" }, 401);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
   const name = (url.searchParams.get("name") || "").trim();
-  if (!name) return json({ error: "missing name" }, 400);
+  if (!name) return json({ error: "missing name" }, 400, cors);
   const email = await env.PICKS.get("nm:" + name.toLowerCase());
-  if (!email) return json({ error: "not found" }, 404);
+  if (!email) return json({ error: "not found" }, 404, cors);
   const { ordered, aggs } = await pickemBoardData(env, url);
   const ag = (await pkGet(env, "ag:" + email)) || { name, byEvent: {} };
   const ranks = playerRanks(aggs, ordered, ag.name || name);
-  return json({ ...userHistory(ag, ordered), rankAll: ranks.all, rankLast5: ranks.last5 });
+  return json({ ...userHistory(ag, ordered), rankAll: ranks.all, rankLast5: ranks.last5 }, 200, cors);
 }
 
 /* ─────────────────────────────────── responses ─────────────────────────────── */
@@ -2601,6 +2608,36 @@ export default {
       // with a new full-length TTL for the same account. App-origin only,
       // like the token field on login/signup -- this is not a general
       // session-extension endpoint for the website's cookie flow.
+      // The app's native Pick'em screen needs the same card + scoring table
+      // /pickem embeds server-side into PK_EVT/PK_SCORE (see worker/pages.js) --
+      // there was no JSON door to that data before, since the website only ever
+      // needed it inline in the page it already controls. Requires a session
+      // (Pick'em is a free FEATURE, not a free PAGE, unlike Climb) but is
+      // otherwise the same loadUpcomingCard/loadPickemScore the website itself
+      // reads from, just reshaped as JSON for a fetch() caller.
+      if (path === "/api/app/pickem-card" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "unauthorized" }, 401, cors);
+        const [card, rawScore] = await Promise.all([loadUpcomingCard(env, url), loadPickemScore(env, url)]);
+        if (!card) return json({ error: "No card available right now" }, 502, cors);
+        // loadPickemScore's raw shape is { bouts: [{id, ps1, ps2, wPts, mPts,
+        // rPts}, ...] } -- same array the /pickem route reshapes into a by-id
+        // map before embedding as PK_SCORE (and pulls ps1/ps2 photo slugs
+        // from). Do the same reshape here so the app gets the identical
+        // {boutId: {wPts, mPts, rPts}} map, and overlay the photo slugs onto
+        // the card the same way.
+        const scoreById = {};
+        if (rawScore && Array.isArray(rawScore.bouts)) {
+          rawScore.bouts.forEach((b) => {
+            if (!b || !b.id) return;
+            scoreById[b.id] = { wPts: b.wPts, mPts: b.mPts, rPts: b.rPts };
+            const target = card.bouts.find((x) => x.id === b.id);
+            if (target) { if (b.ps1) target.s1 = b.ps1; if (b.ps2) target.s2 = b.ps2; }
+          });
+        }
+        return json({ card, score: scoreById }, 200, cors);
+      }
       if (path === "/api/app/refresh" && request.method === "GET") {
         const cors = appCorsHeaders(request);
         if (!cors["Access-Control-Allow-Origin"]) return json({ error: "Not found" }, 404);
