@@ -646,7 +646,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    uneven ("funky"). flex:1 on each button keeps the pill itself compact
    (it doesn't span the full row) but makes the two halves identically
    sized and centered, which is what actually reads as clean. */
-.rk-toggle{ display:flex; gap:4px; max-width:min(100%, 320px); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; }
+.rk-toggle{ display:flex; gap:4px; max-width:min(100%, 320px); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:.9rem; }
 .rk-toggle button{ flex:1; text-align:center; background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.5rem .6rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
 .rk-toggle button.sel{ background:var(--accent); color:var(--on-accent); }
 /* Wrapped grid, same as the website's own division tabs -- stacked onto as
