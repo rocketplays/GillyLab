@@ -498,21 +498,27 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 @media (max-width:360px){ .fp-lock-grid{ grid-template-columns:1fr; } }
 
 /* ---- Rankings ---- */
-.rk-toggle{ display:inline-flex; gap:4px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; }
-.rk-toggle button{ background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.45rem .8rem; border-radius:7px; cursor:pointer; }
+/* A proper two-segment control (each half the same fixed width) instead of
+   two content-sized buttons side by side -- "Media Panel" and "Meta AI" are
+   different lengths, so shrink-to-content made the pill look lopsided/
+   uneven ("funky"). flex:1 on each button keeps the pill itself compact
+   (it doesn't span the full row) but makes the two halves identically
+   sized and centered, which is what actually reads as clean. */
+.rk-toggle{ display:flex; gap:4px; max-width:min(100%, 320px); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; }
+.rk-toggle button{ flex:1; text-align:center; background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.5rem .6rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
 .rk-toggle button.sel{ background:var(--accent); color:var(--on-accent); }
-/* A phone's viewport is much narrower than the site's own desktop/tablet
-   column, so the same wrapped chip grid that works there reads as cramped
-   here -- ~18 divisions wrapping into a tight 3-4-per-row block. A single
-   horizontally-scrolling row with roomier chips reads much less packed. */
-.rk-tabs{
-  display:flex; flex-wrap:nowrap; gap:.5rem; margin:0 -1.1rem .9rem; padding:0 1.1rem .2rem;
-  overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
-}
-.rk-tabs::-webkit-scrollbar{ display:none; }
+/* Wrapped grid, same as the website's own division tabs -- stacked onto as
+   many rows as it takes, fully inside the page's normal side padding (no
+   edge-to-edge bleed, no horizontal scroll). A prior pass made this a
+   single horizontally-scrolling row instead, reasoning that the site's
+   wrapped grid would look cramped on a phone -- but a scrolling strip that
+   visibly runs chips past the right edge reads as broken/overflowing, not
+   as "swipe for more". Comfortable per-chip padding plus a slightly smaller
+   label keeps a wrapped grid from feeling cramped at this width instead. */
+.rk-tabs{ display:flex; flex-wrap:wrap; gap:.5rem; margin:0 0 .9rem; }
 .rk-tab{
   background:var(--card); border:1px solid var(--border); color:var(--muted); border-radius:8px;
-  padding:.55rem .95rem; font:inherit; font-size:.74rem; letter-spacing:.05em; text-transform:uppercase;
+  padding:.5rem .8rem; font:inherit; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase;
   font-weight:700; cursor:pointer; white-space:nowrap; flex:0 0 auto;
 }
 .rk-tab.sel{ color:var(--accent); border-color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); }
