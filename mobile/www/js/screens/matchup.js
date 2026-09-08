@@ -215,8 +215,11 @@ function mountMatchup(container){
   // isDWCSRaw()/the worker's isDwcsEvent() use, just computed once per card
   // (see specialClassFor/cardBodyHTML) rather than needing a per-fight flag
   // from the API.
+  function canSim(f, special){
+    return !!subscribed && !f.result && special !== 'mf-dwcs';
+  }
   function simBarHTML(f, special){
-    if (!subscribed || f.result || special === 'mf-dwcs') return '';
+    if (!canSim(f, special)) return '';
     return (
       '<button type="button" class="mf-sim-bar" data-sim-a="' + esc(f.f1) + '" data-sim-b="' + esc(f.f2) + '" data-sim-rounds="' + (f.rounds === 5 ? 5 : 3) + '">' +
         'Simulate Matchup' +
@@ -230,7 +233,7 @@ function mountMatchup(container){
       ? resultHTML(f, res)
       : (tapeHTML(f.tape) + (isMain ? breakdownHTML(f, breakdown, deepDive, eventSlug) : lockedTeaserHTML()));
     return (
-      '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + '">' +
+      '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + (canSim(f, special) ? ' mf-card--sim' : '') + '">' +
         '<div class="mf-row">' +
           '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + '</div><div class="mf-rec">' + esc(f.rec1 || '') + '</div></div></div>' +
           '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + (res ? '' : '<div class="mf-odds"><b>' + esc(fmtOdds(f.o1)) + '</b> · <b>' + esc(fmtOdds(f.o2)) + '</b></div>') + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +

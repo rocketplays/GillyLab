@@ -83,10 +83,19 @@ window.GL_SIMULATOR = (function(){
   function pctBarHTML(pctA, nameA, nameB){
     var a = Math.round(pctA * 100);
     var b = 100 - a;
+    // .sim-probbar-a (accent/green) always used to render on the LEFT
+    // regardless of who it actually belonged to -- so the bar looked like
+    // it "defaulted" green-left instead of tracking the favorite. These
+    // class names now mean "favorite"/"underdog", not "fighter A"/"fighter
+    // B" -- assigned by which side is actually >= 50%, so the green always
+    // sits on whoever the model favors, left or right.
+    var aFav = a >= b;
+    var clsA = aFav ? 'sim-probbar-a' : 'sim-probbar-b';
+    var clsB = aFav ? 'sim-probbar-b' : 'sim-probbar-a';
     return (
       '<div class="sim-probbar">' +
-        '<div class="sim-probbar-a" style="width:' + a + '%">' + (a >= 12 ? a + '%' : '') + '</div>' +
-        '<div class="sim-probbar-b" style="width:' + b + '%">' + (b >= 12 ? b + '%' : '') + '</div>' +
+        '<div class="' + clsA + '" style="width:' + a + '%">' + (a >= 12 ? a + '%' : '') + '</div>' +
+        '<div class="' + clsB + '" style="width:' + b + '%">' + (b >= 12 ? b + '%' : '') + '</div>' +
       '</div>' +
       '<div class="sim-probbar-labels">' +
         '<span>' + esc(nameA) + (a < 12 ? ' ' + a + '%' : '') + '</span>' +

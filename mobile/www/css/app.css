@@ -389,12 +389,20 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .mf-chip.active .mf-chip-d{ color:var(--accent); opacity:.8; }
 .mf-sechdr{ font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:1.1rem 0 .5rem; }
 .mf-sechdr:first-child{ margin-top:0; }
-.mf-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:.9rem; margin-bottom:.7rem; }
+.mf-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:.75rem; margin-bottom:.55rem; }
 .mf-card.main{ border-color:color-mix(in srgb, var(--accent) 45%, var(--border)); }
-.mf-row{ display:flex; align-items:flex-start; gap:.5rem; }
-.mf-side{ flex:1; display:flex; align-items:center; gap:.5rem; min-width:0; }
+/* A card WITH a Simulate Matchup bar drops its own bottom padding -- that
+   padding is reserved space below the last child regardless of any
+   negative margin on it, so .mf-sim-bar's -.9rem side bleed still left a
+   gap between the button and the card's actual bottom border. With no
+   padding-bottom to reserve, the button (the card's true last child
+   whenever it's present) sits flush against the border on its own -- no
+   negative bottom margin needed either, see .mf-sim-bar below. */
+.mf-card--sim{ padding-bottom:0; }
+.mf-row{ display:flex; align-items:flex-start; gap:.45rem; }
+.mf-side{ flex:1; display:flex; align-items:center; gap:.45rem; min-width:0; }
 .mf-side.right{ flex-direction:row-reverse; text-align:right; }
-.mf-av{ position:relative; display:block; width:38px; height:38px; flex-shrink:0; }
+.mf-av{ position:relative; display:block; width:34px; height:34px; flex-shrink:0; }
 .mf-av-initials{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   border-radius:50%; background:var(--bg); border:1px solid var(--border);
@@ -433,8 +441,8 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   transition:grid-template-rows .3s ease, opacity .22s ease, margin-top .3s ease;
   margin-top:0;
 }
-.mf-panel.open{ grid-template-rows:1fr; opacity:1; margin-top:.8rem; }
-.mf-panel-inner{ min-height:0; overflow:hidden; padding-top:.8rem; border-top:1px solid var(--border); }
+.mf-panel.open{ grid-template-rows:1fr; opacity:1; margin-top:.65rem; }
+.mf-panel-inner{ min-height:0; overflow:hidden; padding-top:.65rem; border-top:1px solid var(--border); }
 .mf-lock{ padding:.2rem 0; }
 .mf-lock-t{ font-size:.8rem; font-weight:700; line-height:1.4; }
 .mf-result{ font-size:.86rem; line-height:1.5; }
@@ -446,10 +454,10 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    all-accent-colored version this used before. */
 .mf-dd-bar{
   display:flex; align-items:center; justify-content:center; gap:.5rem; width:100%;
-  margin:0 0 .8rem;
+  margin:0 0 .65rem;
   background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), color-mix(in srgb, var(--accent) 3%, transparent));
   border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); color:var(--text);
-  border-radius:8px; padding:.6rem; font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  border-radius:8px; padding:.5rem; font-family:'Barlow Condensed',sans-serif; font-weight:700;
   font-size:.86rem; letter-spacing:.1em; text-transform:uppercase; cursor:pointer;
   transition:background .15s, border-color .15s, transform .12s;
 }
@@ -459,20 +467,28 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 /* Mirrors the site's own .fight-sim-bar -- a subtle full-bleed footer strip
    under the fight row (border-top only, faint accent tint, small uppercase
    text), not a second bordered/filled pill competing with the Deep Dive
-   bar above. Bleeds past .mf-card's own padding via negative margins to
-   reach the card's edges, same as the site's version reaching the edges of
-   its own (padding-less, overflow:hidden) .fight-row grid container. */
+   bar above. Bleeds past .mf-card's own left/right padding via negative
+   margins to reach the card's side edges, same as the site's version
+   reaching the edges of its own (padding-less, overflow:hidden) .fight-row
+   grid container. The BOTTOM edge needs no such trick: .mf-card--sim (see
+   above) drops its own bottom padding whenever this button is present, so
+   the button -- always the card's true last child in that case -- lands
+   flush against the border on its own, through plain normal flow. An
+   earlier version tried to bleed the bottom the same way as the sides
+   (negative bottom margin), which doesn't work: .mf-card's padding-bottom
+   is reserved space that exists independent of a child's margin, so it
+   just left an empty gap below the button instead of closing it. */
 .mf-sim-bar{
   /* Every other full-width button in this file (.gl-btn, .mf-dd-bar) sets an
      explicit width rather than relying on display:block's auto-width --
      for good reason: a plain <button> keeps its native appearance's
      intrinsic (shrink-to-fit) sizing hint in this WebView regardless of
      display:block, so width:auto here rendered as a small, left-aligned
-     button instead of a full-width bar. calc(100% + 1.8rem) explicitly
+     button instead of a full-width bar. calc(100% + 1.5rem) explicitly
      matches the negative left/right margins below (100% of the content box
-     this button would normally have, plus the two 0.9rem paddings it's
-     bleeding past), landing it flush with .mf-card's edges either way. */
-  display:block; width:calc(100% + 1.8rem); margin:.7rem -.9rem -.9rem; border:0; border-top:1px solid var(--border);
+     this button would normally have, plus the two 0.75rem paddings it's
+     bleeding past), landing it flush with .mf-card's side edges either way. */
+  display:block; width:calc(100% + 1.5rem); margin:.6rem -.75rem 0; border:0; border-top:1px solid var(--border);
   border-radius:0 0 11px 11px;
   background:color-mix(in srgb, var(--accent) 6%, transparent); color:var(--accent);
   font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.68rem; letter-spacing:.1em;
