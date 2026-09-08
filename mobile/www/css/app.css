@@ -399,26 +399,42 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    whenever it's present) sits flush against the border on its own -- no
    negative bottom margin needed either, see .mf-sim-bar below. */
 .mf-card--sim{ padding-bottom:0; }
-.mf-row{ display:flex; align-items:flex-start; gap:.45rem; }
-.mf-side{ flex:1; display:flex; align-items:center; gap:.45rem; min-width:0; }
+/* Mirrors the site's own .fight-row/.fighter-cell/.fight-center structure
+   (index.html's fightRow(), the events-page tile) -- a real 3-column grid
+   with a narrow, BORDERED center column, rather than a flex row with no
+   internal division. Values below are the site's own ultra-narrow-phone
+   breakpoint (index.html ~3465-3476, its tightest/most-mobile tuning, the
+   one that actually applies at this app's screen width) rather than its
+   desktop defaults: 62px center column, 30px avatars, uppercase Barlow
+   Condensed names -- this is what actually makes the site's tiles read as
+   "clean" at phone width, not just smaller versions of the desktop tile. */
+.mf-row{ display:grid; grid-template-columns:1fr 62px 1fr; align-items:center; }
+.mf-side{ display:flex; align-items:center; gap:.3rem; min-width:0; overflow:hidden; }
 .mf-side.right{ flex-direction:row-reverse; text-align:right; }
-.mf-av{ position:relative; display:block; width:34px; height:34px; flex-shrink:0; }
+.mf-av{ position:relative; display:block; width:30px; height:30px; flex-shrink:0; }
 .mf-av-initials{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   border-radius:50%; background:var(--bg); border:1px solid var(--border);
-  color:var(--muted); font-weight:800; font-size:.68rem;
+  color:var(--muted); font-weight:800; font-size:.6rem;
 }
 .mf-av-photo{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; background:var(--bg); border:1px solid var(--border); }
 .mf-meta{ min-width:0; }
-.mf-rank{ font-size:.66rem; font-weight:800; color:var(--accent); }
-.mf-name{ font-weight:700; font-size:.85rem; line-height:1.2; }
+.mf-rank{ font-size:.58rem; font-weight:600; color:var(--accent); letter-spacing:.1em; }
+.mf-name{
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.75rem;
+  letter-spacing:.02em; text-transform:uppercase; line-height:1.15;
+  white-space:normal; overflow:visible; text-overflow:clip;
+}
 .mf-namebtn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:700; color:var(--text); cursor:pointer; text-align:inherit; }
 .mf-namebtn:active{ color:var(--accent); }
-.mf-rec{ font-size:.72rem; color:var(--muted); }
-.mf-center{ flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:.15rem; padding-top:.15rem; }
+.mf-rec{ font-size:.62rem; color:var(--muted); }
+.mf-center{
+  flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.15rem; padding:.5rem .2rem; border-left:1px solid var(--border); border-right:1px solid var(--border);
+}
 .mf-vs{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.8rem; color:var(--muted); }
-.mf-wt{ font-size:.62rem; color:var(--muted); text-align:center; max-width:70px; }
-.mf-odds{ font-size:.72rem; color:var(--muted); white-space:nowrap; }
+.mf-wt{ font-size:.47rem; letter-spacing:0; color:var(--muted); text-align:center; line-height:1.2; max-width:none; }
+.mf-odds{ font-size:.68rem; color:var(--muted); white-space:nowrap; }
 .mf-meth{ font-size:.7rem; font-weight:800; color:var(--accent); }
 /* Mirrors the site's own .fight-info-toggle exactly (small bordered pill,
    muted until hovered/open) rather than the plain underlined text link this

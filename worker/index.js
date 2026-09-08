@@ -2744,13 +2744,91 @@ export default {
       if (path === "/api/app/matchup" && request.method === "GET") {
         const cors = appCorsHeaders(request);
         const wantSlug = (url.searchParams.get("event") || "").trim().toLowerCase();
-        const [profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw] = await Promise.all([
+        const [profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw, rankingsRaw, rankingsMetaRaw] = await Promise.all([
           loadProfileSlugs(env, url),
           loadAssetJson(env, url, "/data/event.json"),
           loadAssetJson(env, url, "/data/event-recent.json"),
           loadAssetJson(env, url, "/data/fighter-lite.json"),
           loadAssetJson(env, url, "/data/odds.json"),
+          loadAssetJson(env, url, "/data/rankings.json"),
+          loadAssetJson(env, url, "/data/rankings-meta.json"),
         ]);
+        // Fighter rank badges for the Card page's tiles -- ported from index.html's
+        // own normalizeFighterNameForMatch/buildRankLookupFromPayload/
+        // fighterDivisionRankBadge/fighterMetaRankBadge/eventCardRankBadge (site
+        // builds these client-side from the same two data/rankings*.json files;
+        // this app builds its own JSON server-side, so nothing here ever reaches
+        // a browser to compute it there). Kept as a straight port rather than a
+        // sliceFn() extraction (like gen-fight-sim.cjs does for the simulator)
+        // since this logic is small, pure string-formatting and doesn't touch
+        // the DOM the way renderMatchupBreakdown does -- the sliceFn() stub-
+        // document trick exists specifically to sidestep DOM calls this doesn't
+        // have. Diverges from the site in one place, deliberately: the site
+        // always renders a badge, falling back to the literal "NR" for an
+        // unranked fighter (every prelim bout looks the same as a ranked one
+        // otherwise); the app instead returns '' for "no rank of any kind",
+        // which the tile markup below treats as "no badge at all" -- avoids
+        // "NR" clutter on tiles for fighters nobody was tracking rank on to
+        // begin with, while still showing the exact site-format "#3" / "C" /
+        // "IC" / "#3 | #5 Meta AI" the moment a fighter actually IS ranked.
+        const normalizeNameForRank = (name) => String(name == null ? "" : name).trim().toLowerCase()
+          .normalize("NFD").replace(/[̀-ͯ]/g, "")
+          .replace(/ł/g, "l").replace(/ø/g, "o").replace(/đ/g, "d").replace(/ð/g, "d")
+          .replace(/ß/g, "ss").replace(/æ/g, "ae").replace(/œ/g, "oe").replace(/þ/g, "th");
+        const rankBadgeLabelForEntry = (e) => {
+          if (e.isChampion) {
+            const interim = e.championStatus === "interim" || (e.fighter && e.fighter.championStatus === "interim");
+            return interim ? "IC" : "C";
+          }
+          return e.rank != null ? "#" + e.rank : "";
+        };
+        const buildRankLookup = (payload) => {
+          const lookup = {};
+          if (payload && Array.isArray(payload.data)) {
+            payload.data.forEach((e) => {
+              const division = e.division || "";
+              if (division.indexOf("Pound-for-Pound") !== -1) return;
+              const label = rankBadgeLabelForEntry(e);
+              if (!label) return;
+              const key = normalizeNameForRank(e.fighterName);
+              if (key) lookup[key] = label;
+              // Also key the canonicalSimName()-resolved name, mirroring the
+              // site's own canonical-roster-name fallback (via
+              // resolveCanonicalFighterName there) for a ranking feed that uses
+              // a fuller/alias name than the rest of the site -- e.g. "Jose
+              // Miguel Delgado" -> "Jose Delgado" -- reusing the same
+              // NAME_ALIASES resolution the fight simulator already needed for
+              // this exact class of mismatch (see canonicalSimName import).
+              const canonKey = normalizeNameForRank(canonicalSimName(e.fighterName));
+              if (canonKey && canonKey !== key) lookup[canonKey] = label;
+            });
+          }
+          return lookup;
+        };
+        const officialRankLookup = buildRankLookup(rankingsRaw);
+        const metaRankLookup = buildRankLookup(rankingsMetaRaw);
+        const divisionRankBadge = (name) => {
+          const key = normalizeNameForRank(name);
+          return key ? (officialRankLookup[key] || "") : "";
+        };
+        const metaRankBadge = (name) => {
+          const key = normalizeNameForRank(name);
+          return key ? (metaRankLookup[key] || "") : "";
+        };
+        const rankBadgeFor = (apiName) => {
+          if (!apiName) return "";
+          const off = divisionRankBadge(apiName) || divisionRankBadge(canonicalSimName(apiName));
+          const meta = metaRankBadge(apiName) || metaRankBadge(canonicalSimName(apiName));
+          if (!off && !meta) return "";
+          let label = off || "NR";
+          if (meta) label += " | " + meta + " Meta AI";
+          return label;
+        };
+        const withRankBadges = (fights) => (fights || []).map((f) => Object.assign({}, f, {
+          rank1: rankBadgeFor(f.f1),
+          rank2: rankBadgeFor(f.f2),
+        }));
+
         const upcomingEvents = ((upcomingRaw && upcomingRaw.data) || []).slice().sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
         const pastEvents = ((pastRaw && pastRaw.data) || []).slice().sort((a, b) => Date.parse(b.startsAt || 0) - Date.parse(a.startsAt || 0));
         const fighterLiteBySlug = (lite && lite.bySlug) || {};
@@ -2813,10 +2891,10 @@ export default {
         // links to a fighter profile that's guaranteed to exist.
         if (card) {
           card = Object.assign({}, card, {
-            fights: (card.fights || []).map((f) => Object.assign({}, f, {
+            fights: withRankBadges((card.fights || []).map((f) => Object.assign({}, f, {
               s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
               s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
-            })),
+            }))),
           });
         }
 
@@ -2903,10 +2981,10 @@ export default {
         const carousel = carouselRaws.map((raw) => {
           const c = eventToCard(raw, fighterLiteBySlug, false, oddsData);
           const cDD = !isDwcsEvent(c.event) ? ddDataFor(c.slug) : null;
-          const patchedFights = (c.fights || []).map((f) => Object.assign({}, f, {
+          const patchedFights = withRankBadges((c.fights || []).map((f) => Object.assign({}, f, {
             s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
             s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
-          }));
+          })));
           return Object.assign({}, c, {
             fights: patchedFights,
             breakdown: mainsMap[c.slug] || null,
