@@ -2822,11 +2822,34 @@ export default {
           return (e && e.striking && e.striking.all && e.grappling && e.grappling.all) ? e : null;
         };
         const cardDD = !isDwcsEvent(card && card.event) ? ddDataFor(card && card.slug) : null;
-        // The app's own UI only ever reads `.available` (the button just opens
-        // the real /matchup?event=<slug> in the system browser -- see
-        // matchup.js's data-deepdive handler) but n1/n2 ride along for parity
-        // with the site's own JSON shape and any future in-app use.
+        // `.available` still drives the button itself; n1/n2 ride along for
+        // parity with the site's own JSON shape.
         const deepDive = cardDD ? { available: true, n1: cardDD.n1, n2: cardDD.n2 } : { available: false };
+        // The full modal payload -- same shape worker/pages.js's own
+        // mhEntries/ddBtnFor build for the site's Matchup Analytics Deep Dive
+        // overlay: header (name/photo-slug/record/weight/rounds, cross-referenced
+        // from the owning card's own main fight so the modal never shows the
+        // wrong photo after a late change) plus the striking/grappling grids
+        // themselves (already-rendered HTML from gen-matchup-free.cjs, same as
+        // the site uses -- not reimplemented client-side). The app renders this
+        // in its own in-app modal instead of opening gillylab.com in the system
+        // browser (see matchup.js's mfHub/wireHub).
+        const buildHub = (ownerCard, dd) => {
+          if (!dd) return null;
+          const mf = ((ownerCard && ownerCard.fights) || []).find((x) => x.main && x.f1 === dd.n1 && x.f2 === dd.n2) || null;
+          return {
+            n1: dd.n1, n2: dd.n2,
+            s1: mf ? mf.s1 : null,
+            s2: mf ? mf.s2 : null,
+            rec1: (mf && mf.rec1) || "",
+            rec2: (mf && mf.rec2) || "",
+            weight: (mf && mf.weight) || "",
+            rounds: mf ? mf.rounds : null,
+            striking: dd.striking,
+            grappling: dd.grappling,
+          };
+        };
+        const hub = buildHub(card, cardDD);
 
         // The full pre-fight breakdown (style/pace/path to victory/storylines/
         // common opponents/finish rate) is precomputed for the current card AND
@@ -2871,13 +2894,15 @@ export default {
         const carousel = carouselRaws.map((raw) => {
           const c = eventToCard(raw, fighterLiteBySlug, false, oddsData);
           const cDD = !isDwcsEvent(c.event) ? ddDataFor(c.slug) : null;
+          const patchedFights = (c.fights || []).map((f) => Object.assign({}, f, {
+            s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
+            s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
+          }));
           return Object.assign({}, c, {
-            fights: (c.fights || []).map((f) => Object.assign({}, f, {
-              s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
-              s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
-            })),
+            fights: patchedFights,
             breakdown: mainsMap[c.slug] || null,
             deepDive: cDD ? { available: true, n1: cDD.n1, n2: cDD.n2 } : { available: false },
+            hub: buildHub(Object.assign({}, c, { fights: patchedFights }), cDD),
           });
         });
 
@@ -2900,8 +2925,13 @@ export default {
           isPast: isPastView,
           deepDive,
           breakdown,
+          hub,
           carousel,
           past: pastFiltered.map(liteEvent),
+          // Sent alongside `hub`/each carousel entry's `hub` rather than only
+          // when one exists, so the app can inject it once up front and never
+          // has to re-check "do I already have the CSS" per event switch.
+          hubCss: (matchupFree && matchupFree.css) || "",
         }, 200, cors);
       }
 

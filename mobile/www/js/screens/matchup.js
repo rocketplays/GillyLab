@@ -22,13 +22,16 @@
 // carousel entry below carries its own `breakdown`/`deepDive`, same shape as
 // the top-level `card`'s.
 //
-// The deep dive itself is NOT reimplemented natively -- it's raw HTML/CSS
+// The deep dive itself is NOT reimplemented natively -- it's raw HTML
 // gen-matchup-free.cjs pre-renders from the live site's own build (see
-// worker/matchup-free.js), meant to be dropped into a page that already
-// carries its supporting styles/scripts. Opening the real page in the
-// system browser (same external link-out pattern already used for
-// Premium/subscribe) shows the exact same free content with zero risk of
-// it rendering wrong.
+// worker/matchup-free.js: the same striking/grappling grid markup the
+// website's own #mh-box modal shows), dropped straight into this screen's
+// own in-app modal (#mh-overlay/#mh-box, same IDs/classes as the site so
+// its shipped `hubCss` applies unmodified) instead of opening gillylab.com
+// in the system browser. Tapping "Matchup Analytics Deep Dive" on ANY main
+// event -- the featured card or any carousel slide -- opens that event's
+// own entry (see `hubData`, keyed by slug from `data.hub`/each carousel
+// entry's own `.hub`), never just the featured card's.
 window.GL_ROUTER.register('matchup', {
   title: 'Card',
   tab: 'matchup',
@@ -42,6 +45,17 @@ function mountMatchup(container){
 
   var data = null;       // last successful /api/app/matchup response
   var searchSeq = 0;     // ignore a stale search response that resolves late
+
+  // Matchup Analytics Deep Dive modal data, keyed by event slug -- the
+  // featured card's own `hub` plus every carousel slide's own `hub`, so a
+  // slide's button opens THAT event's analysis, not always the featured
+  // card's. Rebuilt on every load() (see below); the modal DOM itself
+  // (#mh-overlay/#mh-box) is part of render()'s own markup, same as any
+  // other screen content, but its CSS/behavior mirror the site's #mh-box
+  // exactly -- see hubModalHTML()/wireHub() below.
+  var hubData = {};
+  var hubState = { slug: null, tab: 'striking', filter: 'all' };
+  var hubScrollY = 0;
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
   function fmtDate(iso, opts){
@@ -93,7 +107,7 @@ function mountMatchup(container){
     );
   }
 
-  function breakdownHTML(f, t, deepDive){
+  function breakdownHTML(f, t, deepDive, eventSlug){
     if (!t) return lockedTeaserHTML();
     var sA = surname(f.f1), sB = surname(f.f2);
     var parts = [];
@@ -147,8 +161,12 @@ function mountMatchup(container){
         .concat((story.b || []).map(function(x){ return '<div class="sr-story-line"><span class="b">' + esc(sB) + '</span> ' + esc(x) + '</div>'; }));
       parts.push('<div class="sr-common"><div class="sr-common-title">Storylines</div>' + lines.join('') + '</div>');
     }
-    var ddBtn = deepDive && deepDive.available
-      ? '<button type="button" class="mf-dd-bar" data-deepdive="1">Matchup Analytics Deep Dive <span class="mf-dd-go">›</span></button>'
+    // Carries the OWNING event's slug (the featured card, or whichever
+    // carousel slide this bout belongs to) -- not assumed to be
+    // data.card.slug -- so opening the modal (see wire()'s [data-deepdive]
+    // handler / hubOpen()) always shows that event's own analysis.
+    var ddBtn = (deepDive && deepDive.available && eventSlug)
+      ? '<button type="button" class="mf-dd-bar" data-deepdive="' + esc(eventSlug) + '">Matchup Analytics Deep Dive <span class="mf-dd-go">›</span></button>'
       : '';
     return ddBtn + parts.join('');
   }
@@ -167,11 +185,11 @@ function mountMatchup(container){
   // worker/index.js comment above), the locked teaser otherwise. Non-main
   // bouts always get the locked teaser regardless -- only ever the main
   // event is free, on any card.
-  function fightHTML(f, isMain, deepDive, breakdown){
+  function fightHTML(f, isMain, deepDive, breakdown, eventSlug){
     var res = f.result || null;
     var panelBody = res
       ? resultHTML(f, res)
-      : (tapeHTML(f.tape) + (isMain ? breakdownHTML(f, breakdown, deepDive) : lockedTeaserHTML()));
+      : (tapeHTML(f.tape) + (isMain ? breakdownHTML(f, breakdown, deepDive, eventSlug) : lockedTeaserHTML()));
     return (
       '<div class="mf-card' + (isMain ? ' main' : '') + '">' +
         '<div class="mf-row">' +
@@ -190,7 +208,7 @@ function mountMatchup(container){
     var bySec = {};
     c.fights.forEach(function(f){ var s = f.section || 'Main Card'; (bySec[s] = bySec[s] || []).push(f); });
     return Object.keys(bySec).sort(function(a, b){ return (secOrder.indexOf(a) + 1 || 99) - (secOrder.indexOf(b) + 1 || 99); }).map(function(s){
-      return '<div class="mf-sechdr">' + esc(s) + '</div>' + bySec[s].map(function(f){ return fightHTML(f, !!f.main, deepDive, breakdown); }).join('');
+      return '<div class="mf-sechdr">' + esc(s) + '</div>' + bySec[s].map(function(f){ return fightHTML(f, !!f.main, deepDive, breakdown, c.slug); }).join('');
     }).join('');
   }
 
@@ -280,6 +298,147 @@ function mountMatchup(container){
     el.innerHTML = v.text != null ? esc(v.text) : (v.num + '<span class="mf-cd-unit">' + esc(v.unit) + '</span>');
   }
 
+  // ---- Matchup Analytics Deep Dive modal -----------------------------
+  // Same IDs/classes as the website's own #mh-box (worker/pages.js) so its
+  // shipped `hubCss` (worker/matchup-free.js) applies with zero rewriting --
+  // this is the site's exact modal, not a native reimplementation, same
+  // reasoning as the striking/grappling grid markup itself already being
+  // pre-rendered server-side.
+  function hubModalHTML(){
+    return (
+      '<div id="mh-overlay"></div>' +
+      '<div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics">' +
+        '<div class="mh-hd" id="mh-hd"></div>' +
+        '<div class="mh-tabs" id="mh-tabs">' +
+          '<button type="button" class="mh-tab on" data-mh-tab="striking">Striking</button>' +
+          '<button type="button" class="mh-tab" data-mh-tab="grappling">Grappling</button>' +
+          '<button type="button" class="mh-x" id="mhCloseBtn" aria-label="Close">&times;</button>' +
+        '</div>' +
+        '<div class="mh-filter" id="mh-filter">' +
+          '<span class="mh-filter-lbl">Fights</span>' +
+          '<button type="button" class="mh-filter-btn on" data-mh-filter="all">All</button>' +
+          '<button type="button" class="mh-filter-btn" data-mh-filter="win">Wins</button>' +
+          '<button type="button" class="mh-filter-btn" data-mh-filter="loss">Losses</button>' +
+        '</div>' +
+        '<div class="mh-body" id="mh-body"></div>' +
+      '</div>'
+    );
+  }
+
+  var HUB_AV_STYLE = 'width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;color:#fff';
+  function hubInitials(nm){
+    var p = String(nm || '').trim().split(/\s+/).filter(Boolean);
+    if (!p.length) return '?';
+    if (p.length === 1) return p[0].slice(0, 2).toUpperCase();
+    return (p[0][0] + p[p.length - 1][0]).toUpperCase();
+  }
+  // Same markup/photo path as the site's own hubSide()/mhHubSide() -- kept
+  // as its own small avatar here (not .mf-av) since the modal header CSS
+  // (mh-hd-av/mh-hd-f) comes straight from the site's stylesheet, which
+  // expects this exact inline-styled circle, not the app's own avatar class.
+  function hubSide(nm, slug, rec, right){
+    var av = slug
+      ? '<div style="' + HUB_AV_STYLE + '"><img src="' + window.GL_FIGHTER.PHOTO_BASE + esc(slug) + '.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\'' + esc(hubInitials(nm)) + '\'"></div>'
+      : '<div style="' + HUB_AV_STYLE + '">' + esc(hubInitials(nm)) + '</div>';
+    return (
+      '<div class="mh-hd-f' + (right ? ' r' : '') + '">' +
+        '<span class="mh-hd-av">' + av + '</span>' +
+        '<div class="mh-hd-tx"><div class="mh-hd-nm">' + esc(nm) + '</div>' + (rec ? '<div class="mh-hd-rc">' + esc(rec) + '</div>' : '') + '</div>' +
+      '</div>'
+    );
+  }
+  function hubShowPane(){
+    var key = hubState.tab + '-' + hubState.filter;
+    container.querySelectorAll('[data-mh-pane]').forEach(function(p){ p.style.display = (p.getAttribute('data-mh-pane') === key) ? '' : 'none'; });
+    var b = container.querySelector('#mh-body');
+    if (b) b.scrollTop = 0;
+  }
+  function hubRenderEntry(){
+    var e = hubData[hubState.slug];
+    if (!e) return;
+    var subBits = [e.weight, e.rounds ? (e.rounds + ' RDS') : ''].filter(Boolean);
+    var mid = '<div class="mh-hd-vs">VS</div>' + (subBits.length ? '<div class="mh-hd-sub">' + esc(subBits.join(' · ')) + '</div>' : '');
+    var hd = container.querySelector('#mh-hd');
+    if (hd) hd.innerHTML = hubSide(e.n1, e.s1, e.rec1, false) + '<div class="mh-hd-mid">' + mid + '</div>' + hubSide(e.n2, e.s2, e.rec2, true);
+    var body = container.querySelector('#mh-body');
+    if (body) body.innerHTML =
+      '<div data-mh-pane="striking-all">' + e.striking.all + '</div>' +
+      '<div data-mh-pane="striking-win" style="display:none">' + e.striking.win + '</div>' +
+      '<div data-mh-pane="striking-loss" style="display:none">' + e.striking.loss + '</div>' +
+      '<div data-mh-pane="grappling-all" style="display:none">' + e.grappling.all + '</div>' +
+      '<div data-mh-pane="grappling-win" style="display:none">' + e.grappling.win + '</div>' +
+      '<div data-mh-pane="grappling-loss" style="display:none">' + e.grappling.loss + '</div>';
+    hubShowPane();
+  }
+  // iOS Safari ignores body{overflow:hidden} for touch scrolling -- pin the
+  // page with position:fixed and restore the exact offset on close, same
+  // fix the website's own lockPageScroll/unlockPageScroll use (see
+  // worker/pages.js's mfLockScroll comment). Here it's #appScroll (the
+  // app's own scrolling column, not <body>) that has to be pinned.
+  function hubLockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    hubScrollY = scroller.scrollTop || 0;
+    scroller.style.overflow = 'hidden';
+  }
+  function hubUnlockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    scroller.style.overflow = '';
+    scroller.scrollTop = hubScrollY;
+  }
+  function hubOpen(slug){
+    if (!hubData[slug]) return;
+    var ov = container.querySelector('#mh-overlay'), bx = container.querySelector('#mh-box');
+    if (!ov || !bx) return;
+    window.GL_NATIVE.tap();
+    hubState = { slug: slug, tab: 'striking', filter: 'all' };
+    hubRenderEntry();
+    container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-tab') === 'striking'); });
+    container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-filter') === 'all'); });
+    ov.style.display = 'block';
+    bx.classList.add('mh-on');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        ov.style.opacity = '1';
+        bx.style.opacity = '1';
+        bx.style.transform = 'translate(-50%,-50%)';
+      });
+    });
+    hubLockScroll();
+  }
+  function hubClose(){
+    var ov = container.querySelector('#mh-overlay'), bx = container.querySelector('#mh-box');
+    if (!ov || !bx) return;
+    ov.style.opacity = '0';
+    bx.style.opacity = '0';
+    bx.style.transform = 'translate(-50%,-50%) translateY(8px)';
+    setTimeout(function(){ ov.style.display = 'none'; bx.classList.remove('mh-on'); }, 220);
+    hubUnlockScroll();
+  }
+  function wireHub(){
+    var overlay = container.querySelector('#mh-overlay');
+    if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) hubClose(); });
+    var closeBtn = container.querySelector('#mhCloseBtn');
+    if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); hubClose(); });
+    container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        hubState.tab = btn.getAttribute('data-mh-tab');
+        container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        hubShowPane();
+      });
+    });
+    container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        hubState.filter = btn.getAttribute('data-mh-filter');
+        container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        hubShowPane();
+      });
+    });
+  }
+
   function eventHeaderHTML(card){
     return (
       '<div class="mf-event-header">' +
@@ -299,7 +458,8 @@ function mountMatchup(container){
       pastSelectHTML() +
       eventHeaderHTML(card) +
       '<div id="mfBody">' + cardBodyHTML(card, data.deepDive, data.breakdown) + '</div>' +
-      carouselHTML();
+      carouselHTML() +
+      hubModalHTML();
     wire();
     renderCountdown();
     if (window.__mfCountdownTimer) clearInterval(window.__mfCountdownTimer);
@@ -336,14 +496,13 @@ function mountMatchup(container){
 
     container.querySelectorAll('[data-deepdive]').forEach(function(btn){
       btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
-        var slug = data.card && data.card.slug;
-        window.GL_NATIVE.openExternal(window.GL_API.BASE + '/matchup' + (slug ? '?event=' + encodeURIComponent(slug) : ''));
+        hubOpen(btn.getAttribute('data-deepdive'));
       });
     });
 
     wireSearch();
     wireCarousel();
+    wireHub();
   }
 
   function wireSearch(){
@@ -425,10 +584,26 @@ function mountMatchup(container){
     });
   }
 
+  // The site's #mh-box stylesheet (worker/matchup-free.js's `css`) is only
+  // ever injected once per app session -- it's the same ~17KB blob on every
+  // load() and every screen visit, so re-injecting it per navigation would
+  // just pile up duplicate <style> tags for no benefit.
+  function ensureHubCss(css){
+    if (!css || document.getElementById('mfHubCssTag')) return;
+    var tag = document.createElement('style');
+    tag.id = 'mfHubCssTag';
+    tag.textContent = css;
+    document.head.appendChild(tag);
+  }
+
   function load(eventSlug){
     container.innerHTML = '<p class="gl-muted">Loading the card…</p>';
     window.GL_API.matchup(eventSlug).then(function(res){
       data = res;
+      ensureHubCss(res.hubCss);
+      hubData = {};
+      if (res.card && res.hub) hubData[res.card.slug] = res.hub;
+      (res.carousel || []).forEach(function(c){ if (c && c.hub) hubData[c.slug] = c.hub; });
       render();
     }).catch(function(){
       container.innerHTML = '<div class="gl-card"><h3 style="margin:0 0 .4rem">Matchup hub unavailable right now</h3><p>Couldn’t reach gillylab.com. Check your connection and try again shortly.</p></div>';
