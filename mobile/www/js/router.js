@@ -25,10 +25,21 @@ window.GL_ROUTER = (function(){
 
   function register(name, screen){ screens[name] = screen; }
 
+  // Rankings/Climb/Account/Simulator no longer have their own tab-bar
+  // button (see index.html's tab-bar comment + more-sheet.js) -- they live
+  // inside the "More" sheet instead. A screen registered with one of these
+  // as its own `tab` (unchanged -- e.g. rankings.js still says
+  // `tab: 'rankings'`) should still light up a bar button when it's the
+  // active screen; there's just no `[data-route="rankings"]` button left to
+  // light up, so it lights up "More" instead. Keeping each screen's own
+  // `tab` name semantic (not literally "more") means more-sheet.js can also
+  // use it to highlight which item is current inside the open sheet.
+  var MORE_ROUTES = ['rankings', 'climb', 'account', 'simulator'];
   function setActiveTab(name){
+    var target = MORE_ROUTES.indexOf(name) !== -1 ? 'more' : name;
     var tabs = tabbarEl.querySelectorAll('.gl-tab');
     for (var i=0;i<tabs.length;i++){
-      tabs[i].classList.toggle('active', tabs[i].getAttribute('data-route') === name);
+      tabs[i].classList.toggle('active', tabs[i].getAttribute('data-route') === target);
     }
   }
 
@@ -92,7 +103,11 @@ window.GL_ROUTER = (function(){
     tabbarEl.querySelectorAll('.gl-tab').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
-        go(btn.getAttribute('data-route'));
+        var route = btn.getAttribute('data-route');
+        // "More" isn't a real screen -- there's nothing to register() or
+        // go() to. It opens/closes a sheet instead (see more-sheet.js).
+        if (route === 'more'){ window.GL_MORE.toggle(); return; }
+        go(route);
       });
     });
     backBtn.addEventListener('click', function(){
@@ -106,5 +121,5 @@ window.GL_ROUTER = (function(){
     fromHash();
   }
 
-  return { register: register, go: go, back: back, init: init };
+  return { register: register, go: go, back: back, init: init, current: function(){ return current; } };
 })();

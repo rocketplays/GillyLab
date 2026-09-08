@@ -123,6 +123,42 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-tab.active{ color:var(--accent); }
 .gl-tab:active{ opacity:.6; }
 
+/* ---- "More" tab overflow sheet (see more-sheet.js) ----
+   A genuine bottom sheet -- anchored to the bottom edge, slides up from
+   behind the tab bar -- new CSS built for this app, not the site's own
+   borrowed #mh-box dialog styling (that's the site's injected stylesheet,
+   centered-dialog only, no sheet variant). Sits above the tab bar in
+   z-order (tab bar is z-index:10) so it visually rises from behind it. */
+.more-overlay{
+  position:fixed; inset:0; z-index:15; background:rgba(0,0,0,.5);
+  opacity:0; transition:opacity .2s ease;
+}
+.more-overlay.on{ opacity:1; }
+.more-sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:16;
+  background:var(--card); border-top:1px solid var(--border);
+  border-radius:16px 16px 0 0;
+  padding:.5rem 0 calc(env(safe-area-inset-bottom) + .5rem);
+  transform:translateY(100%); transition:transform .22s ease;
+  max-height:70vh; overflow-y:auto;
+}
+.more-sheet.on{ transform:translateY(0); }
+.more-sheet-grabber{ width:36px; height:4px; border-radius:3px; background:var(--border); margin:.4rem auto .6rem; }
+.more-item{
+  display:flex; align-items:center; gap:.8rem; width:100%; text-align:left;
+  background:none; border:none; border-top:1px solid var(--border); color:var(--text);
+  font:inherit; font-size:.92rem; font-weight:600; padding:.9rem 1.2rem; cursor:pointer;
+}
+.more-item:first-child{ border-top:none; }
+.more-item:active{ background:var(--surface2); }
+.more-item.active{ color:var(--accent); }
+.more-item-icon{ width:22px; height:22px; flex:0 0 auto; }
+.more-item-label{ flex:1; }
+.more-item-badge{
+  flex:0 0 auto; font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+  color:var(--accent); border:1px solid var(--accent); border-radius:6px; padding:.2rem .45rem;
+}
+
 /* ---- shared screen bits ---- */
 .gl-card{
   background:var(--card); border:1px solid var(--border); border-radius:12px;
@@ -384,6 +420,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   border-radius:8px; padding:.7rem .9rem; font-weight:800; font-size:.82rem; cursor:pointer; margin-bottom:.8rem;
 }
 .mf-dd-go{ font-size:1.1rem; }
+
+/* Simulate Matchup -- solid accent fill (vs. the Deep Dive bar's ghost/
+   outline treatment above) so the two premium bars read as distinct
+   actions rather than a repeated element on the same card. */
+.mf-sim-bar{
+  display:block; width:100%; background:var(--accent); border:none; color:#0a0a0b;
+  border-radius:8px; padding:.7rem .9rem; font-weight:800; font-size:.82rem;
+  text-align:center; cursor:pointer; margin-bottom:.8rem;
+}
+.mf-sim-bar:active{ opacity:.85; }
 
 /* ---- Matchup: free-flowing event header + live countdown (mirrors the
    premium in-app home page's #countdown -- .event-header/.event-countdown

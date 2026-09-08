@@ -17,6 +17,7 @@
 // header comment for the full reasoning.
 window.GL_ROUTER.register('simulator', {
   title: 'Fight Simulator',
+  tab: 'simulator',
   showBack: true,
   render: function(container, params){
     window.GL_SIMULATOR.load(container, params);
@@ -129,19 +130,20 @@ window.GL_SIMULATOR = (function(){
     );
   }
 
-  function shellHTML(prefillA){
+  function shellHTML(prefillA, prefillB, prefillRounds){
+    var is5 = prefillRounds === 5;
     return (
       '<div class="gl-sec gl-sec--first">' +
         '<h1 class="gl-heading" style="font-size:1.3rem;margin:0 0 .3rem">Fight Simulator</h1>' +
         '<p class="gl-muted" style="margin:0">Pick any two fighters and run a projection.</p>' +
       '</div>' +
       pickerHTML('a', 'Fighter A', prefillA) +
-      pickerHTML('b', 'Fighter B', null) +
+      pickerHTML('b', 'Fighter B', prefillB) +
       '<div class="sim-rounds">' +
         '<div class="gl-label" style="margin:0 0 .3rem">Fight Length</div>' +
         '<div class="fp-tabs" style="max-width:none">' +
-          '<button type="button" class="fp-tab sel" data-rounds="3">3 Rounds</button>' +
-          '<button type="button" class="fp-tab" data-rounds="5">5 Rounds (Title)</button>' +
+          '<button type="button" class="fp-tab' + (is5 ? '' : ' sel') + '" data-rounds="3">3 Rounds</button>' +
+          '<button type="button" class="fp-tab' + (is5 ? ' sel' : '') + '" data-rounds="5">5 Rounds (Title)</button>' +
         '</div>' +
       '</div>' +
       '<button type="button" class="gl-btn gl-btn-primary" id="simRunBtn" disabled style="margin-top:1.1rem">Pick both fighters to simulate</button>' +
@@ -159,9 +161,9 @@ window.GL_SIMULATOR = (function(){
     );
   }
 
-  function wireShell(container, prefillA){
-    var picked = { a: prefillA || null, b: null };
-    var rounds = 3;
+  function wireShell(container, prefillA, prefillB, prefillRounds){
+    var picked = { a: prefillA || null, b: prefillB || null };
+    var rounds = prefillRounds === 5 ? 5 : 3;
     var runBtn = container.querySelector('#simRunBtn');
     var output = container.querySelector('#simOutput');
 
@@ -190,10 +192,10 @@ window.GL_SIMULATOR = (function(){
       });
     });
 
-    runBtn.addEventListener('click', function(){
-      window.GL_NATIVE.tap();
-      runBtn.disabled = true;
+    function runSimulation(){
+      if (runBtn.disabled) return;
       var prevText = runBtn.textContent;
+      runBtn.disabled = true;
       runBtn.textContent = 'Simulating…';
       output.innerHTML = '';
       window.GL_API.fightSim(picked.a, picked.b, rounds).then(function(res){
@@ -205,7 +207,18 @@ window.GL_SIMULATOR = (function(){
         runBtn.disabled = false;
         runBtn.textContent = prevText;
       });
+    }
+
+    runBtn.addEventListener('click', function(){
+      window.GL_NATIVE.tap();
+      runSimulation();
     });
+
+    // Arriving here already knowing both fighters (the Card page's own
+    // "Simulate Matchup" button, mirroring the site's simulateMatchup() ->
+    // navigate('projections') -> auto runFightSimulator()) runs it
+    // immediately rather than making the user tap Simulate a second time.
+    if (picked.a && picked.b && picked.a !== picked.b) runSimulation();
   }
 
   function load(container, params){
@@ -221,9 +234,14 @@ window.GL_SIMULATOR = (function(){
         });
         return;
       }
-      var prefillA = (params && params.name) || null;
-      container.innerHTML = shellHTML(prefillA);
-      wireShell(container, prefillA);
+      // `a` is the current param shape (fighter.js's CTA, matchup.js's
+      // Simulate Matchup button); `name` is kept for back-compat with
+      // anything still calling go('simulator', {name}) fighter-A-only style.
+      var prefillA = (params && (params.a || params.name)) || null;
+      var prefillB = (params && params.b) || null;
+      var prefillRounds = (params && params.rounds === 5) ? 5 : 3;
+      container.innerHTML = shellHTML(prefillA, prefillB, prefillRounds);
+      wireShell(container, prefillA, prefillB, prefillRounds);
     });
   }
 

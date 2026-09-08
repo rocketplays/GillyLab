@@ -57,6 +57,12 @@ function mountMatchup(container){
   var hubState = { slug: null, tab: 'striking', filter: 'all' };
   var hubScrollY = 0;
 
+  // Fetched once per load() (see load() below), same "call account(),
+  // treat a logged-out/failed call as not-premium" pattern as fighter.js
+  // and simulator.js -- gates the Simulate Matchup bar below, since this
+  // screen itself is free/no-session-required but that button isn't.
+  var subscribed = false;
+
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
   function fmtDate(iso, opts){
     if (!iso) return '';
@@ -198,6 +204,26 @@ function mountMatchup(container){
   // worker/index.js comment above), the locked teaser otherwise. Non-main
   // bouts always get the locked teaser regardless -- only ever the main
   // event is free, on any card.
+  // Mirrors the website's own simulateMatchup() gating exactly: every
+  // scheduled (not-yet-fought), non-DWCS bout gets a Simulate Matchup bar --
+  // main event or not, same as the site (its fightRow() has no isMain
+  // check on this button either). The one difference from the site: the
+  // site's whole document is already premium-gated at the HTTP layer, so
+  // every viewer who can load the page is a subscriber -- this screen is
+  // free/public, so the button itself is subscribed-gated here instead.
+  // `special === 'mf-dwcs'` is the same isDwcsName() regex the site's own
+  // isDWCSRaw()/the worker's isDwcsEvent() use, just computed once per card
+  // (see specialClassFor/cardBodyHTML) rather than needing a per-fight flag
+  // from the API.
+  function simBarHTML(f, special){
+    if (!subscribed || f.result || special === 'mf-dwcs') return '';
+    return (
+      '<button type="button" class="mf-sim-bar" data-sim-a="' + esc(f.f1) + '" data-sim-b="' + esc(f.f2) + '" data-sim-rounds="' + (f.rounds === 5 ? 5 : 3) + '">' +
+        'Simulate Matchup' +
+      '</button>'
+    );
+  }
+
   function fightHTML(f, isMain, deepDive, breakdown, eventSlug, special){
     var res = f.result || null;
     var panelBody = res
@@ -210,6 +236,7 @@ function mountMatchup(container){
           '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + (res ? '' : '<div class="mf-odds"><b>' + esc(fmtOdds(f.o1)) + '</b> · <b>' + esc(fmtOdds(f.o2)) + '</b></div>') + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
           '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + esc(f.rec2 || '') + '</div></div></div>' +
         '</div>' +
+        simBarHTML(f, special) +
         '<div class="mf-panel" hidden>' + panelBody + '</div>' +
       '</div>'
     );
@@ -510,6 +537,18 @@ function mountMatchup(container){
       });
     });
 
+    container.querySelectorAll('[data-sim-a]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        window.GL_NATIVE.tap();
+        window.GL_ROUTER.go('simulator', {
+          a: btn.getAttribute('data-sim-a'),
+          b: btn.getAttribute('data-sim-b'),
+          rounds: parseInt(btn.getAttribute('data-sim-rounds'), 10),
+        });
+      });
+    });
+
     container.querySelectorAll('[data-deepdive]').forEach(function(btn){
       btn.addEventListener('click', function(){
         hubOpen(btn.getAttribute('data-deepdive'));
@@ -614,7 +653,18 @@ function mountMatchup(container){
 
   function load(eventSlug){
     container.innerHTML = '<p class="gl-muted">Loading the card…</p>';
-    window.GL_API.matchup(eventSlug).then(function(res){
+    // The Card page is public (no login required), unlike the site's fully
+    // gated index.html -- so whether to show each fight's Simulate Matchup
+    // bar has to come from a parallel, best-effort account() call rather
+    // than something already known when this screen loads. A failed/absent
+    // account() (logged out, or offline) just means no sim bars, not an
+    // error for the whole page -- the matchup data is what actually matters.
+    Promise.all([
+      window.GL_API.matchup(eventSlug),
+      window.GL_API.account().catch(function(){ return null; }),
+    ]).then(function(results){
+      var res = results[0], acct = results[1];
+      subscribed = !!(acct && acct.subscribed);
       data = res;
       ensureHubCss(res.hubCss);
       hubData = {};

@@ -38,7 +38,17 @@
   <!-- Native-style bottom tab bar. This is HTML/CSS, not a native UITabBar --
        see mobile/README.md for why that trade-off was made for the scaffold
        milestone. A carefully-styled web tab bar with safe-area insets and
-       haptic feedback on tap reads as native to nearly everyone using the app. -->
+       haptic feedback on tap reads as native to nearly everyone using the app.
+
+       Curated to 4 primary destinations + a "More" tab rather than growing
+       one button per screen forever -- with the Fight Simulator added, that
+       was 8 items, visibly cramped and no longer skimmable at a glance.
+       Home/Card/Roster/Pick'em stay direct (the highest-traffic browsing +
+       engagement paths); Rankings/Climb/Account/Simulator move into More's
+       sheet (mobile/www/js/more-sheet.js) -- reachable in one extra tap,
+       same as before, just not permanently occupying a fifth+ of the bar's
+       width. This split is just an array in more-sheet.js, not wired deep
+       into anything -- easy to change which items are direct vs in More. -->
   <nav class="gl-tabbar" id="tabbar">
     <button class="gl-tab" data-route="home" aria-label="Home">
       <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
@@ -52,34 +62,39 @@
       <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M8 12V8.2a4 4 0 0 1 8 0V12a2.6 2.6 0 0 1-1 2.05V15a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.95A2.6 2.6 0 0 1 8 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 16.5h5a1.5 1.5 0 0 1 1.5 1.5v.5a2.5 2.5 0 0 1-2.5 2.5h-3A2.5 2.5 0 0 1 8 18.5V18a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.3 18.6h7.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       <span>Card</span>
     </button>
+    <button class="gl-tab" data-route="roster" aria-label="Roster">
+      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="5.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 19c.7-3 2.8-4.6 5.2-4.9M20 19c-.7-3-2.8-4.6-5.2-4.9M8.5 19.5c.6-3.2 1.9-4.9 3.5-4.9s2.9 1.7 3.5 4.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Roster</span>
+    </button>
     <button class="gl-tab" data-route="pickem" aria-label="Pick'em">
       <!-- A checkmark badge -- reads as "your pick/confirmed" the way the
            previous gem-shaped icon didn't map to anything about picking. -->
       <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.3 12.4l2.5 2.5 5-5.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Pick'em</span>
     </button>
-    <button class="gl-tab" data-route="climb" aria-label="The Climb">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
-      <span>Climb</span>
-    </button>
-    <button class="gl-tab" data-route="rankings" aria-label="Rankings">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M5 20V10M12 20V4M19 20v-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span>Rankings</span>
-    </button>
-    <button class="gl-tab" data-route="roster" aria-label="Roster">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="5.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 19c.7-3 2.8-4.6 5.2-4.9M20 19c-.7-3-2.8-4.6-5.2-4.9M8.5 19.5c.6-3.2 1.9-4.9 3.5-4.9s2.9 1.7 3.5 4.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      <span>Roster</span>
-    </button>
-    <button class="gl-tab" data-route="account" aria-label="Account">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span>Account</span>
+    <button class="gl-tab" data-route="more" aria-label="More">
+      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
+      <span>More</span>
     </button>
   </nav>
+
+  <!-- "More" tab's overflow sheet -- Rankings/Climb/Account/Simulator live
+       here (see index.html's tab-bar comment above + more-sheet.js). A new,
+       app-native bottom-sheet pattern (slides up from behind the tab bar),
+       not the site's borrowed centered-dialog #mh-box style used for the
+       Deep Dive modal -- that CSS is the SITE's own injected stylesheet and
+       has no bottom-sheet variant to copy. -->
+  <div id="moreOverlay" class="more-overlay" hidden></div>
+  <div id="moreSheet" class="more-sheet" hidden role="dialog" aria-modal="true" aria-label="More">
+    <div class="more-sheet-grabber"></div>
+    <div id="moreSheetList"></div>
+  </div>
 
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/native.js"></script>
   <script src="js/router.js"></script>
+  <script src="js/more-sheet.js"></script>
   <script src="js/screens/home.js"></script>
   <script src="js/screens/climb.js"></script>
   <script src="js/screens/pickem.js"></script>

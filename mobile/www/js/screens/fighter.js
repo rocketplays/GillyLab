@@ -312,7 +312,7 @@ window.GL_FIGHTER = (function(){
         var goSim = container.querySelector('[data-goto="simulator"]');
         if (goSim) goSim.addEventListener('click', function(){
           window.GL_NATIVE.tap();
-          window.GL_ROUTER.go('simulator', { name: goSim.getAttribute('data-sim-name') });
+          window.GL_ROUTER.go('simulator', { a: goSim.getAttribute('data-sim-name') });
         });
         if (subscribed) wireExtras(container);
       });
