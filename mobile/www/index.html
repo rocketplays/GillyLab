@@ -10,6 +10,12 @@
 </head>
 <body>
 
+  <!-- The site's own dark-green aurora backdrop (see AURORA_CSS/AURORA_DIVS
+       in worker/pages.js) -- rendered once here since this app never does a
+       full page reload the way the site re-emits these on every navigation. -->
+  <div id="bgfx"></div>
+  <div id="bgedge"></div>
+
   <!-- App-only chrome: a small top bar for screen titles/back actions. Not
        the website's nav -- this app has no address bar, no page reloads, so
        there's no need for the site's own top nav links here. -->

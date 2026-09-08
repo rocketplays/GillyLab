@@ -12,11 +12,37 @@
   --topbar-h:52px;
 }
 *{box-sizing:border-box}
+/* The site's actual visual identity is almost entirely this background --
+   cards themselves are flat/opaque on both the site and here. Without it
+   the app is just grey cards on near-black, which is why it read as
+   colorless next to gillylab.com. Matches worker/pages.js's AURORA_CSS
+   exactly: a solid colour FIRST (so iOS paints the status bar / home-
+   indicator inset / overscroll rubber-band with #0a0a0b, never white --
+   an image-only background leaves those bands transparent), then the
+   green-tinted glow on top. #bgfx/#bgedge are two fixed, z-index:-1 divs
+   the app shell renders once (see index.html) rather than per-screen --
+   this app never does a full page reload, so there's no equivalent of the
+   site re-emitting AURORA_DIVS on every navigation to worry about. */
+html{
+  background:#0a0a0b radial-gradient(1100px 520px at 50% -6%, #12251b 0%, #0a0a0b 52%);
+}
 html,body{
-  margin:0; padding:0; background:var(--bg); color:var(--text);
+  margin:0; padding:0; color:var(--text);
   font-family:'Barlow', -apple-system, sans-serif;
   -webkit-tap-highlight-color:transparent; overscroll-behavior:none;
   height:100%; width:100%;
+}
+body{ background:transparent; }
+#bgfx{
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(60vw 48vh at 12% 28%, rgba(0,230,104,.081) 0%, transparent 62%),
+    radial-gradient(66vw 55vh at 88% 58%, rgba(50,120,255,.063) 0%, transparent 62%),
+    radial-gradient(72vw 48vh at 45% 90%, rgba(0,230,104,.072) 0%, transparent 62%);
+}
+#bgedge{
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(180deg,#0a0a0b 0,transparent 100px,transparent calc(100% - 260px),#0a0a0b 100%);
 }
 /* No text selection / long-press callout on the chrome -- one of the
    details that makes a webview read as "a website" if left default. */
