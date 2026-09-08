@@ -19,48 +19,53 @@ window.GL_ROUTER.register('home', {
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
     function go(route){ return function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go(route); }; }
 
-    function pickemSection(card, mine){
+    // Pick'em isn't a peer category alongside Climb/Rankings/Roster -- it's
+    // entirely about this week's card, so it renders as a sub-block inside
+    // the main event section (below the fighter teaser/CTA) instead of its
+    // own top-level .gl-sec with its own divider line.
+    function pickemBlock(card, mine){
       var loggedIn = window.GL_AUTH.isLoggedIn();
       var head =
-        '<div class="gl-dash-head">' +
-          '<h2 class="gl-dash-title">Pick’em</h2>' +
-          '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(card.name) + '</p>' +
+        '<div class="gl-dash-subhead">' +
+          '<h3 class="gl-dash-subtitle">Pick’em</h3>' +
         '</div>';
       var body, cta;
       if (!loggedIn){
-        body = '<p class="gl-muted" style="margin:.4rem 0 0">Free account required to play Pick’em.</p>';
+        body = '<p class="gl-muted" style="margin:.3rem 0 0">Free account required to play Pick’em.</p>';
         cta = 'Sign up free';
       } else {
         var total = card.bouts.length;
         var done = mine && mine.record && Array.isArray(mine.record.picks) ? mine.record.picks.length : 0;
         if (mine && mine.record){
-          body = '<p style="margin:.4rem 0 0"><strong style="color:var(--accent)">Picks submitted</strong> — ' + done + '/' + total + ' fights</p>';
+          body = '<p style="margin:.3rem 0 0"><strong style="color:var(--accent)">Picks submitted</strong> — ' + done + '/' + total + ' fights</p>';
           cta = 'Review picks';
         } else if (card.locked){
-          body = '<p class="gl-error" style="margin:.4rem 0 0">Prelims have started — picks are locked for this card.</p>';
+          body = '<p class="gl-error" style="margin:.3rem 0 0">Prelims have started — picks are locked for this card.</p>';
           cta = 'View card';
         } else {
-          body = '<p class="gl-muted" style="margin:.4rem 0 0">You haven’t made picks yet — ' + total + ' fights on the card.</p>';
+          body = '<p class="gl-muted" style="margin:.3rem 0 0">You haven’t made picks yet — ' + total + ' fights on the card.</p>';
           cta = 'Make your picks';
         }
       }
       return (
-        '<div class="gl-sec" id="homePickemCard">' +
+        '<div class="gl-dash-sub" id="homePickemCard">' +
           head + body +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="pickem">' + cta + '</button>' +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.7rem" data-goto="pickem">' + cta + '</button>' +
         '</div>'
       );
     }
 
     // The top of Home -- a side-by-side main-event teaser (both fighters'
     // photos, tap "View Full Card" for the real Card/Matchup screen), same
-    // spot the premium in-app home page gives its own featured event.
-    function mainEventSection(card){
+    // spot the premium in-app home page gives its own featured event, plus
+    // this week's Pick'em status folded in underneath since it's about the
+    // same card, not a separate category.
+    function mainEventSection(card, pickemCard, pickemMine){
       var main = card && (card.fights || [])[0];
       var head = '<div class="gl-dash-head"><h2 class="gl-dash-title">This Week’s Main Event</h2></div>';
       if (!card || !main){
         return (
-          '<div class="gl-sec">' + head +
+          '<div class="gl-sec gl-sec--first">' + head +
             '<p class="gl-muted" style="margin:.4rem 0 0">No card posted yet — check back on fight week.</p>' +
           '</div>'
         );
@@ -84,6 +89,7 @@ window.GL_ROUTER.register('home', {
           '</div>' +
           '<p class="gl-muted" style="margin:.6rem 0 0;text-align:center">' + esc(card.event) + '</p>' +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
+          (pickemCard ? pickemBlock(pickemCard, pickemMine) : '') +
         '</div>'
       );
     }
@@ -162,7 +168,7 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">' + (movers.length ? 'Biggest Movers' : 'Pound-for-Pound') + '</h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--center"><h2 class="gl-dash-title">' + (movers.length ? 'Rankings — Biggest Movers' : 'Rankings — Pound-for-Pound') + '</h2></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">See full rankings</button>' +
         '</div>'
@@ -210,13 +216,14 @@ window.GL_ROUTER.register('home', {
       });
     }
 
-    // Order mirrors the tab bar below Home: Card, Pick'em, Climb, Rankings,
-    // Roster -- each with its own small preview -- so Home reads as a
-    // dashboard over the rest of the app rather than an arbitrary list.
+    // Pick'em is folded into the main-event section (it's this week's card,
+    // not its own category) -- so the remaining top-level order mirrors the
+    // tab bar below Home: Card (+Pick'em), Climb, Rankings, Roster -- each
+    // with its own small preview -- so Home reads as a dashboard over the
+    // rest of the app rather than an arbitrary list.
     function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData){
       container.innerHTML =
-        mainEventSection(matchupCard) +
-        (pickemCard ? pickemSection(pickemCard, pickemMine) : '') +
+        mainEventSection(matchupCard, pickemCard, pickemMine) +
         climbSection() +
         moversSection(rankingsData) +
         rosterSection(rosterData) +
