@@ -231,7 +231,7 @@ function mountMatchup(container){
   function searchHTML(){
     return (
       '<div class="mf-search">' +
-        '<input type="search" id="mfSearchInput" class="mf-search-input" placeholder="Search any fighter for their lite profile…" autocomplete="off">' +
+        '<input type="search" id="mfSearchInput" class="mf-search-input" placeholder="Search any fighter for their profile…" autocomplete="off">' +
         '<div id="mfSearchResults" class="mf-search-results" hidden></div>' +
       '</div>'
     );

@@ -381,9 +381,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 /* ---- Matchup: past-event dropdown (native <select>, mirrors the website) ---- */
 .mf-past-top{ margin-bottom:.8rem; }
 .mf-past-label{ display:block; font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:700; margin-bottom:.3rem; }
+/* The native select arrow rendered dark/barely visible on the app's dark
+   background (WebView default, not themeable via `color`) -- appearance:none
+   drops it so a white chevron (inline SVG, currentColor via `--text`) can be
+   drawn instead, same trick used for any other custom-styled <select>. */
 .mf-past-select{
   width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text);
-  border-radius:8px; padding:.65rem .8rem; font:inherit; font-size:.88rem;
+  border-radius:8px; padding:.65rem 2.2rem .65rem .8rem; font:inherit; font-size:.88rem;
+  -webkit-appearance:none; -moz-appearance:none; appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right .75rem center; background-size:16px;
 }
 
 /* ---- Matchup: upcoming-events carousel (full fight cards, one per slide) ---- */
