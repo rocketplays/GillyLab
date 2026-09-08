@@ -2748,6 +2748,15 @@ export default {
         const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
         let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData) : currentCard;
         const isPastView = isOtherEvent && overrideIsPast;
+        // landingData.mains is keyed by slug and covers the current card AND
+        // every upcoming carousel event (scripts/gen-landing-data.cjs) -- so an
+        // ?event= override that lands on one of those gets the real breakdown
+        // instead of eventToCard()'s always-null `.main`. Same lookup used for
+        // `breakdown`/the carousel below; computed once here.
+        const mainsMap = (currentLanding() || {}).mains || {};
+        if (isOtherEvent && card && mainsMap[card.slug]) {
+          card = Object.assign({}, card, { main: mainsMap[card.slug] });
+        }
 
         // Same request-time freshness merge matchupPage does for the site's OWN
         // featured card (never for a carousel/override pick, which was just
@@ -2794,21 +2803,28 @@ export default {
           });
         }
 
-        // The free "Analytics Deep Dive" is only ever generated (twice daily,
-        // by scripts/gen-matchup-free.cjs) for the site's OWN current main
-        // event -- never for a carousel/past pick. Same freshness gate
-        // matchupPage's ddFresh uses.
-        const isDwcsCard = /contender\s+series|dana\s+white/i.test((card && card.event) || "");
-        const free = matchupFree || null;
-        const ddFresh = !isOtherEvent && !isDwcsCard && !!(free && free.striking && free.striking.all && free.grappling && free.grappling.all && card && free.slug === card.slug);
-        const deepDive = ddFresh ? { available: true, n1: free.n1, n2: free.n2, striking: free.striking.all, grappling: free.grappling.all } : { available: false };
+        // The free "Analytics Deep Dive" is generated (twice daily, by
+        // scripts/gen-matchup-free.cjs) for the current main event AND the
+        // upcoming carousel's own main events, keyed by slug in
+        // matchupFree.events -- so this is one lookup rather than the old
+        // "matches THIS card, and only this card" freshness check.
+        const isDwcsEvent = (name) => /contender\s+series|dana\s+white/i.test(name || "");
+        const ddDataFor = (slug) => {
+          const e = matchupFree && matchupFree.events && slug && matchupFree.events[slug];
+          return (e && e.striking && e.striking.all && e.grappling && e.grappling.all) ? e : null;
+        };
+        const cardDD = !isDwcsEvent(card && card.event) ? ddDataFor(card && card.slug) : null;
+        // The app's own UI only ever reads `.available` (the button just opens
+        // the real /matchup?event=<slug> in the system browser -- see
+        // matchup.js's data-deepdive handler) but n1/n2 ride along for parity
+        // with the site's own JSON shape and any future in-app use.
+        const deepDive = cardDD ? { available: true, n1: cardDD.n1, n2: cardDD.n2 } : { available: false };
 
         // The full pre-fight breakdown (style/pace/path to victory/storylines/
-        // common opponents/finish rate) is precomputed only for the site's
-        // currently-held card's main event -- never for other events. Same
-        // `(f.main && ownerCard.main)` gate rowHTML uses before calling
-        // breakdownHTML instead of the locked-teaser panel.
-        const breakdown = (!isOtherEvent && currentCard && currentCard.main) ? currentCard.main : null;
+        // common opponents/finish rate) is precomputed for the current card AND
+        // the upcoming carousel's own main events (scripts/gen-landing-data.cjs's
+        // `mains`, keyed by slug) -- same map as the ?event= override patch above.
+        const breakdown = (card && mainsMap[card.slug]) || null;
 
         // ── Upcoming-events carousel — the app equivalent of matchupPage's own
         // full-card carousel (worker/pages.js, "carouselRaws"): FULL fight
@@ -2838,13 +2854,22 @@ export default {
           .filter((raw) => !currentCard || raw.slug !== currentCard.slug)
           .filter((raw) => !currentCard || !isFinite(featuredTime) || Date.parse(raw.startsAt || 0) > featuredTime)
           .slice(0, 12);
+        // Each carousel entry now carries its OWN breakdown/deepDive (same
+        // mainsMap/ddDataFor lookups as the featured card above) instead of the
+        // app hard-coding {available:false}/null for every slide — the main
+        // event on an upcoming card is still the main event, and gets the same
+        // free analysis once scripts/gen-landing-data.cjs and
+        // gen-matchup-free.cjs have actually computed it for that slug.
         const carousel = carouselRaws.map((raw) => {
           const c = eventToCard(raw, fighterLiteBySlug, false, oddsData);
+          const cDD = !isDwcsEvent(c.event) ? ddDataFor(c.slug) : null;
           return Object.assign({}, c, {
             fights: (c.fights || []).map((f) => Object.assign({}, f, {
               s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
               s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
             })),
+            breakdown: mainsMap[c.slug] || null,
+            deepDive: cDD ? { available: true, n1: cDD.n1, n2: cDD.n2 } : { available: false },
           });
         });
 

@@ -164,65 +164,85 @@ const now = Date.now();
 const byStart = events.slice().sort((x, y) => (Date.parse(x.startsAt || 0) || 0) - (Date.parse(y.startsAt || 0) || 0));
 const ev = byStart.find((e) => (Date.parse(e.startsAt || 0) || 0) >= now - 6 * 3600 * 1000) || byStart[0];
 
+// ── the /matchup upcoming-events carousel gets the same treatment ───────────
+// Was single-event only: the carousel's own main events fell back to the
+// locked "Go Premium" teaser purely because no payload existed for them, not
+// because the analysis is expensive per fighter pair — it's a lookup into
+// FIGHT_GRID/FIGHT_STATS already loaded once above. Same selection filters as
+// worker/index.js's carouselRaws and gen-landing-data.cjs's own copy (three
+// places because none of them can import each other's copy — a Node CJS
+// script, the ESM Worker, and this VM-sandboxed generator).
+// Capped lower than the 12-event breakdown/tale-of-tape carousel: each event
+// here ships 6 rendered HTML panes (2 tabs x 3 filters), so the payload scales
+// with this number much faster than the plain-text breakdown does.
+const DD_CAROUSEL_CAP = 6;
+function hasBoutsRaw(e) { return !!(e && e.bouts && e.bouts.length); }
+function isRoadToUFCRaw(e) { return /road\s+to\s+(the\s+)?ufc/i.test((e && (e.espnName || e.title || e.shortTitle || e.name)) || ''); }
+const featuredTime = Date.parse(ev.startsAt || 0) || NaN;
+const carouselEvs = byStart
+  .filter((e) => e.slug !== ev.slug)
+  .filter(hasBoutsRaw)
+  .filter((e) => !isRoadToUFCRaw(e))
+  .filter((e) => !isFinite(featuredTime) || (Date.parse(e.startsAt || 0) || 0) > featuredTime)
+  .slice(0, DD_CAROUSEL_CAP);
+
 // boutOrder is the card order and the main event is first. Same rule the page uses.
-const bouts = (ev.bouts || [])
-  .filter((x) => x && !x.isCancelled && (x.fighters || []).length === 2)
-  .sort((x, y) => (x.boutOrder || 0) - (y.boutOrder || 0));
-const main = bouts[0];
+function mainBoutOf(raw) {
+  const bouts = (raw.bouts || [])
+    .filter((x) => x && !x.isCancelled && (x.fighters || []).length === 2)
+    .sort((x, y) => (x.boutOrder || 0) - (y.boutOrder || 0));
+  return bouts[0] || null;
+}
+const main = mainBoutOf(ev);
 if (!main) throw new Error('no live bouts on ' + ev.slug);
 const n1 = main.fighters[0].fighterName, n2 = main.fighters[1].fighterName;
 
-// ── render ───────────────────────────────────────────────────────────────────
-// striking/grappling are now { all, win, loss } — three pre-baked variants per
-// tab, so the free page's filter pills (added alongside the app's — see
-// MATCHUP-DEEPDIVE.txt and _ddGrid's resultFilter param) can swap between them
-// with a display:none toggle, the same trick mfHubTab already uses for tabs.
-// Nothing is computed client-side; all six panes ship in the initial HTML.
-let out = { slug: ev.slug, n1, n2, striking: { all: '', win: '', loss: '' }, grappling: { all: '', win: '', loss: '' }, css: hubCSS, generatedAt: new Date().toISOString() };
-
-if (!ctx.glDeepDiveAvailable(n1, n2)) {
-  // NOT an error: the button is hidden in the app for exactly this case too — a
-  // fighter with no grid yet (a debut, or a sweep that hasn't reached him). Emit an
-  // empty payload and let the page omit the button, same as the app does.
-  console.log('gen-matchup-free: no grid for ' + n1 + ' vs ' + n2 + ' — emitting an empty payload (the page will omit the button)');
-} else {
-  // Mirrors mhRenderBody's noData/note logic (index.html) exactly, since that is
-  // the app's rule for what "no wins on record" should look like — a rule
-  // change there without a matching change here is exactly the kind of drift
-  // this generator exists to prevent.
-  const renderFilter = (filter) => {
-    const wantResult = filter === 'all' ? undefined : filter;
-    const A = ctx._ddGrid(n1, wantResult), B = ctx._ddGrid(n2, wantResult);
-    if (!A || !B) throw new Error('_ddGrid returned null for filter=' + filter + ' (' + n1 + ' vs ' + n2 + ')');
-    const rf = filter === 'win' ? 'wins' : filter === 'loss' ? 'losses' : null;
-    if (A.noData && B.noData) {
-      const empty = '<div class="mh-empty">Neither fighter has any UFC ' + rf + ' on record.</div>';
-      return { striking: empty, grappling: empty };
-    }
-    let note = '';
-    if (A.noData || B.noData) {
-      const emptyName = A.noData ? n1 : n2, shownName = A.noData ? n2 : n1;
-      // "UFC" is load-bearing — mirrors mhRenderBody's wording in index.html. A
-      // fighter can have real regional wins/losses this grid never sees.
-      note = '<div class="mh-filter-note">' + ctx.escHtmlAttr(emptyName) + ' has no UFC ' + rf +
-        ' on record — showing ' + ctx.escHtmlAttr(shownName) + '\'s numbers only.</div>';
-    }
-    return { striking: note + ctx.mhStriking(A, B, n1, n2), grappling: note + ctx.mhGrappling(A, B, n1, n2) };
-  };
-
-  for (const filter of ['all', 'win', 'loss']) {
-    const r = renderFilter(filter);
-    out.striking[filter] = r.striking;
-    out.grappling[filter] = r.grappling;
+// Mirrors mhRenderBody's noData/note logic (index.html) exactly, since that is
+// the app's rule for what "no wins on record" should look like — a rule
+// change there without a matching change here is exactly the kind of drift
+// this generator exists to prevent.
+function renderFilter(nameA, nameB, filter) {
+  const wantResult = filter === 'all' ? undefined : filter;
+  const A = ctx._ddGrid(nameA, wantResult), B = ctx._ddGrid(nameB, wantResult);
+  if (!A || !B) throw new Error('_ddGrid returned null for filter=' + filter + ' (' + nameA + ' vs ' + nameB + ')');
+  const rf = filter === 'win' ? 'wins' : filter === 'loss' ? 'losses' : null;
+  if (A.noData && B.noData) {
+    const empty = '<div class="mh-empty">Neither fighter has any UFC ' + rf + ' on record.</div>';
+    return { striking: empty, grappling: empty };
   }
+  let note = '';
+  if (A.noData || B.noData) {
+    const emptyName = A.noData ? nameA : nameB, shownName = A.noData ? nameB : nameA;
+    // "UFC" is load-bearing — mirrors mhRenderBody's wording in index.html. A
+    // fighter can have real regional wins/losses this grid never sees.
+    note = '<div class="mh-filter-note">' + ctx.escHtmlAttr(emptyName) + ' has no UFC ' + rf +
+      ' on record — showing ' + ctx.escHtmlAttr(shownName) + '\'s numbers only.</div>';
+  }
+  return { striking: note + ctx.mhStriking(A, B, nameA, nameB), grappling: note + ctx.mhGrappling(A, B, nameA, nameB) };
+}
 
+// Builds one event's payload, or null if the pairing has no grid data yet (a
+// debut, or a sweep that hasn't reached one of them) — NOT an error, the
+// button is hidden for exactly this case in the app too.
+function buildEventPayload(slug, nameA, nameB) {
+  if (!ctx.glDeepDiveAvailable(nameA, nameB)) {
+    console.log('gen-matchup-free: no grid for ' + nameA + ' vs ' + nameB + ' (' + slug + ') — skipping');
+    return null;
+  }
+  const striking = { all: '', win: '', loss: '' }, grappling = { all: '', win: '', loss: '' };
+  for (const filter of ['all', 'win', 'loss']) {
+    const r = renderFilter(nameA, nameB, filter);
+    striking[filter] = r.striking;
+    grappling[filter] = r.grappling;
+  }
   // The panel must never ship a NaN or an [object Object] to a public page. The
   // "all" variant is guaranteed non-empty by glDeepDiveAvailable above; win/loss
   // legitimately can be short (the "no wins/losses on record" message), so only
   // the content-shape checks apply to them, not the length floor.
   for (const tabName of ['striking', 'grappling']) {
+    const obj = tabName === 'striking' ? striking : grappling;
     for (const filter of ['all', 'win', 'loss']) {
-      const v = out[tabName][filter], k = tabName + '.' + filter;
+      const v = obj[filter], k = slug + ' ' + tabName + '.' + filter;
       if (!v) throw new Error(k + ' rendered empty — refusing to ship it');
       if (filter === 'all' && v.length < 200) throw new Error(k + ' rendered short — refusing to ship it');
       const bad = /NaN|undefined|\[object/.exec(v);
@@ -230,18 +250,35 @@ if (!ctx.glDeepDiveAvailable(n1, n2)) {
       if (/data-mh-sheet/.test(v)) throw new Error(k + ' still has a Generate-sheet button — GL_SHEET leaked into the sandbox');
     }
   }
+  return { slug, n1: nameA, n2: nameB, striking, grappling };
 }
 
+// ── render ───────────────────────────────────────────────────────────────────
+// eventPayloads is keyed by slug so any consumer (the featured card, an
+// ?event= override, a carousel slide) does ONE lookup instead of a
+// `free.slug === card.slug` freshness check — a stale/missing entry for a
+// slug just means that slug isn't in the map, no separate gate needed.
+const eventPayloads = {};
+const primary = buildEventPayload(ev.slug, n1, n2);
+if (primary) eventPayloads[ev.slug] = primary;
+for (const raw of carouselEvs) {
+  const b = mainBoutOf(raw);
+  if (!b) continue;
+  const p = buildEventPayload(raw.slug, b.fighters[0].fighterName, b.fighters[1].fighterName);
+  if (p) eventPayloads[raw.slug] = p;
+}
+
+const out = { generatedAt: new Date().toISOString(), css: hubCSS, events: eventPayloads };
 const json = JSON.stringify(out);
 const mod = '// AUTO-GENERATED by scripts/gen-matchup-free.cjs — do not edit by hand.\n' +
-            '// The matchup hub for THIS card\'s main event, rendered from index.html\'s own\n' +
-            '// code at build time. Regenerate rather than patch: see the script header.\n' +
+            '// The matchup hub for the current main event AND the upcoming-events carousel\'s\n' +
+            '// own main events, rendered from index.html\'s own code at build time. Regenerate\n' +
+            '// rather than patch: see the script header. `events` is keyed by event slug.\n' +
             'export default ' + json + ';\n';
 if (!DRY) fs.writeFileSync(OUT, mod);
 const kb = (n) => (n / 1024).toFixed(0) + 'KB';
-const strikeKB = kb(out.striking.all.length + out.striking.win.length + out.striking.loss.length);
-const grapKB = kb(out.grappling.all.length + out.grappling.win.length + out.grappling.loss.length);
+const slugs = Object.keys(eventPayloads);
 console.log('worker/matchup-free.js  ' + kb(mod.length) +
-  '  (' + n1 + ' vs ' + n2 + ', ' + ev.slug + ')' +
-  '  striking ' + strikeKB + ' (all/win/loss) · grappling ' + grapKB + ' (all/win/loss) · css ' + kb(out.css.length) +
+  '  ' + slugs.length + ' event(s) with data (of ' + (1 + carouselEvs.length) + ' checked): ' + slugs.join(', ') +
+  '  css ' + kb(out.css.length) +
   (DRY ? '   [dry-run, nothing written]' : ''));

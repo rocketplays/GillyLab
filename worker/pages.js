@@ -341,6 +341,17 @@ export function currentLanding() {
   });
 }
 
+// The current landing card's own matchup-free.js entry, if any — for the
+// marketing landing page's carousel/grid/lightbox slide (landingPage(), an
+// expression-bodied arrow function with no room for a local `const` before
+// its template literal). matchupFree.events is keyed by slug (see
+// gen-matchup-free.cjs); this is just that one lookup, factored out so
+// landingPage() doesn't need currentLanding() called twice inline.
+export function currentMatchupFreeEntry() {
+  const cc = (currentLanding() || {}).card;
+  return (cc && matchupFree && matchupFree.events && matchupFree.events[cc.slug]) || null;
+}
+
 // Same hold check as currentLanding(), but as a boolean — needed wherever a page
 // has to know WHETHER the "current" card is actually a just-finished one being
 // held in the slot (e.g. to swap an "Upcoming" label for "Latest results"),
@@ -1205,14 +1216,17 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   // check below ASSERTS that rather than trusting it. If they ever diverge the header is
   // dropped instead of printing the wrong two men over the right analysis.
   // This slide is a marketing teaser (carousel/grid/lightbox), not the full modal —
-  // it shows the unfiltered "all fights" variant only. matchupFree.striking/grappling
-  // are { all, win, loss } objects; the filter pills live on /matchup's actual modal,
-  // not here.
-  var mhx=${JSON.stringify((matchupFree && matchupFree.striking && matchupFree.striking.all) || '')};
-  var mhGr=${JSON.stringify((matchupFree && matchupFree.grappling && matchupFree.grappling.all) || '')};
-  var mhN1=${JSON.stringify((matchupFree && matchupFree.n1) || '')};
-  var mhN2=${JSON.stringify((matchupFree && matchupFree.n2) || '')};
-  var mhSlug=${JSON.stringify((matchupFree && matchupFree.slug) || '')};
+  // it shows the unfiltered "all fights" variant only. matchupFree.events[slug]'s
+  // striking/grappling are { all, win, loss } objects; the filter pills live on
+  // /matchup's actual modal, not here. matchupFree.events is now keyed by slug
+  // (gen-matchup-free.cjs covers the carousel too), so this slide specifically
+  // wants the CURRENT landing card's own entry — currentMatchupFreeEntry() (a
+  // server-side lookup, evaluated below at render time) is that one lookup.
+  var mhx=${JSON.stringify((currentMatchupFreeEntry() && currentMatchupFreeEntry().striking && currentMatchupFreeEntry().striking.all) || '')};
+  var mhGr=${JSON.stringify((currentMatchupFreeEntry() && currentMatchupFreeEntry().grappling && currentMatchupFreeEntry().grappling.all) || '')};
+  var mhN1=${JSON.stringify((currentMatchupFreeEntry() && currentMatchupFreeEntry().n1) || '')};
+  var mhN2=${JSON.stringify((currentMatchupFreeEntry() && currentMatchupFreeEntry().n2) || '')};
+  var mhSlug=${JSON.stringify((currentMatchupFreeEntry() && currentMatchupFreeEntry().slug) || '')};
 
   // FRESHNESS GATE — the same contract /matchup enforces with ddFresh, and the reason
   // gen-matchup-free.cjs bothers to write a slug at all ("landingData.card.slug or the
@@ -2776,6 +2790,14 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   // dive instead of losing it to a rebuilt-from-raw copy that only has the free tape.
   const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
   let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData) : currentCard;
+  // eventToCard() always sets `main: null` — the site's own build-time generator
+  // (gen-landing-data.cjs) is what actually computes a main-event breakdown, and
+  // it now does so for landingData.mains (keyed by slug) for MANY upcoming
+  // events, not just the current featured one. A ?event= override that lands on
+  // one of those gets the real breakdown instead of the locked teaser.
+  if (isOtherEvent && card && landingData && landingData.mains && landingData.mains[card.slug]) {
+    card = Object.assign({}, card, { main: landingData.mains[card.slug] });
+  }
   const isPastView = isOtherEvent && overrideIsPast;
   // currentCard is baked by the twice-daily landing-data generator and carries
   // NO live result info — the live-results poller (~every 2min during a card)
@@ -2872,33 +2894,30 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const head = `<div class="sr-cmp-row sr-cmp-head"><div></div><div>${esc(sA)}</div><div>${esc(sB)}</div></div>`;
     return `<div class="sr-common mf-tape"><div class="sr-common-title">Tale of the tape</div>${head}${cmpRow("Age", t.a.age, t.b.age, 1)}${cmpRow("Height", t.a.ht, t.b.ht, 0)}${cmpRow("Reach", t.a.reach, t.b.reach, 0)}${cmpRow("Stance", t.a.stance, t.b.stance, 0)}${layoffRow(t)}${l5Row(t)}</div>`;
   };
-  // THE DEEP DIVE, FOR THE MAIN EVENT ONLY — the one bout shown free.
+  // THE DEEP DIVE — the app's full striking/grappling analysis, free for any
+  // main event that has one, not just the site's current featured card.
   //
   // The panel is not rendered here: scripts/gen-matchup-free.cjs runs index.html's OWN
-  // mhStriking/mhGrappling at build time and data/matchup-free.json carries the
-  // finished HTML. So this page ships the app's exact analysis without the app's code,
-  // its 7.9MB of stats, or a fork that would drift (the hub changed eight times in the
-  // session that built it). See that script's header.
+  // mhStriking/mhGrappling at build time and worker/matchup-free.js carries the
+  // finished HTML, keyed by event slug — the current main event AND the upcoming
+  // carousel's own main events (capped there for payload size; see that script).
+  // So this page ships the app's exact analysis without the app's code, its
+  // 7.9MB of stats, or a fork that would drift (the hub changed eight times in
+  // the session that built it). See that script's header.
   //
-  // The button only appears when the payload matches THIS card and actually has
-  // markup — a stale matchup-free.json from last week's card must not hang a button
-  // on this week's main event. Same reason glDeepDiveAvailable() hides it in the app.
+  // A button only appears for a slug that's actually IN the map with real
+  // markup — a stale/incomplete build must not hang a button on a main event
+  // it has no data for. Same reason glDeepDiveAvailable() hides it in the app.
   const free = matchupFree || null;
-  // DWCS main events are debutants with no real UFC grid behind them — same reason
-  // index.html's renderScouting skips the button outright for f.isDWCS rather than
-  // trusting glDeepDiveAvailable's per-fighter data check alone. Checked unconditionally
-  // (not just "would gen-matchup-free.cjs have had data") to match that app-wide rule.
-  const isDwcsCard = mfSpecialClass(card && card.event) === "mf-dwcs";
-  // free.striking/free.grappling are now { all, win, loss } objects (gen-matchup-free.cjs
-  // always emits the object shape, even for the "no grid yet" case, where all three
-  // strings are "" — so the truthiness check has to look at .all specifically, not the
-  // object itself, which would otherwise be truthy no matter what it contains.
-  const ddFresh = !isDwcsCard && !!(free && free.striking && free.striking.all && free.grappling && free.grappling.all && card && free.slug === card.slug);
-  // The bout the payload describes, for the modal header. The slug check above proves
-  // it is THIS card; this proves it is this card's MAIN EVENT, which is a different
-  // question — boutOrder can be reshuffled by a withdrawal after the panel was
-  // rendered, and a header naming two men the panel isn't about is worse than no
-  // header. Fall back to names-only rather than to the wrong photos.
+  // free.events[slug].striking/.grappling are { all, win, loss } objects
+  // (gen-matchup-free.cjs always emits the object shape, even for the "no grid
+  // yet" case, where all three strings are "" — so the truthiness check has to
+  // look at .all specifically, not the object itself, which would otherwise be
+  // truthy no matter what it contains).
+  const ddDataFor = (slug) => {
+    const e = free && free.events && slug && free.events[slug];
+    return (e && e.striking && e.striking.all && e.grappling && e.grappling.all) ? e : null;
+  };
   // The app's modal header: avatar, name, record — and the weight class + rounds under
   // the VS. _fsAva() hard-codes 40px and an accent ring inline and is shared with the
   // fight modal, so it is reproduced here rather than imported: this page has no
@@ -2912,12 +2931,44 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
       : `<div style="${HUB_AV}">${esc(initials(nm))}</div>`}</span>` +
     `<div class="mh-hd-tx"><div class="mh-hd-nm">${esc(nm)}</div>` +
     `${rec ? `<div class="mh-hd-rc">${esc(rec)}</div>` : ""}</div></div>`;
-  const ddFight = ddFresh
-    ? (card.fights || []).find((x) => x.main && x.f1 === free.n1 && x.f2 === free.n2) || null
-    : null;
-  const ddBtn = ddFresh
-    ? `<button type="button" class="mf-dd-bar" onclick="mfHub()">Matchup Analytics Deep Dive <span class="mf-dd-go">&rsaquo;</span></button>`
-    : "";
+  // One #mh-overlay/#mh-box is shared by every "Matchup Analytics Deep Dive"
+  // button on the page (current card + every carousel slide) — mhEntries is
+  // the client-side data map mfHub(slug) reads from to populate it, built up
+  // as a side effect of ddBtnFor() below finding data for a given event, so a
+  // slug is only ever computed/serialized once no matter how many rows ask
+  // for it (the current card and a carousel slide can both name the same
+  // event when the slug filter above happens to include it twice).
+  const mhEntries = {};
+  // DWCS main events are debutants with no real UFC grid behind them — same reason
+  // index.html's renderScouting skips the button outright for f.isDWCS rather than
+  // trusting glDeepDiveAvailable's per-fighter data check alone. Checked unconditionally
+  // (not just "would gen-matchup-free.cjs have had data") to match that app-wide rule.
+  // ownerCard is whichever event this bout belongs to — the featured card for the
+  // top panel, or a carousel slide's own evCard — NOT always the page's `card`.
+  const ddBtnFor = (ownerCard, mainFight) => {
+    if (!ownerCard || mfSpecialClass(ownerCard.event) === "mf-dwcs") return "";
+    const d = ddDataFor(ownerCard.slug);
+    if (!d) return "";
+    if (!mhEntries[ownerCard.slug]) {
+      // The bout the payload describes, for the modal header. Proves it's this
+      // event's MAIN EVENT specifically — boutOrder can be reshuffled by a
+      // withdrawal after the panel was built, and a header naming two men the
+      // panel isn't about is worse than no header. Fall back to names-only
+      // rather than to the wrong photos.
+      const mf = (mainFight && mainFight.f1 === d.n1 && mainFight.f2 === d.n2)
+        ? mainFight
+        : (ownerCard.fights || []).find((x) => x.main && x.f1 === d.n1 && x.f2 === d.n2) || null;
+      mhEntries[ownerCard.slug] = {
+        n1: d.n1, n2: d.n2,
+        s1: mf ? profileSlugFor(mf.f1, profileSlugs, mf.s1) : null,
+        s2: mf ? profileSlugFor(mf.f2, profileSlugs, mf.s2) : null,
+        rec1: (mf && mf.rec1) || "", rec2: (mf && mf.rec2) || "",
+        weight: (mf && mf.weight) || "", rounds: mf ? mf.rounds : null,
+        striking: d.striking, grappling: d.grappling,
+      };
+    }
+    return `<button type="button" class="mf-dd-bar" onclick="mfHub('${esc(ownerCard.slug)}')">Matchup Analytics Deep Dive <span class="mf-dd-go">&rsaquo;</span></button>`;
+  };
   // Locked teaser for the paywalled sections on non-main bouts.
   const lockedTeaser = `<div class="mf-lock"><div class="mf-lock-head"><span class="mf-lock-ico">🔒</span><div><div class="mf-lock-t">Fight simulator · Matchup analytics · Style · Pace · Path to victory · Storylines</div><div class="mf-lock-sub">The full breakdown of every bout is a Premium feature.</div></div></div><a class="mf-lock-btn" href="/subscribe">Go Premium for the rest →</a></div>`;
   const nonMainPanel = (f) => `<div class="mf-panel" hidden>${taleHTML(f, f.tape)}${lockedTeaser}</div>`;
@@ -2925,7 +2976,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   // Main-event breakdown — mirrors the in-app scouting panel exactly:
   // Style → Pace → Path to victory → Storylines → Tale of the tape (h2h stats).
   const GREEN = "var(--accent)", AMBER = "#ffcf7a";
-  const breakdownHTML = (mf, t) => {
+  const breakdownHTML = (mf, t, ddBtn) => {
     if (!t) return "";
     const sA = surname(mf.f1), sB = surname(mf.f2);
     const head = `<div class="sr-cmp-row sr-cmp-head"><div></div><div>${esc(sA)}</div><div>${esc(sB)}</div></div>`;
@@ -3048,7 +3099,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
       : `<div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div>`;
     const panel = res
       ? `<div class="mf-panel" hidden><div class="mf-result"><span class="mf-res-tag">Result</span>${resultLine(f, res)}</div></div>`
-      : ((f.main && ownerCard.main) ? breakdownHTML(f, ownerCard.main) : nonMainPanel(f));
+      : ((f.main && ownerCard.main) ? breakdownHTML(f, ownerCard.main, ddBtnFor(ownerCard, f)) : nonMainPanel(f));
     // data-mfres="1" when this row is ALREADY rendered with its result (either the
     // twice-daily snapshot already had it, or the request-time live-result merge
     // above just added it) — decorate()'s live-results poller checks this exact
@@ -3169,7 +3220,14 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     .filter((raw) => !currentCard || !isFinite(featuredTime) || Date.parse(raw.startsAt || 0) > featuredTime)
     .slice(0, 12);
   const carouselSlide = (raw) => {
-    const evCard = eventToCard(raw, fighterLiteBySlug, false, oddsData);
+    let evCard = eventToCard(raw, fighterLiteBySlug, false, oddsData);
+    // Same landingData.mains lookup as the ?event= override path above — this is
+    // what actually turns a carousel slide's main event from the locked teaser
+    // into the full free breakdown. eventToCard() itself never sets `.main`,
+    // by design: it has no idea which slug the build-time generator covered.
+    if (landingData && landingData.mains && landingData.mains[evCard.slug]) {
+      evCard = Object.assign({}, evCard, { main: landingData.mains[evCard.slug] });
+    }
     const active = card && evCard.slug === card.slug;
     const when2 = eventWhen(evCard, { weekday: undefined, month: "short", day: "numeric" });
     const slideSpecial = mfSpecialClass(evCard.event);
@@ -3774,11 +3832,14 @@ ${AURORA_CSS}
       if(inWindow()){timer=setInterval(function(){if(!document.hidden)poll();},60000);document.addEventListener("visibilitychange",function(){if(!document.hidden&&!done)poll();});}
     })();
   </script>
-  ${ddFresh ? `
-  <!-- THE MATCHUP HUB, MAIN EVENT ONLY. Both tabs arrive already rendered (see
-       gen-matchup-free.cjs); the only script here switches which one is visible.
-       That is the point of doing it at build time: the app's exact analysis, none of
-       the app's code or its 7.9MB of stats, and nothing to keep in sync by hand. -->
+  ${Object.keys(mhEntries).length ? `
+  <!-- THE MATCHUP HUB — the current main event AND the upcoming carousel's own
+       main events, one shared overlay. Both tabs x three filters arrive already
+       rendered per event (see gen-matchup-free.cjs); mfHub(slug) just swaps
+       MH_DATA[slug] into the DOM and shows/hides which pane is visible. That is
+       the point of doing the analysis at build time: the app's exact numbers,
+       none of the app's code or its 7.9MB of stats, and nothing to keep in sync
+       by hand — just a per-slug lookup instead of a single baked-in event. -->
   <style>${free.css}</style>
   <style>
     /* The app's button in the free page's own type. .fight-dd-bar is Barlow
@@ -3796,13 +3857,9 @@ ${AURORA_CSS}
   </style>
   <div id="mh-overlay" onclick="if(event.target===this)mfHubClose()"></div>
   <div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics">
-    <div class="mh-hd">
-      ${hubSide(free.n1, ddFight && ddFight.s1, ddFight && ddFight.rec1, false)}
-      <div class="mh-hd-mid"><div class="mh-hd-vs">VS</div>${
-        ddFight && [ddFight.weight, ddFight.rounds ? ddFight.rounds + " RDS" : ""].filter(Boolean).length
-          ? `<div class="mh-hd-sub">${esc([ddFight.weight, ddFight.rounds ? ddFight.rounds + " RDS" : ""].filter(Boolean).join(" \u00b7 "))}</div>` : ""}</div>
-      ${hubSide(free.n2, ddFight && ddFight.s2, ddFight && ddFight.rec2, true)}
-    </div>
+    <!-- Header + body are filled by mfHub(slug) from MH_DATA below -- there is
+         no single "the" main event any more, so nothing server-baked goes here. -->
+    <div class="mh-hd" id="mh-hd"></div>
     <div class="mh-tabs" id="mh-tabs">
       <button type="button" class="mh-tab on" data-mh-tab="striking" onclick="mfHubTab('striking')">Striking</button>
       <button type="button" class="mh-tab" data-mh-tab="grappling" onclick="mfHubTab('grappling')">Grappling</button>
@@ -3814,26 +3871,55 @@ ${AURORA_CSS}
       <button type="button" class="mh-filter-btn" data-mh-filter="win" onclick="mfHubFilter('win')">Wins</button>
       <button type="button" class="mh-filter-btn" data-mh-filter="loss" onclick="mfHubFilter('loss')">Losses</button>
     </div>
-    <div class="mh-body" id="mh-body">
-      <div data-mh-pane="striking-all">${free.striking.all}</div>
-      <div data-mh-pane="striking-win" style="display:none">${free.striking.win}</div>
-      <div data-mh-pane="striking-loss" style="display:none">${free.striking.loss}</div>
-      <div data-mh-pane="grappling-all" style="display:none">${free.grappling.all}</div>
-      <div data-mh-pane="grappling-win" style="display:none">${free.grappling.win}</div>
-      <div data-mh-pane="grappling-loss" style="display:none">${free.grappling.loss}</div>
-    </div>
+    <div class="mh-body" id="mh-body"></div>
   </div>
   <script>
-    // Show/hide, not render — all six panes (2 tabs x 3 filters) are already in
-    // the DOM, pre-baked at build time by gen-matchup-free.cjs. Same trick the
-    // app uses at runtime (mhFilter/_ddGrid), just with the three variants
-    // computed once on CI instead of client-side, so this page still ships with
-    // no fetch and no client computation.
-    var mfHubState={tab:"striking",filter:"all"};
+    // One entry per event that has a deep-dive payload: the featured card and
+    // any carousel slide ddBtnFor() found data for (worker/pages.js). Each
+    // button's onclick="mfHub('<slug>')" is the only thing that decides which
+    // entry opens -- no fetch, this is all inline in the initial HTML.
+    var MH_DATA = ${JSON.stringify(mhEntries)};
+    function mhEsc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;"}[c];});}
+    function mhInitials(nm){
+      var p=String(nm||"").trim().split(/\s+/).filter(Boolean);
+      if(!p.length)return "?";
+      if(p.length===1)return p[0].slice(0,2).toUpperCase();
+      return (p[0][0]+p[p.length-1][0]).toUpperCase();
+    }
+    // Same markup/photo path as the server-rendered hubSide() in worker/pages.js
+    // (av ring, initials fallback on a 404) -- duplicated here, not imported,
+    // because this runs client-side to switch between events with no reload.
+    var MH_AV_STYLE="width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;color:#fff";
+    function mhHubSide(nm,slug,rec,right){
+      var av = slug
+        ? '<div style="'+MH_AV_STYLE+'"><img src="/photos/thumb/'+mhEsc(slug)+'.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=mhInitials('+JSON.stringify(nm)+')"></div>'
+        : '<div style="'+MH_AV_STYLE+'">'+mhEsc(mhInitials(nm))+'</div>';
+      return '<div class="mh-hd-f'+(right?" r":"")+'"><span class="mh-hd-av">'+av+'</span><div class="mh-hd-tx"><div class="mh-hd-nm">'+mhEsc(nm)+'</div>'+(rec?'<div class="mh-hd-rc">'+mhEsc(rec)+'</div>':'')+'</div></div>';
+    }
+    var mfHubState={slug:null,tab:"striking",filter:"all"};
     function mfHubShowPane(){
       var key=mfHubState.tab+"-"+mfHubState.filter;
       document.querySelectorAll("[data-mh-pane]").forEach(function(p){p.style.display=(p.dataset.mhPane===key)?"":"none";});
       var b=document.getElementById("mh-body"); if(b)b.scrollTop=0;
+    }
+    // Rebuilds the header + all six panes for whichever event is open. Show/hide
+    // only after this — the panes themselves are already-rendered HTML from
+    // gen-matchup-free.cjs, same trick the app uses at runtime (mhFilter/_ddGrid),
+    // just computed once on CI instead of client-side.
+    function mfHubRender(){
+      var e=MH_DATA[mfHubState.slug]; if(!e)return;
+      var subBits=[e.weight,e.rounds?(e.rounds+" RDS"):""].filter(Boolean);
+      var mid='<div class="mh-hd-vs">VS</div>'+(subBits.length?'<div class="mh-hd-sub">'+mhEsc(subBits.join(" · "))+'</div>':"");
+      document.getElementById("mh-hd").innerHTML =
+        mhHubSide(e.n1,e.s1,e.rec1,false)+'<div class="mh-hd-mid">'+mid+'</div>'+mhHubSide(e.n2,e.s2,e.rec2,true);
+      document.getElementById("mh-body").innerHTML =
+        '<div data-mh-pane="striking-all">'+e.striking.all+'</div>'+
+        '<div data-mh-pane="striking-win" style="display:none">'+e.striking.win+'</div>'+
+        '<div data-mh-pane="striking-loss" style="display:none">'+e.striking.loss+'</div>'+
+        '<div data-mh-pane="grappling-all" style="display:none">'+e.grappling.all+'</div>'+
+        '<div data-mh-pane="grappling-win" style="display:none">'+e.grappling.win+'</div>'+
+        '<div data-mh-pane="grappling-loss" style="display:none">'+e.grappling.loss+'</div>';
+      mfHubShowPane();
     }
     window.mfHubTab=function(t){
       mfHubState.tab=t;
@@ -3871,19 +3957,21 @@ ${AURORA_CSS}
       document.documentElement.style.overflow = "";
       window.scrollTo(0, mfScrollY);
     }
-    window.mfHub=function(){
+    window.mfHub=function(slug){
+      if(!MH_DATA[slug])return;
       var ov=document.getElementById("mh-overlay"),bx=document.getElementById("mh-box");
       if(!ov||!bx)return;
+      // Reset to the default pane every open — a stale "Losses" filter from the
+      // last bout viewed must not silently carry over to this one, whether or
+      // not it's the same event as last time.
+      mfHubState={slug:slug,tab:"striking",filter:"all"};
+      mfHubRender();
+      document.querySelectorAll("#mh-tabs .mh-tab").forEach(function(b){b.classList.toggle("on",b.dataset.mhTab==="striking");});
+      document.querySelectorAll("#mh-filter .mh-filter-btn").forEach(function(b){b.classList.toggle("on",b.dataset.mhFilter==="all");});
       ov.style.display="block"; bx.classList.add("mh-on");
       requestAnimationFrame(function(){requestAnimationFrame(function(){
         ov.style.opacity="1"; bx.style.opacity="1"; bx.style.transform="translate(-50%,-50%)";});});
       mfLockScroll();
-      // Reset to the default pane every open — a stale "Losses" filter from the
-      // last bout viewed must not silently carry over to this one.
-      mfHubState={tab:"striking",filter:"all"};
-      document.querySelectorAll("#mh-tabs .mh-tab").forEach(function(b){b.classList.toggle("on",b.dataset.mhTab==="striking");});
-      document.querySelectorAll("#mh-filter .mh-filter-btn").forEach(function(b){b.classList.toggle("on",b.dataset.mhFilter==="all");});
-      mfHubShowPane();
     };
     window.mfHubClose=function(){
       var ov=document.getElementById("mh-overlay"),bx=document.getElementById("mh-box");

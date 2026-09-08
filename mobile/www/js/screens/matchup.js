@@ -14,9 +14,13 @@
 // pipeline (currentLanding/eventToCard/live-result merge/odds backfill) but
 // hands back JSON: the featured card (or whichever past event was picked),
 // the same full-card carousel matchupPage itself builds for upcoming events,
-// the full pre-fight breakdown when it's actually precomputed for the site's
-// current main event, and whether the free "Analytics Deep Dive" is
-// available for it.
+// and the full pre-fight breakdown + "Analytics Deep Dive" availability for
+// whichever of those main events actually has one precomputed --
+// scripts/gen-landing-data.cjs and gen-matchup-free.cjs now cover the
+// current card AND the upcoming carousel's own main events (each capped for
+// build cost, see those scripts), not just the one currently-held card. Each
+// carousel entry below carries its own `breakdown`/`deepDive`, same shape as
+// the top-level `card`'s.
 //
 // The deep dive itself is NOT reimplemented natively -- it's raw HTML/CSS
 // gen-matchup-free.cjs pre-renders from the live site's own build (see
@@ -157,12 +161,12 @@ function mountMatchup(container){
     return '<div class="mf-result"><span class="mf-res-tag">Result</span><strong>' + esc(res.winner) + '</strong> def. ' + esc(loser) + (meth ? ' <span class="mf-res-meth">' + meth + '</span>' : '') + '</div>';
   }
 
-  // Same renderer for the featured card AND every carousel slide -- a slide's
-  // own "main event" only ever gets the free tale of the tape + locked
-  // teaser (its `t`/`deepDive` are always null here, exactly like
-  // matchupPage's own `(f.main && ownerCard.main)` gate: the full breakdown
-  // and Analytics Deep Dive are precomputed for the site's current card
-  // only, never for a carousel pick).
+  // Same renderer for the featured card AND every carousel slide -- a
+  // slide's own "main event" gets the full breakdown + Analytics Deep Dive
+  // whenever the API actually has one for that event's slug (see the
+  // worker/index.js comment above), the locked teaser otherwise. Non-main
+  // bouts always get the locked teaser regardless -- only ever the main
+  // event is free, on any card.
   function fightHTML(f, isMain, deepDive, breakdown){
     var res = f.result || null;
     var panelBody = res
@@ -229,7 +233,7 @@ function mountMatchup(container){
             '<div class="mf-ev-slide-name">' + esc(c.event) + '</div>' +
             '<div class="mf-ev-slide-sub">' + esc([when, c.location || c.city].filter(Boolean).join(' · ')) + '</div>' +
           '</div>' +
-          cardBodyHTML(c, { available: false }, null) +
+          cardBodyHTML(c, c.deepDive || { available: false }, c.breakdown || null) +
         '</div>'
       );
     }).join('');
