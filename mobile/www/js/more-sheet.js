@@ -12,23 +12,29 @@
 // screens are, with the overlay/scroll-lock/open-close ANIMATION mechanics
 // borrowed from matchup.js's hubOpen/hubClose/hubLockScroll.
 window.GL_MORE = (function(){
-  // Order here is the order they appear in the sheet. This curation is
-  // provisional -- to be revisited once more premium features land.
-  var ITEMS = [
+  // Order here is the order the premium FEATURE items appear in the sheet --
+  // this curation is provisional, to be revisited once more premium
+  // features land. Account is deliberately kept separate from this list
+  // (not just placed last in it) and always appended after it at render
+  // time, so it's guaranteed to stay the bottom-most item no matter what
+  // gets added to FEATURE_ITEMS later -- nobody has to remember to keep it
+  // last.
+  var FEATURE_ITEMS = [
     {
       route: 'simulator', label: 'Fight Simulator', premium: true,
       icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.7v6.6l5.5-3.3z" fill="currentColor"/></svg>',
     },
-    {
-      route: 'account', label: 'Account',
-      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
-    },
   ];
+  var ACCOUNT_ITEM = {
+    route: 'account', label: 'Account',
+    icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  };
 
   var overlay, sheet, list, scrollY = 0, wired = false, isOpen = false;
 
   function render(activeRoute){
-    list.innerHTML = ITEMS.map(function(it){
+    var items = FEATURE_ITEMS.concat([ACCOUNT_ITEM]);
+    list.innerHTML = items.map(function(it){
       return (
         '<button type="button" class="more-item' + (it.route === activeRoute ? ' active' : '') + '" data-route="' + it.route + '">' +
           it.icon +

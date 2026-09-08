@@ -104,15 +104,94 @@ window.GL_SIMULATOR = (function(){
     }).join('') + '</div>';
   }
 
-  function resultHTML(nameA, nameB, result){
+  // Faces + names + raw win count for each side -- mirrors the site's own
+  // .sim-results-top (avatar, name, "N / total wins"), favorite called out
+  // in accent. Reuses fighter.js's own avatar markup/CSS (.fp-av, 56px)
+  // rather than a third copy of the same circular-photo-with-initials-
+  // fallback pattern matchup.js/home.js/roster.js already each have their
+  // own version of.
+  function resultsHeaderHTML(nameA, nameB, slugA, slugB, result){
+    var aFav = result.winsA >= result.winsB;
+    return (
+      '<div class="sim-res-top">' +
+        '<div class="sim-res-fighter' + (aFav ? ' fav' : '') + '">' +
+          window.GL_FIGHTER.avatarHtml({ name: nameA, photo: slugA || null }) +
+          '<div>' +
+            '<div class="sim-res-name">' + esc(nameA) + '</div>' +
+            '<div class="sim-res-count">' + result.winsA.toLocaleString() + ' / ' + result.n.toLocaleString() + ' wins</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="sim-res-fighter right' + (aFav ? '' : ' fav') + '">' +
+          '<div>' +
+            '<div class="sim-res-name">' + esc(nameB) + '</div>' +
+            '<div class="sim-res-count">' + result.winsB.toLocaleString() + ' / ' + result.n.toLocaleString() + ' wins</div>' +
+          '</div>' +
+          window.GL_FIGHTER.avatarHtml({ name: nameB, photo: slugB || null }) +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  // The composite rating simWinProbability actually runs on -- shown so the
+  // win% above isn't a total black box, same reasoning as the site's own
+  // .sim-power-row.
+  function powerRowHTML(result){
+    var aLead = result.powerA >= result.powerB;
+    return (
+      '<div class="sim-power-row">' +
+        '<div class="sim-power-col"><div class="sim-power-label">Power Score</div><div class="sim-power-value' + (aLead ? ' lead' : '') + '">' + result.powerA.toFixed(2) + '</div></div>' +
+        '<div class="sim-power-divider"></div>' +
+        '<div class="sim-power-col"><div class="sim-power-label">Power Score</div><div class="sim-power-value' + (!aLead ? ' lead' : '') + '">' + result.powerB.toFixed(2) + '</div></div>' +
+      '</div>' +
+      '<p class="gl-muted" style="margin-top:.5rem;font-size:.68rem">Composite rating from striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</p>'
+    );
+  }
+
+  // Tale of the Tape -- the same raw per-fighter numbers the win-probability
+  // model itself reads (worker/fight-sim.js's fighterTaleOfTape(), sourced
+  // from FIGHTER_STATS), laid out side by side. No per-row "winner"
+  // highlighting -- unlike win% or power score, more of a given stat isn't
+  // reliably better (e.g. takedown defense vs. takedown offense pull in
+  // opposite directions), so this just shows the numbers straight, the way
+  // a tale-of-the-tape table normally does.
+  var TAPE_FIELDS = [
+    ['Height', 'ht'], ['Reach', 'reach'], ['Stance', 'stance'], ['Age', 'age'],
+    ['Str Landed/Min', 'slpm'], ['Str Accuracy', 'strAcc'],
+    ['Str Absorbed/Min', 'sapm'], ['Str Defense', 'strDef'],
+    ['Takedowns/15min', 'tdLanded'], ['TD Accuracy', 'tdAcc'], ['TD Defense', 'tdDef'],
+    ['Sub Attempts/15min', 'subAvg'], ['Finish Rate', 'finRate'],
+  ];
+  function tapeVal(v){ return (v === null || v === undefined || v === '') ? '—' : String(v); }
+  function tapeHTML(tapeA, tapeB){
+    if (!tapeA || !tapeB) return '';
+    return (
+      '<div class="sim-tape">' +
+        '<div class="rk-panel-title">Tale of the Tape</div>' +
+        TAPE_FIELDS.map(function(f){
+          return (
+            '<div class="sim-tape-row">' +
+              '<div class="sim-tape-val l">' + esc(tapeVal(tapeA[f[1]])) + '</div>' +
+              '<div class="sim-tape-label">' + esc(f[0]) + '</div>' +
+              '<div class="sim-tape-val r">' + esc(tapeVal(tapeB[f[1]])) + '</div>' +
+            '</div>'
+          );
+        }).join('') +
+      '</div>'
+    );
+  }
+
+  function resultHTML(nameA, nameB, slugA, slugB, result, tapeA, tapeB){
     return (
       '<div class="sim-result">' +
+        resultsHeaderHTML(nameA, nameB, slugA, slugB, result) +
         '<div class="rk-panel-title">Win Probability</div>' +
         pctBarHTML(result.probA, nameA, nameB) +
         '<div class="sim-result-cols">' +
           '<div><div class="sim-col-h">' + esc(nameA) + ' by</div>' + methodRowsHTML(result.methodsA, result.winsA) + '</div>' +
           '<div><div class="sim-col-h">' + esc(nameB) + ' by</div>' + methodRowsHTML(result.methodsB, result.winsB) + '</div>' +
         '</div>' +
+        powerRowHTML(result) +
+        tapeHTML(tapeA, tapeB) +
         '<p class="gl-muted" style="margin-top:1rem;font-size:.72rem">Based on ' + result.n.toLocaleString() + ' simulated fights. A projection, not a prediction — anyone can win on the night.</p>' +
       '</div>'
     );
@@ -143,7 +222,7 @@ window.GL_SIMULATOR = (function(){
         '<div class="gl-label" style="margin:0 0 .3rem">Fight Length</div>' +
         '<div class="fp-tabs" style="max-width:none">' +
           '<button type="button" class="fp-tab' + (is5 ? '' : ' sel') + '" data-rounds="3">3 Rounds</button>' +
-          '<button type="button" class="fp-tab' + (is5 ? ' sel' : '') + '" data-rounds="5">5 Rounds (Title)</button>' +
+          '<button type="button" class="fp-tab' + (is5 ? ' sel' : '') + '" data-rounds="5">5 Rounds</button>' +
         '</div>' +
       '</div>' +
       '<button type="button" class="gl-btn gl-btn-primary" id="simRunBtn" disabled style="margin-top:1.1rem">Pick both fighters to simulate</button>' +
@@ -199,7 +278,7 @@ window.GL_SIMULATOR = (function(){
       runBtn.textContent = 'Simulating…';
       output.innerHTML = '';
       window.GL_API.fightSim(picked.a, picked.b, rounds).then(function(res){
-        output.innerHTML = resultHTML(res.a, res.b, res.result);
+        output.innerHTML = resultHTML(res.a, res.b, res.slugA, res.slugB, res.result, res.tapeA, res.tapeB);
         runBtn.disabled = false;
         runBtn.textContent = 'Run It Again';
       }).catch(function(err){

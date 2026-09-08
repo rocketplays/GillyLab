@@ -129,6 +129,15 @@ const calcAgeJS = html.slice(ca, caEnd + 3);
 // ── FIGHTER_STATS / FIGHT_HISTORY — the only two data globals the math reads ──
 const FIGHTER_STATS = grabConst('FIGHTER_STATS');
 const FIGHT_HISTORY = grabConst('FIGHT_HISTORY');
+// NAME_ALIASES — the site's own "these two strings mean the same fighter"
+// map (odds feeds, ESPN imports, etc. spelling someone differently than our
+// DB does -- e.g. "Jose Miguel Delgado" -> "Jose Delgado"). The app's own
+// Simulate Matchup button passes whatever name the matchup card itself
+// carries, which isn't always run through this map before reaching here the
+// way the site's card-generation scripts do upstream -- so runFightSim
+// below resolves through it itself rather than assuming an exact
+// FIGHTER_STATS key match on whatever name arrives.
+const NAME_ALIASES = grabConst('NAME_ALIASES');
 
 // ── RANKINGS_LOOKUP — built directly from data/rankings.json (see header
 // comment on why this deliberately does NOT replicate the site's own
@@ -187,6 +196,20 @@ const dataJS =
   'const RANKINGS_LOOKUP = ' + JSON.stringify(RANKINGS_LOOKUP) + ';\n' +
   'const NAME_DIVISION = ' + JSON.stringify(NAME_DIVISION) + ';\n' +
   'const SIM_DIVISION_ALIASES = ' + JSON.stringify(SIM_DIVISION_ALIASES) + ';\n' +
+  'const NAME_ALIASES = ' + JSON.stringify(NAME_ALIASES) + ';\n' +
+  '// A name arrives here already-canonical for the search-picker flow (the\n' +
+  "// app's own /api/fighter-search is keyed off the same roster this alias\n" +
+  '// map ultimately resolves into), but the Card page\'s Simulate Matchup\n' +
+  '// button passes whatever name the matchup/event data itself carries --\n' +
+  '// not always run through this map first. Mirrors the site\'s own reason\n' +
+  '// for NAME_ALIASES existing (see index.html): resolve a known alternate\n' +
+  '// spelling to the FIGHTER_STATS key before giving up on it.\n' +
+  'function resolveSimName(name) {\n' +
+  '  if (FIGHTER_STATS[name]) return name;\n' +
+  "  const alias = NAME_ALIASES[String(name || '').trim().toLowerCase()];\n" +
+  '  if (alias && FIGHTER_STATS[alias]) return alias;\n' +
+  '  return null;\n' +
+  '}\n' +
   'function normalizeFighterNameForMatch(name) {\n' +
   "  return String(name == null ? '' : name).trim().toLowerCase()\n" +
   "    .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')\n" +
@@ -209,13 +232,51 @@ const entryJS =
   '\n' +
   '// Entry point for worker/index.js\'s /api/app/fight-sim. Returns null for an\n' +
   '// unknown fighter name (caller turns that into a 404) rather than letting the\n' +
-  '// math run on undefined and produce nonsense.\n' +
+  '// math run on undefined and produce nonsense. Resolves through\n' +
+  '// resolveSimName first (see its comment above) so an alias spelling\n' +
+  '// (e.g. "Jose Miguel Delgado") still finds "Jose Delgado" in FIGHTER_STATS,\n' +
+  '// and runs the actual trials against the CANONICAL names either way, so\n' +
+  '// the result and every stat in it lines up with one consistent identity.\n' +
   'export function runFightSim(nameA, nameB, rounds, n) {\n' +
-  '  if (!FIGHTER_STATS[nameA] || !FIGHTER_STATS[nameB]) return null;\n' +
-  '  return simRunTrials(nameA, nameB, n, rounds);\n' +
+  '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
+  '  if (!canonA || !canonB) return null;\n' +
+  '  return simRunTrials(canonA, canonB, n, rounds);\n' +
   '}\n' +
   'export function fightSimKnowsFighter(name) {\n' +
-  '  return !!FIGHTER_STATS[name];\n' +
+  '  return !!resolveSimName(name);\n' +
+  '}\n' +
+  '// The canonical FIGHTER_STATS key for a name that might be an alias --\n' +
+  '// worker/index.js uses this to look up the matching slug/photo and to\n' +
+  '// echo a name back that actually matches what runFightSim just computed,\n' +
+  '// instead of echoing whatever spelling the caller happened to send.\n' +
+  'export function canonicalSimName(name) {\n' +
+  '  return resolveSimName(name);\n' +
+  '}\n' +
+  '// Tale-of-the-tape stat line for one fighter -- the same raw numbers the\n' +
+  '// win-probability math itself reads out of FIGHTER_STATS, reshaped for\n' +
+  '// the app\'s own head-to-head comparison table (see screens/simulator.js).\n' +
+  '// Returns null for an unresolvable name, same convention as runFightSim.\n' +
+  'export function fighterTaleOfTape(name) {\n' +
+  '  const canon = resolveSimName(name);\n' +
+  '  if (!canon) return null;\n' +
+  '  const s = FIGHTER_STATS[canon] || {};\n' +
+  '  return {\n' +
+  '    name: canon,\n' +
+  '    ht: s.ht || null,\n' +
+  '    reach: s.reach || null,\n' +
+  '    stance: s.stance || null,\n' +
+  '    age: s.dob ? calcAge(s.dob) : null,\n' +
+  '    slpm: s.slpm != null ? s.slpm : null,\n' +
+  '    strAcc: s.strAcc || null,\n' +
+  '    sapm: s.sapm != null ? s.sapm : null,\n' +
+  '    strDef: s.strDef || null,\n' +
+  '    tdLanded: s.tdLanded != null ? s.tdLanded : null,\n' +
+  '    tdAcc: s.tdAcc || null,\n' +
+  '    tdDef: s.tdDef || null,\n' +
+  '    subAvg: s.subAvg != null ? s.subAvg : null,\n' +
+  '    finRate: s.finRate || null,\n' +
+  '    streak: s.streak != null ? s.streak : null,\n' +
+  '  };\n' +
   '}\n';
 
 const mod =

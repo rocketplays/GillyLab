@@ -523,6 +523,7 @@ function mountMatchup(container){
         var panel = card.querySelector('.mf-panel');
         panel.hidden = !panel.hidden;
         btn.textContent = 'Fight Info ' + (panel.hidden ? '⌄' : '⌃');
+        btn.classList.toggle('open', !panel.hidden);
       });
     });
 

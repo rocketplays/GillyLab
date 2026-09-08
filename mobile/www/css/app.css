@@ -406,30 +406,52 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .mf-wt{ font-size:.62rem; color:var(--muted); text-align:center; max-width:70px; }
 .mf-odds{ font-size:.72rem; color:var(--muted); white-space:nowrap; }
 .mf-meth{ font-size:.7rem; font-weight:800; color:var(--accent); }
-.mf-info{ background:none; border:none; color:var(--muted); font-size:.68rem; text-decoration:underline; cursor:pointer; padding:.3rem 0 0; }
+/* Mirrors the site's own .fight-info-toggle exactly (small bordered pill,
+   muted until hovered/open) rather than the plain underlined text link this
+   used before. */
+.mf-info{
+  display:inline-block; background:none; border:1px solid var(--border); border-radius:4px;
+  color:var(--muted); font-family:'Barlow Condensed',sans-serif; font-size:.62rem;
+  letter-spacing:.07em; text-transform:uppercase; padding:.22rem .45rem; cursor:pointer;
+  transition:border-color .15s, color .15s; margin-top:.15rem; white-space:nowrap;
+}
+.mf-info:hover, .mf-info.open{ border-color:var(--accent); color:var(--accent); }
 .mf-panel{ margin-top:.8rem; padding-top:.8rem; border-top:1px solid var(--border); }
 .mf-lock{ padding:.2rem 0; }
 .mf-lock-t{ font-size:.8rem; font-weight:700; line-height:1.4; }
 .mf-result{ font-size:.86rem; line-height:1.5; }
 .mf-res-tag{ display:block; font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:.2rem; }
 .mf-res-meth{ color:var(--muted); }
+/* Mirrors the site's own .fight-dd-bar exactly -- centered (not
+   space-between), plain text color with only the go-arrow in accent, and
+   the same weight/tracking/case treatment -- rather than the off-center,
+   all-accent-colored version this used before. */
 .mf-dd-bar{
-  display:flex; align-items:center; justify-content:space-between; width:100%;
-  background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 14%, transparent), color-mix(in srgb, var(--accent) 5%, transparent));
-  border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); color:var(--accent);
-  border-radius:8px; padding:.7rem .9rem; font-weight:800; font-size:.82rem; cursor:pointer; margin-bottom:.8rem;
+  display:flex; align-items:center; justify-content:center; gap:.5rem; width:100%;
+  margin:0 0 .8rem;
+  background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), color-mix(in srgb, var(--accent) 3%, transparent));
+  border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); color:var(--text);
+  border-radius:8px; padding:.6rem; font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:.86rem; letter-spacing:.1em; text-transform:uppercase; cursor:pointer;
+  transition:background .15s, border-color .15s, transform .12s;
 }
-.mf-dd-go{ font-size:1.1rem; }
+.mf-dd-bar:active{ transform:translateY(1px); }
+.mf-dd-go{ color:var(--accent); font-size:1rem; line-height:1; }
 
-/* Simulate Matchup -- solid accent fill (vs. the Deep Dive bar's ghost/
-   outline treatment above) so the two premium bars read as distinct
-   actions rather than a repeated element on the same card. */
+/* Mirrors the site's own .fight-sim-bar -- a subtle full-bleed footer strip
+   under the fight row (border-top only, faint accent tint, small uppercase
+   text), not a second bordered/filled pill competing with the Deep Dive
+   bar above. Bleeds past .mf-card's own padding via negative margins to
+   reach the card's edges, same as the site's version reaching the edges of
+   its own (padding-less, overflow:hidden) .fight-row grid container. */
 .mf-sim-bar{
-  display:block; width:100%; background:var(--accent); border:none; color:#0a0a0b;
-  border-radius:8px; padding:.7rem .9rem; font-weight:800; font-size:.82rem;
-  text-align:center; cursor:pointer; margin-bottom:.8rem;
+  display:block; width:auto; margin:.7rem -.9rem -.9rem; border:0; border-top:1px solid var(--border);
+  border-radius:0 0 11px 11px;
+  background:color-mix(in srgb, var(--accent) 6%, transparent); color:var(--accent);
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; text-align:center; padding:.6rem; cursor:pointer; transition:background .15s;
 }
-.mf-sim-bar:active{ opacity:.85; }
+.mf-sim-bar:active{ background:color-mix(in srgb, var(--accent) 12%, transparent); }
 
 /* ---- Matchup: free-flowing event header + live countdown (mirrors the
    premium in-app home page's #countdown -- .event-header/.event-countdown
@@ -688,6 +710,15 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sim-probbar-b{ background:var(--surface2); border:1px solid var(--border); color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.82rem; transition:width .25s ease; }
 .sim-probbar-labels{ display:flex; justify-content:space-between; margin-top:.4rem; font-size:.76rem; font-weight:700; color:var(--muted); }
 .sim-result{ background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem 1.15rem; }
+/* Mirrors the site's own .sim-results-top -- faces + names + raw win count
+   for each side, favorite (>= 50%) called out in accent, before the win%
+   bar and everything else. */
+.sim-res-top{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.9rem; }
+.sim-res-fighter{ display:flex; align-items:center; gap:.6rem; min-width:0; }
+.sim-res-fighter.right{ flex-direction:row-reverse; text-align:right; }
+.sim-res-name{ font-weight:800; font-size:.92rem; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sim-res-fighter.fav .sim-res-name{ color:var(--accent); }
+.sim-res-count{ font-size:.68rem; color:var(--muted); margin-top:.1rem; }
 .sim-result-cols{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.2rem; }
 .sim-col-h{ font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:.5rem; }
 .sim-methods{ display:flex; flex-direction:column; gap:.5rem; }
@@ -697,6 +728,25 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sim-method-fill{ height:100%; background:var(--accent); border-radius:5px; }
 .sim-method-pct{ flex:0 0 30px; text-align:right; font-size:.7rem; font-weight:700; }
 @media (max-width:360px){ .sim-result-cols{ grid-template-columns:1fr; } }
+/* Mirrors the site's .sim-power-row -- the composite rating that actually
+   drives the win-probability math, shown so the number behind the estimate
+   isn't a total black box. */
+.sim-power-row{ display:flex; align-items:center; margin-top:1.2rem; padding-top:1rem; border-top:1px solid var(--border); }
+.sim-power-col{ flex:1; text-align:center; }
+.sim-power-divider{ width:1px; align-self:stretch; background:var(--border); }
+.sim-power-label{ font-size:.62rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700; }
+.sim-power-value{ font-size:1.3rem; font-weight:800; margin-top:.15rem; }
+.sim-power-value.lead{ color:var(--accent); }
+/* Tale of the Tape -- the same raw per-fighter numbers the win-probability
+   model itself reads, laid out as a classic two-column comparison rather
+   than buried inside the method-of-victory breakdown. */
+.sim-tape{ margin-top:1.2rem; padding-top:1rem; border-top:1px solid var(--border); }
+.sim-tape-row{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:.6rem; padding:.4rem 0; border-top:1px solid var(--border); }
+.sim-tape-row:first-of-type{ border-top:none; }
+.sim-tape-val{ font-size:.82rem; font-weight:700; }
+.sim-tape-val.l{ text-align:left; }
+.sim-tape-val.r{ text-align:right; }
+.sim-tape-label{ font-size:.64rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); text-align:center; white-space:nowrap; }
 
 /* ---- Go Premium: wrapper glue for the site's own /subscribe feature-tile
    carousel (fetched whole -- CSS/markup/script -- from

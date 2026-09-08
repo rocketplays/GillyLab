@@ -20,7 +20,7 @@
 import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
 import fighterExtras from "./fighter-extras.js";
-import { runFightSim, fightSimKnowsFighter } from "./fight-sim.js";
+import { runFightSim, canonicalSimName, fighterTaleOfTape } from "./fight-sim.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -2977,8 +2977,9 @@ export default {
         return json(extras, 200, cors);
       }
       // Fight Simulator -- premium-only, same gate shape as fighter-extras
-      // above. runFightSim/fightSimKnowsFighter are real functions imported
-      // from worker/fight-sim.js (a build-time-generated module containing
+      // above. runFightSim/canonicalSimName/fighterTaleOfTape are real
+      // functions imported from worker/fight-sim.js (a build-time-generated
+      // module containing
       // index.html's own pure sim math + baked FIGHTER_STATS/FIGHT_HISTORY --
       // see scripts/gen-fight-sim.cjs), NOT computed per-request from
       // index.html itself. `a`/`b` are fighter NAMES (matching
@@ -2994,16 +2995,51 @@ export default {
         if (!s) return json({ error: "Please log in to see this." }, 401, cors);
         const u = await getUser(env, s.email);
         if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
-        const nameA = (url.searchParams.get("a") || "").trim();
-        const nameB = (url.searchParams.get("b") || "").trim();
-        if (!nameA || !nameB) return json({ error: "missing a/b fighter name" }, 400, cors);
+        const rawA = (url.searchParams.get("a") || "").trim();
+        const rawB = (url.searchParams.get("b") || "").trim();
+        if (!rawA || !rawB) return json({ error: "missing a/b fighter name" }, 400, cors);
+        // Resolve through fight-sim.js's own NAME_ALIASES BEFORE the "unknown
+        // fighter" / "pick two different fighters" checks -- the Card page's
+        // Simulate Matchup button passes whatever name the matchup data
+        // itself carries (e.g. "Jose Miguel Delgado"), which isn't always
+        // the exact FIGHTER_STATS key (here, "Jose Delgado") the way a name
+        // picked from the search box always is. Comparing/running on the
+        // CANONICAL names means two different spellings of the same person
+        // are still caught as "pick two different fighters" instead of
+        // slipping through as a fight against himself.
+        const nameA = canonicalSimName(rawA);
+        const nameB = canonicalSimName(rawB);
+        if (!nameA) return json({ error: "unknown fighter: " + rawA }, 404, cors);
+        if (!nameB) return json({ error: "unknown fighter: " + rawB }, 404, cors);
         if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
         const rounds = url.searchParams.get("rounds") === "5" ? 5 : 3;
         const n = Math.min(10000, Math.max(500, parseInt(url.searchParams.get("n"), 10) || 5000));
-        if (!fightSimKnowsFighter(nameA)) return json({ error: "unknown fighter: " + nameA }, 404, cors);
-        if (!fightSimKnowsFighter(nameB)) return json({ error: "unknown fighter: " + nameB }, 404, cors);
         const result = runFightSim(nameA, nameB, rounds, n);
-        return json({ a: nameA, b: nameB, rounds, result }, 200, cors);
+        // Slugs (for the app's own avatar photo convention, PHOTO_BASE +
+        // slug + '.png') and a tale-of-the-tape stat line per fighter -- the
+        // same data /api/fighter-search and the site's own Simulate Matchup
+        // result already draw from, so the app's result screen can show
+        // faces and a real head-to-head breakdown instead of just the win
+        // percentage. One pass over fighter-lite.json's bySlug, stopping
+        // once both names are found -- cheap even at ~3,000 entries, and
+        // this endpoint already reads the (much larger) fight-sim data set
+        // per request.
+        const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+        const bySlug = (lite && lite.bySlug) || {};
+        let slugA = null, slugB = null;
+        for (const slug in bySlug) {
+          const f = bySlug[slug];
+          if (!f) continue;
+          if (!slugA && f.name === nameA) slugA = f.slug || slug;
+          if (!slugB && f.name === nameB) slugB = f.slug || slug;
+          if (slugA && slugB) break;
+        }
+        return json({
+          a: nameA, b: nameB, rounds, result,
+          slugA, slugB,
+          tapeA: fighterTaleOfTape(nameA),
+          tapeB: fighterTaleOfTape(nameB),
+        }, 200, cors);
       }
       // Account screen: signed-in email, subscription status and member-since
       // date -- none of which the app currently has (GL_AUTH only tracks
