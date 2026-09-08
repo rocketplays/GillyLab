@@ -12,7 +12,6 @@
 // copy below says so rather than implying it's synced.
 window.GL_ROUTER.register('home', {
   title: 'GillyLab',
-  brand: true,
   tab: 'home',
   render: function(container){
     container.innerHTML = '<p class="gl-muted">Loading…</p>';

@@ -7,7 +7,7 @@ window.GL_ROUTER = (function(){
   var screens = {};       // routeName -> { title, render(container, params), tab }
   var current = null;
   var previous = null;    // last DIFFERENT route, for back() -- see fighter.js
-  var appEl, topbarTitleEl, backBtn, tabbarEl;
+  var appEl, appScrollEl, topbarTitleEl, backBtn, tabbarEl;
 
   function register(name, screen){ screens[name] = screen; }
 
@@ -24,18 +24,7 @@ window.GL_ROUTER = (function(){
     if (current && current !== name) previous = current;
     current = name;
     location.hash = '#/' + name;
-    // A screen can ask for the site's own brand mark (logo + "GillyLab"
-    // wordmark, Lab in accent green) in the top bar instead of a plain text
-    // title -- see home.js. Mirrors .pk-brand from the website's own free
-    // pages exactly (worker/pages.js).
-    if (screen.brand){
-      var logoBase = (window.GL_API && window.GL_API.BASE) || '';
-      topbarTitleEl.innerHTML =
-        '<img class="gl-topbar-logo" src="' + logoBase + '/gl-logo.png?v=8" alt="">' +
-        '<span>GILLY<span class="a">LAB</span></span>';
-    } else {
-      topbarTitleEl.textContent = screen.title || 'GillyLab';
-    }
+    topbarTitleEl.textContent = screen.title || 'GillyLab';
     backBtn.hidden = !screen.showBack;
     // A screen with no `tab` of its own (e.g. a fighter profile pushed from
     // Roster/Matchup/Rankings) leaves the tab bar exactly as it was --
@@ -44,9 +33,13 @@ window.GL_ROUTER = (function(){
     if (screen.tab) setActiveTab(screen.tab);
     // Reset per-screen modifier classes (e.g. fullbleed) before the next
     // screen renders, so nothing leaks from whichever screen was up before.
-    appEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '');
+    // The centered brand mark (see .gl-page-brand / index.html) lives on
+    // appScrollEl, a sibling of appEl -- so it's untouched by a screen's own
+    // full innerHTML replacement of appEl and scrolls away with the rest of
+    // the page instead of sitting fixed like the top bar.
+    appScrollEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '');
     appEl.innerHTML = '';
-    appEl.scrollTop = 0;
+    appScrollEl.scrollTop = 0;
     screen.render(appEl, params || {});
   }
 
@@ -66,6 +59,7 @@ window.GL_ROUTER = (function(){
   }
 
   function init(){
+    appScrollEl = document.getElementById('appScroll');
     appEl = document.getElementById('app');
     topbarTitleEl = document.getElementById('topbarTitle');
     backBtn = document.getElementById('backBtn');

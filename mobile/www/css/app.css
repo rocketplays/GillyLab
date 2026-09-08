@@ -73,9 +73,8 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    showBack for it. Needs its own explicit override. */
 .gl-back[hidden]{ display:none; }
 .gl-back:active{ background:var(--surface2); }
-.gl-topbar-title{ display:flex; align-items:center; gap:.4rem; font-family:'Barlow Condensed',sans-serif; font-weight:900; letter-spacing:.1em; font-size:1rem; text-transform:uppercase; }
+.gl-topbar-title{ font-family:'Barlow Condensed',sans-serif; font-weight:900; letter-spacing:.1em; font-size:1rem; text-transform:uppercase; }
 .gl-topbar-title .a{ color:var(--accent); }
-.gl-topbar-logo{ height:22px; width:auto; display:block; }
 .gl-topbar-spacer{ margin-left:auto; width:2rem; }
 
 /* ---- app content: fills between top bar and tab bar, scrolls on its own ---- */
@@ -90,7 +89,22 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    in an iframe with its own fonts/background/scrolling) instead of sitting
    inside the app's default padded, scrolling column. */
 .gl-app.gl-app--fullbleed{ padding:0; overflow:hidden; }
+/* #app is a plain block div by default (content just flows under the brand
+   mark and the whole column scrolls). Fullbleed screens hide the brand mark
+   and need #app to actually fill .gl-app's fixed height, since the embed
+   iframe below sizes itself to 100% of its immediate parent. */
+.gl-app.gl-app--fullbleed #app{ height:100%; }
 .gl-embed-frame{ display:block; width:100%; height:100%; border:none; background:var(--bg); }
+
+/* ---- centered brand mark at the top of every page (see index.html) ---- */
+.gl-page-brand{
+  display:flex; align-items:center; justify-content:center; gap:.45rem;
+  margin:0 0 1.2rem; font-family:'Barlow Condensed',sans-serif; font-weight:900;
+  letter-spacing:.14em; font-size:.95rem; text-transform:uppercase;
+}
+.gl-page-brand .a{ color:var(--accent); }
+.gl-page-brand-logo{ height:24px; width:auto; display:block; }
+.gl-app--fullbleed .gl-page-brand{ display:none; }
 
 /* ---- bottom tab bar ---- */
 .gl-tabbar{

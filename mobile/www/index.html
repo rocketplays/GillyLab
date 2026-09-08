@@ -25,7 +25,20 @@
     <div class="gl-topbar-spacer"></div>
   </header>
 
-  <main id="app" class="gl-app"></main>
+  <!-- Centered brand mark at the top of every page's scrollable content
+       (not the fixed top bar) -- so it scrolls away as you scroll, per the
+       site's own free pages having their logo+wordmark up top. Lives on
+       #appScroll as a sibling of #app, which is all any screen's own
+       render() ever touches, so it survives every screen's full innerHTML
+       replacement automatically. Hidden on fullbleed screens (Climb's
+       iframe) via .gl-app--fullbleed .gl-page-brand in app.css. -->
+  <main class="gl-app" id="appScroll">
+    <div class="gl-page-brand">
+      <img class="gl-page-brand-logo" src="https://gillylab.com/gl-logo.png?v=8" alt="">
+      <span>GILLY<span class="a">LAB</span></span>
+    </div>
+    <div id="app"></div>
+  </main>
 
   <!-- Native-style bottom tab bar. This is HTML/CSS, not a native UITabBar --
        see mobile/README.md for why that trade-off was made for the scaffold
