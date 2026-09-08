@@ -323,6 +323,16 @@ jobs:
       - name: Regenerate app premium fighter-extras bundle
         run: node scripts/gen-app-fighter-extras.cjs || true
 
+      # Regenerate the app's Fight Simulator bundle (worker/fight-sim.js) --
+      # FIGHTER_STATS/FIGHT_HISTORY change with every card update, and
+      # data/rankings.json can change independently. Also depends on
+      # data/fighter-lite.json (division lookup), same as the step above --
+      # must run after gen-landing-data.cjs for the same reason. Non-fatal:
+      # see the script's own marker-mismatch throws for what WOULD be fatal
+      # if run directly.
+      - name: Regenerate app fight-simulator bundle
+        run: node scripts/gen-fight-sim.cjs || true
+
       # Regenerate gl-sheet.js (the share-sheet renderer) from index.html so the free
       # /pickem "Share picks" image stays byte-identical to the in-app premium sheet.
       # Generated, never forked — index.html is the single source of truth.
@@ -517,6 +527,7 @@ jobs:
           python3 gillylab_update_records.py || true
           node scripts/gen-landing-data.cjs || true
           node scripts/gen-app-fighter-extras.cjs || true
+          node scripts/gen-fight-sim.cjs || true
           node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-climb-page.cjs
           node scripts/gen-bracket-page.cjs
