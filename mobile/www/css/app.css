@@ -121,6 +121,12 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 .gl-tab-icon{ width:23px; height:23px; }
 .gl-tab.active{ color:var(--accent); }
+/* Same [hidden]-vs-class-selector specificity issue as .gl-back-inline
+   above -- .gl-tab's own display:flex beats the UA [hidden] rule, so
+   router.js's setPremiumMode() toggling .hidden on the account/more
+   buttons did nothing without this. Without it, premium accounts saw
+   BOTH Account and More as live tabs instead of Account disappearing. */
+.gl-tab[hidden]{ display:none; }
 .gl-tab:active{ opacity:.6; }
 
 /* ---- "More" tab overflow sheet (see more-sheet.js) ----
@@ -416,7 +422,19 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   transition:border-color .15s, color .15s; margin-top:.15rem; white-space:nowrap;
 }
 .mf-info:hover, .mf-info.open{ border-color:var(--accent); color:var(--accent); }
-.mf-panel{ margin-top:.8rem; padding-top:.8rem; border-top:1px solid var(--border); }
+/* Slides open rather than popping instantly -- same grid-template-rows
+   0fr -> 1fr collapse trick as the site's own .scouting-fight-panel. The
+   border/padding that used to sit directly on .mf-panel now lives on the
+   ALWAYS-present .mf-panel-inner instead (min-height:0 lets it shrink to
+   nothing when its 0fr row has zero height; overflow:hidden on both
+   clips the content while collapsed). */
+.mf-panel{
+  display:grid; grid-template-rows:0fr; opacity:0; overflow:hidden;
+  transition:grid-template-rows .3s ease, opacity .22s ease, margin-top .3s ease;
+  margin-top:0;
+}
+.mf-panel.open{ grid-template-rows:1fr; opacity:1; margin-top:.8rem; }
+.mf-panel-inner{ min-height:0; overflow:hidden; padding-top:.8rem; border-top:1px solid var(--border); }
 .mf-lock{ padding:.2rem 0; }
 .mf-lock-t{ font-size:.8rem; font-weight:700; line-height:1.4; }
 .mf-result{ font-size:.86rem; line-height:1.5; }
@@ -445,11 +463,21 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    reach the card's edges, same as the site's version reaching the edges of
    its own (padding-less, overflow:hidden) .fight-row grid container. */
 .mf-sim-bar{
-  display:block; width:auto; margin:.7rem -.9rem -.9rem; border:0; border-top:1px solid var(--border);
+  /* Every other full-width button in this file (.gl-btn, .mf-dd-bar) sets an
+     explicit width rather than relying on display:block's auto-width --
+     for good reason: a plain <button> keeps its native appearance's
+     intrinsic (shrink-to-fit) sizing hint in this WebView regardless of
+     display:block, so width:auto here rendered as a small, left-aligned
+     button instead of a full-width bar. calc(100% + 1.8rem) explicitly
+     matches the negative left/right margins below (100% of the content box
+     this button would normally have, plus the two 0.9rem paddings it's
+     bleeding past), landing it flush with .mf-card's edges either way. */
+  display:block; width:calc(100% + 1.8rem); margin:.7rem -.9rem -.9rem; border:0; border-top:1px solid var(--border);
   border-radius:0 0 11px 11px;
   background:color-mix(in srgb, var(--accent) 6%, transparent); color:var(--accent);
   font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.68rem; letter-spacing:.1em;
   text-transform:uppercase; text-align:center; padding:.6rem; cursor:pointer; transition:background .15s;
+  box-sizing:border-box;
 }
 .mf-sim-bar:active{ background:color-mix(in srgb, var(--accent) 12%, transparent); }
 

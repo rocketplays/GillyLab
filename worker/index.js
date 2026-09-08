@@ -20,7 +20,7 @@
 import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
 import fighterExtras from "./fighter-extras.js";
-import { runFightSim, canonicalSimName, fighterTaleOfTape } from "./fight-sim.js";
+import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown } from "./fight-sim.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -3039,6 +3039,12 @@ export default {
           slugA, slugB,
           tapeA: fighterTaleOfTape(nameA),
           tapeB: fighterTaleOfTape(nameB),
+          // Style/Pace/Path to victory/Storylines/Finish & durability/Common
+          // opponents -- the rest of what the site's own Simulate Matchup
+          // result shows. Same shape matchup.js's breakdownHTML() already
+          // renders for scheduled fights (see that file), just computed live
+          // here for an arbitrary pair instead of precomputed at build time.
+          breakdown: matchupBreakdown(nameA, nameB),
         }, 200, cors);
       }
       // Account screen: signed-in email, subscription status and member-since

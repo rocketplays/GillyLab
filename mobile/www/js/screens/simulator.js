@@ -26,6 +26,12 @@ window.GL_ROUTER.register('simulator', {
 
 window.GL_SIMULATOR = (function(){
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+  function surname(n){
+    var p = String(n || '').trim().split(/\s+/);
+    var i = p.length - 1;
+    while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--;
+    return p[i] || n;
+  }
 
   // Two independent instances of matchup.js's own search-box pattern (same
   // /api/fighter-search endpoint, same .mf-search* CSS), one per fighter
@@ -122,11 +128,11 @@ window.GL_SIMULATOR = (function(){
           '</div>' +
         '</div>' +
         '<div class="sim-res-fighter right' + (aFav ? '' : ' fav') + '">' +
+          window.GL_FIGHTER.avatarHtml({ name: nameB, photo: slugB || null }) +
           '<div>' +
             '<div class="sim-res-name">' + esc(nameB) + '</div>' +
             '<div class="sim-res-count">' + result.winsB.toLocaleString() + ' / ' + result.n.toLocaleString() + ' wins</div>' +
           '</div>' +
-          window.GL_FIGHTER.avatarHtml({ name: nameB, photo: slugB || null }) +
         '</div>' +
       '</div>'
     );
@@ -180,7 +186,70 @@ window.GL_SIMULATOR = (function(){
     );
   }
 
-  function resultHTML(nameA, nameB, slugA, slugB, result, tapeA, tapeB){
+  // Style / Pace / Path to victory / Finish & durability / Common opponents /
+  // Storylines -- the SAME renderer + CSS classes (.sr-common/.sr-style-*/
+  // .sr-cmp-row/.sr-path/.sr-story-line) matchup.js's own breakdownHTML()
+  // already uses for scheduled fights, just fed live data for an arbitrary
+  // pair (worker/fight-sim.js's matchupBreakdown()) instead of a
+  // precomputed one -- no new CSS needed, this is the site's actual output.
+  function breakdownHTML(nameA, nameB, t){
+    if (!t) return '';
+    var sA = surname(nameA), sB = surname(nameB);
+    var parts = [];
+    var lean = t.lean || {};
+    if (lean.a != null || lean.b != null){
+      parts.push(
+        '<div class="sr-common"><div class="sr-common-title">Style</div>' +
+          '<div class="sr-style-track"><div class="sr-style-dot a" style="left:calc(' + (lean.a == null ? 50 : lean.a) + '% - 6px)"></div><div class="sr-style-dot b" style="left:calc(' + (lean.b == null ? 50 : lean.b) + '% - 6px)"></div></div>' +
+          '<div class="sr-style-ends"><span>Grappler</span><span>Striker</span></div>' +
+          '<div class="sr-style-legend"><span class="a">' + esc(sA) + '</span><span class="b">' + esc(sB) + '</span></div>' +
+        '</div>'
+      );
+    }
+    var pace = t.pace || {};
+    if (pace.a != null || pace.b != null){
+      parts.push(
+        '<div class="sr-common"><div class="sr-common-title">Pace (sig. strikes thrown / min)</div>' +
+          '<div class="sr-cmp-row"><div class="sr-cmp-lbl"></div><div class="sr-cmp-val">' + esc(pace.a == null ? '—' : pace.a) + '</div><div class="sr-cmp-val">' + esc(pace.b == null ? '—' : pace.b) + '</div></div>' +
+        '</div>'
+      );
+    }
+    var path = t.path || {};
+    if (path.a || path.b){
+      parts.push(
+        '<div class="sr-common"><div class="sr-common-title">Path to victory</div>' +
+          (path.a ? '<div class="sr-path a"><div class="sr-path-name">' + esc(sA) + '</div>' + esc(path.a) + '</div>' : '') +
+          (path.b ? '<div class="sr-path b"><div class="sr-path-name">' + esc(sB) + '</div>' + esc(path.b) + '</div>' : '') +
+        '</div>'
+      );
+    }
+    var fd = t.finishDur;
+    if (fd){
+      parts.push(
+        '<div class="sr-common"><div class="sr-common-title">Finish &amp; durability</div>' +
+          '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Win finish rate</div><div class="sr-cmp-val">' + esc((fd.finRate && fd.finRate.a) || '—') + '</div><div class="sr-cmp-val">' + esc((fd.finRate && fd.finRate.b) || '—') + '</div></div>' +
+          '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Win methods</div><div class="sr-cmp-val">' + esc((fd.methods && fd.methods.a) || '—') + '</div><div class="sr-cmp-val">' + esc((fd.methods && fd.methods.b) || '—') + '</div></div>' +
+        '</div>'
+      );
+    }
+    var common = t.common || [];
+    if (common.length){
+      parts.push(
+        '<div class="sr-common"><div class="sr-common-title">Common opponents</div>' +
+          common.map(function(c){ return '<div class="sr-common-row"><div class="sr-co-name">' + esc(c.opp) + '</div><div class="sr-co-res">' + esc(sA) + ': ' + esc(c.a) + '</div><div class="sr-co-res">' + esc(sB) + ': ' + esc(c.b) + '</div></div>'; }).join('') +
+        '</div>'
+      );
+    }
+    var story = t.story || {};
+    if ((story.a && story.a.length) || (story.b && story.b.length)){
+      var lines = (story.a || []).map(function(x){ return '<div class="sr-story-line"><span class="a">' + esc(sA) + '</span> ' + esc(x) + '</div>'; })
+        .concat((story.b || []).map(function(x){ return '<div class="sr-story-line"><span class="b">' + esc(sB) + '</span> ' + esc(x) + '</div>'; }));
+      parts.push('<div class="sr-common"><div class="sr-common-title">Storylines</div>' + lines.join('') + '</div>');
+    }
+    return parts.join('');
+  }
+
+  function resultHTML(nameA, nameB, slugA, slugB, result, tapeA, tapeB, breakdown){
     return (
       '<div class="sim-result">' +
         resultsHeaderHTML(nameA, nameB, slugA, slugB, result) +
@@ -192,6 +261,7 @@ window.GL_SIMULATOR = (function(){
         '</div>' +
         powerRowHTML(result) +
         tapeHTML(tapeA, tapeB) +
+        breakdownHTML(nameA, nameB, breakdown) +
         '<p class="gl-muted" style="margin-top:1rem;font-size:.72rem">Based on ' + result.n.toLocaleString() + ' simulated fights. A projection, not a prediction — anyone can win on the night.</p>' +
       '</div>'
     );
@@ -278,7 +348,7 @@ window.GL_SIMULATOR = (function(){
       runBtn.textContent = 'Simulating…';
       output.innerHTML = '';
       window.GL_API.fightSim(picked.a, picked.b, rounds).then(function(res){
-        output.innerHTML = resultHTML(res.a, res.b, res.slugA, res.slugB, res.result, res.tapeA, res.tapeB);
+        output.innerHTML = resultHTML(res.a, res.b, res.slugA, res.slugB, res.result, res.tapeA, res.tapeB, res.breakdown);
         runBtn.disabled = false;
         runBtn.textContent = 'Run It Again';
       }).catch(function(err){

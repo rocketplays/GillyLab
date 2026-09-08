@@ -237,7 +237,7 @@ function mountMatchup(container){
           '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + esc(f.rec2 || '') + '</div></div></div>' +
         '</div>' +
         simBarHTML(f, special) +
-        '<div class="mf-panel" hidden>' + panelBody + '</div>' +
+        '<div class="mf-panel"><div class="mf-panel-inner">' + panelBody + '</div></div>' +
       '</div>'
     );
   }
@@ -521,9 +521,12 @@ function mountMatchup(container){
         window.GL_NATIVE.tap();
         var card = btn.closest('.mf-card');
         var panel = card.querySelector('.mf-panel');
-        panel.hidden = !panel.hidden;
-        btn.textContent = 'Fight Info ' + (panel.hidden ? '⌄' : '⌃');
-        btn.classList.toggle('open', !panel.hidden);
+        // Slides open (CSS grid-template-rows 0fr -> 1fr collapse, same
+        // technique as the site's own .scouting-fight-panel) rather than
+        // popping instantly -- see .mf-panel/.mf-panel-inner in app.css.
+        var isOpen = panel.classList.toggle('open');
+        btn.textContent = 'Fight Info ' + (isOpen ? '⌃' : '⌄');
+        btn.classList.toggle('open', isOpen);
       });
     });
 

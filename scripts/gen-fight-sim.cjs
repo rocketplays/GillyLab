@@ -96,6 +96,27 @@ function grabConst(name) {
   return vm.runInContext('(' + html.slice(s, j) + ')', ctx);
 }
 
+// Slices a top-level `function NAME(...) { ... }` declaration out of
+// index.html verbatim, by balanced braces -- same technique grabConst uses
+// for object/array consts, generalized for function bodies. Used for
+// renderMatchupBreakdown (Style/Pace/Path to victory/Storylines) and its
+// small helpers, same "GENERATED, NEVER FORKED" rule as the sim-math slice
+// below: if the marker stops matching exactly once, this throws rather than
+// silently slicing something else.
+function sliceFn(name) {
+  const marker = 'function ' + name + '(';
+  const i = html.indexOf(marker);
+  if (i < 0) throw new Error(name + '() not found in index.html');
+  if (html.indexOf(marker, i + 1) >= 0) throw new Error(name + '() marker matches more than once — no longer unique');
+  let d = 0, k = html.indexOf('{', i), started = false;
+  for (; k < html.length; k++) {
+    const c = html[k];
+    if (c === '{') { d++; started = true; }
+    else if (c === '}') { d--; if (started && !d) { k++; break; } }
+  }
+  return html.slice(i, k);
+}
+
 // ── slice the pure-math block ────────────────────────────────────────────
 const JS_START = 'function simPct(v, def) {';
 const JS_END = 'function simMethodRowsHtml(methods, wins) {';
@@ -117,6 +138,33 @@ const REQUIRED_FNS = [
 for (const fn of REQUIRED_FNS) {
   if (simJS.indexOf('function ' + fn + '(') < 0) throw new Error('expected function missing from sim slice: ' + fn);
 }
+
+// ── Style / Pace / Path to victory / Storylines — renderMatchupBreakdown(),
+// sliced verbatim (same rule as the sim-math block above). Unlike the sim
+// math, this one is DOM-building: it calls document.createElement/
+// appendChild throughout to build the site's own HTML. Called here with
+// host=null (see matchupBreakdown() in entryJS below), every one of those
+// DOM branches is either skipped (`if (host) ...`) or writes to a throwaway
+// node that's never attached to anything real -- so a lightweight `document`
+// stub (defined as a real top-level const in dataJS below, not vm/eval) is
+// enough to let the function run for its RETURN VALUE (the OUT object:
+// leanA/leanB/paceA/paceB/pathA/pathB/storyA/storyB) without needing a real
+// DOM. This exact stub-document technique is already proven at build time
+// in scripts/gen-landing-data.cjs's own breakdownFor() -- this just bakes it
+// as real code instead of running it through `new Function` at build time,
+// since the Worker has no such trick available at request time.
+const breakdownJS = sliceFn('renderMatchupBreakdown');
+if (breakdownJS.indexOf('OUT.leanA') < 0 || breakdownJS.indexOf('OUT.pathA') < 0 || breakdownJS.indexOf('OUT.storyA') < 0) {
+  throw new Error('renderMatchupBreakdown slice is missing an expected OUT.* field — did it get refactored?');
+}
+// scoutingHistKey/_newsNorm — small helpers renderMatchupBreakdown reads by
+// `typeof X === 'function' ? X : fallback`, i.e. it already tolerates their
+// absence, but baking the real ones (rather than the degraded inline
+// fallback) keeps name resolution consistent with fighterTaleOfTape's own
+// resolveSimName/NAME_ALIASES pass instead of introducing a second, looser
+// matching path.
+const scoutingHistKeyJS = sliceFn('scoutingHistKey');
+const newsNormJS = sliceFn('_newsNorm');
 
 // calcAge — trivial, defined far away (~line 11843), inlined verbatim.
 const CALC_AGE_START = 'function calcAge(dob) {';
@@ -179,15 +227,40 @@ const RANKINGS_LOOKUP = buildRankLookup(rankingsPayload);
 // and division per fighter, so a name->division map is a straight lookup,
 // same "one source of truth" reasoning as gen-app-fighter-extras.cjs using
 // it for the name<->slug mapping.
+//
+// fighter-lite.json stores the full label ("Women's Flyweight"), but every
+// consumer of NAME_DIVISION downstream (SIM_DIVISION_LADDERS/LABELS in the
+// sim math, and isFemale()'s WOMEN set in renderMatchupBreakdown) is keyed
+// on the site's short abbreviation ("WFLW") -- discovered when isFemale()
+// silently failed for a real women's matchup because "Women's Flyweight"
+// never appears in WOMEN's own {WSW,WFLW,WBW,WFW,WFLY} keys. Map the full
+// label back to the abbreviation those consumers actually expect.
+const LABEL_TO_ABBR = {
+  'Flyweight': 'FLW', 'Bantamweight': 'BW', 'Featherweight': 'FW', 'Lightweight': 'LW',
+  'Welterweight': 'WW', 'Middleweight': 'MW', 'Light Heavyweight': 'LHW', 'Heavyweight': 'HW',
+  "Women's Strawweight": 'WSW', "Women's Flyweight": 'WFLW',
+  "Women's Bantamweight": 'WBW', "Women's Featherweight": 'WFW',
+};
 const liteData = readJSON(R('data/fighter-lite.json'));
 const NAME_DIVISION = {};
 for (const slug of Object.keys(liteData.bySlug || {})) {
   const f = liteData.bySlug[slug];
-  if (f && f.name && f.division && !NAME_DIVISION[f.name]) NAME_DIVISION[f.name] = f.division;
+  const abbr = f && f.division && LABEL_TO_ABBR[f.division];
+  if (f && f.name && abbr && !NAME_DIVISION[f.name]) NAME_DIVISION[f.name] = abbr;
 }
 // SIM_DIVISION_ALIASES lives ~200 lines before JS_START (outside the slice) —
 // trivial, hardcoded here rather than adjusting the slice boundary for one line.
 const SIM_DIVISION_ALIASES = { WFLY: 'WFLW' };
+
+// Minimal FIGHTERS stand-in -- renderMatchupBreakdown's isFemale() reads
+// fightersEntry(name).division alone (for he/she pronouns in Path to
+// victory), via a `typeof FIGHTERS === 'undefined'` guard that degrades to
+// "always male" if this isn't here. The FULL FIGHTERS array (every roster
+// field: rank, record, initials, country, ...) isn't worth baking just for
+// one field already sitting in NAME_DIVISION -- so this reshapes that
+// existing map into the {name, division} shape fightersEntry's .find(...)
+// needs, rather than shipping a second, larger copy of the roster.
+const FIGHTERS_STUB = Object.keys(NAME_DIVISION).map((name) => ({ name, division: NAME_DIVISION[name] }));
 
 // ── assemble the module ──────────────────────────────────────────────────
 const dataJS =
@@ -197,6 +270,102 @@ const dataJS =
   'const NAME_DIVISION = ' + JSON.stringify(NAME_DIVISION) + ';\n' +
   'const SIM_DIVISION_ALIASES = ' + JSON.stringify(SIM_DIVISION_ALIASES) + ';\n' +
   'const NAME_ALIASES = ' + JSON.stringify(NAME_ALIASES) + ';\n' +
+  'const FIGHTERS = ' + JSON.stringify(FIGHTERS_STUB) + ';\n' +
+  // A stub `document` so renderMatchupBreakdown's (unconditional, even when
+  // host is null) document.createElement/createTextNode calls resolve to
+  // something -- every node it builds either never gets appended to a real
+  // host (host is always null here) or is a fully inert no-op object. Same
+  // technique gen-landing-data.cjs's own breakdownFor() uses via
+  // `new Function('document', src)(doc)`, just baked as a real top-level
+  // binding instead of run through the Function constructor (unavailable
+  // for the same nodejs_compat reason noted at the top of this file).
+  'function _stubEl() {\n' +
+  "  return { style: {}, className: '', textContent: '', innerHTML: '',\n" +
+  '    classList: { add(){}, remove(){}, toggle(){}, contains(){ return false; } },\n' +
+  '    appendChild(){}, setAttribute(){}, querySelector(){ return null; } };\n' +
+  '}\n' +
+  'const document = { createElement: _stubEl, createTextNode: function(){ return {}; } };\n' +
+  scoutingHistKeyJS + '\n' +
+  newsNormJS + '\n' +
+  breakdownJS + '\n' +
+  // _finishDur/_commonOpps -- NOT sliced from index.html (that logic lives
+  // in renderScouting, a different, much larger DOM-building function this
+  // deliberately does not port). These are faithful Node reimplementations
+  // already maintained and proven at build time in gen-landing-data.cjs's
+  // own _finishDur/_commonOpps (see that file's header: "Faithful Node
+  // reimplementations of index.html's renderScouting") -- reused here
+  // verbatim rather than a third copy, with scoutingHistKey (baked above)
+  // standing in for that file's own _histKey.
+  'function _fhReal(name) {\n' +
+  '  const k = scoutingHistKey(name);\n' +
+  "  return (k && FIGHT_HISTORY[k] || []).filter(function(f){ return f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming'; });\n" +
+  '}\n' +
+  'function _parseD(s) { const t = Date.parse(s); return isFinite(t) ? t : null; }\n' +
+  'function _methodCat(m) {\n' +
+  "  m = String(m || '');\n" +
+  "  if (/sub/i.test(m)) return 'sub';\n" +
+  "  if (/disqualif|\\bdq\\b/i.test(m)) return 'dq';\n" +
+  "  if (/dec/i.test(m)) return 'dec';\n" +
+  "  if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) return 'ko';\n" +
+  "  return 'other';\n" +
+  '}\n' +
+  'function _finishProfile(name) {\n' +
+  '  let wins = 0, losses = 0, wKO = 0, wSub = 0, wDec = 0, lKO = 0, lSub = 0, lDQ = 0;\n' +
+  '  _fhReal(name).forEach(function(f){\n' +
+  '    const c = _methodCat(f.method);\n' +
+  "    if (f.result === 'W') { wins++; if (c === 'ko') wKO++; else if (c === 'sub') wSub++; else if (c === 'dec') wDec++; }\n" +
+  "    else if (f.result === 'L') { losses++; if (c === 'ko') lKO++; else if (c === 'sub') lSub++; else if (c === 'dq') lDQ++; }\n" +
+  '  });\n' +
+  '  const finWins = wKO + wSub;\n' +
+  '  return { wins: wins, losses: losses, wKO: wKO, wSub: wSub, wDec: wDec, finWins: finWins, finRate: wins ? finWins / wins : null, timesFinished: lKO + lSub + lDQ, lKO: lKO, lSub: lSub, lDQ: lDQ };\n' +
+  '}\n' +
+  'function _finishDur(nameA, nameB) {\n' +
+  '  const fp = _finishProfile(nameA), op = _finishProfile(nameB);\n' +
+  '  if (!fp.wins && !fp.losses && !op.wins && !op.losses) return null;\n' +
+  "  const rate = function(p){ return p.finRate == null ? '—' : (Math.round(p.finRate * 100) + '% (' + p.finWins + '/' + p.wins + ')'); };\n" +
+  "  const methods = function(p){ const parts = []; if (p.wKO) parts.push(p.wKO + ' KO'); if (p.wSub) parts.push(p.wSub + ' SUB'); if (p.wDec) parts.push(p.wDec + ' DEC'); return parts.join(' · ') || '—'; };\n" +
+  '  const fin = function(p){\n' +
+  "    if (!(p.wins || p.losses)) return '—';\n" +
+  "    if (!p.timesFinished) return 'Never';\n" +
+  "    const parts = []; if (p.lKO) parts.push(p.lKO + ' KO/TKO'); if (p.lSub) parts.push(p.lSub + ' SUB'); if (p.lDQ) parts.push(p.lDQ + ' DQ');\n" +
+  "    return p.timesFinished + '× (' + parts.join(', ') + ')';\n" +
+  '  };\n' +
+  '  const durRate = function(p){ return (p.wins + p.losses) > 0 ? p.timesFinished / (p.wins + p.losses) : null; };\n' +
+  '  const drA = durRate(fp), drB = durRate(op);\n' +
+  "  let tfA = '', tfB = '';\n" +
+  "  if (drA != null && drB != null && drA !== drB) { tfA = drA < drB ? 'w' : 'l'; tfB = drA < drB ? 'l' : 'w'; }\n" +
+  '  return { finRate: { a: rate(fp), b: rate(op) }, methods: { a: methods(fp), b: methods(op) }, timesFinished: { a: fin(fp), b: fin(op), aCls: tfA, bCls: tfB } };\n' +
+  '}\n' +
+  'function _commonOpps(nameA, nameB) {\n' +
+  '  const histA = _fhReal(nameA), histB = _fhReal(nameB);\n' +
+  '  if (!histA.length || !histB.length) return [];\n' +
+  '  const nn = _newsNorm(nameA), on = _newsNorm(nameB);\n' +
+  '  const resultsVs = function(h, target){ const t = _newsNorm(target); return h.filter(function(f){ return _newsNorm(f.opponent) === t; }).sort(function(a, b){ return (_parseD(b.date) || 0) - (_parseD(a.date) || 0); }); };\n' +
+  '  const mineOpps = {};\n' +
+  '  histA.forEach(function(f){ if (f.opponent) mineOpps[_newsNorm(f.opponent)] = f.opponent; });\n' +
+  '  const shared = [], seen = {};\n' +
+  '  histB.forEach(function(f){\n' +
+  '    if (!f.opponent) return;\n' +
+  '    const k = _newsNorm(f.opponent);\n' +
+  '    if (k === nn || k === on || seen[k]) return;\n' +
+  '    if (mineOpps[k]) { seen[k] = 1; shared.push(mineOpps[k]); }\n' +
+  '  });\n' +
+  '  const fmt = function(rows){\n' +
+  "    if (!rows.length) return '—';\n" +
+  "    if (rows.length === 1) { const r = rows[0]; return r.result + (r.method ? ' (' + _abbrMethod(r.method) + (r.round ? ' R' + r.round : '') + ')' : ''); }\n" +
+  "    let w = 0, l = 0, d = 0; rows.forEach(function(r){ if (r.result === 'W') w++; else if (r.result === 'L') l++; else d++; });\n" +
+  "    return w + '-' + l + (d ? '-' + d : '') + ' (' + rows.length + ' fights)';\n" +
+  '  };\n' +
+  "  const resCls = function(rows){ let w = 0, l = 0; rows.forEach(function(r){ if (r.result === 'W') w++; else if (r.result === 'L') l++; }); return w > l ? 'w' : (l > w ? 'l' : ''); };\n" +
+  '  return shared.slice(0, 6).map(function(opp){\n' +
+  '    const a = resultsVs(histA, opp), b = resultsVs(histB, opp);\n' +
+  '    return { opp: opp, a: fmt(a), b: fmt(b), aCls: resCls(a), bCls: resCls(b) };\n' +
+  '  });\n' +
+  '}\n' +
+  'function _abbrMethod(m) {\n' +
+  "  const c = _methodCat(m); if (c === 'ko') return 'KO/TKO'; if (c === 'sub') return 'SUB'; if (c === 'dec') return 'DEC'; if (c === 'dq') return 'DQ';\n" +
+  "  return String(m || '').split(' ')[0] || '';\n" +
+  '}\n' +
   '// A name arrives here already-canonical for the search-picker flow (the\n' +
   "// app's own /api/fighter-search is keyed off the same roster this alias\n" +
   '// map ultimately resolves into), but the Card page\'s Simulate Matchup\n' +
@@ -276,6 +445,27 @@ const entryJS =
   '    subAvg: s.subAvg != null ? s.subAvg : null,\n' +
   '    finRate: s.finRate || null,\n' +
   '    streak: s.streak != null ? s.streak : null,\n' +
+  '  };\n' +
+  '}\n' +
+  '// Style / Pace / Path to victory / Storylines / Finish & durability /\n' +
+  '// Common opponents -- the rest of what the site\'s own Simulate Matchup\n' +
+  '// result shows beyond win% and method-of-victory, reshaped into the exact\n' +
+  '// {lean, pace, path, story, finishDur, common} shape matchup.js\'s own\n' +
+  '// breakdownHTML() already expects and renders (see mobile/www/js/screens/\n' +
+  '// matchup.js) -- the app already has the renderer; this is what was\n' +
+  '// missing to feed it for an arbitrary (not just scheduled) pairing.\n' +
+  '// Returns null for an unresolvable name, same convention as runFightSim.\n' +
+  'export function matchupBreakdown(nameA, nameB) {\n' +
+  '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
+  '  if (!canonA || !canonB) return null;\n' +
+  '  const out = renderMatchupBreakdown(null, canonA, canonB, {}) || {};\n' +
+  '  return {\n' +
+  '    lean: { a: out.leanA != null ? out.leanA : null, b: out.leanB != null ? out.leanB : null },\n' +
+  '    pace: { a: out.paceA != null ? out.paceA : null, b: out.paceB != null ? out.paceB : null },\n' +
+  '    path: { a: out.pathA || null, b: out.pathB || null },\n' +
+  '    story: { a: out.storyA || [], b: out.storyB || [] },\n' +
+  '    finishDur: _finishDur(canonA, canonB),\n' +
+  '    common: _commonOpps(canonA, canonB),\n' +
   '  };\n' +
   '}\n';
 
