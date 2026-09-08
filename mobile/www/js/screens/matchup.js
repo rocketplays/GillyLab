@@ -247,27 +247,62 @@ function mountMatchup(container){
     );
   }
 
+  // "Time Until Event" countdown -- same shape as the premium in-app home
+  // page's own #countdown (index.html: updateCountdown()): a live clock
+  // instead of a static button sitting next to the title. FINAL once the
+  // event is over, LIVE once any bout has a posted result, otherwise
+  // days/hours/minutes until the walkout, biggest unit only.
+  function countdownParts(card){
+    if (data.isPast) return { text: 'FINAL' };
+    if (!card) return { text: '—' };
+    var live = (card.fights || []).some(function(f){ return f.result; });
+    if (live) return { text: 'LIVE' };
+    var iso = card.prelimsAt || card.date;
+    var d = iso ? new Date(iso) : null;
+    if (!d || isNaN(d.getTime())) return { text: '—' };
+    var diff = d.getTime() - Date.now();
+    if (diff <= 0) return { text: 'TONIGHT' };
+    var days = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    if (days >= 1) return { num: days, unit: days === 1 ? 'day' : 'days' };
+    if (hours >= 1) return { num: hours, unit: 'h' };
+    return { num: Math.max(1, mins), unit: 'm' };
+  }
+  function renderCountdown(){
+    var el = container.querySelector('#mfCountdown');
+    if (!el) return;
+    var v = countdownParts(data && data.card);
+    el.innerHTML = v.text != null ? esc(v.text) : (v.num + '<span class="mf-cd-unit">' + esc(v.unit) + '</span>');
+  }
+
+  function eventHeaderHTML(card){
+    return (
+      '<div class="mf-event-header">' +
+        '<div class="mf-event-info">' +
+          '<h1 class="mf-event-name">' + (card ? esc(card.event) : 'No card yet') + '</h1>' +
+          (card ? '<div class="mf-event-details">' + esc(fmtDate(card.prelimsAt || card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</div>' : '') +
+        '</div>' +
+        (card ? '<div class="mf-event-countdown"><div class="mf-cd-label">Time Until Event</div><div class="mf-cd-time" id="mfCountdown">—</div></div>' : '') +
+      '</div>'
+    );
+  }
+
   function render(){
     var card = data.card;
     container.innerHTML =
       searchHTML() +
       pastSelectHTML() +
-      '<div class="gl-card" style="margin-bottom:.7rem">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem">' +
-          '<h2 class="gl-heading" style="margin:0;font-size:1.15rem">' + (card ? esc(card.event) : 'No card yet') + '</h2>' +
-          '<button type="button" class="gl-btn gl-btn-outline" id="mfRosterBtn" style="width:auto;padding:.5rem .8rem;font-size:.72rem">Roster</button>' +
-        '</div>' +
-        (card ? '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(fmtDate(card.prelimsAt || card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</p>' : '') +
-      '</div>' +
+      eventHeaderHTML(card) +
       '<div id="mfBody">' + cardBodyHTML(card, data.deepDive, data.breakdown) + '</div>' +
       carouselHTML();
     wire();
+    renderCountdown();
+    if (window.__mfCountdownTimer) clearInterval(window.__mfCountdownTimer);
+    window.__mfCountdownTimer = setInterval(renderCountdown, 30000);
   }
 
   function wire(){
-    var rosterBtn = container.querySelector('#mfRosterBtn');
-    if (rosterBtn) rosterBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('roster'); });
-
     var pastSelect = container.querySelector('#mfPastSelect');
     if (pastSelect) pastSelect.addEventListener('change', function(){
       window.GL_NATIVE.tap();

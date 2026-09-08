@@ -24,6 +24,9 @@ function mountRoster(container){
       : '<span class="ar-name ar-name-plain">' + esc(f.name) + '</span>';
   }
 
+  // Free-flowing, like the website's own rosterSSR() -- each week is just
+  // margin-separated, not boxed (only the fight cards on Matchup and the
+  // Premium lock block are ever boxed on the site).
   function changesHTML(){
     if (!changes.length) return '';
     var col = function(title, items, cls){
@@ -38,13 +41,13 @@ function mountRoster(container){
     };
     var weeks = changes.map(function(w){
       return (
-        '<div class="gl-card" style="margin-bottom:.7rem">' +
+        '<div class="ar-ch-week">' +
           '<div class="gl-label" style="margin:0 0 .6rem">' + esc(w.week || '') + '</div>' +
           '<div class="ar-ch-cols">' + col('Added', w.added || [], 'up') + col('Removed', w.removed || [], 'down') + '</div>' +
         '</div>'
       );
     }).join('');
-    return '<div class="gl-dash-head" style="margin-bottom:.4rem"><span class="gl-label" style="margin:0">This week’s roster moves</span></div>' + weeks;
+    return '<div class="ar-ch-wrap"><div class="gl-label" style="margin:0 0 .7rem">This week’s roster moves</div>' + weeks + '</div>';
   }
 
   function listHTML(){
@@ -64,9 +67,11 @@ function mountRoster(container){
 
   function renderList(){
     container.innerHTML =
-      '<div class="gl-card"><h3 style="margin:0 0 .3rem">' + fighters.length + ' fighters on the active roster</h3><p class="gl-muted" style="margin:0">Kept up to date with the week’s signings and releases.</p></div>' +
+      '<h1 class="gl-heading" style="font-size:1.3rem;margin:0 0 .2rem">Active Roster</h1>' +
+      '<p class="gl-muted" style="margin:0 0 1.1rem">' + fighters.length + ' fighters, kept up to date with the week’s signings and releases.</p>' +
       changesHTML() +
-      '<div id="arList">' + listHTML() + '</div>';
+      '<div id="arList">' + listHTML() + '</div>' +
+      '<div class="gl-cta">Roster is free. <button type="button" class="gl-link-btn" data-goto="premium">Go Premium</button> for every fighter’s full analytics, the simulator and more.</div>';
     wireList();
   }
 
@@ -89,6 +94,8 @@ function mountRoster(container){
         window.GL_ROUTER.go('fighter', { slug: btn.getAttribute('data-slug') });
       });
     });
+    var goPrem = container.querySelector('[data-goto="premium"]');
+    if (goPrem) goPrem.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
   }
 
   window.GL_API.roster().then(function(res){
@@ -96,6 +103,6 @@ function mountRoster(container){
     changes = res.changes || [];
     renderList();
   }).catch(function(){
-    container.innerHTML = '<div class="gl-card"><h3 style="margin:0 0 .4rem">Roster unavailable right now</h3><p>Couldn’t reach gillylab.com. Check your connection and try again shortly.</p></div>';
+    container.innerHTML = '<h3 style="margin:0 0 .4rem">Roster unavailable right now</h3><p class="gl-muted">Couldn’t reach gillylab.com. Check your connection and try again shortly.</p>';
   });
 }

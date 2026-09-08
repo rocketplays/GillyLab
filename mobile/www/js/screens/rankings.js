@@ -83,36 +83,32 @@ function mountRankings(container){
       ? (function(){ var dt = new Date(data.date + 'T00:00:00Z'); return isNaN(dt.getTime()) ? '' : 'Updated ' + dt.toLocaleDateString(undefined, { timeZone: 'UTC', month: 'long', day: 'numeric', year: 'numeric' }); })()
       : '';
     container.innerHTML =
-      '<div class="gl-card" style="margin-bottom:.7rem">' +
-        (dateLine ? '<p class="gl-muted" style="margin:0 0 .7rem">' + esc(dateLine) + ' · ' + (source === 'meta' ? 'Meta AI' : 'UFC Media Panel') + '</p>' : '') +
-        '<div class="rk-toggle">' +
-          '<button type="button" class="' + (source === 'media' ? 'sel' : '') + '" data-src="media">Media Panel</button>' +
-          '<button type="button" class="' + (source === 'meta' ? 'sel' : '') + '" data-src="meta">Meta AI</button>' +
-        '</div>' +
+      '<h1 class="gl-heading" style="font-size:1.3rem;margin:0 0 .2rem">UFC Rankings</h1>' +
+      (dateLine ? '<p class="gl-muted" style="margin:0 0 .9rem">' + esc(dateLine) + '</p>' : '') +
+      '<div class="rk-toggle">' +
+        '<button type="button" class="' + (source === 'media' ? 'sel' : '') + '" data-src="media">Media Panel</button>' +
+        '<button type="button" class="' + (source === 'meta' ? 'sel' : '') + '" data-src="meta">Meta AI</button>' +
       '</div>' +
       '<div class="rk-tabs">' + tabsHTML() + '</div>' +
-      '<div id="rkPanel">' + panelHTML() + '</div>';
+      '<div id="rkPanel">' + panelHTML() + '</div>' +
+      '<div class="gl-cta">Rankings are free. <button type="button" class="gl-link-btn" data-goto="premium">Go Premium</button> for every fighter’s full analytics, the simulator and more.</div>';
     wire();
   }
 
-  function wire(){
-    container.querySelectorAll('.rk-toggle button').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
-        var s = btn.getAttribute('data-src');
-        if (s === source) return;
-        source = s;
-        activeDiv = null;
-        load();
-      });
-    });
+  // Split so switching divisions only re-wires the tabs/panel it actually
+  // replaces -- calling the whole wire() again on every tab tap (the
+  // previous version) re-attached a fresh listener to .rk-toggle and the
+  // Go Premium link (neither one gets rebuilt by a division switch) on top
+  // of the one already there, so a few taps in, one click fired several
+  // haptics/navigations at once.
+  function wireTabsAndPanel(){
     container.querySelectorAll('.rk-tab').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
         activeDiv = btn.getAttribute('data-div');
         container.querySelector('.rk-tabs').innerHTML = tabsHTML();
         container.querySelector('#rkPanel').innerHTML = panelHTML();
-        wire();
+        wireTabsAndPanel();
       });
     });
     container.querySelectorAll('[data-slug]').forEach(function(btn){
@@ -126,6 +122,22 @@ function mountRankings(container){
     });
   }
 
+  function wire(){
+    container.querySelectorAll('.rk-toggle button').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        var s = btn.getAttribute('data-src');
+        if (s === source) return;
+        source = s;
+        activeDiv = null;
+        load();
+      });
+    });
+    wireTabsAndPanel();
+    var goPrem = container.querySelector('[data-goto="premium"]');
+    if (goPrem) goPrem.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
+  }
+
   function load(){
     container.innerHTML = '<p class="gl-muted">Loading rankings…</p>';
     window.GL_API.rankings(source).then(function(res){
@@ -135,10 +147,8 @@ function mountRankings(container){
       render();
     }).catch(function(){
       container.innerHTML =
-        '<div class="gl-card">' +
-          '<h3 style="margin:0 0 .4rem">Rankings unavailable right now</h3>' +
-          '<p>Couldn’t reach gillylab.com. Check your connection and try again shortly.</p>' +
-        '</div>';
+        '<h3 style="margin:0 0 .4rem">Rankings unavailable right now</h3>' +
+        '<p class="gl-muted">Couldn’t reach gillylab.com. Check your connection and try again shortly.</p>';
     });
   }
 

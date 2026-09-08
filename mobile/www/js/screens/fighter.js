@@ -93,21 +93,25 @@ window.GL_FIGHTER = (function(){
     );
   }
 
+  // Free-flowing, like the website's own /fighter/<slug> page (.fp-head,
+  // .fsx-bio, .fsx-group) -- avatar/name header and stat bars are plain
+  // content with thin divider lines, not boxed cards. Only the Premium
+  // lock block at the end is ever boxed on the site.
   function renderHTML(f){
     f = f || {};
     var rankLabel = f.rank && f.rank !== 'NR' ? (/C/.test(f.rank) ? 'Champion' : f.rank) : '';
     var metaBits = [f.record, f.division, f.country].filter(Boolean).join(' · ');
     return (
-      '<div class="gl-card" style="display:flex;align-items:center;gap:.9rem">' +
+      '<div class="fp-head">' +
         avatarHtml(f) +
         '<div>' +
           (rankLabel ? '<div class="gl-label" style="margin:0 0 .1rem;color:var(--accent)">' + esc(rankLabel) + '</div>' : '') +
-          '<h2 class="gl-heading" style="margin:0;font-size:1.2rem">' + esc(f.name) + '</h2>' +
+          '<h1 class="gl-heading" style="margin:0;font-size:1.3rem">' + esc(f.name) + '</h1>' +
           (metaBits ? '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(metaBits) + '</p>' : '') +
         '</div>' +
       '</div>' +
       bioHTML(f.phys) +
-      (statsHTML(f.groups) ? '<div class="gl-card">' + statsHTML(f.groups) + '</div>' : '') +
+      statsHTML(f.groups) +
       lockedHTML()
     );
   }

@@ -137,6 +137,12 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-field:focus{ outline:none; border-color:var(--accent); }
 .gl-label{ font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:.3rem; display:block; }
 .gl-muted{ color:var(--muted); font-size:.85rem; line-height:1.5; }
+/* Bottom "go premium" callout on a free screen (Roster/Rankings/Matchup) --
+   matches the site's own .rs-cta/.rk-cta: this is the one place besides an
+   actual fight card that IS boxed, since it's meant to stand out as an
+   upsell rather than blend into the free content above it. */
+.gl-cta{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; margin-top:1.4rem; text-align:center; font-size:.85rem; color:var(--muted); line-height:1.5; }
+.gl-link-btn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:800; color:var(--accent); cursor:pointer; text-decoration:underline; }
 .gl-error{ color:var(--bad); font-size:.82rem; margin:.4rem 0 0; }
 .gl-locked{
   display:flex; flex-direction:column; align-items:center; text-align:center; gap:.8rem;
@@ -283,6 +289,22 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 .mf-dd-go{ font-size:1.1rem; }
 
+/* ---- Matchup: free-flowing event header + live countdown (mirrors the
+   premium in-app home page's #countdown -- .event-header/.event-countdown
+   in index.html -- rather than a boxed card with a button next to the
+   title). Just a bottom-border divider, same as the site. ---- */
+.mf-event-header{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  padding-bottom:.9rem; margin-bottom:1rem; border-bottom:1px solid var(--border);
+}
+.mf-event-info{ min-width:0; }
+.mf-event-name{ font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.4rem; text-transform:uppercase; letter-spacing:.02em; margin:0; }
+.mf-event-details{ font-size:.8rem; color:var(--muted); margin-top:.25rem; }
+.mf-event-countdown{ text-align:right; flex-shrink:0; }
+.mf-cd-label{ font-size:.6rem; color:var(--muted); letter-spacing:.14em; text-transform:uppercase; }
+.mf-cd-time{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.5rem; color:var(--accent); letter-spacing:.04em; }
+.mf-cd-unit{ font-size:.55em; letter-spacing:.04em; margin-left:.15em; opacity:.75; text-transform:lowercase; }
+
 /* ---- Matchup: fighter search bar ---- */
 .mf-search{ position:relative; margin-bottom:.8rem; }
 .mf-search-input{
@@ -363,7 +385,10 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sr-story-line .a{ color:var(--accent); font-weight:700; margin-right:.3rem; }
 .sr-story-line .b{ color:#ffcf7a; font-weight:700; margin-right:.3rem; }
 
-/* ---- Fighter lite profile panel (roster.js/matchup.js -> fighter.js) ---- */
+/* ---- Fighter lite profile (a real route -- fighter.js) -- free-flowing
+   like the website's own /fighter/<slug> page (.fp-head/.fsx-bio), not
+   boxed. Only .fp-lock at the bottom is ever a card, matching the site. ---- */
+.fp-head{ display:flex; align-items:center; gap:.9rem; margin-bottom:.2rem; }
 .fp-av{ position:relative; width:56px; height:56px; flex-shrink:0; }
 .fp-av-initials{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
@@ -371,10 +396,10 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   color:var(--muted); font-weight:800; font-size:1rem;
 }
 .fp-av-photo{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; background:var(--surface2); border:1px solid var(--border); }
-.fsx-bio{ display:flex; flex-wrap:wrap; gap:1rem 1.3rem; padding:.9rem 1.1rem; }
+.fsx-bio{ display:flex; flex-wrap:wrap; gap:1rem 1.3rem; padding:1rem 0; margin:1rem 0 .3rem; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
 .fsx-bio-k{ font-size:.66rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700; }
 .fsx-bio-v{ font-size:.9rem; font-weight:700; margin-top:.1rem; }
-.fsx-caption{ display:flex; flex-wrap:wrap; gap:.8rem; font-size:.7rem; color:var(--muted); margin-bottom:.8rem; }
+.fsx-caption{ display:flex; flex-wrap:wrap; gap:.8rem; font-size:.7rem; color:var(--muted); margin:.9rem 0 .8rem; }
 .fsx-lg{ display:inline-flex; align-items:center; gap:.3rem; }
 .fsx-lg-sw{ width:9px; height:9px; border-radius:2px; display:inline-block; }
 .fsx-lg-sw.good{ background:var(--accent); }
@@ -395,11 +420,11 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fsx-val{ flex:0 0 44px; text-align:right; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1rem; color:var(--text); }
 .fsx-val.good{ color:var(--accent); }
 .fsx-val.bad{ color:#c76a54; }
-.fp-lock{ padding:.2rem 0; }
+.fp-lock{ background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem 1.15rem; margin-top:1.4rem; }
 .fp-lock-h{ display:flex; align-items:center; gap:.5rem; margin-bottom:.2rem; }
 .fp-lock-t{ font-weight:800; font-size:.95rem; }
 .fp-lock-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-bottom:1rem; }
-.fp-lock-i{ background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:.6rem .7rem; }
+.fp-lock-i{ background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:9px; padding:.6rem .7rem; }
 .fp-lock-it{ font-weight:700; font-size:.78rem; margin-bottom:.15rem; }
 .fp-lock-id{ font-size:.68rem; color:var(--muted); line-height:1.4; }
 @media (max-width:360px){ .fp-lock-grid{ grid-template-columns:1fr; } }
