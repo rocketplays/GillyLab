@@ -2585,7 +2585,25 @@ export default {
           .filter((r) => r.normalizedDivision === "mens-pound-for-pound-top-rank")
           .sort((a, b) => (a.rank || 0) - (b.rank || 0))
           .map((r) => ({ rank: r.rank, name: r.fighterName || (r.fighter && r.fighter.name) || "" }));
-        return json({ generatedAt: raw.meta && raw.meta.generatedAt, rows }, 200, cors);
+        // "Top movers" for the app's Home dashboard: rankChange is only
+        // populated for a fraction of fighters at any given sync (the
+        // upstream UFC.com feed doesn't set it for everyone every week, and
+        // right now it happens to be null across the whole pound-for-pound
+        // board specifically) — so this pulls from every division, not just
+        // p4p, and just returns whichever fighters DO have a real number,
+        // biggest movement first. An empty array here is a legitimate,
+        // expected state, not a bug — the Home screen has to handle it.
+        const movers = raw.data
+          .filter((r) => typeof r.rankChange === "number" && r.rankChange !== 0)
+          .sort((a, b) => Math.abs(b.rankChange) - Math.abs(a.rankChange))
+          .slice(0, 8)
+          .map((r) => ({
+            name: r.fighterName || (r.fighter && r.fighter.name) || "",
+            division: r.division || "",
+            rank: r.rank,
+            change: r.rankChange,
+          }));
+        return json({ generatedAt: raw.meta && raw.meta.generatedAt, rows, movers }, 200, cors);
       }
       // Deliberately public, unlike the website's /data/climb.json (gated a
       // few hundred lines below — see readSession there): the app is
