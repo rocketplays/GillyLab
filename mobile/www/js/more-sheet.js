@@ -1,9 +1,13 @@
 // The tab bar's "More" overflow -- PREMIUM ONLY, the 7th tab slot for a
-// premium account (see index.html's tab-bar comment). Holds premium-only
-// tools that don't get (or don't yet warrant) their own bar button -- Fight
-// Simulator today, more as they ship. Account lives in the persistent
-// top-right avatar menu now (see js/avatar-menu.js), not in here, and
-// Rankings/Climb stay direct tabs for everyone.
+// premium account (see index.html's tab-bar comment / router.js's
+// PREMIUM_TABS). Premium's direct 6 tabs are Home/Events/Simulator/Odds/
+// Bet Tracker/Tape Study, so this sheet holds the rest -- Rankings, Roster,
+// Pick'em, Climb -- rather than Fight Simulator, which moved out to become
+// a direct tab of its own. None of these four are premium-GATED content
+// (they're the same free-tier screens everyone gets), so `premium: false`
+// on each -- no "Premium" badge, they're just relocated here to make room
+// up front for the new premium-only tools. Account lives in the persistent
+// top-right avatar menu now (see js/avatar-menu.js), not in here.
 // A bottom sheet (slides up from behind the tab bar), not the site-borrowed
 // centered #mh-box dialog matchup.js's Deep Dive modal uses -- that CSS is
 // the SITE's own injected stylesheet (worker/matchup-free.js's hubCss) and
@@ -12,13 +16,28 @@
 // screens are, with the overlay/scroll-lock/open-close ANIMATION mechanics
 // borrowed from matchup.js's hubOpen/hubClose/hubLockScroll.
 window.GL_MORE = (function(){
-  // Order here is the order the premium FEATURE items appear in the sheet --
-  // this curation is provisional, to be revisited once more premium
-  // features land.
+  // Order here is the order these items appear in the sheet -- this
+  // curation is provisional, to be revisited once more premium features
+  // land. Icons are the same ones these routes used as direct tabs before
+  // this restructure (see router.js's now-unused-for-premium RANKINGS_TAB/
+  // ROSTER_TAB/PICKEM_TAB/CLIMB_TAB icons -- kept in sync by hand since
+  // they're small, static strings, not worth sharing a module for).
   var FEATURE_ITEMS = [
     {
-      route: 'simulator', label: 'Fight Simulator', premium: true,
-      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.7v6.6l5.5-3.3z" fill="currentColor"/></svg>',
+      route: 'rankings', label: 'Rankings', premium: false,
+      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M5 20V10M12 20V4M19 20v-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    },
+    {
+      route: 'roster', label: 'Roster', premium: false,
+      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="5.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 19c.7-3 2.8-4.6 5.2-4.9M20 19c-.7-3-2.8-4.6-5.2-4.9M8.5 19.5c.6-3.2 1.9-4.9 3.5-4.9s2.9 1.7 3.5 4.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    },
+    {
+      route: 'pickem', label: "Pick'em", premium: false,
+      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.3 12.4l2.5 2.5 5-5.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    },
+    {
+      route: 'climb', label: 'The Climb', premium: false,
+      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     },
   ];
 

@@ -60,59 +60,31 @@
        Account is no longer a tab at all, for free OR premium -- it moved to
        the persistent top-right avatar button (see #avatarBtn above, and
        js/avatar-menu.js) so it's reachable from every screen without eating
-       a tab slot. Free users get 6 direct tabs -- Home, Card, Pick'em,
-       Climb, Rankings, Roster. Premium adds a 7th, "More" (js/more-sheet.js's
-       bottom sheet), for net-new tools that don't warrant their own button
-       yet (Fight Simulator today). The "more" button below always exists in
-       the DOM; js/subscription.js toggles it hidden/visible once it knows
-       the signed-in account's plan (see router.js's setPremiumMode). Order/
-       curation here is provisional -- to be revisited once more premium
-       features land. -->
-  <nav class="gl-tabbar" id="tabbar">
-    <button class="gl-tab" data-route="home" aria-label="Home">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="gl-tab" data-route="matchup" aria-label="Card">
-      <!-- A boxing glove, drawn vertically like the 🥊 emoji simplified to a
-           straight up-down axis: rounded fist/head on top, tapered wrist
-           cuff at the bottom with a wrap-band line -- not tilted, and not
-           cuff-on-top like the design this replaced. -->
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M8 12V8.2a4 4 0 0 1 8 0V12a2.6 2.6 0 0 1-1 2.05V15a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.95A2.6 2.6 0 0 1 8 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 16.5h5a1.5 1.5 0 0 1 1.5 1.5v.5a2.5 2.5 0 0 1-2.5 2.5h-3A2.5 2.5 0 0 1 8 18.5V18a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.3 18.6h7.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-      <span>Card</span>
-    </button>
-    <button class="gl-tab" data-route="pickem" aria-label="Pick'em">
-      <!-- A checkmark badge -- reads as "your pick/confirmed" the way the
-           previous gem-shaped icon didn't map to anything about picking. -->
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.3 12.4l2.5 2.5 5-5.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>Pick'em</span>
-    </button>
-    <button class="gl-tab" data-route="climb" aria-label="The Climb">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
-      <span>Climb</span>
-    </button>
-    <button class="gl-tab" data-route="rankings" aria-label="Rankings">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M5 20V10M12 20V4M19 20v-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span>Rankings</span>
-    </button>
-    <button class="gl-tab" data-route="roster" aria-label="Roster">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="5.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 19c.7-3 2.8-4.6 5.2-4.9M20 19c-.7-3-2.8-4.6-5.2-4.9M8.5 19.5c.6-3.2 1.9-4.9 3.5-4.9s2.9 1.7 3.5 4.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      <span>Roster</span>
-    </button>
-    <button class="gl-tab" data-route="more" aria-label="More" hidden>
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
-      <span>More</span>
-    </button>
-  </nav>
+       a tab slot.
+
+       The buttons themselves are rendered by router.js (see its FREE_TABS/
+       PREMIUM_TABS/MORE_TAB + renderTabbar()), not hardcoded here -- a
+       premium account gets a COMPLETELY different set of 6 direct tabs
+       (Home/Events/Simulator/Odds/Bet Tracker/Tape Study) plus a 7th,
+       "More" (js/more-sheet.js's bottom sheet, holding Rankings/Roster/
+       Pick'em/Climb), not just an extra tab appended to the free set
+       (Home/Events/Pick'em/Climb/Rankings/Roster). js/subscription.js
+       calls router.js's setPremiumMode() once it knows the signed-in
+       account's plan, which re-renders this nav's contents entirely.
+       Starts empty; router.js's init() renders the free set immediately
+       (matching isPremium's false default) before wiring click delegation. -->
+  <nav class="gl-tabbar" id="tabbar"></nav>
 
   <!-- "More" tab's overflow sheet -- premium-only, the 7th tab slot (see the
-       tab-bar comment above + more-sheet.js). Holds premium-only tools
-       (Fight Simulator today, more as they ship) -- Account lives in the
-       top-right avatar menu now, not in here, and Rankings/Climb are direct
-       tabs for everyone. A new, app-native bottom-sheet pattern (slides up from
-       behind the tab bar), not the site's borrowed centered-dialog #mh-box
-       style used for the Deep Dive modal -- that CSS is the SITE's own
-       injected stylesheet and has no bottom-sheet variant to copy. -->
+       tab-bar comment above + more-sheet.js). Premium's direct 6 tabs are
+       Home/Events/Simulator/Odds/Bet Tracker/Tape Study, so this sheet now
+       holds the rest -- Rankings, Roster, Pick'em, Climb -- rather than the
+       one-off Fight Simulator entry it used to. Account lives in the
+       top-right avatar menu, not in here. A new, app-native bottom-sheet
+       pattern (slides up from behind the tab bar), not the site's borrowed
+       centered-dialog #mh-box style used for the Deep Dive modal -- that CSS
+       is the SITE's own injected stylesheet and has no bottom-sheet variant
+       to copy. -->
   <div id="moreOverlay" class="more-overlay" hidden></div>
   <div id="moreSheet" class="more-sheet" hidden role="dialog" aria-modal="true" aria-label="More">
     <div class="more-sheet-grabber"></div>
@@ -137,6 +109,9 @@
   <script src="js/screens/settings.js"></script>
   <script src="js/screens/premium.js"></script>
   <script src="js/screens/simulator.js"></script>
+  <script src="js/screens/odds.js"></script>
+  <script src="js/screens/bettracker.js"></script>
+  <script src="js/screens/tapestudy.js"></script>
   <script src="js/screens/login.js"></script>
   <script src="js/app.js"></script>
 </body>

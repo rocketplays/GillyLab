@@ -33,7 +33,7 @@
 // own entry (see `hubData`, keyed by slug from `data.hub`/each carousel
 // entry's own `.hub`), never just the featured card's.
 window.GL_ROUTER.register('matchup', {
-  title: 'Card',
+  title: 'Events',
   tab: 'matchup',
   render: function(container){
     mountMatchup(container);
