@@ -2703,9 +2703,17 @@ export function eventToCard(raw, liteBySlug, isPast, oddsData) {
     const slugB = SLUG_ALIASES[rawSlugB] ? nameToSlug(SLUG_ALIASES[rawSlugB]) : rawSlugB;
     const physA = liteBySlug && liteBySlug[slugA] && liteBySlug[slugA].phys;
     const physB = liteBySlug && liteBySlug[slugB] && liteBySlug[slugB].phys;
+    // The DISPLAY name needs the same alias resolution as the slug above --
+    // SLUG_ALIASES only ever patched s1/s2, so a fighter like "Jose Miguel
+    // Delgado" (ESPN's feed name) kept showing that raw name everywhere on
+    // the app/site's Card page even once its slug correctly pointed at the
+    // DB's real profile ("jose-delgado" / "Jose Delgado"). Reuse the same
+    // alias lookup so the displayed name matches the profile it links to.
+    const f1Name = SLUG_ALIASES[rawSlugA] || fa.fighterName || (fa.profile && fa.profile.name) || "";
+    const f2Name = SLUG_ALIASES[rawSlugB] || fb.fighterName || (fb.profile && fb.profile.name) || "";
     const f = {
-      f1: fa.fighterName || (fa.profile && fa.profile.name) || "",
-      f2: fb.fighterName || (fb.profile && fb.profile.name) || "",
+      f1: f1Name,
+      f2: f2Name,
       s1: slugA, s2: slugB,
       rank1: fa.rankText || null, rank2: fb.rankText || null,
       rec1: stripRec(fa.profile && fa.profile.record && fa.profile.record.text),

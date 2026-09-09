@@ -604,12 +604,13 @@ function styleDemoPair() {
   const booked = new Set();
   for (const bout of ev.bouts) {
     if (bout.isCancelled) continue;
-    (bout.fighters || []).forEach((f) => booked.add(f.fighterName));
+    // Same feed->DB alias gap as buildCard()/buildMatchup() above.
+    (bout.fighters || []).forEach((f) => booked.add(canonStatName(f.fighterName)));
   }
   if (STYLE_DEMO.every((n) => booked.has(n))) return STYLE_DEMO;
   const main = ev.bouts.find((x) => x && x.cardPosition === 1 && !x.isCancelled) || ev.bouts.find((x) => x && !x.isCancelled);
   const f = (main && main.fighters) || [];
-  return f.length === 2 ? [f[0].fighterName, f[1].fighterName] : STYLE_DEMO;
+  return f.length === 2 ? [canonStatName(f[0].fighterName), canonStatName(f[1].fighterName)] : STYLE_DEMO;
 }
 function buildStyleDemo(recMap) {
   const pair = styleDemoPair();
@@ -643,7 +644,9 @@ function buildMatchup(recMap, evOverride) {
 
   const ranks = rankMap();
   const side = (f) => {
-    const name = f.fighterName;
+    // Same feed->DB alias gap as buildCard() above (see its own comment) --
+    // resolve the raw ESPN name before it's used for anything downstream.
+    const name = canonStatName(f.fighterName);
     const slug = nameToSlug(name);
     const st = fighterStat(name);
     return {
@@ -977,7 +980,16 @@ function buildCard(recMap, evOverride) {
   const ranks = rankMap();
   const bouts = ev.bouts.filter((b) => b && !b.isCancelled && (b.fighters || []).length === 2).sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0));
   const fights = bouts.map((b, i) => {
-    const f1 = b.fighters[0].fighterName, f2 = b.fighters[1].fighterName;
+    // Resolve through canonStatName() BEFORE anything else -- the raw feed
+    // name ("Jose Miguel Delgado") doesn't match the DB's canonical name
+    // ("Jose Delgado"), so an unresolved name here silently breaks the
+    // profile slug (no avatar/no link on the app's Card page, since
+    // nameToSlug() on the raw name never matches an existing profile) AND
+    // the record/rank lookups below (ciLookup against recMap/ranks, both
+    // keyed by canonical name). canonStatName() already handles this exact
+    // case (see its own header comment) for stats/history -- it just wasn't
+    // wired into this fight-building step before.
+    const f1 = canonStatName(b.fighters[0].fighterName), f2 = canonStatName(b.fighters[1].fighterName);
     const s1 = nameToSlug(f1), s2 = nameToSlug(f2), od = consensusOdds(f1, f2);
     return {
       f1, f2, s1: photoExists(s1) ? s1 : "", s2: photoExists(s2) ? s2 : "",
