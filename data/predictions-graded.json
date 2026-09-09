@@ -3423,7 +3423,152 @@
         "pts": 0.0047,
         "leaned": true
       }
+    },
+    {
+      "fightId": "apollo gomes|won il kwon",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-09T15:50:38.127Z",
+      "a": {
+        "feed": "Won Il Kwon",
+        "db": "Kwon Won Il"
+      },
+      "b": {
+        "feed": "Apollo Gomes",
+        "db": "Apollo Gomes"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.3758,
+      "modelClose": 0.6242,
+      "marketOpen": 0.53,
+      "marketClose": 0.4436,
+      "leanA": -0.1542,
+      "nSnapshots": 6,
+      "clv": {
+        "toward": true,
+        "pts": 0.0864,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "arlind berisha|quentin pasley",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-09T15:50:38.127Z",
+      "a": {
+        "feed": "Quentin Pasley",
+        "db": "Quentin Pasley"
+      },
+      "b": {
+        "feed": "Arlind Berisha",
+        "db": "Arlind Berisha"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.4871,
+      "modelClose": 0.5129,
+      "marketOpen": 0.3891,
+      "marketClose": 0.579,
+      "leanA": 0.098,
+      "nSnapshots": 4,
+      "clv": {
+        "toward": true,
+        "pts": 0.1899,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "christian natividad|colton loud",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-09T15:50:38.127Z",
+      "a": {
+        "feed": "Colton Loud",
+        "db": "Colton Loud"
+      },
+      "b": {
+        "feed": "Christian Natividad",
+        "db": "Christian Natividad"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.486,
+      "modelClose": 0.514,
+      "marketOpen": 0.3029,
+      "marketClose": 0.7183,
+      "leanA": 0.1831,
+      "nSnapshots": 4,
+      "clv": {
+        "toward": true,
+        "pts": 0.4154,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "isaac moreno|reginaldo junior",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-09T15:50:38.127Z",
+      "a": {
+        "feed": "Isaac Moreno",
+        "db": "Isaac Moreno"
+      },
+      "b": {
+        "feed": "Reginaldo Junior",
+        "db": "Reginaldo Junior"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5118,
+      "modelClose": 0.4882,
+      "marketOpen": 0.5601,
+      "marketClose": 0.4561,
+      "leanA": -0.0483,
+      "nSnapshots": 4,
+      "clv": {
+        "toward": true,
+        "pts": 0.104,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "christian echols|martin kozak",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-09T15:50:38.127Z",
+      "a": {
+        "feed": "Christian Echols",
+        "db": "Christian Echols"
+      },
+      "b": {
+        "feed": "Martin Kozák",
+        "db": "Martin Kozák"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4313,
+      "modelClose": 0.4313,
+      "marketOpen": 0.198,
+      "marketClose": 0.1848,
+      "leanA": 0.2333,
+      "nSnapshots": 2,
+      "clv": {
+        "toward": false,
+        "pts": -0.0132,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-08T15:56:29.832Z"
+  "generatedAt": "2026-09-09T15:50:38.131Z"
 }
