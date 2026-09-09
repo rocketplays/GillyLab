@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-09T01:01:18.801Z",
+ "generatedAt": "2026-09-09T01:31:43.900Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -10150,6 +10150,194 @@
       ]
      },
      "capturedAt": "2026-09-09T01:01:18.663Z"
+    }
+   ]
+  },
+  "Quentin Pasley": {
+   "history": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Arlind Berisha",
+     "result": "W",
+     "method": "KO/TKO (Elbows)",
+     "round": 1,
+     "time": "4:41",
+     "event": "Dana White's Contender Series: Season 10, Week 5",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Arlind Berisha",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 45,
+      "totL": 32,
+      "totA": 49,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       6,
+       10
+      ],
+      "body": [
+       12,
+       20
+      ],
+      "leg": [
+       10,
+       15
+      ],
+      "dist": [
+       24,
+       40
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 23,
+      "totL": 14,
+      "totA": 23,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:18",
+      "head": [
+       2,
+       5
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       9,
+       14
+      ],
+      "dist": [
+       14,
+       23
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-09T01:31:43.761Z"
+    }
+   ]
+  },
+  "Arlind Berisha": {
+   "history": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Quentin Pasley",
+     "result": "L",
+     "method": "KO/TKO (Elbows)",
+     "round": 1,
+     "time": "4:41",
+     "event": "Dana White's Contender Series: Season 10, Week 5",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Quentin Pasley",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 23,
+      "totL": 14,
+      "totA": 23,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:18",
+      "head": [
+       2,
+       5
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       9,
+       14
+      ],
+      "dist": [
+       14,
+       23
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 45,
+      "totL": 32,
+      "totA": 49,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       6,
+       10
+      ],
+      "body": [
+       12,
+       20
+      ],
+      "leg": [
+       10,
+       15
+      ],
+      "dist": [
+       24,
+       40
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "capturedAt": "2026-09-09T01:31:43.761Z"
     }
    ]
   }
