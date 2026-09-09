@@ -3259,6 +3259,38 @@ export default {
           breakdown: matchupBreakdown(nameA, nameB),
         }, 200, cors);
       }
+      // Home dashboard's Bet Tracker teaser: top of the real units
+      // leaderboard, same underlying data handleBetsLeaderboard uses (see
+      // that function's own comments), just trimmed to the top 3 names with
+      // no per-user "me" row -- a homepage peek, not the full board. A new,
+      // dedicated route rather than reusing /api/bets/leaderboard directly
+      // because that route sets no CORS headers at all (it's site-only,
+      // same-origin) -- easier to add one small app-facing route than to
+      // start threading appCorsHeaders through the site's own handler.
+      // Reuses readSession's Bearer-token fallback, so the app's existing
+      // sign-in token just works here with no separate bet-tracker login.
+      if (path === "/api/app/bettracker-preview" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
+        const [events, closing, keys] = await Promise.all([
+          btLoadResultEvents(env, url), loadClosingOdds(env, url), listAllKeys(env, "bt:"),
+        ]);
+        const rows = [];
+        await Promise.all(keys.map(async (k) => {
+          const email = k.slice(3);
+          const name = await getDisplayName(env, email);
+          if (!name) return;
+          const bets = await btGetBets(env, email);
+          const stats = btUserStats(bets, events, closing);
+          if (!stats) return;
+          rows.push({ name, units: btRound1(stats.units), n: stats.n });
+        }));
+        const top = rows.filter((r) => r.units != null).sort((a, b) => b.units - a.units).slice(0, 3);
+        return json({ rows: top }, 200, cors);
+      }
       // Account screen: signed-in email, subscription status and member-since
       // date -- none of which the app currently has (GL_AUTH only tracks
       // email + a bearer token, and the token's own `sub` claim is a

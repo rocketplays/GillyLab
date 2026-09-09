@@ -72,6 +72,9 @@ window.GL_API = (function(){
     // already premium-only), reused as-is for Go Premium -- see
     // worker/index.js's /api/app/premium-features and premium.js.
     premiumFeatures: function(){ return request('/api/app/premium-features'); },
+    // Home dashboard's Bet Tracker teaser -- top 3 of the real units
+    // leaderboard (see worker/index.js's /api/app/bettracker-preview).
+    bettrackerPreview: function(){ return request('/api/app/bettracker-preview'); },
     // Account screen -- see worker/index.js's /api/app/account,
     // /api/change-password, /api/delete-account.
     account: function(){ return request('/api/app/account'); },

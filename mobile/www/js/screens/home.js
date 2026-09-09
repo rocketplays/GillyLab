@@ -173,55 +173,95 @@ window.GL_ROUTER.register('home', {
     }
 
     // Premium-only teaser cards for the three tools that got their own
-    // direct tabs (see router.js's PREMIUM_TABS) but have no data pipeline
-    // built yet -- odds.js/bettracker.js/tapestudy.js are still "Coming
-    // soon" stub screens. Simulator isn't previewed here since it already
-    // has its own "Simulate Matchup" button on every fight on the Events
-    // tab -- a Home teaser for it would just be a second, redundant
-    // entry point. Copy below mirrors the real premium website's own
-    // headers/blurbs for these three pages verbatim (see index.html's
-    // #page-odds/#page-bets/#page-tape-study) so the preview describes
-    // what's actually coming, not a made-up placeholder pitch.
-    function toolPreviewSection(title, blurb, cta, route, extra){
+    // direct tabs (see router.js's PREMIUM_TABS) but have no screen of
+    // their own built yet -- odds.js/bettracker.js/tapestudy.js are still
+    // "Coming soon" stub screens. Simulator isn't previewed here since it
+    // already has its own "Simulate Matchup" button on every fight on the
+    // Events tab -- a Home teaser for it would just be a second, redundant
+    // entry point. Each one now carries a real little data peek (like
+    // Rankings' own Biggest Movers section above), not just descriptive
+    // copy: Odds shows the actual current main-event moneyline (from the
+    // same matchupCard data already on this page), Bet Tracker shows the
+    // top of the real units leaderboard (worker/index.js's
+    // /api/app/bettracker-preview), and Tape Study shows a real indexed
+    // fight for one of this week's main-event fighters (worker's existing
+    // /api/app/fighter-extras, same data the Tape Study tab on a fighter's
+    // own profile already uses).
+    function toolPreviewSection(title, blurb, cta, route, peek){
       return (
         '<div class="gl-sec">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">' + esc(title) + '</h2></div>' +
           '<p style="margin:.4rem 0 0">' + blurb + '</p>' +
-          (extra ? '<p class="gl-muted" style="margin:.3rem 0 0;font-size:.78rem">' + extra + '</p>' : '') +
+          (peek || '') +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="' + route + '">' + esc(cta) + '</button>' +
         '</div>'
       );
     }
+    // f.o1/f.o2 are already pre-formatted, signed strings (e.g. "+128"),
+    // same convention matchup.js's own fmtOdds relies on.
+    function fmtOdds(v){ return (v == null || v === '') ? '—' : String(v); }
     // Site header: "Betting Odds" / "Odds across all major sportsbooks ·
-    // Updated daily" (index.html's #page-odds).
-    function oddsPreviewSection(){
+    // Updated daily" (index.html's #page-odds). Peek: the real current
+    // moneyline on this week's main event, when there's odds data for it.
+    function oddsPreviewSection(matchupCard){
+      var main = matchupCard && (matchupCard.fights || [])[0];
+      var peek = (main && (main.o1 != null || main.o2 != null))
+        ? '<div class="gl-dash-row" style="margin-top:.5rem">' +
+            '<span class="gl-dash-row-name">' + esc(main.f1) + '</span>' +
+            '<span class="gl-muted" style="font-size:.82rem">' + esc(fmtOdds(main.o1)) + '</span>' +
+            '<span class="gl-muted" style="font-size:.78rem">vs</span>' +
+            '<span class="gl-muted" style="font-size:.82rem">' + esc(fmtOdds(main.o2)) + '</span>' +
+            '<span class="gl-dash-row-name">' + esc(main.f2) + '</span>' +
+          '</div>'
+        : '';
       return toolPreviewSection(
         'Betting Odds',
         'Moneylines and prop markets across every major sportsbook for every fight on the card.',
-        'View Odds', 'odds'
+        'View Odds', 'odds', peek
       );
     }
     // Site header: "Bet & CLV Tracker" / "Input your bets to track CLV,
-    // ROI, units and record." plus its exact disclaimer (index.html's
-    // #page-bets) -- carried over here since it's a real legal note, not
-    // just marketing copy.
-    function bettrackerPreviewSection(){
+    // ROI, units and record." (index.html's #page-bets). Peek: the top of
+    // the real units leaderboard.
+    function bettrackerPreviewSection(btPreview){
+      var rows = (btPreview && btPreview.rows) || [];
+      var peek = rows.length
+        ? rows.slice(0, 3).map(function(r, i){
+            return (
+              '<div class="gl-dash-row">' +
+                '<span class="gl-dash-rank">#' + (i + 1) + '</span>' +
+                '<span class="gl-dash-row-name">' + esc(r.name) + '</span>' +
+                '<span class="gl-muted" style="font-size:.78rem">' + (r.units > 0 ? '+' : '') + r.units + 'u</span>' +
+              '</div>'
+            );
+          }).join('')
+        : '';
       return toolPreviewSection(
         'Bet & CLV Tracker',
         'Log your bets to track closing-line value, ROI, units and your record.',
-        'Open Bet Tracker', 'bettracker',
-        'A personal record-keeping tool only — GillyLab doesn’t accept wagers, handle money, or offer betting advice.'
+        'Open Bet Tracker', 'bettracker', peek
       );
     }
     // Site header: "Tape Study" / "Tape index for upcoming events" --
     // organized by event then fighter (index.html's #page-tape-study),
     // separate from the tape study tab already inside a fighter's own
-    // profile.
-    function tapestudyPreviewSection(){
+    // profile. Peek: one real indexed fight for a main-event fighter.
+    function tapestudyPreviewSection(tapePeek){
+      var peek = (tapePeek && tapePeek.length)
+        ? tapePeek.slice(0, 2).map(function(t){
+            return (
+              '<div class="gl-dash-row">' +
+                moverAvatar(t.name, t.slug) +
+                moverName(t.name, t.slug) +
+                '<span class="gl-muted" style="font-size:.78rem">vs ' + esc(t.opponent) + '</span>' +
+              '</div>'
+            );
+          }).join('')
+        : '';
       return toolPreviewSection(
         'Tape Study',
         'A tape index for every upcoming card — browse by event, then by fighter.',
-        'Browse Tape Study', 'tapestudy'
+        'Browse Tape Study', 'tapestudy', peek
       );
     }
 
@@ -279,7 +319,7 @@ window.GL_ROUTER.register('home', {
     // are there (they're direct tabs' worth of familiar), so the new tools
     // get the prominent spots up top instead; the Go Premium pitch is
     // dropped entirely since a subscriber has already bought in.
-    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed){
+    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, btPreview, tapePeek){
       var pickem = pickemCard ? pickemSection(pickemCard, pickemMine) : '';
       var climb = climbSection();
       var rankings = moversSection(rankingsData);
@@ -287,9 +327,9 @@ window.GL_ROUTER.register('home', {
       container.innerHTML = subscribed
         ? (
             mainEventSection(matchupCard) +
-            oddsPreviewSection() +
-            bettrackerPreviewSection() +
-            tapestudyPreviewSection() +
+            oddsPreviewSection(matchupCard) +
+            bettrackerPreviewSection(btPreview) +
+            tapestudyPreviewSection(tapePeek) +
             rankings +
             roster +
             pickem +
@@ -310,6 +350,37 @@ window.GL_ROUTER.register('home', {
       wire();
     }
 
+    // The two premium preview data peeks (Bet Tracker's leaderboard top,
+    // Tape Study's real indexed fight) only matter once we already know the
+    // visitor is subscribed AND have this week's main event -- both only
+    // available after the first batch below resolves, so this runs as a
+    // second step rather than joining the initial Promise.all. Skips both
+    // calls entirely for a free/logged-out visitor (their premium teasers
+    // never render, so there's nothing to peek at).
+    function fetchPremiumPreviews(subscribed, matchupCard){
+      if (!subscribed) return Promise.resolve([null, []]);
+      var main = matchupCard && (matchupCard.fights || [])[0];
+      var fighters = main
+        ? [{ name: main.f1, slug: main.s1 }, { name: main.f2, slug: main.s2 }].filter(function(f){ return f.slug; })
+        : [];
+      return Promise.all([
+        window.GL_API.bettrackerPreview().catch(function(){ return null; }),
+        Promise.all(fighters.map(function(f){
+          return window.GL_API.fighterExtras(f.slug).catch(function(){ return null; });
+        })),
+      ]).then(function(res){
+        var btPreview = res[0];
+        var extrasList = res[1] || [];
+        var tapePeek = [];
+        extrasList.forEach(function(extras, i){
+          var entry = extras && extras.tapeStudy && extras.tapeStudy[0];
+          if (!entry) return;
+          tapePeek.push({ name: fighters[i].name, slug: fighters[i].slug, opponent: entry.opponent || entry.event || '' });
+        });
+        return [btPreview, tapePeek];
+      });
+    }
+
     window.GL_AUTH.ready.then(function(){
       var loggedIn = window.GL_AUTH.isLoggedIn();
       return Promise.all([
@@ -323,9 +394,12 @@ window.GL_ROUTER.register('home', {
         var card = cardRes && cardRes.card;
         var matchupCard = matchupRes && matchupRes.card;
         var subscribed = !!(acct && acct.subscribed);
-        if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData, subscribed);
-        return window.GL_API.pickemMine(card.slug).catch(function(){ return null; }).then(function(mine){
-          render(card, mine, rankingsData, matchupCard, rosterData, subscribed);
+        return fetchPremiumPreviews(subscribed, matchupCard).then(function(peeks){
+          var btPreview = peeks[0], tapePeek = peeks[1];
+          if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData, subscribed, btPreview, tapePeek);
+          return window.GL_API.pickemMine(card.slug).catch(function(){ return null; }).then(function(mine){
+            render(card, mine, rankingsData, matchupCard, rosterData, subscribed, btPreview, tapePeek);
+          });
         });
       });
     });

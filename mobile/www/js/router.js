@@ -73,11 +73,13 @@ window.GL_ROUTER = (function(){
     route: 'roster', label: 'Roster',
     icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="5.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 19c.7-3 2.8-4.6 5.2-4.9M20 19c-.7-3-2.8-4.6-5.2-4.9M8.5 19.5c.6-3.2 1.9-4.9 3.5-4.9s2.9 1.7 3.5 4.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   };
-  // Circle + play triangle -- same icon more-sheet.js used for this when it
-  // was a "More" sheet entry rather than its own direct tab.
+  // A flask/beaker -- "run the experiment" reads as simulate, and it's no
+  // longer a circle-plus-play-triangle shape (the icon used before this
+  // was too close to Tape Study's own play-triangle icon to tell apart at
+  // tab-bar size).
   var SIMULATOR_TAB = {
     route: 'simulator', label: 'Simulator',
-    icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.7v6.6l5.5-3.3z" fill="currentColor"/></svg>',
+    icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M9.5 3.5h5M10.2 3.5v5.6L5.7 16.8a1.9 1.9 0 0 0 1.65 2.85h9.3a1.9 1.9 0 0 0 1.65-2.85l-4.5-7.7V3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><path d="M7.6 14.3h8.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   };
   // A percent sign -- odds are a probability, not a ledger or a chart.
   var ODDS_TAB = {
