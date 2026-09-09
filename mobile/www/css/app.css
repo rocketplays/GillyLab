@@ -819,14 +819,24 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 
 /* ---- Fighter profile: Premium Fight History / Tape Study / Odds History /
    Accolades / News -- up to 5 possible tabs (site order, see fighter.js's
-   tabsHTML), only the ones with content for this fighter. Content-sized and
-   horizontally scrollable rather than squeezed to fit, since 5 labels at
-   equal flex width would be unreadable on a phone -- 2 tabs (the common
-   case) just doesn't need to scroll. ---- */
+   tabsHTML), only the ones with content for this fighter. Ported straight
+   from the site's own .fighter-tabs/.fighter-tab (index.html) -- an
+   underlined tab row, not a pill/segmented-control switcher: no background
+   box around the row or the selected tab, just a 2px accent underline on
+   whichever one is active, uppercase Barlow Condensed labels with wide
+   letter-spacing. Content-sized and horizontally scrollable rather than
+   squeezed to fit, since 5 labels at equal width would be unreadable on a
+   phone -- same reasoning as the site's own mobile tightening below. ---- */
 .fp-extras{ margin-top:1.2rem; }
-.fp-tabs{ display:flex; gap:4px; overflow-x:auto; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:.8rem; -webkit-overflow-scrolling:touch; }
-.fp-tab{ flex:0 0 auto; text-align:center; background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.5rem .8rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
-.fp-tab.sel{ background:var(--accent); color:var(--on-accent); }
+.fp-tabs{ display:flex; border-bottom:1px solid var(--border); margin-bottom:1.2rem; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.fp-tab{
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.8rem;
+  letter-spacing:.1em; text-transform:uppercase; padding:.65rem .9rem;
+  cursor:pointer; color:var(--muted); background:none; border:none;
+  border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap;
+}
+.fp-tab.sel{ color:var(--accent); border-bottom-color:var(--accent); }
+@media (max-width:360px){ .fp-tab{ padding:.6rem .6rem; letter-spacing:.04em; font-size:.72rem; } }
 
 .fp-acc-list{ display:flex; flex-direction:column; gap:.7rem; }
 .fp-acc-row{ display:flex; gap:.6rem; align-items:flex-start; }
@@ -843,26 +853,43 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-tape-watch{ flex:0 0 auto; background:none; border:1px solid var(--accent); color:var(--accent); font:inherit; font-weight:700; font-size:.72rem; padding:.4rem .8rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
 .fp-tape-none{ flex:0 0 auto; font-size:.72rem; color:var(--muted); }
 
-/* ---- Fighter profile: Fight History (ported from the site's #fh-table) --
-   stacked rows, not a literal table, to stay legible on a phone: opponent +
-   result on one line, date/method/event as a muted line below. A row with
-   an embedded box score (see fighter.js's fightHistoryHTML/wireExtras) gets
-   a small "Stats" chip and opens the native stats modal on tap -- same
-   affordance as the site's accent-stripe + gold-tinted clickable rows,
-   translated to a plain interactive row since a hover stripe means nothing
-   on a touchscreen. ---- */
-.fp-hist-list{ display:flex; flex-direction:column; }
-.fp-hist-row{ padding:.6rem 0; border-top:1px solid var(--border); }
-.fp-hist-row:first-child{ border-top:none; }
+/* ---- Fighter profile: Fight History -- ported directly from the site's
+   static #fh-stats-hint banner and #fh-table (index.html), a real table
+   (Date/Opponent/Result/Method/Event), not a card-per-fight list, wrapped in
+   its own horizontal-scroll container the same way the site contains
+   overflow locally instead of widening the page. A row with an embedded box
+   score (see fighter.js's fightHistoryHTML/wireExtras) gets a "Stats" chip
+   above its date and opens the native stats modal on tap -- the site's own
+   accent-stripe + gold-tinted row treatment doesn't translate to touch (no
+   hover), so the chip alone carries the "this row is clickable" signal here,
+   same as it already does on the site (chip visible either way). ---- */
+.fp-hist-hint{
+  display:flex; align-items:center; gap:7px; margin:0 0 .7rem; padding:.5rem .75rem;
+  background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.35); border-radius:6px;
+  font-size:.76rem; color:var(--accent); line-height:1.35;
+}
+.fp-hist-hint svg{ flex-shrink:0; }
+.fp-hist-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 -1.1rem; padding:0 1.1rem; }
+.fp-hist-table{ width:100%; min-width:480px; border-collapse:collapse; font-size:.8rem; }
+.fp-hist-table thead tr{ border-bottom:1px solid var(--border); text-align:left; }
+.fp-hist-table th{ padding:.5rem .6rem; font-weight:600; font-size:.7rem; letter-spacing:.04em; color:var(--muted); }
+.fp-hist-td{ padding:.55rem .6rem; border-top:1px solid var(--border); vertical-align:top; }
+.fp-hist-row:first-child .fp-hist-td{ border-top:none; }
 .fp-hist-row--click{ cursor:pointer; }
-.fp-hist-row--click:active{ background:rgba(255,255,255,.03); }
-.fp-hist-top{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
-.fp-hist-opp{ font-weight:700; font-size:.84rem; display:inline-flex; align-items:center; gap:.4rem; }
-.fp-hist-chip{ display:inline-flex; align-items:center; padding:1px 7px; border:1px solid var(--accent); border-radius:999px; color:var(--accent); font-size:.6rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; }
-.fp-hist-result{ font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:.9rem; flex:0 0 auto; }
+.fp-hist-row--click:active .fp-hist-td{ background:rgba(212,175,55,.06); }
+.fp-hist-date{ white-space:nowrap; color:var(--muted); }
+.fp-hist-chip{
+  display:inline-flex; align-items:center; gap:4px; margin-bottom:4px; padding:2px 8px;
+  border:1px solid var(--accent); border-radius:999px; color:var(--accent);
+  font-size:.62rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap;
+}
+.fp-hist-opp{ font-weight:600; }
+.fp-hist-result{ text-align:center; font-weight:800; }
 .fp-hist-result.good{ color:var(--accent); }
 .fp-hist-result.bad{ color:#c76a54; }
-.fp-hist-meta{ font-size:.72rem; color:var(--muted); margin-top:.15rem; }
+.fp-hist-sub{ color:var(--muted); font-size:.72rem; margin-top:2px; }
+.fp-hist-event{ color:var(--muted); font-size:.76rem; }
+@media (max-width:600px){ .fp-hist-td{ padding:.5rem .4rem; } }
 
 /* ---- Fighter profile: Odds History (ported from the site's #fo-table) --
    same result color convention as Fight History; the price itself is green

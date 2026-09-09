@@ -151,29 +151,55 @@ window.GL_FIGHTER = (function(){
   // uses across Fight History and Odds History.
   function resultClass(r){ return r === 'W' ? 'good' : (r === 'L' ? 'bad' : ''); }
 
-  // Ported from populateFightHistory() in index.html, minus the box-score
-  // click handling (that's DOM state, not markup -- see wireExtras). A row
-  // with an embedded `stats` object (attached server-side by
-  // /api/app/fighter-extras -- see worker/index.js) gets a "Stats" chip and
-  // is clickable straight to openStatsModal(); everything else is a plain
-  // row, same as a non-UFC bout with no ESPN box score on the site.
+  // Ported from index.html's static #fh-table/#fh-stats-hint markup and
+  // populateFightHistory() -- a real 5-column table (Date/Opponent/Result/
+  // Method/Event, Round+Time folded into a second line under Method, same
+  // reason the site folded them in: a 7-column table pushed everything past
+  // Result off-screen on mobile), not a card-per-fight list. The gold
+  // "Rows with a Stats tag are clickable" hint banner only appears when at
+  // least one row actually has one, same as the site's `_anyStats` flag. A
+  // row with an embedded `stats` object (attached server-side by
+  // /api/app/fighter-extras -- see worker/index.js) gets a "Stats" chip
+  // above its date and is clickable straight to openStatsModal(); everything
+  // else is a plain row, same as a non-UFC bout with no ESPN box score on
+  // the site.
+  var STATS_ICON_SVG = '<svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4.5" y="3" width="3" height="9" rx="0.5"/><rect x="9" y="0" width="3" height="12" rx="0.5"/></svg>';
   function fightHistoryHTML(list){
     if (!list || !list.length) return '<p class="gl-muted" style="margin:.4rem 0 0">No fight history yet.</p>';
-    return '<div class="fp-hist-list">' + list.map(function(f, i){
-      var subBits = [f.method, [f.round ? 'R' + f.round : '', f.time || ''].filter(Boolean).join(' · ')].filter(Boolean).join(' — ');
-      var meta = [f.date, [subBits, f.event].filter(Boolean).join(' · ')].filter(Boolean).join(' · ');
+    var anyStats = list.some(function(f){ return !!f.stats; });
+    var hint = anyStats
+      ? ('<div class="fp-hist-hint">' + STATS_ICON_SVG +
+          '<span>Rows with a <b>Stats</b> tag are clickable — open the full fight stat breakdown (strikes, takedowns, control &amp; more).</span>' +
+        '</div>')
+      : '';
+    var rows = list.map(function(f, i){
+      var subLine = [f.round ? 'R' + f.round : '', f.time || ''].filter(Boolean).join(' · ');
       var clickable = !!f.stats;
       return (
-        '<div class="fp-hist-row' + (clickable ? ' fp-hist-row--click' : '') + '"' +
+        '<tr class="fp-hist-row' + (clickable ? ' fp-hist-row--click' : '') + '"' +
           (clickable ? ' data-hist-i="' + i + '" role="button" tabindex="0"' : '') + '>' +
-          '<div class="fp-hist-top">' +
-            '<span class="fp-hist-opp">vs ' + esc(f.opponent || '') + (clickable ? '<span class="fp-hist-chip">Stats</span>' : '') + '</span>' +
-            '<span class="fp-hist-result ' + resultClass(f.result) + '">' + esc(f.result || '—') + '</span>' +
-          '</div>' +
-          (meta ? '<div class="fp-hist-meta">' + esc(meta) + '</div>' : '') +
-        '</div>'
+          '<td class="fp-hist-td fp-hist-date">' +
+            (clickable ? '<div class="fp-hist-chip">' + STATS_ICON_SVG + 'Stats</div>' : '') +
+            esc(f.date || '') +
+          '</td>' +
+          '<td class="fp-hist-td fp-hist-opp">' + esc(f.opponent || '') + '</td>' +
+          '<td class="fp-hist-td fp-hist-result ' + resultClass(f.result) + '">' + esc(f.result || '—') + '</td>' +
+          '<td class="fp-hist-td fp-hist-method">' + esc(f.method || '') +
+            (subLine ? '<div class="fp-hist-sub">' + esc(subLine) + '</div>' : '') +
+          '</td>' +
+          '<td class="fp-hist-td fp-hist-event">' + esc(f.event || '') + '</td>' +
+        '</tr>'
       );
-    }).join('') + '</div>';
+    }).join('');
+    return (
+      hint +
+      '<div class="fp-hist-wrap"><table class="fp-hist-table">' +
+        '<thead><tr>' +
+          '<th>Date</th><th>Opponent</th><th style="text-align:center">Result</th><th>Method</th><th>Event</th>' +
+        '</tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table></div>'
+    );
   }
 
   // Ported from populateOddsHistory() in index.html -- date/result are
