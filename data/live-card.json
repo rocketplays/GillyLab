@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-09T00:15:02.512Z",
+ "generatedAt": "2026-09-09T00:30:38.002Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9774,6 +9774,194 @@
       ]
      },
      "capturedAt": "2026-09-09T00:15:02.373Z"
+    }
+   ]
+  },
+  "Martin Kozák": {
+   "history": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Christian Echols",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "1:32",
+     "event": "Dana White's Contender Series: Season 10, Week 5",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Christian Echols",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 63,
+      "sigA": 88,
+      "totL": 74,
+      "totA": 99,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:10",
+      "head": [
+       41,
+       61
+      ],
+      "body": [
+       19,
+       22
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       54,
+       78
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       6,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 62,
+      "totL": 29,
+      "totA": 65,
+      "tdL": 1,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:12",
+      "head": [
+       14,
+       41
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       11,
+       20
+      ],
+      "dist": [
+       26,
+       62
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-09T00:30:37.855Z"
+    }
+   ]
+  },
+  "Christian Echols": {
+   "history": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Martin Kozák",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "1:32",
+     "event": "Dana White's Contender Series: Season 10, Week 5",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Martin Kozák",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 62,
+      "totL": 29,
+      "totA": 65,
+      "tdL": 1,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:12",
+      "head": [
+       14,
+       41
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       11,
+       20
+      ],
+      "dist": [
+       26,
+       62
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 63,
+      "sigA": 88,
+      "totL": 74,
+      "totA": 99,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:10",
+      "head": [
+       41,
+       61
+      ],
+      "body": [
+       19,
+       22
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       54,
+       78
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       6,
+       6
+      ]
+     },
+     "capturedAt": "2026-09-09T00:30:37.855Z"
     }
    ]
   }
