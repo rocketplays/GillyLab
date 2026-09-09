@@ -147,6 +147,11 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   font:inherit; font-size:.88rem; font-weight:600; padding:.6rem .7rem; cursor:pointer;
 }
 .gl-avatar-menu-item:active{ background:var(--surface2); }
+/* Same [hidden]-vs-class-selector specificity issue as .gl-tab/.gl-back-inline
+   elsewhere in this file -- this rule's own display:block beats the UA
+   [hidden] rule, so hiding Sign Out for a logged-out visitor needs this
+   explicit override. */
+.gl-avatar-menu-item[hidden]{ display:none; }
 
 /* ---- bottom tab bar ---- */
 .gl-tabbar{
@@ -811,15 +816,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-lock-it{ font-weight:700; font-size:.78rem; margin-bottom:.15rem; }
 .fp-lock-id{ font-size:.68rem; color:var(--muted); line-height:1.4; }
 @media (max-width:360px){ .fp-lock-grid{ grid-template-columns:1fr; } }
-/* Same boxed treatment as .fp-lock for the "more on the way" list shown to
-   already-subscribed users -- just no CTA button, so no extra bottom margin
-   is needed on the grid. */
-.fp-lock--done .fp-lock-grid{ margin-bottom:0; }
 
-/* ---- Fighter profile: Premium Accolades + Tape Study ---- */
+/* ---- Fighter profile: Premium Fight History / Tape Study / Odds History /
+   Accolades / News -- up to 5 possible tabs (site order, see fighter.js's
+   tabsHTML), only the ones with content for this fighter. Content-sized and
+   horizontally scrollable rather than squeezed to fit, since 5 labels at
+   equal flex width would be unreadable on a phone -- 2 tabs (the common
+   case) just doesn't need to scroll. ---- */
 .fp-extras{ margin-top:1.2rem; }
-.fp-tabs{ display:flex; gap:4px; max-width:min(100%, 320px); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:.8rem; }
-.fp-tab{ flex:1; text-align:center; background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.5rem .6rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
+.fp-tabs{ display:flex; gap:4px; overflow-x:auto; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:.8rem; -webkit-overflow-scrolling:touch; }
+.fp-tab{ flex:0 0 auto; text-align:center; background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.5rem .8rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
 .fp-tab.sel{ background:var(--accent); color:var(--on-accent); }
 
 .fp-acc-list{ display:flex; flex-direction:column; gap:.7rem; }
@@ -836,6 +842,100 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-tape-meta{ font-size:.72rem; color:var(--muted); margin-top:.1rem; }
 .fp-tape-watch{ flex:0 0 auto; background:none; border:1px solid var(--accent); color:var(--accent); font:inherit; font-weight:700; font-size:.72rem; padding:.4rem .8rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
 .fp-tape-none{ flex:0 0 auto; font-size:.72rem; color:var(--muted); }
+
+/* ---- Fighter profile: Fight History (ported from the site's #fh-table) --
+   stacked rows, not a literal table, to stay legible on a phone: opponent +
+   result on one line, date/method/event as a muted line below. A row with
+   an embedded box score (see fighter.js's fightHistoryHTML/wireExtras) gets
+   a small "Stats" chip and opens the native stats modal on tap -- same
+   affordance as the site's accent-stripe + gold-tinted clickable rows,
+   translated to a plain interactive row since a hover stripe means nothing
+   on a touchscreen. ---- */
+.fp-hist-list{ display:flex; flex-direction:column; }
+.fp-hist-row{ padding:.6rem 0; border-top:1px solid var(--border); }
+.fp-hist-row:first-child{ border-top:none; }
+.fp-hist-row--click{ cursor:pointer; }
+.fp-hist-row--click:active{ background:rgba(255,255,255,.03); }
+.fp-hist-top{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+.fp-hist-opp{ font-weight:700; font-size:.84rem; display:inline-flex; align-items:center; gap:.4rem; }
+.fp-hist-chip{ display:inline-flex; align-items:center; padding:1px 7px; border:1px solid var(--accent); border-radius:999px; color:var(--accent); font-size:.6rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; }
+.fp-hist-result{ font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:.9rem; flex:0 0 auto; }
+.fp-hist-result.good{ color:var(--accent); }
+.fp-hist-result.bad{ color:#c76a54; }
+.fp-hist-meta{ font-size:.72rem; color:var(--muted); margin-top:.15rem; }
+
+/* ---- Fighter profile: Odds History (ported from the site's #fo-table) --
+   same result color convention as Fight History; the price itself is green
+   when this fighter closed as the favorite, orange when the underdog,
+   matching the site's oddsColor logic exactly. ---- */
+.fp-odds-list{ display:flex; flex-direction:column; }
+.fp-odds-row{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.6rem 0; border-top:1px solid var(--border); }
+.fp-odds-row:first-child{ border-top:none; }
+.fp-odds-left{ min-width:0; }
+.fp-odds-top{ display:flex; align-items:center; gap:.5rem; }
+.fp-odds-opp{ font-weight:700; font-size:.84rem; }
+.fp-odds-result{ font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:.82rem; }
+.fp-odds-result.good{ color:var(--accent); }
+.fp-odds-result.bad{ color:#c76a54; }
+.fp-odds-meta{ font-size:.72rem; color:var(--muted); margin-top:.15rem; }
+.fp-odds-price{ flex:0 0 auto; font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:.95rem; }
+.fp-odds-price.good{ color:var(--accent); }
+.fp-odds-price.warn{ color:#ffb020; }
+
+/* ---- Fighter profile: News (ported from the site's #fn-list) -- each row
+   is a whole tappable button opening the article externally, same pattern
+   as Tape Study's Watch buttons. ---- */
+.fp-news-list{ display:flex; flex-direction:column; }
+.fp-news-row{
+  display:block; width:100%; text-align:left; background:none; border:none;
+  border-top:1px solid var(--border); padding:.65rem 0; cursor:pointer; font:inherit; color:inherit;
+}
+.fp-news-row:first-child{ border-top:none; }
+.fp-news-row:active{ background:rgba(255,255,255,.03); }
+.fp-news-flag{
+  display:inline-flex; align-items:center; padding:1px 7px; margin-bottom:.3rem;
+  font-size:.6rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+  color:#ffb020; background:rgba(255,176,32,.12); border-radius:5px;
+}
+.fp-news-meta{ font-size:.68rem; color:var(--muted); margin-bottom:.2rem; }
+.fp-news-title{ font-weight:600; font-size:.84rem; line-height:1.35; }
+
+/* ---- Fighter profile: box-score modal (ported from the site's
+   openFightStats(), see fighter.js's statsModalBodyHTML/fsRow/fsBar) --
+   centered card over a dimmed backdrop, same overlay+box shape as
+   matchup.js's own Deep Dive modal but its own lighter CSS rather than the
+   site's borrowed #mh-box stylesheet, since box scores don't need tabs or a
+   fights filter. ---- */
+.fp-modal-overlay{ position:fixed; inset:0; z-index:30; background:rgba(0,0,0,.6); }
+.fp-modal-overlay[hidden]{ display:none; }
+.fp-modal-box{
+  position:fixed; z-index:31; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(92vw, 420px); max-height:80vh; overflow-y:auto;
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:1.1rem 1.1rem .9rem; box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.fp-modal-box[hidden]{ display:none; }
+.fp-modal-close{
+  position:absolute; top:.5rem; right:.6rem; background:none; border:none;
+  color:var(--muted); font-size:1.4rem; line-height:1; padding:.3rem .5rem; cursor:pointer;
+}
+.fp-stat-hd{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding-right:1.6rem; }
+.fp-stat-hd-name{ font-weight:800; font-size:.88rem; }
+.fp-stat-hd-name.r{ text-align:right; }
+.fp-stat-sub{ text-align:center; margin:.3rem 0 .8rem; font-size:.7rem; color:var(--muted); }
+.fp-stat-result{ color:var(--accent); font-weight:700; font-size:.74rem; margin-top:.2rem; }
+.fp-stat-row{ padding:.4rem 0; border-top:1px solid var(--border); }
+.fp-stat-row:first-of-type{ border-top:none; }
+.fp-stat-row-top{ display:flex; align-items:baseline; justify-content:space-between; gap:.6rem; }
+.fp-stat-v{ font-weight:700; min-width:56px; }
+.fp-stat-v.l{ text-align:left; }
+.fp-stat-v.r{ text-align:right; }
+.fp-stat-pct{ color:var(--muted); font-size:.7rem; font-weight:600; }
+.fp-stat-lbl{ font-size:.62rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.fp-stat-bar{ display:flex; height:5px; border-radius:3px; overflow:hidden; background:rgba(255,255,255,.08); margin-top:4px; }
+.fp-stat-bar-l, .fp-stat-bar-r{ height:100%; background:rgba(255,255,255,.18); }
+.fp-stat-bar-l.lead, .fp-stat-bar-r.lead{ background:var(--accent); }
+.fp-stat-subhead{ margin-top:.7rem; margin-bottom:.1rem; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
 
 /* ---- Fight Simulator ---- */
 .sim-picker{ margin-bottom:1rem; }

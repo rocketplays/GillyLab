@@ -842,6 +842,25 @@ async function loadPickemScore(env, url) {
 async function loadAssetJson(env, url, p) {
   try { const r = await env.ASSETS.fetch(new Request(new URL(p, url))); if (!r.ok) return null; return await r.json(); } catch { return null; }
 }
+// Ported from fightStatsFor()/_fsParse() in index.html — exact date match,
+// else the closest record within ±36h (timezone drift). Used only by
+// /api/app/fighter-extras to attach a box score to a fight-history row at
+// request time — see that route's own comment for why this isn't baked into
+// worker/fighter-extras.js at build time instead.
+function fightStatsFor(arr, date) {
+  if (!arr || !arr.length) return null;
+  for (const rec of arr) { if (rec.date === date) return rec; }
+  const dt = Date.parse(date);
+  if (isNaN(dt)) return null;
+  let best = null, bestDiff = Infinity;
+  for (const rec of arr) {
+    const d2 = Date.parse(rec.date);
+    if (isNaN(d2)) continue;
+    const diff = Math.abs(d2 - dt);
+    if (diff <= 36 * 3600 * 1000 && diff < bestDiff) { bestDiff = diff; best = rec; }
+  }
+  return best;
+}
 
 /* ─────────────────────────── bet & clv tracker ──────────────────────────────
    Bets ride in the PICKS namespace under a bt: prefix, so there's no new KV
@@ -3033,16 +3052,32 @@ export default {
         if (!fighter) return json({ error: "not found" }, 404, cors);
         return json({ fighter }, 200, cors);
       }
-      // Career Accolades + Tape Study for a fighter -- premium-only, unlike
-      // /api/app/fighter above. This is the ACCOLADES/TAPE_STUDY data that on
-      // the website only ever reaches a browser inside the paywall-gated
-      // index.html itself; /api/app/* routes don't inherit that static-file
-      // gate (see /api/app/fighter's own "no session required" comment), so
-      // this route needs its own explicit readSession + subscribed check --
-      // the same shape as betsSession(), just inlined since this is the only
-      // caller. Bundled at build time by scripts/gen-app-fighter-extras.cjs
-      // (see worker/fighter-extras.js) rather than parsed from index.html
-      // per request, same tradeoff as matchupFree/landingData.
+      // Career Accolades, Tape Study, Fight History, Odds History and News
+      // for a fighter -- premium-only, unlike /api/app/fighter above. This is
+      // data that on the website only ever reaches a browser inside the
+      // paywall-gated index.html itself; /api/app/* routes don't inherit that
+      // static-file gate (see /api/app/fighter's own "no session required"
+      // comment), so this route needs its own explicit readSession +
+      // subscribed check -- the same shape as betsSession(), just inlined
+      // since this is the only caller. accolades/tapeStudy/fightHistory/
+      // oddsHistory/news are bundled at build time by
+      // scripts/gen-app-fighter-extras.cjs (see worker/fighter-extras.js)
+      // rather than parsed from index.html per request, same tradeoff as
+      // matchupFree/landingData.
+      //
+      // Box scores are the one exception, deliberately NOT in that bundle --
+      // see gen-app-fighter-extras.cjs's header comment for why baking them
+      // in blew the bundle up to 21MB (every fight has two sides, so nearly
+      // the whole ~8MB data/fight-stats.json comes back in regardless of
+      // "just this fighter's bouts" scoping). Instead, whenever this fighter
+      // has a fightHistory, fetch fight-stats.json through the ASSETS binding
+      // (loadAssetJson) right here -- same lazy, per-request pattern already
+      // used below for fighter-lite.json -- and attach a `stats:{f,o}` box
+      // score to whichever rows have one, one request at a time, never
+      // bundled statically. New arrays/objects throughout (never mutating
+      // the shared imported fighterExtras module, which is a long-lived
+      // singleton in this isolate and would otherwise leak stats from one
+      // request's slug into another's).
       if (path === "/api/app/fighter-extras" && request.method === "GET") {
         const cors = appCorsHeaders(request);
         const s = await readSession(request, env);
@@ -3051,7 +3086,18 @@ export default {
         if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
         const slug = (url.searchParams.get("slug") || "").trim().toLowerCase();
         if (!slug) return json({ error: "missing slug" }, 400, cors);
-        const extras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || { accolades: [], tapeStudy: [] };
+        const baseExtras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || {};
+        const extras = Object.assign({}, baseExtras);
+        if (extras.fightHistory && extras.fightHistory.length) {
+          const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+          const name = lite && lite.bySlug && lite.bySlug[slug] && lite.bySlug[slug].name;
+          const fightStats = name ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
+          const arr = fightStats && name ? fightStats[name] : null;
+          extras.fightHistory = extras.fightHistory.map(function (row) {
+            const rec = arr ? fightStatsFor(arr, row.date) : null;
+            return rec ? Object.assign({}, row, { stats: { f: rec.f, o: rec.o } }) : row;
+          });
+        }
         return json(extras, 200, cors);
       }
       // Fight Simulator -- premium-only, same gate shape as fighter-extras

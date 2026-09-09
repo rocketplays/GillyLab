@@ -216,19 +216,21 @@ window.GL_ROUTER.register('home', {
     // Order: Card, Pick'em (about that same card), Climb, Rankings, Roster --
     // each its own top-level category with its own small preview, so Home
     // reads as a dashboard over the rest of the app rather than an arbitrary
-    // list.
-    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData){
+    // list. The Go Premium pitch at the bottom is for non-subscribers only --
+    // a premium member has already bought in, so it's just noise for them.
+    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed){
       container.innerHTML =
         mainEventSection(matchupCard) +
         (pickemCard ? pickemSection(pickemCard, pickemMine) : '') +
         climbSection() +
         moversSection(rankingsData) +
         rosterSection(rosterData) +
-        '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
-          '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
-          '<p style="margin-bottom:.8rem;color:var(--muted)">Full fighter database, live odds, the simulator, and more.</p>' +
-          '<button type="button" class="gl-btn gl-btn-outline" data-goto="premium">See what’s included</button>' +
-        '</div>';
+        (subscribed ? '' :
+          '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
+            '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
+            '<p style="margin-bottom:.8rem;color:var(--muted)">Full fighter database, live odds, the simulator, and more.</p>' +
+            '<button type="button" class="gl-btn gl-btn-outline" data-goto="premium">See what’s included</button>' +
+          '</div>');
       wire();
     }
 
@@ -239,13 +241,15 @@ window.GL_ROUTER.register('home', {
         window.GL_API.rankings().catch(function(){ return null; }),
         window.GL_API.matchup().catch(function(){ return null; }),
         window.GL_API.roster().catch(function(){ return null; }),
+        loggedIn ? window.GL_API.account().catch(function(){ return null; }) : Promise.resolve(null),
       ]).then(function(results){
-        var cardRes = results[0], rankingsData = results[1], matchupRes = results[2], rosterData = results[3];
+        var cardRes = results[0], rankingsData = results[1], matchupRes = results[2], rosterData = results[3], acct = results[4];
         var card = cardRes && cardRes.card;
         var matchupCard = matchupRes && matchupRes.card;
-        if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData);
+        var subscribed = !!(acct && acct.subscribed);
+        if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData, subscribed);
         return window.GL_API.pickemMine(card.slug).catch(function(){ return null; }).then(function(mine){
-          render(card, mine, rankingsData, matchupCard, rosterData);
+          render(card, mine, rankingsData, matchupCard, rosterData, subscribed);
         });
       });
     });

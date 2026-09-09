@@ -12,6 +12,13 @@ window.GL_AVATAR_MENU = (function(){
   function open(){
     if (isOpen) return;
     isOpen = true;
+    // Sign Out only makes sense for a signed-in visitor -- a logged-out one
+    // browsing the free section sees just Account (which shows its own
+    // sign-in form) and Settings. Checked fresh on each open rather than
+    // cached, since login/logout can happen without the menu itself
+    // reopening in between.
+    var signoutItem = menu.querySelector('[data-avatar-action="signout"]');
+    if (signoutItem) signoutItem.hidden = !window.GL_AUTH.isLoggedIn();
     menu.hidden = false;
     btn.setAttribute('aria-expanded', 'true');
     // Deferred so the click that opened the menu doesn't also trigger the

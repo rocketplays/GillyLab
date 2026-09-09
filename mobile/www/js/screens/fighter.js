@@ -69,10 +69,12 @@ window.GL_FIGHTER = (function(){
     return legend + body;
   }
 
-  // Full 8-item list shown to logged-out/free users, with a "Go Premium" CTA.
-  // Accolades and Tape Study are pulled out of this list (and rendered for
-  // real instead) once a subscribed user's extras have loaded -- see
-  // comingSoonHTML() for what's shown to premium users in their place.
+  // Full 8-item marketing list shown to logged-out/free users, with a "Go
+  // Premium" CTA. A subscribed user never sees this -- they get the real
+  // tabbed content instead (fightHistoryHTML/tapeStudyHTML/oddsHistoryHTML/
+  // accoladesHTML/newsHTML via tabsHTML()); the Fight Simulator entry here
+  // stays purely descriptive copy since that tool lives in the premium
+  // "More" tab-bar sheet, not on this profile.
   var ALL_LOCKED_ITEMS = [
     ['Fight simulator', 'Run this fighter against anyone on the roster.'],
     ['Full fight history', 'Every pro bout — result, method, round &amp; opponent.'],
@@ -97,36 +99,6 @@ window.GL_FIGHTER = (function(){
         '<div class="gl-muted" style="margin:.2rem 0 .8rem">Everything GillyLab Premium unlocks:</div>' +
         '<div class="fp-lock-grid">' + lockGridHTML(ALL_LOCKED_ITEMS) + '</div>' +
         '<button type="button" class="gl-btn gl-btn-primary" data-goto="premium">Go Premium for the full profile &amp; tools</button>' +
-      '</div>'
-    );
-  }
-
-  // Shown to already-subscribed users for the tools that aren't built into
-  // the app yet -- same items, minus whichever this screen already delivers
-  // for real, and no "Go Premium" button since they already are.
-  function comingSoonHTML(builtLabels){
-    var remaining = ALL_LOCKED_ITEMS.filter(function(it){ return builtLabels.indexOf(it[0]) === -1; });
-    if (!remaining.length) return '';
-    return (
-      '<div class="fp-lock fp-lock--done">' +
-        '<div class="fp-lock-h"><span class="fp-lock-ico">🛠️</span><div class="fp-lock-t">More tools on the way</div></div>' +
-        '<div class="gl-muted" style="margin:.2rem 0 .8rem">Still coming to the app (already on the website):</div>' +
-        '<div class="fp-lock-grid">' + lockGridHTML(remaining) + '</div>' +
-      '</div>'
-    );
-  }
-
-  // Unlike Accolades/Tape Study (rendered inline from fetched data) or the
-  // remaining locked items (a plain, non-interactive grid), the Simulator is
-  // a real built feature that lives on its OWN route -- see
-  // screens/simulator.js -- so it gets its own small CTA card with a real
-  // button instead of a comingSoonHTML tile.
-  function simulatorCtaHTML(name){
-    return (
-      '<div class="fp-lock fp-lock--done">' +
-        '<div class="fp-lock-h"><span class="fp-lock-ico">🥊</span><div class="fp-lock-t">Fight Simulator</div></div>' +
-        '<p class="gl-muted" style="margin:.2rem 0 .8rem">See how ' + esc(name) + ' projects against anyone on the roster.</p>' +
-        '<button type="button" class="gl-btn gl-btn-primary" data-goto="simulator" data-sim-name="' + esc(name) + '">Run the Simulator</button>' +
       '</div>'
     );
   }
@@ -175,38 +147,229 @@ window.GL_FIGHTER = (function(){
     return '<div class="fp-tape-list">' + html + '</div>';
   }
 
-  // The Accolades/Tape Study switcher only appears once a subscribed user's
-  // extras have loaded and at least one of the two has content -- a fighter
-  // with just one of them skips the tab bar entirely and shows that one
-  // section under its own heading instead of a pointless single-tab switcher.
-  function extrasHTML(extras){
-    var hasAcc = extras && extras.accolades && extras.accolades.length;
-    var hasTape = extras && extras.tapeStudy && extras.tapeStudy.length;
-    if (!hasAcc && !hasTape) return '';
-    if (hasAcc && hasTape){
+  // Result-colored text, same green-W/red-L/dim-else convention the site
+  // uses across Fight History and Odds History.
+  function resultClass(r){ return r === 'W' ? 'good' : (r === 'L' ? 'bad' : ''); }
+
+  // Ported from populateFightHistory() in index.html, minus the box-score
+  // click handling (that's DOM state, not markup -- see wireExtras). A row
+  // with an embedded `stats` object (attached server-side by
+  // /api/app/fighter-extras -- see worker/index.js) gets a "Stats" chip and
+  // is clickable straight to openStatsModal(); everything else is a plain
+  // row, same as a non-UFC bout with no ESPN box score on the site.
+  function fightHistoryHTML(list){
+    if (!list || !list.length) return '<p class="gl-muted" style="margin:.4rem 0 0">No fight history yet.</p>';
+    return '<div class="fp-hist-list">' + list.map(function(f, i){
+      var subBits = [f.method, [f.round ? 'R' + f.round : '', f.time || ''].filter(Boolean).join(' · ')].filter(Boolean).join(' — ');
+      var meta = [f.date, [subBits, f.event].filter(Boolean).join(' · ')].filter(Boolean).join(' · ');
+      var clickable = !!f.stats;
       return (
-        '<div class="fp-extras">' +
-          '<div class="fp-tabs">' +
-            '<button type="button" class="fp-tab sel" data-fptab="acc">Accolades</button>' +
-            '<button type="button" class="fp-tab" data-fptab="tape">Tape Study</button>' +
+        '<div class="fp-hist-row' + (clickable ? ' fp-hist-row--click' : '') + '"' +
+          (clickable ? ' data-hist-i="' + i + '" role="button" tabindex="0"' : '') + '>' +
+          '<div class="fp-hist-top">' +
+            '<span class="fp-hist-opp">vs ' + esc(f.opponent || '') + (clickable ? '<span class="fp-hist-chip">Stats</span>' : '') + '</span>' +
+            '<span class="fp-hist-result ' + resultClass(f.result) + '">' + esc(f.result || '—') + '</span>' +
           '</div>' +
-          '<div class="fp-tabpanel" data-fppanel="acc">' + accoladesHTML(extras.accolades) + '</div>' +
-          '<div class="fp-tabpanel" data-fppanel="tape" hidden>' + tapeStudyHTML(extras.tapeStudy) + '</div>' +
+          (meta ? '<div class="fp-hist-meta">' + esc(meta) + '</div>' : '') +
         '</div>'
       );
+    }).join('') + '</div>';
+  }
+
+  // Ported from populateOddsHistory() in index.html -- date/result are
+  // already cross-referenced from Fight History server-side (see
+  // gen-app-fighter-extras.cjs's buildOddsHistory), so this is pure display.
+  function oddsHistoryHTML(list){
+    if (!list || !list.length) return '<p class="gl-muted" style="margin:.4rem 0 0">No odds history yet.</p>';
+    return '<div class="fp-odds-list">' + list.map(function(h){
+      var isNum = typeof h.odds === 'number';
+      var fav = isNum && h.odds < 0;
+      var oddsDisplay = isNum ? (h.odds > 0 ? '+' + h.odds : String(h.odds)) : '—';
+      return (
+        '<div class="fp-odds-row">' +
+          '<div class="fp-odds-left">' +
+            '<div class="fp-odds-top">' +
+              '<span class="fp-odds-opp">vs ' + esc(h.opponent || '') + '</span>' +
+              '<span class="fp-odds-result ' + resultClass(h.result) + '">' + esc(h.result || '—') + '</span>' +
+            '</div>' +
+            (h.date ? '<div class="fp-odds-meta">' + esc(h.date) + '</div>' : '') +
+          '</div>' +
+          '<div class="fp-odds-price ' + (fav ? 'good' : 'warn') + '">' + esc(oddsDisplay) + '</div>' +
+        '</div>'
+      );
+    }).join('') + '</div>';
+  }
+
+  // Ported from populateFighterNews() in index.html -- each item is a whole
+  // tappable row opening the article externally (rather than navigating the
+  // app's own WebView away from itself), same reasoning as Tape Study's
+  // Watch buttons. An item with no url falls back to the site's own Google
+  // News search URL rather than being non-interactive.
+  function newsHTML(news){
+    var items = news && news.items;
+    if (!items || !items.length) return '<p class="gl-muted" style="margin:.4rem 0 0">No recent news.</p>';
+    return '<div class="fp-news-list">' + items.map(function(it){
+      var meta = [it.source, it.date].filter(Boolean).join(' · ');
+      var url = it.url || ('https://news.google.com/search?q=' + encodeURIComponent('"' + (it.title || '') + '"'));
+      return (
+        '<button type="button" class="fp-news-row" data-watch="' + esc(url) + '">' +
+          (it.injury ? '<span class="fp-news-flag">⚠ Injury/Card news</span>' : '') +
+          (meta ? '<div class="fp-news-meta">' + esc(meta) + '</div>' : '') +
+          '<div class="fp-news-title">' + esc(it.title || '') + '</div>' +
+        '</button>'
+      );
+    }).join('') + '</div>';
+  }
+
+  // The full site order is Fight History / Tape Study / Odds History /
+  // Accolades / News (index.html's openFighter()) -- only tabs with actual
+  // content for this fighter appear, same "no tab" vs. "empty tab" rule
+  // gen-app-fighter-extras.cjs's build-time omission already follows. A
+  // fighter with just one non-empty section skips the tab switcher entirely
+  // (a pointless single-tab bar) and shows that section under its own
+  // heading instead.
+  function tabsHTML(extras){
+    var tabs = [];
+    if (extras.fightHistory && extras.fightHistory.length) tabs.push({ key: 'history', label: 'Fight History', body: fightHistoryHTML(extras.fightHistory) });
+    if (extras.tapeStudy && extras.tapeStudy.length) tabs.push({ key: 'tape', label: 'Tape Study', body: tapeStudyHTML(extras.tapeStudy) });
+    if (extras.oddsHistory && extras.oddsHistory.length) tabs.push({ key: 'odds', label: 'Odds History', body: oddsHistoryHTML(extras.oddsHistory) });
+    if (extras.accolades && extras.accolades.length) tabs.push({ key: 'accolades', label: 'Accolades', body: accoladesHTML(extras.accolades) });
+    if (extras.news && extras.news.items && extras.news.items.length) tabs.push({ key: 'news', label: 'News', body: newsHTML(extras.news) });
+    if (!tabs.length) return '';
+    if (tabs.length === 1){
+      return '<div class="fp-extras"><div class="rk-panel-title">' + tabs[0].label + '</div>' + tabs[0].body + '</div>';
     }
-    var only = hasAcc
-      ? { label: 'Accolades', body: accoladesHTML(extras.accolades) }
-      : { label: 'Tape Study', body: tapeStudyHTML(extras.tapeStudy) };
     return (
       '<div class="fp-extras">' +
-        '<div class="rk-panel-title">' + only.label + '</div>' +
-        only.body +
+        '<div class="fp-tabs">' + tabs.map(function(t, i){
+          return '<button type="button" class="fp-tab' + (i === 0 ? ' sel' : '') + '" data-fptab="' + t.key + '">' + esc(t.label) + '</button>';
+        }).join('') + '</div>' +
+        tabs.map(function(t, i){
+          return '<div class="fp-tabpanel" data-fppanel="' + t.key + '"' + (i === 0 ? '' : ' hidden') + '>' + t.body + '</div>';
+        }).join('') +
       '</div>'
     );
   }
 
-  function wireExtras(container){
+  // ── box-score modal, ported from openFightStats()/_fsRow()/_fsBar() in
+  // index.html -- a native modal (not the site's shared #modal-overlay/
+  // #modal-box, which belongs to the site's own injected stylesheet), opened
+  // straight from a clickable Fight History row (see wireExtras). Module-
+  // level state (activeContainer/modalScrollY) rather than closed over a
+  // single load() call, same reason matchup.js's own hub modal keeps its
+  // state at the screen-module level -- this modal only ever needs to talk
+  // to whichever profile is currently on screen. ──────────────────────────
+  var activeContainer = null, modalScrollY = 0;
+
+  function fsPct(l, a){ return a > 0 ? Math.round(100 * l / a) : 0; }
+  function fsSecs(t){ var m = String(t || '').match(/(\d+):(\d+)/); return m ? (+m[1] * 60 + +m[2]) : 0; }
+  function fsBar(lv, rv){
+    var tot = lv + rv;
+    if (tot <= 0) return '';
+    var lp = Math.max(8, Math.min(92, Math.round(100 * lv / tot)));
+    if (lv === rv) lp = 50;
+    return (
+      '<div class="fp-stat-bar">' +
+        '<div class="fp-stat-bar-l' + (lv >= rv ? ' lead' : '') + '" style="width:' + lp + '%"></div>' +
+        '<div class="fp-stat-bar-r' + (rv >= lv ? ' lead' : '') + '" style="width:' + (100 - lp) + '%"></div>' +
+      '</div>'
+    );
+  }
+  function fsRow(label, lhtml, rhtml, lv, rv, bar){
+    return (
+      '<div class="fp-stat-row">' +
+        '<div class="fp-stat-row-top">' +
+          '<span class="fp-stat-v l">' + lhtml + '</span>' +
+          '<span class="fp-stat-lbl">' + esc(label) + '</span>' +
+          '<span class="fp-stat-v r">' + rhtml + '</span>' +
+        '</div>' +
+        (bar ? fsBar(lv, rv) : '') +
+      '</div>'
+    );
+  }
+  function statsModalBodyHTML(fighterName, row){
+    var f = row.stats.f, o = row.stats.o;
+    function sig(s){ return s.sigL + '/' + s.sigA + ' <span class="fp-stat-pct">(' + fsPct(s.sigL, s.sigA) + '%)</span>'; }
+    var mfull = String(row.method || '').trim();
+    var resultLine = '';
+    if (row.result === 'W' || row.result === 'L'){
+      var winner = row.result === 'W' ? fighterName : row.opponent;
+      resultLine = winner + ' by ' + (mfull || 'decision') + (row.round ? ' R' + row.round : '') + (row.time ? ' - ' + row.time : '');
+    } else if (row.result === 'D'){
+      resultLine = 'Draw' + (row.round ? ' R' + row.round : '') + (row.time ? ' - ' + row.time : '');
+    } else if (row.result === 'NC'){
+      resultLine = 'No Contest';
+    }
+    return (
+      '<div class="fp-stat-hd">' +
+        '<span class="fp-stat-hd-name">' + esc(fighterName) + '</span>' +
+        '<span class="fp-stat-hd-name r">' + esc(row.opponent || '') + '</span>' +
+      '</div>' +
+      '<div class="fp-stat-sub">' +
+        '<span>' + esc(row.date || '') + '</span>' +
+        (resultLine ? '<div class="fp-stat-result">' + esc(resultLine) + '</div>' : '') +
+      '</div>' +
+      fsRow('Knockdowns', f.kd, o.kd, f.kd, o.kd, (f.kd + o.kd) > 0) +
+      fsRow('Sig. Strikes', sig(f), sig(o), f.sigL, o.sigL, true) +
+      fsRow('Total Strikes', f.totL + '/' + f.totA, o.totL + '/' + o.totA, f.totL, o.totL, true) +
+      fsRow('Takedowns', f.tdL + '/' + f.tdA, o.tdL + '/' + o.tdA, f.tdL, o.tdL, (f.tdA + o.tdA) > 0) +
+      fsRow('Sub. Att', f.sub, o.sub, f.sub, o.sub, (f.sub + o.sub) > 0) +
+      fsRow('Reversals', f.rev, o.rev, f.rev, o.rev, (f.rev + o.rev) > 0) +
+      fsRow('Control', esc(f.ctrl || '0:00'), esc(o.ctrl || '0:00'), fsSecs(f.ctrl), fsSecs(o.ctrl), (fsSecs(f.ctrl) + fsSecs(o.ctrl)) > 0) +
+      '<div class="fp-stat-subhead">Sig. strikes by target</div>' +
+      fsRow('Head', f.head[0] + '/' + f.head[1], o.head[0] + '/' + o.head[1], f.head[0], o.head[0], true) +
+      fsRow('Body', f.body[0] + '/' + f.body[1], o.body[0] + '/' + o.body[1], f.body[0], o.body[0], true) +
+      fsRow('Leg', f.leg[0] + '/' + f.leg[1], o.leg[0] + '/' + o.leg[1], f.leg[0], o.leg[0], true) +
+      '<div class="fp-stat-subhead">Sig. strikes by position</div>' +
+      fsRow('Distance', f.dist[0] + '/' + f.dist[1], o.dist[0] + '/' + o.dist[1], f.dist[0], o.dist[0], true) +
+      fsRow('Clinch', f.clinch[0] + '/' + f.clinch[1], o.clinch[0] + '/' + o.clinch[1], f.clinch[0], o.clinch[0], (f.clinch[1] + o.clinch[1]) > 0) +
+      fsRow('Ground', f.ground[0] + '/' + f.ground[1], o.ground[0] + '/' + o.ground[1], f.ground[0], o.ground[0], (f.ground[1] + o.ground[1]) > 0)
+    );
+  }
+  function statsModalHTML(){
+    return (
+      '<div id="fpStatsOverlay" class="fp-modal-overlay" hidden></div>' +
+      '<div id="fpStatsBox" class="fp-modal-box" hidden role="dialog" aria-modal="true" aria-label="Fight stats">' +
+        '<button type="button" class="fp-modal-close" id="fpStatsClose" aria-label="Close">&times;</button>' +
+        '<div id="fpStatsBody"></div>' +
+      '</div>'
+    );
+  }
+  // Same iOS-Safari-ignores-body-overflow fix used throughout this app
+  // (more-sheet.js/matchup.js) -- pin #appScroll itself, not <body>.
+  function lockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    modalScrollY = scroller.scrollTop || 0;
+    scroller.style.overflow = 'hidden';
+  }
+  function unlockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    scroller.style.overflow = '';
+    scroller.scrollTop = modalScrollY;
+  }
+  function openStatsModal(fighterName, row){
+    if (!activeContainer || !row || !row.stats) return;
+    var overlay = activeContainer.querySelector('#fpStatsOverlay');
+    var box = activeContainer.querySelector('#fpStatsBox');
+    var body = activeContainer.querySelector('#fpStatsBody');
+    if (!overlay || !box || !body) return;
+    body.innerHTML = statsModalBodyHTML(fighterName, row);
+    overlay.hidden = false;
+    box.hidden = false;
+    lockScroll();
+  }
+  function closeStatsModal(){
+    if (!activeContainer) return;
+    var overlay = activeContainer.querySelector('#fpStatsOverlay');
+    var box = activeContainer.querySelector('#fpStatsBox');
+    if (overlay) overlay.hidden = true;
+    if (box) box.hidden = true;
+    unlockScroll();
+  }
+
+  function wireExtras(container, fighterName, extras){
     var tabs = container.querySelectorAll('[data-fptab]');
     tabs.forEach(function(btn){
       btn.addEventListener('click', function(){
@@ -224,30 +387,40 @@ window.GL_FIGHTER = (function(){
         window.GL_NATIVE.openExternal(btn.getAttribute('data-watch'));
       });
     });
+    var fightHistory = (extras && extras.fightHistory) || [];
+    container.querySelectorAll('[data-hist-i]').forEach(function(row){
+      row.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        var f = fightHistory[+row.getAttribute('data-hist-i')];
+        if (f) openStatsModal(fighterName, f);
+      });
+    });
+    var overlay = container.querySelector('#fpStatsOverlay');
+    var closeBtn = container.querySelector('#fpStatsClose');
+    if (overlay) overlay.addEventListener('click', function(){ window.GL_NATIVE.tap(); closeStatsModal(); });
+    if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); closeStatsModal(); });
   }
 
   // Free-flowing, like the website's own /fighter/<slug> page (.fp-head,
   // .fsx-bio, .fsx-group) -- avatar/name header and stat bars are plain
-  // content with thin divider lines, not boxed cards. Only the Premium
-  // lock/coming-soon block at the end is ever boxed on the site.
+  // content with thin divider lines, not boxed cards. The Premium lock
+  // block for free/logged-out viewers is the only thing that's ever boxed,
+  // same as the site's own paywall treatment.
   //
   // `subscribed` picks the tail: false gets the full 8-item locked list with
-  // a "Go Premium" CTA; true gets real Accolades/Tape Study content (`extras`,
-  // possibly with empty arrays for this particular fighter, or null if that
-  // fetch itself failed -- either way treated as "nothing to show yet", NOT
-  // as "not premium") plus a shorter "more on the way" list for whatever this
-  // screen doesn't build yet. Keeping this a separate flag from `extras`
-  // matters: a subscribed viewer whose extras fetch hiccups on a bad
-  // connection must never see the "Go Premium" upsell they've already paid
-  // for -- see load()'s comment on why account() and fighterExtras() are
-  // fetched/caught separately.
+  // a "Go Premium" CTA; true gets the real tabbed Fight History/Tape Study/
+  // Odds History/Accolades/News content (`extras`, possibly with nothing at
+  // all for this particular fighter, or null if that fetch itself failed --
+  // either way treated as "nothing to show yet", NOT as "not premium").
+  // Keeping this a separate flag from `extras` matters: a subscribed viewer
+  // whose extras fetch hiccups on a bad connection must never see the "Go
+  // Premium" upsell they've already paid for -- see load()'s comment on why
+  // account() and fighterExtras() are fetched/caught separately.
   function renderHTML(f, subscribed, extras){
     f = f || {};
     var rankLabel = f.rank && f.rank !== 'NR' ? (/C/.test(f.rank) ? 'Champion' : f.rank) : '';
     var metaBits = [f.record, f.division, f.country].filter(Boolean).join(' · ');
-    var tail = subscribed
-      ? (extrasHTML(extras || {}) + simulatorCtaHTML(f.name) + comingSoonHTML(['Accolades', 'Tape study', 'Fight simulator']))
-      : lockedHTML();
+    var tail = subscribed ? (tabsHTML(extras || {}) + statsModalHTML()) : lockedHTML();
     return (
       '<div class="fp-head">' +
         avatarHtml(f) +
@@ -290,6 +463,7 @@ window.GL_FIGHTER = (function(){
   // endpoint that will just 401/403.
   function load(container, slug){
     var mySeq = ++loadSeq;
+    activeContainer = container;
     container.innerHTML = '<p class="gl-muted">Loading fighter…</p>';
     Promise.all([
       window.GL_API.fighter(slug),
@@ -309,12 +483,7 @@ window.GL_FIGHTER = (function(){
           window.GL_NATIVE.tap();
           window.GL_ROUTER.go('premium');
         });
-        var goSim = container.querySelector('[data-goto="simulator"]');
-        if (goSim) goSim.addEventListener('click', function(){
-          window.GL_NATIVE.tap();
-          window.GL_ROUTER.go('simulator', { a: goSim.getAttribute('data-sim-name') });
-        });
-        if (subscribed) wireExtras(container);
+        if (subscribed) wireExtras(container, fighterRes.fighter && fighterRes.fighter.name, extras || {});
       });
     }).catch(function(){
       if (mySeq !== loadSeq) return;
