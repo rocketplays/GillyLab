@@ -172,6 +172,59 @@ window.GL_ROUTER.register('home', {
       );
     }
 
+    // Premium-only teaser cards for the three tools that got their own
+    // direct tabs (see router.js's PREMIUM_TABS) but have no data pipeline
+    // built yet -- odds.js/bettracker.js/tapestudy.js are still "Coming
+    // soon" stub screens. Simulator isn't previewed here since it already
+    // has its own "Simulate Matchup" button on every fight on the Events
+    // tab -- a Home teaser for it would just be a second, redundant
+    // entry point. Copy below mirrors the real premium website's own
+    // headers/blurbs for these three pages verbatim (see index.html's
+    // #page-odds/#page-bets/#page-tape-study) so the preview describes
+    // what's actually coming, not a made-up placeholder pitch.
+    function toolPreviewSection(title, blurb, cta, route, extra){
+      return (
+        '<div class="gl-sec">' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">' + esc(title) + '</h2></div>' +
+          '<p style="margin:.4rem 0 0">' + blurb + '</p>' +
+          (extra ? '<p class="gl-muted" style="margin:.3rem 0 0;font-size:.78rem">' + extra + '</p>' : '') +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="' + route + '">' + esc(cta) + '</button>' +
+        '</div>'
+      );
+    }
+    // Site header: "Betting Odds" / "Odds across all major sportsbooks ·
+    // Updated daily" (index.html's #page-odds).
+    function oddsPreviewSection(){
+      return toolPreviewSection(
+        'Betting Odds',
+        'Moneylines and prop markets across every major sportsbook for every fight on the card.',
+        'View Odds', 'odds'
+      );
+    }
+    // Site header: "Bet & CLV Tracker" / "Input your bets to track CLV,
+    // ROI, units and record." plus its exact disclaimer (index.html's
+    // #page-bets) -- carried over here since it's a real legal note, not
+    // just marketing copy.
+    function bettrackerPreviewSection(){
+      return toolPreviewSection(
+        'Bet & CLV Tracker',
+        'Log your bets to track closing-line value, ROI, units and your record.',
+        'Open Bet Tracker', 'bettracker',
+        'A personal record-keeping tool only — GillyLab doesn’t accept wagers, handle money, or offer betting advice.'
+      );
+    }
+    // Site header: "Tape Study" / "Tape index for upcoming events" --
+    // organized by event then fighter (index.html's #page-tape-study),
+    // separate from the tape study tab already inside a fighter's own
+    // profile.
+    function tapestudyPreviewSection(){
+      return toolPreviewSection(
+        'Tape Study',
+        'A tape index for every upcoming card — browse by event, then by fighter.',
+        'Browse Tape Study', 'tapestudy'
+      );
+    }
+
     function climbSection(){
       var bests = null;
       try { var raw = localStorage.getItem('gl_climb_bests_v1'); if (raw) bests = JSON.parse(raw); } catch(e){}
@@ -213,24 +266,47 @@ window.GL_ROUTER.register('home', {
       });
     }
 
-    // Order: Card, Pick'em (about that same card), Climb, Rankings, Roster --
-    // each its own top-level category with its own small preview, so Home
-    // reads as a dashboard over the rest of the app rather than an arbitrary
-    // list. The Go Premium pitch at the bottom is for non-subscribers only --
-    // a premium member has already bought in, so it's just noise for them.
+    // Free order: Card, Pick'em (about that same card), Climb, Rankings,
+    // Roster, then the Go Premium pitch -- each its own top-level category
+    // with its own small preview, so Home reads as a dashboard over the
+    // rest of the app rather than an arbitrary list.
+    //
+    // Premium order differs: Card, then teasers for the three new
+    // premium-only tools that don't have their own Home real estate yet
+    // (Odds/Bet Tracker/Tape Study -- see the toolPreviewSection functions
+    // above), then Rankings, Roster, and Pick'em/Climb pushed down to the
+    // bottom two slots. A premium member already knows Pick'em and Climb
+    // are there (they're direct tabs' worth of familiar), so the new tools
+    // get the prominent spots up top instead; the Go Premium pitch is
+    // dropped entirely since a subscriber has already bought in.
     function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed){
-      container.innerHTML =
-        mainEventSection(matchupCard) +
-        (pickemCard ? pickemSection(pickemCard, pickemMine) : '') +
-        climbSection() +
-        moversSection(rankingsData) +
-        rosterSection(rosterData) +
-        (subscribed ? '' :
-          '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
-            '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
-            '<p style="margin-bottom:.8rem;color:var(--muted)">Full fighter database, live odds, the simulator, and more.</p>' +
-            '<button type="button" class="gl-btn gl-btn-outline" data-goto="premium">See what’s included</button>' +
-          '</div>');
+      var pickem = pickemCard ? pickemSection(pickemCard, pickemMine) : '';
+      var climb = climbSection();
+      var rankings = moversSection(rankingsData);
+      var roster = rosterSection(rosterData);
+      container.innerHTML = subscribed
+        ? (
+            mainEventSection(matchupCard) +
+            oddsPreviewSection() +
+            bettrackerPreviewSection() +
+            tapestudyPreviewSection() +
+            rankings +
+            roster +
+            pickem +
+            climb
+          )
+        : (
+            mainEventSection(matchupCard) +
+            pickem +
+            climb +
+            rankings +
+            roster +
+            '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
+              '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
+              '<p style="margin-bottom:.8rem;color:var(--muted)">Full fighter database, live odds, the simulator, and more.</p>' +
+              '<button type="button" class="gl-btn gl-btn-outline" data-goto="premium">See what’s included</button>' +
+            '</div>'
+          );
       wire();
     }
 
