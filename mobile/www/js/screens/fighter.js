@@ -173,6 +173,22 @@ window.GL_FIGHTER = (function(){
         '</div>')
       : '';
     var rows = list.map(function(f, i){
+      // Upcoming placeholder row -- attached server-side (worker/index.js's
+      // /api/app/fighter-extras) when this fighter has a live, not-yet-decided
+      // bout booked. Mirrors the site's own populateFightHistory __upcoming
+      // branch: pill-styled "Upcoming" badge in the Result column, a dash for
+      // Method, never clickable (no box score exists yet).
+      if (f.__upcoming) {
+        return (
+          '<tr class="fp-hist-row">' +
+            '<td class="fp-hist-td fp-hist-date">' + esc(f.date || 'TBD') + '</td>' +
+            '<td class="fp-hist-td fp-hist-opp">' + esc(f.opponent || '') + '</td>' +
+            '<td class="fp-hist-td" style="text-align:center"><span class="fp-hist-upcoming">Upcoming</span></td>' +
+            '<td class="fp-hist-td fp-hist-method" style="color:var(--muted)">—</td>' +
+            '<td class="fp-hist-td fp-hist-event">' + esc(f.event || '') + '</td>' +
+          '</tr>'
+        );
+      }
       var subLine = [f.round ? 'R' + f.round : '', f.time || ''].filter(Boolean).join(' · ');
       var clickable = !!f.stats;
       return (

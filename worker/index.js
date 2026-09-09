@@ -3026,6 +3026,44 @@ export default {
           date: e.startsAt || null,
           city: e.city || null,
         });
+
+        // Box scores for any already-decided fight — same data source and
+        // ±36h-tolerant date match as /api/app/fighter-extras
+        // (fightStatsFor/data/fight-stats.json), attached here at request
+        // time rather than baked into the card so a normal ?event= browse of
+        // an upcoming card never pays for it. Only fetched when at least one
+        // fight across `card` + the carousel actually needs it. Individual
+        // fight objects carry no date of their own (see eventToCard), so the
+        // owning card's own date/prelimsAt stands in for it — fightStatsFor's
+        // tolerance absorbs the difference.
+        const cardsNeedingStats = [card, ...carousel].filter((c) => c && (c.fights || []).some((f) => f.result && !f.result.voided));
+        if (cardsNeedingStats.length) {
+          const fightStats = await loadAssetJson(env, url, "/data/fight-stats.json");
+          if (fightStats) {
+            const normName = (n) => String(n || "").trim().toLowerCase();
+            const attachStats = (c) => {
+              const cardDate = c.date || (c.prelimsAt || "").slice(0, 10);
+              c.fights = (c.fights || []).map((f) => {
+                if (!f.result || f.result.voided) return f;
+                const arr1 = fightStats[f.f1];
+                const arr2 = fightStats[f.f2];
+                let rec = null, s1 = null, s2 = null;
+                if (arr1) {
+                  rec = fightStatsFor(arr1, cardDate);
+                  if (rec && normName(rec.opponent) === normName(f.f2)) { s1 = rec.f; s2 = rec.o; } else rec = null;
+                }
+                if (!rec && arr2) {
+                  rec = fightStatsFor(arr2, cardDate);
+                  if (rec && normName(rec.opponent) === normName(f.f1)) { s2 = rec.f; s1 = rec.o; } else rec = null;
+                }
+                return (s1 && s2) ? Object.assign({}, f, { stats: { f1: s1, f2: s2 } }) : f;
+              });
+            };
+            attachStats(card);
+            carousel.forEach(attachStats);
+          }
+        }
+
         return json({
           card,
           isPast: isPastView,
@@ -3088,15 +3126,58 @@ export default {
         if (!slug) return json({ error: "missing slug" }, 400, cors);
         const baseExtras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || {};
         const extras = Object.assign({}, baseExtras);
+        const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+        const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+        const fighterName = lite && lite.bySlug && lite.bySlug[slug] && lite.bySlug[slug].name;
         if (extras.fightHistory && extras.fightHistory.length) {
-          const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
-          const name = lite && lite.bySlug && lite.bySlug[slug] && lite.bySlug[slug].name;
-          const fightStats = name ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
-          const arr = fightStats && name ? fightStats[name] : null;
+          const fightStats = fighterName ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
+          const arr = fightStats && fighterName ? fightStats[fighterName] : null;
           extras.fightHistory = extras.fightHistory.map(function (row) {
             const rec = arr ? fightStatsFor(arr, row.date) : null;
             return rec ? Object.assign({}, row, { stats: { f: rec.f, o: rec.o } }) : row;
           });
+        }
+        // Fight History "Upcoming" row -- mirrors the site's
+        // getUpcomingForFighter/buildUpcomingOpponentIndex, but resolved for
+        // just this one fighter on this one request rather than pre-building
+        // a name-keyed index across the whole roster: scan data/event.json
+        // for a live, not-yet-decided bout that includes this fighter, and
+        // prepend a synthetic Upcoming row unless the real result has
+        // already landed in fightHistory (matched by opponent last name,
+        // same matching strategy /api/app/matchup's own live-result merge
+        // already uses elsewhere in this file).
+        if (fighterName) {
+          const eventData = await loadAssetJson(env, url, "/data/event.json");
+          const myLast = lastName(fighterName);
+          const evs = (eventData && eventData.data) || [];
+          let upcoming = null;
+          for (const ev of evs) {
+            if (upcoming) break;
+            if (ev.status === "completed") continue;
+            if ((ev.bouts || []).some((b) => b.winnerFighterSlug)) continue;
+            for (const b of ev.bouts || []) {
+              if (b.isCancelled) continue;
+              const fighters = (b.fighters || []).filter((f) => f && f.fighterName);
+              if (fighters.length < 2) continue;
+              const mine = fighters.find((f) => lastName(f.fighterName) === myLast);
+              if (!mine) continue;
+              const opp = fighters.find((f) => f !== mine);
+              if (!opp) continue;
+              const rawDate = ev.startsAt || "";
+              upcoming = {
+                opponent: opp.fighterName,
+                date: rawDate ? rawDate.slice(0, 10) : "TBD",
+                event: ev.espnName || ev.title || ev.shortTitle || "",
+              };
+              break;
+            }
+          }
+          if (upcoming) {
+            const already = (extras.fightHistory || []).some((f) => lastName(f.opponent) === lastName(upcoming.opponent));
+            if (!already) {
+              extras.fightHistory = [Object.assign({ __upcoming: true }, upcoming)].concat(extras.fightHistory || []);
+            }
+          }
         }
         return json(extras, 200, cors);
       }

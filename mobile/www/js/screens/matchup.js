@@ -230,12 +230,107 @@ function mountMatchup(container){
     return ddBtn + parts.join('');
   }
 
-  function resultHTML(f, res){
-    if (res.voided) return '<div class="mf-result"><span class="mf-res-tag">Result</span>' + (res.draw ? 'Draw' : 'No Contest') + '</div>';
+  // Ported from index.html's glAbbrMethod() (~132434) -- same abbreviations
+  // used on the tile's center column and in the Fight Info result recap.
+  function abbrMethod(m){
+    var u = String(m || '').toUpperCase();
+    if (u.indexOf('UNANIM') !== -1) return 'U-DEC';
+    if (u.indexOf('SPLIT') !== -1) return 'S-DEC';
+    if (u.indexOf('MAJOR') !== -1) return 'M-DEC';
+    if (u.indexOf('DEC') !== -1) return 'DEC';
+    if (u.indexOf('SUBMISSION') !== -1 || u.indexOf('SUB') === 0 || u.indexOf('TAP') !== -1) return 'SUB';
+    if (u.indexOf('KO/TKO') !== -1) return 'KO/TKO';
+    if (u.indexOf('TKO') !== -1) return 'TKO';
+    if (u.indexOf('KO') !== -1) return 'KO';
+    if (u.indexOf('DISQUAL') !== -1 || u === 'DQ') return 'DQ';
+    if (u.indexOf('NO CONTEST') !== -1 || u === 'NC' || u === 'CNC') return 'NC';
+    return String(m || '').trim();
+  }
+  // Ported from index.html's glResultTag() (~132423) -- WIN/LOSS/DRAW/NC tag
+  // shown next to a fighter's name on the tile once the bout is decided.
+  function resTagHTML(f, side){
+    var res = f.result;
+    if (!res) return '';
+    if (res.voided) return '<span class="mf-res-tag ' + (res.draw ? 'mf-res-draw' : 'mf-res-nc') + '">' + (res.draw ? 'DRAW' : 'NC') + '</span>';
+    if (!res.winner) return '';
+    var name = side === 2 ? f.f2 : f.f1;
+    return res.winner === name
+      ? '<span class="mf-res-tag mf-res-win">WIN</span>'
+      : '<span class="mf-res-tag mf-res-loss">LOSS</span>';
+  }
+  // Center-column method + round/time, replacing the rounds line the way the
+  // site's fightRow() swaps .fight-rounds for .gl-result-method once a bout
+  // is decided.
+  function centerResultHTML(res){
+    if (!res || res.voided || !res.winner) return '';
+    var rt = (res.round ? 'R' + res.round : '') + (res.round && res.time ? ' ' : '') + (res.time || '');
+    return '<div class="mf-method">' + esc(abbrMethod(res.method)) + (rt ? '<div class="mf-restime">' + esc(rt) + '</div>' : '') + '</div>';
+  }
+
+  // ── Completed-fight Fight Info panel -- ported from index.html's
+  // fightDetailsPanelHTML() (~132911): result recap + closing line (+ upset
+  // flag) + stats-at-a-glance + a "View Full Fight Stats" box score button.
+  // The site shows all of this to every visitor; here the result recap and
+  // stats-at-a-glance render for everyone, while closing odds and the full
+  // box score modal are Premium-only (see completedPanelHTML). ─────────────
+  function resultRecapHTML(f, res){
+    if (res.voided) return '<div class="mf-pf-result">' + (res.draw ? 'Draw' : 'No Contest') + '</div>';
     if (!res.winner) return '';
     var loser = res.winner === f.f1 ? f.f2 : (res.winner === f.f2 ? f.f1 : '');
-    var meth = res.method ? esc(res.method) + (res.round && !/dec/i.test(res.method) ? ' · R' + esc(res.round) : '') : '';
-    return '<div class="mf-result"><span class="mf-res-tag">Result</span><strong>' + esc(res.winner) + '</strong> def. ' + esc(loser) + (meth ? ' <span class="mf-res-meth">' + meth + '</span>' : '') + '</div>';
+    var rt = (res.round ? 'R' + res.round : '') + (res.round && res.time ? ' ' : '') + (res.time || '');
+    return '<div class="mf-pf-result"><span class="mf-pf-win">' + esc(res.winner) + '</span> def. ' + esc(loser) +
+      '<div class="mf-pf-method">' + esc(abbrMethod(res.method)) + (rt ? ' · ' + esc(rt) : '') + '</div></div>';
+  }
+  function pfHeadRow(f){
+    return '<div class="sr-cmp-row sr-cmp-head"><div></div><div>' + esc(surname(f.f1)) + '</div><div>' + esc(surname(f.f2)) + '</div></div>';
+  }
+  function statsGlanceHTML(f){
+    if (!f.stats || !f.stats.f1 || !f.stats.f2) return '';
+    var a = f.stats.f1, b = f.stats.f2;
+    var secs = function(t){ var m = String(t || '').match(/(\d+):(\d+)/); return m ? (+m[1] * 60 + +m[2]) : 0; };
+    var row = function(label, ad, bd, an, bn){
+      return '<div class="sr-cmp-row"><div class="sr-cmp-lbl">' + label + '</div>' +
+        '<div class="sr-cmp-val' + (an > bn ? ' w' : '') + '">' + ad + '</div>' +
+        '<div class="sr-cmp-val' + (bn > an ? ' w' : '') + '">' + bd + '</div></div>';
+    };
+    return '<div class="sr-common"><div class="sr-common-title">Stats at a glance</div>' + pfHeadRow(f) +
+      row('Sig. strikes', a.sigL + '/' + a.sigA, b.sigL + '/' + b.sigA, a.sigL, b.sigL) +
+      row('Takedowns', a.tdL + '/' + a.tdA, b.tdL + '/' + b.tdA, a.tdL, b.tdL) +
+      row('Knockdowns', a.kd, b.kd, a.kd, b.kd) +
+      row('Control', esc(a.ctrl || '0:00'), esc(b.ctrl || '0:00'), secs(a.ctrl), secs(b.ctrl)) +
+      '</div>';
+  }
+  function closingOddsHTML(f, res){
+    if (f.o1 == null && f.o2 == null) return '';
+    var fmt = function(o){ return o == null ? '—' : (o > 0 ? '+' + o : '' + o); };
+    var favSide = (f.o1 != null && f.o2 != null) ? (f.o1 <= f.o2 ? 1 : 2) : null;
+    var winSide = (res && res.winner) ? (res.winner === f.f1 ? 1 : (res.winner === f.f2 ? 2 : 0)) : 0;
+    var winOdds = winSide === 1 ? f.o1 : (winSide === 2 ? f.o2 : null);
+    // Any plus-money winner (+101 or longer) counts as an upset, same
+    // threshold the site's oddsHistoryPair-based check uses.
+    var upset = winSide && favSide && winSide !== favSide && winOdds != null && winOdds >= 101;
+    var badge = ' <span class="mf-pf-upset">⚠ Upset</span>';
+    return '<div class="sr-common"><div class="sr-common-title">Closing odds</div>' + pfHeadRow(f) +
+      '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div>' +
+        '<div class="sr-cmp-val' + (winSide === 1 ? ' w' : '') + '">' + esc(fmt(f.o1)) + (upset && winSide === 1 ? badge : '') + '</div>' +
+        '<div class="sr-cmp-val' + (winSide === 2 ? ' w' : '') + '">' + esc(fmt(f.o2)) + (upset && winSide === 2 ? badge : '') + '</div></div></div>';
+  }
+  // Fights with an attached box score get pushed here during render() (see
+  // fightHTML) so the "View Full Fight Stats" button can reference one by
+  // index rather than re-encoding the whole fight object into a data
+  // attribute -- same reasoning as hubData being keyed separately from the
+  // rendered markup.
+  var statsFights = [];
+  function statsBtnHTML(f){
+    if (!f.stats || !f.stats.f1 || !f.stats.f2) return '';
+    var i = statsFights.push(f) - 1;
+    return '<div style="text-align:center;padding-top:0.7rem;">' +
+      '<button type="button" class="mf-statsbtn" data-box-i="' + i + '" onclick="event.stopPropagation()">View Full Fight Stats &rsaquo;</button></div>';
+  }
+  function completedPanelHTML(f, res){
+    var body = resultRecapHTML(f, res) + statsGlanceHTML(f);
+    if (subscribed) body += closingOddsHTML(f, res) + statsBtnHTML(f);
+    return body;
   }
 
   // Same renderer for the featured card AND every carousel slide -- a
@@ -270,14 +365,14 @@ function mountMatchup(container){
   function fightHTML(f, isMain, deepDive, breakdown, eventSlug, special){
     var res = f.result || null;
     var panelBody = res
-      ? resultHTML(f, res)
+      ? completedPanelHTML(f, res)
       : (tapeHTML(f.tape) + (isMain ? breakdownHTML(f, breakdown, deepDive, eventSlug) : lockedTeaserHTML()));
     return (
       '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + (canSim(f, special) ? ' mf-card--sim' : '') + '">' +
         '<div class="mf-row">' +
-          '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + '</div><div class="mf-rec">' + mlRecHTML(f, 1, f.rec1, res) + '</div></div></div>' +
-          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div><button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
-          '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + '</div><div class="mf-rec">' + mlRecHTML(f, 2, f.rec2, res) + '</div></div></div>' +
+          '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + resTagHTML(f, 1) + '</div><div class="mf-rec">' + mlRecHTML(f, 1, f.rec1, res) + '</div></div></div>' +
+          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + centerResultHTML(res) + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
+          '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + resTagHTML(f, 2) + '</div><div class="mf-rec">' + mlRecHTML(f, 2, f.rec2, res) + '</div></div></div>' +
         '</div>' +
         simBarHTML(f, special) +
         '<div class="mf-panel"><div class="mf-panel-inner">' + panelBody + '</div></div>' +
@@ -524,6 +619,130 @@ function mountMatchup(container){
     });
   }
 
+  // ── Box-score modal, Premium-only, for a completed fight's "View Full
+  // Fight Stats" button -- a separate modal from the Matchup Analytics Deep
+  // Dive one above (#mh-overlay/#mh-box, pre-fight only), reusing the
+  // .fp-modal-*/.fp-stat-* CSS classes and fsPct/fsSecs/fsBar/fsRow helper
+  // pattern already built for fighter.js's own box-score modal -- duplicated
+  // here rather than shared, following this app's per-screen-self-contained
+  // convention (see fighter.js's own comment on the same helpers). ─────────
+  var boxScrollY = 0;
+  function fsPct(l, a){ return a > 0 ? Math.round(100 * l / a) : 0; }
+  function fsSecs(t){ var m = String(t || '').match(/(\d+):(\d+)/); return m ? (+m[1] * 60 + +m[2]) : 0; }
+  function fsBar(lv, rv){
+    var tot = lv + rv;
+    if (tot <= 0) return '';
+    var lp = Math.max(8, Math.min(92, Math.round(100 * lv / tot)));
+    if (lv === rv) lp = 50;
+    return (
+      '<div class="fp-stat-bar">' +
+        '<div class="fp-stat-bar-l' + (lv >= rv ? ' lead' : '') + '" style="width:' + lp + '%"></div>' +
+        '<div class="fp-stat-bar-r' + (rv >= lv ? ' lead' : '') + '" style="width:' + (100 - lp) + '%"></div>' +
+      '</div>'
+    );
+  }
+  function fsRow(label, lhtml, rhtml, lv, rv, bar){
+    return (
+      '<div class="fp-stat-row">' +
+        '<div class="fp-stat-row-top">' +
+          '<span class="fp-stat-v l">' + lhtml + '</span>' +
+          '<span class="fp-stat-lbl">' + esc(label) + '</span>' +
+          '<span class="fp-stat-v r">' + rhtml + '</span>' +
+        '</div>' +
+        (bar ? fsBar(lv, rv) : '') +
+      '</div>'
+    );
+  }
+  function boxScoreBodyHTML(f){
+    var a = f.stats.f1, b = f.stats.f2;
+    var res = f.result || {};
+    var resultLine = '';
+    if (res.winner){
+      var loser = res.winner === f.f1 ? f.f2 : f.f2 === res.winner ? f.f1 : '';
+      resultLine = res.winner + ' def. ' + loser + ' · ' + abbrMethod(res.method) + (res.round ? ' R' + res.round : '') + (res.time ? ' - ' + res.time : '');
+    } else if (res.voided){
+      resultLine = res.draw ? 'Draw' : 'No Contest';
+    }
+    function sig(s){ return s.sigL + '/' + s.sigA + ' <span class="fp-stat-pct">(' + fsPct(s.sigL, s.sigA) + '%)</span>'; }
+    return (
+      '<div class="fp-stat-hd">' +
+        '<span class="fp-stat-hd-name">' + esc(f.f1) + '</span>' +
+        '<span class="fp-stat-hd-name r">' + esc(f.f2) + '</span>' +
+      '</div>' +
+      '<div class="fp-stat-sub">' +
+        (resultLine ? '<div class="fp-stat-result">' + esc(resultLine) + '</div>' : '') +
+      '</div>' +
+      fsRow('Knockdowns', a.kd, b.kd, a.kd, b.kd, (a.kd + b.kd) > 0) +
+      fsRow('Sig. Strikes', sig(a), sig(b), a.sigL, b.sigL, true) +
+      fsRow('Total Strikes', a.totL + '/' + a.totA, b.totL + '/' + b.totA, a.totL, b.totL, true) +
+      fsRow('Takedowns', a.tdL + '/' + a.tdA, b.tdL + '/' + b.tdA, a.tdL, b.tdL, (a.tdA + b.tdA) > 0) +
+      fsRow('Sub. Att', a.sub, b.sub, a.sub, b.sub, (a.sub + b.sub) > 0) +
+      fsRow('Reversals', a.rev, b.rev, a.rev, b.rev, (a.rev + b.rev) > 0) +
+      fsRow('Control', esc(a.ctrl || '0:00'), esc(b.ctrl || '0:00'), fsSecs(a.ctrl), fsSecs(b.ctrl), (fsSecs(a.ctrl) + fsSecs(b.ctrl)) > 0) +
+      '<div class="fp-stat-subhead">Sig. strikes by target</div>' +
+      fsRow('Head', a.head[0] + '/' + a.head[1], b.head[0] + '/' + b.head[1], a.head[0], b.head[0], true) +
+      fsRow('Body', a.body[0] + '/' + a.body[1], b.body[0] + '/' + b.body[1], a.body[0], b.body[0], true) +
+      fsRow('Leg', a.leg[0] + '/' + a.leg[1], b.leg[0] + '/' + b.leg[1], a.leg[0], b.leg[0], true) +
+      '<div class="fp-stat-subhead">Sig. strikes by position</div>' +
+      fsRow('Distance', a.dist[0] + '/' + a.dist[1], b.dist[0] + '/' + b.dist[1], a.dist[0], b.dist[0], true) +
+      fsRow('Clinch', a.clinch[0] + '/' + a.clinch[1], b.clinch[0] + '/' + b.clinch[1], a.clinch[0], b.clinch[0], (a.clinch[1] + b.clinch[1]) > 0) +
+      fsRow('Ground', a.ground[0] + '/' + a.ground[1], b.ground[0] + '/' + b.ground[1], a.ground[0], b.ground[0], (a.ground[1] + b.ground[1]) > 0)
+    );
+  }
+  function boxModalHTML(){
+    return (
+      '<div id="mfBoxOverlay" class="fp-modal-overlay" hidden></div>' +
+      '<div id="mfBoxBox" class="fp-modal-box" hidden role="dialog" aria-modal="true" aria-label="Fight stats">' +
+        '<button type="button" class="fp-modal-close" id="mfBoxClose" aria-label="Close">&times;</button>' +
+        '<div id="mfBoxBody"></div>' +
+      '</div>'
+    );
+  }
+  function boxLockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    boxScrollY = scroller.scrollTop || 0;
+    scroller.style.overflow = 'hidden';
+  }
+  function boxUnlockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    scroller.style.overflow = '';
+    scroller.scrollTop = boxScrollY;
+  }
+  function openBoxScoreModal(i){
+    var f = statsFights[i];
+    if (!f || !f.stats) return;
+    var overlay = container.querySelector('#mfBoxOverlay');
+    var box = container.querySelector('#mfBoxBox');
+    var body = container.querySelector('#mfBoxBody');
+    if (!overlay || !box || !body) return;
+    body.innerHTML = boxScoreBodyHTML(f);
+    overlay.hidden = false;
+    box.hidden = false;
+    boxLockScroll();
+  }
+  function closeBoxScoreModal(){
+    var overlay = container.querySelector('#mfBoxOverlay');
+    var box = container.querySelector('#mfBoxBox');
+    if (overlay) overlay.hidden = true;
+    if (box) box.hidden = true;
+    boxUnlockScroll();
+  }
+  function wireBoxModal(){
+    container.querySelectorAll('[data-box-i]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        window.GL_NATIVE.tap();
+        openBoxScoreModal(parseInt(btn.getAttribute('data-box-i'), 10));
+      });
+    });
+    var overlay = container.querySelector('#mfBoxOverlay');
+    if (overlay) overlay.addEventListener('click', closeBoxScoreModal);
+    var closeBtn = container.querySelector('#mfBoxClose');
+    if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); closeBoxScoreModal(); });
+  }
+
   function eventHeaderHTML(card){
     var special = card ? specialClassFor(card.event) : '';
     return (
@@ -538,6 +757,7 @@ function mountMatchup(container){
   }
 
   function render(){
+    statsFights = [];
     var card = data.card;
     container.innerHTML =
       searchHTML() +
@@ -545,7 +765,8 @@ function mountMatchup(container){
       eventHeaderHTML(card) +
       '<div id="mfBody">' + cardBodyHTML(card, data.deepDive, data.breakdown) + '</div>' +
       carouselHTML() +
-      hubModalHTML();
+      hubModalHTML() +
+      boxModalHTML();
     wire();
     renderCountdown();
     if (window.__mfCountdownTimer) clearInterval(window.__mfCountdownTimer);
@@ -638,6 +859,7 @@ function mountMatchup(container){
     wireSearch();
     wireCarousel();
     wireHub();
+    wireBoxModal();
   }
 
   function wireSearch(){
