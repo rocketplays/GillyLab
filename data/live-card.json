@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-09T00:04:44.524Z",
+ "generatedAt": "2026-09-09T00:15:02.512Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9586,6 +9586,194 @@
       ]
      },
      "capturedAt": "2026-09-09T00:04:44.382Z"
+    }
+   ]
+  },
+  "Kwon Won Il": {
+   "history": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Apollo Gomes",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 5",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Apollo Gomes",
+     "result": "L",
+     "f": {
+      "kd": 2,
+      "sigL": 48,
+      "sigA": 117,
+      "totL": 55,
+      "totA": 127,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:46",
+      "head": [
+       32,
+       94
+      ],
+      "body": [
+       13,
+       19
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       40,
+       104
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       6,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 159,
+      "totL": 80,
+      "totA": 165,
+      "tdL": 3,
+      "tdA": 13,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:45",
+      "head": [
+       45,
+       113
+      ],
+      "body": [
+       19,
+       30
+      ],
+      "leg": [
+       12,
+       16
+      ],
+      "dist": [
+       72,
+       155
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-09-09T00:15:02.373Z"
+    }
+   ]
+  },
+  "Apollo Gomes": {
+   "history": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Kwon Won Il",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 5",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 8, 2026",
+     "opponent": "Kwon Won Il",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 159,
+      "totL": 80,
+      "totA": 165,
+      "tdL": 3,
+      "tdA": 13,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:45",
+      "head": [
+       45,
+       113
+      ],
+      "body": [
+       19,
+       30
+      ],
+      "leg": [
+       12,
+       16
+      ],
+      "dist": [
+       72,
+       155
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 48,
+      "sigA": 117,
+      "totL": 55,
+      "totA": 127,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:46",
+      "head": [
+       32,
+       94
+      ],
+      "body": [
+       13,
+       19
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       40,
+       104
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       6,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-09T00:15:02.373Z"
     }
    ]
   }
