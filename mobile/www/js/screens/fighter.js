@@ -172,6 +172,20 @@ window.GL_FIGHTER = (function(){
           '<span>Rows with a <b>Stats</b> tag are clickable — open the full fight stat breakdown (strikes, takedowns, control &amp; more).</span>' +
         '</div>')
       : '';
+    // Clickable opponent name -- ported from the site's own .fh-opponent
+    // (index.html's document-level click delegate, ~132220): tapping the
+    // name navigates to THAT fighter's profile, separate from the row's own
+    // click (which opens the box score) -- see wireExtras, which checks
+    // e.target.closest('.fp-hist-opp-link') the same way the site's row
+    // handler checks e.target.closest('.fh-opponent') before calling
+    // openFightStats. oppSlug is resolved server-side (profileSlugFor
+    // against fighter-lite) -- an opponent with no resolvable profile just
+    // renders as plain text, same as the site's own dead-end case.
+    function oppNameHTML(f){
+      return f.oppSlug
+        ? '<span class="fp-hist-opp-link" data-opp-slug="' + esc(f.oppSlug) + '">' + esc(f.opponent || '') + '</span>'
+        : esc(f.opponent || '');
+    }
     var rows = list.map(function(f, i){
       // Upcoming placeholder row -- attached server-side (worker/index.js's
       // /api/app/fighter-extras) when this fighter has a live, not-yet-decided
@@ -182,7 +196,7 @@ window.GL_FIGHTER = (function(){
         return (
           '<tr class="fp-hist-row">' +
             '<td class="fp-hist-td fp-hist-date">' + esc(f.date || 'TBD') + '</td>' +
-            '<td class="fp-hist-td fp-hist-opp">' + esc(f.opponent || '') + '</td>' +
+            '<td class="fp-hist-td fp-hist-opp">' + oppNameHTML(f) + '</td>' +
             '<td class="fp-hist-td" style="text-align:center"><span class="fp-hist-upcoming">Upcoming</span></td>' +
             '<td class="fp-hist-td fp-hist-method" style="color:var(--muted)">—</td>' +
             '<td class="fp-hist-td fp-hist-event">' + esc(f.event || '') + '</td>' +
@@ -198,7 +212,7 @@ window.GL_FIGHTER = (function(){
             (clickable ? '<div class="fp-hist-chip">' + STATS_ICON_SVG + 'Stats</div>' : '') +
             esc(f.date || '') +
           '</td>' +
-          '<td class="fp-hist-td fp-hist-opp">' + esc(f.opponent || '') + '</td>' +
+          '<td class="fp-hist-td fp-hist-opp">' + oppNameHTML(f) + '</td>' +
           '<td class="fp-hist-td fp-hist-result ' + resultClass(f.result) + '">' + esc(f.result || '—') + '</td>' +
           '<td class="fp-hist-td fp-hist-method">' + esc(f.method || '') +
             (subLine ? '<div class="fp-hist-sub">' + esc(subLine) + '</div>' : '') +
@@ -301,7 +315,7 @@ window.GL_FIGHTER = (function(){
   // single load() call, same reason matchup.js's own hub modal keeps its
   // state at the screen-module level -- this modal only ever needs to talk
   // to whichever profile is currently on screen. ──────────────────────────
-  var activeContainer = null, modalScrollY = 0;
+  var activeContainer = null, activeFighterSlug = null, modalScrollY = 0;
 
   function fsPct(l, a){ return a > 0 ? Math.round(100 * l / a) : 0; }
   function fsSecs(t){ var m = String(t || '').match(/(\d+):(\d+)/); return m ? (+m[1] * 60 + +m[2]) : 0; }
@@ -329,7 +343,16 @@ window.GL_FIGHTER = (function(){
       '</div>'
     );
   }
-  function statsModalBodyHTML(fighterName, row){
+  // Circular thumbnail avatar for the modal header, same 40px/accent-border
+  // treatment as the site's own _fsAva() -- falls back to initials via the
+  // existing onerror pattern used everywhere else in this app.
+  function fsAva(slug, name){
+    var ini = initials(name);
+    return slug
+      ? '<span class="fp-stat-ava"><img src="' + PHOTO_BASE + esc(slug) + '.png" alt="" onerror="this.parentNode.textContent=\'' + esc(ini) + '\'"></span>'
+      : '<span class="fp-stat-ava">' + esc(ini) + '</span>';
+  }
+  function statsModalBodyHTML(fighterName, fighterSlug, row){
     var f = row.stats.f, o = row.stats.o;
     function sig(s){ return s.sigL + '/' + s.sigA + ' <span class="fp-stat-pct">(' + fsPct(s.sigL, s.sigA) + '%)</span>'; }
     var mfull = String(row.method || '').trim();
@@ -344,8 +367,8 @@ window.GL_FIGHTER = (function(){
     }
     return (
       '<div class="fp-stat-hd">' +
-        '<span class="fp-stat-hd-name">' + esc(fighterName) + '</span>' +
-        '<span class="fp-stat-hd-name r">' + esc(row.opponent || '') + '</span>' +
+        '<span class="fp-stat-hd-side">' + fsAva(fighterSlug, fighterName) + '<span class="fp-stat-hd-name">' + esc(fighterName) + '</span></span>' +
+        '<span class="fp-stat-hd-side r"><span class="fp-stat-hd-name r">' + esc(row.opponent || '') + '</span>' + fsAva(row.oppSlug, row.opponent) + '</span>' +
       '</div>' +
       '<div class="fp-stat-sub">' +
         '<span>' + esc(row.date || '') + '</span>' +
@@ -397,7 +420,7 @@ window.GL_FIGHTER = (function(){
     var box = activeContainer.querySelector('#fpStatsBox');
     var body = activeContainer.querySelector('#fpStatsBody');
     if (!overlay || !box || !body) return;
-    body.innerHTML = statsModalBodyHTML(fighterName, row);
+    body.innerHTML = statsModalBodyHTML(fighterName, activeFighterSlug, row);
     overlay.hidden = false;
     box.hidden = false;
     lockScroll();
@@ -431,10 +454,21 @@ window.GL_FIGHTER = (function(){
     });
     var fightHistory = (extras && extras.fightHistory) || [];
     container.querySelectorAll('[data-hist-i]').forEach(function(row){
-      row.addEventListener('click', function(){
+      row.addEventListener('click', function(e){
+        // A tap on the opponent's own name navigates to their profile
+        // instead (wired separately below) -- same as the site's row
+        // handler skipping .fh-opponent before calling openFightStats.
+        if (e.target && e.target.closest && e.target.closest('.fp-hist-opp-link')) return;
         window.GL_NATIVE.tap();
         var f = fightHistory[+row.getAttribute('data-hist-i')];
         if (f) openStatsModal(fighterName, f);
+      });
+    });
+    container.querySelectorAll('.fp-hist-opp-link[data-opp-slug]').forEach(function(link){
+      link.addEventListener('click', function(e){
+        e.stopPropagation();
+        window.GL_NATIVE.tap();
+        window.GL_ROUTER.go('fighter', { slug: link.getAttribute('data-opp-slug') });
       });
     });
     var overlay = container.querySelector('#fpStatsOverlay');
@@ -506,6 +540,7 @@ window.GL_FIGHTER = (function(){
   function load(container, slug){
     var mySeq = ++loadSeq;
     activeContainer = container;
+    activeFighterSlug = slug;
     container.innerHTML = '<p class="gl-muted">Loading fighter…</p>';
     Promise.all([
       window.GL_API.fighter(slug),

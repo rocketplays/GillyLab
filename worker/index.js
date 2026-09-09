@@ -3129,12 +3129,18 @@ export default {
         const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
         const fighterName = lite && lite.bySlug && lite.bySlug[slug] && lite.bySlug[slug].name;
+        // Opponent profile slugs -- lets the app link a Fight History
+        // opponent straight to their own profile (avatar photo + tap-through)
+        // instead of just showing plain text, the same profileSlugFor lookup
+        // /api/app/matchup already uses to resolve f.s1/f.s2.
+        const profileSlugs = await loadProfileSlugs(env, url);
         if (extras.fightHistory && extras.fightHistory.length) {
           const fightStats = fighterName ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
           const arr = fightStats && fighterName ? fightStats[fighterName] : null;
           extras.fightHistory = extras.fightHistory.map(function (row) {
             const rec = arr ? fightStatsFor(arr, row.date) : null;
-            return rec ? Object.assign({}, row, { stats: { f: rec.f, o: rec.o } }) : row;
+            const oppSlug = profileSlugFor(row.opponent, profileSlugs) || null;
+            return Object.assign({}, row, { oppSlug: oppSlug }, rec ? { stats: { f: rec.f, o: rec.o } } : null);
           });
         }
         // Fight History "Upcoming" row -- mirrors the site's
@@ -3175,7 +3181,8 @@ export default {
           if (upcoming) {
             const already = (extras.fightHistory || []).some((f) => lastName(f.opponent) === lastName(upcoming.opponent));
             if (!already) {
-              extras.fightHistory = [Object.assign({ __upcoming: true }, upcoming)].concat(extras.fightHistory || []);
+              const oppSlug = profileSlugFor(upcoming.opponent, profileSlugs) || null;
+              extras.fightHistory = [Object.assign({ __upcoming: true, oppSlug: oppSlug }, upcoming)].concat(extras.fightHistory || []);
             }
           }
         }

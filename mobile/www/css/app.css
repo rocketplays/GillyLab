@@ -915,6 +915,8 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   font-size:.62rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap;
 }
 .fp-hist-opp{ font-weight:600; }
+.fp-hist-opp-link{ cursor:pointer; transition:color .15s; }
+.fp-hist-opp-link:active{ color:var(--accent); }
 .fp-hist-result{ text-align:center; font-weight:800; }
 .fp-hist-result.good{ color:var(--accent); }
 .fp-hist-result.bad{ color:#c76a54; }
@@ -982,8 +984,34 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   position:absolute; top:.5rem; right:.6rem; background:none; border:none;
   color:var(--muted); font-size:1.4rem; line-height:1; padding:.3rem .5rem; cursor:pointer;
 }
+/* Constrain the site's own Matchup Analytics Deep Dive modal (#mh-box) to
+   this phone's safe area. Its shipped stylesheet (worker/matchup-free.js's
+   `hubCss`, injected into <head> at runtime by matchup.js's ensureHubCss --
+   after this file, so it otherwise wins any tie) centers the box at
+   top:50%/translate(-50%,-50%) with max-height:88-92vh, sized for a normal
+   browser viewport. On this app's edge-to-edge WKWebView that leaves only a
+   few vh of margin above and below -- not enough to clear a notch/status
+   bar, so the box's top edge visibly overlapped it. The extra `body`
+   ancestor gives these rules the same specificity tie-break the shipped
+   CSS relies on (later in the cascade normally wins at equal specificity),
+   so no !important is needed. */
+body #mh-box{
+  top:calc(50% + (env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 2);
+  max-height:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
+}
 .fp-stat-hd{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding-right:1.6rem; }
-.fp-stat-hd-name{ font-weight:800; font-size:.88rem; }
+.fp-stat-hd-side{ display:flex; align-items:center; gap:.5rem; min-width:0; flex:1; }
+.fp-stat-hd-side.r{ justify-content:flex-end; }
+/* Circular thumbnail avatar in a box-score modal header, mirroring the
+   site's own _fsAva() -- 40px, accent-bordered, falls back to initials via
+   the img's onerror the same way the rest of the app's avatars do. */
+.fp-stat-ava{
+  width:40px; height:40px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  border:2px solid var(--accent); background:#1a1a1a; display:flex;
+  align-items:center; justify-content:center; font-weight:800; font-size:.78rem; color:#fff;
+}
+.fp-stat-ava img{ width:100%; height:100%; object-fit:cover; object-position:top center; }
+.fp-stat-hd-name{ font-weight:800; font-size:.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
 .fp-stat-hd-name.r{ text-align:right; }
 .fp-stat-sub{ text-align:center; margin:.3rem 0 .8rem; font-size:.7rem; color:var(--muted); }
 .fp-stat-result{ color:var(--accent); font-weight:700; font-size:.74rem; margin-top:.2rem; }

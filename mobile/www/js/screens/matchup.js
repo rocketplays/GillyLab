@@ -653,6 +653,16 @@ function mountMatchup(container){
       '</div>'
     );
   }
+  // Circular thumbnail avatar for the box-score modal header -- same
+  // 40px/accent-border treatment as fighter.js's own fsAva()/the site's
+  // _fsAva(), using the slugs the worker already resolved onto the fight
+  // object (f.s1/f.s2) rather than re-deriving one client-side.
+  function fsAva(slug, name){
+    var ini = window.GL_FIGHTER.initials(name);
+    return slug
+      ? '<span class="fp-stat-ava"><img src="' + window.GL_FIGHTER.PHOTO_BASE + esc(slug) + '.png" alt="" onerror="this.parentNode.textContent=\'' + esc(ini) + '\'"></span>'
+      : '<span class="fp-stat-ava">' + esc(ini) + '</span>';
+  }
   function boxScoreBodyHTML(f){
     var a = f.stats.f1, b = f.stats.f2;
     var res = f.result || {};
@@ -666,8 +676,8 @@ function mountMatchup(container){
     function sig(s){ return s.sigL + '/' + s.sigA + ' <span class="fp-stat-pct">(' + fsPct(s.sigL, s.sigA) + '%)</span>'; }
     return (
       '<div class="fp-stat-hd">' +
-        '<span class="fp-stat-hd-name">' + esc(f.f1) + '</span>' +
-        '<span class="fp-stat-hd-name r">' + esc(f.f2) + '</span>' +
+        '<span class="fp-stat-hd-side">' + fsAva(f.s1, f.f1) + '<span class="fp-stat-hd-name">' + esc(f.f1) + '</span></span>' +
+        '<span class="fp-stat-hd-side r"><span class="fp-stat-hd-name r">' + esc(f.f2) + '</span>' + fsAva(f.s2, f.f2) + '</span>' +
       '</div>' +
       '<div class="fp-stat-sub">' +
         (resultLine ? '<div class="fp-stat-result">' + esc(resultLine) + '</div>' : '') +
