@@ -85,6 +85,10 @@ const CC = {
   "Serbia": "RS", "Slovakia": "SK", "Czechia": "CZ", "Czech Republic": "CZ", "Lithuania": "LT",
   "Moldova": "MD", "Ukraine": "UA", "Romania": "RO", "Bulgaria": "BG", "Finland": "FI",
   "Israel": "IL", "Afghanistan": "AF", "Suriname": "SR", "Jamaica": "JM", "Greece": "GR",
+  // FIGHTERS stores some British fighters' country as the literal string "UK"
+  // (not "United Kingdom") — e.g. Michael Page. Without this his flag was
+  // silently empty on the free /rankings page despite a resolvable country.
+  "UK": "GB",
 };
 const flagFor = (country) => {
   const iso = CC[String(country || "").trim()];
