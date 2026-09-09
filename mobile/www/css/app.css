@@ -830,13 +830,13 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-extras{ margin-top:1.2rem; }
 .fp-tabs{ display:flex; border-bottom:1px solid var(--border); margin-bottom:1.2rem; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .fp-tab{
-  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.8rem;
-  letter-spacing:.1em; text-transform:uppercase; padding:.65rem .9rem;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.68rem;
+  letter-spacing:.06em; text-transform:uppercase; padding:.6rem .55rem;
   cursor:pointer; color:var(--muted); background:none; border:none;
   border-bottom:2px solid transparent; flex:0 0 auto; white-space:nowrap;
 }
 .fp-tab.sel{ color:var(--accent); border-bottom-color:var(--accent); }
-@media (max-width:360px){ .fp-tab{ padding:.6rem .6rem; letter-spacing:.04em; font-size:.72rem; } }
+@media (max-width:360px){ .fp-tab{ padding:.55rem .4rem; letter-spacing:.03em; font-size:.64rem; } }
 
 .fp-acc-list{ display:flex; flex-direction:column; gap:.7rem; }
 .fp-acc-row{ display:flex; gap:.6rem; align-items:flex-start; }
@@ -878,8 +878,13 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-hist-row--click{ cursor:pointer; }
 .fp-hist-row--click:active .fp-hist-td{ background:rgba(212,175,55,.06); }
 .fp-hist-date{ white-space:nowrap; color:var(--muted); }
+/* flex (not inline-flex) so this is block-level -- the chip needs to sit on
+   its OWN line, above the date text right after it in the same cell (see
+   fighter.js's fightHistoryHTML), same stacked layout as the site's own
+   chip-in-a-margin-bottom-div. width:max-content keeps it from stretching
+   to the cell's full width the way a bare block element otherwise would. */
 .fp-hist-chip{
-  display:inline-flex; align-items:center; gap:4px; margin-bottom:4px; padding:2px 8px;
+  display:flex; width:max-content; align-items:center; gap:4px; margin-bottom:4px; padding:2px 8px;
   border:1px solid var(--accent); border-radius:999px; color:var(--accent);
   font-size:.62rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap;
 }
