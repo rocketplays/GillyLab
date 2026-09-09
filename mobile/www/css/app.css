@@ -346,6 +346,13 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-dash-arrow{ font-size:.78rem; font-weight:800; width:2.6rem; flex-shrink:0; }
 .gl-dash-arrow.up{ color:var(--accent); }
 .gl-dash-arrow.down{ color:var(--bad); }
+/* Home's Odds preview row (see home.js's oddsPreviewSection) -- fighter
+   avatar+name on each outside edge, the moneylines and "vs" in the middle,
+   all spaced evenly across the row rather than clumped by .gl-dash-row-name's
+   own flex:1. */
+.gl-dash-row--odds{ justify-content:space-between; }
+.gl-dash-oddscell{ display:flex; align-items:center; gap:.5rem; min-width:0; }
+.gl-dash-oddscell .gl-dash-row-name{ flex:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:8rem; }
 
 /* ---- Home: main-event teaser (side-by-side fighter photos) ---- */
 .he-row{ display:flex; align-items:center; justify-content:center; gap:1rem; margin-top:.7rem; }
