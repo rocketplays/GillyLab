@@ -100,8 +100,13 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   height:calc(100vh - var(--tabbar-h) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 1.1rem - 2rem - 2.8rem);
 }
 
-/* ---- centered brand mark at the top of every page (see index.html) ---- */
+/* ---- centered brand mark at the top of every page (see index.html) ----
+   position:relative so the avatar button below can anchor to this row's
+   right edge without affecting the centered logo+text (which stays
+   centered via justify-content, unaffected by an absolutely-positioned
+   sibling). ---- */
 .gl-page-brand{
+  position:relative;
   display:flex; align-items:center; justify-content:center; gap:.45rem;
   margin:0 0 1.2rem; font-family:'Barlow Condensed',sans-serif; font-weight:900;
   letter-spacing:.14em; font-size:.95rem; text-transform:uppercase;
@@ -118,14 +123,18 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 
 /* ---- top-right account avatar + dropdown (see index.html's #avatarBtn/
-   #avatarMenu, js/avatar-menu.js) -- fixed regardless of scroll, sits above
-   ordinary page content but below the More sheet's overlay/sheet (z-index
-   15/16) so a sheet opened while the menu happens to be up still covers it
-   cleanly. Safe-area aware the same way the tab bar is, just on the
-   opposite (top) edge. ---- */
+   #avatarMenu, js/avatar-menu.js) -- plain scrolling content anchored to
+   the right edge of .gl-page-brand (via that row's own position:relative),
+   NOT a fixed overlay: it used to stay pinned onscreen through every
+   scroll position, which meant it sat permanently on top of whatever page
+   content happened to be underneath that corner. Now it scrolls away with
+   the brand mark, appearing only at the top of the page like everything
+   else in that row. Still above ordinary page content (z-index:12) so it
+   isn't clipped by anything in the brand row itself, but below the More
+   sheet's overlay/sheet (z-index 15/16). ---- */
 .gl-avatar-btn{
-  position:fixed; z-index:12;
-  top:calc(env(safe-area-inset-top) + .7rem); right:1.1rem;
+  position:absolute; z-index:12;
+  top:50%; right:0; transform:translateY(-50%);
   width:34px; height:34px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background:color-mix(in srgb, var(--bg) 78%, transparent);
@@ -135,8 +144,8 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-avatar-btn:active{ opacity:.6; }
 .gl-avatar-icon{ width:19px; height:19px; }
 .gl-avatar-menu{
-  position:fixed; z-index:13;
-  top:calc(env(safe-area-inset-top) + 2.85rem); right:1.1rem;
+  position:absolute; z-index:13;
+  top:calc(100% + .5rem); right:0;
   min-width:160px; background:var(--card); border:1px solid var(--border);
   border-radius:12px; padding:.3rem; box-shadow:0 8px 24px rgba(0,0,0,.4);
 }
@@ -674,6 +683,14 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   border-color:rgba(59,130,246,.35); color:#3b82f6;
 }
 
+/* A regular (non-numbered, non-DWCS) event's real billed title -- e.g.
+   "Noche UFC: Silva vs. Delgado" -- gets the promotion prefix in the
+   default text color and the fight billing after it in the accent green,
+   via matchup.js's regularEventNameHTML(). See that function's own comment
+   for why this is a new, app-specific treatment rather than a ported site
+   function. */
+.mf-event-billing{ color:var(--accent); }
+
 /* ---- Matchup: fighter search bar ---- */
 .mf-search{ position:relative; margin-bottom:.8rem; }
 .mf-search-input{
@@ -760,9 +777,9 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    site's own markup order too), only the visual order changes. */
 .sr-cmp-row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.85fr) minmax(0,1fr); gap:.4rem; padding:.3rem 0; font-size:.82rem; border-top:1px solid var(--border); }
 .sr-cmp-row:first-of-type{ border-top:none; }
-.sr-cmp-row > :nth-child(1){ order:2; }
-.sr-cmp-row > :nth-child(2){ order:1; }
-.sr-cmp-row > :nth-child(3){ order:3; }
+.sr-cmp-row > :nth-child(1){ order:2; text-align:center; }
+.sr-cmp-row > :nth-child(2){ order:1; text-align:center; justify-content:center; }
+.sr-cmp-row > :nth-child(3){ order:3; text-align:center; justify-content:center; }
 .sr-cmp-lbl{ color:var(--muted); font-size:.76rem; min-width:0; overflow-wrap:break-word; text-align:center; }
 .sr-cmp-val{ text-align:center; font-weight:700; min-width:0; overflow-wrap:break-word; }
 .sr-cmp-val.w{ color:var(--accent); }

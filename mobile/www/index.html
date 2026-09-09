@@ -16,38 +16,38 @@
   <div id="bgfx"></div>
   <div id="bgedge"></div>
 
-  <!-- Persistent top-right account entry point -- lives as a fixed-position
-       sibling of #appScroll (not inside it), so it survives every screen's
-       full innerHTML replacement of #app the same way the tab bar does, and
-       stays onscreen instead of scrolling away with the page. Replaces the
-       old bottom-tab "Account" button (free users) / "More" sheet's Account
-       row (premium users) -- see js/avatar-menu.js for the open/close wiring
-       and CLIMB... no, see the tab-bar comment below for why Account moved
-       out of the tab bar entirely. -->
-  <button class="gl-avatar-btn" id="avatarBtn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
-    <svg viewBox="0 0 24 24" class="gl-avatar-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-  </button>
-  <div class="gl-avatar-menu" id="avatarMenu" hidden role="menu" aria-label="Account menu">
-    <button type="button" class="gl-avatar-menu-item" data-avatar-action="account" role="menuitem">Account</button>
-    <button type="button" class="gl-avatar-menu-item" data-avatar-action="settings" role="menuitem">Settings</button>
-    <button type="button" class="gl-avatar-menu-item" data-avatar-action="signout" role="menuitem">Sign Out</button>
-  </div>
-
   <!-- No fixed top bar -- the bottom tab bar already shows what section
        you're in, so a persistent black title strip is redundant. Instead,
-       both the back button and the brand mark below are plain scrolling
-       content at the top of #appScroll (mirrors the premium in-app SPA's
-       own .back-btn: top-left, inline, scrolls away with the page instead
-       of sitting in a sticky bar -- see index.html's own .back-btn / #app.js
+       the back button and the brand mark below are plain scrolling content
+       at the top of #appScroll (mirrors the premium in-app SPA's own
+       .back-btn: top-left, inline, scrolls away with the page instead of
+       sitting in a sticky bar -- see index.html's own .back-btn / #app.js
        fighterGoBack()). Lives as a sibling of #app, which is all any
        screen's own render() ever touches, so both survive a screen's full
        innerHTML replacement automatically. Hidden on fullbleed screens
-       (Climb's iframe) via .gl-app--fullbleed in app.css. -->
+       (Climb's iframe) via .gl-app--fullbleed in app.css.
+
+       The account entry point (#avatarBtn/#avatarMenu, js/avatar-menu.js)
+       lives inside the brand row rather than as a fixed overlay -- it used
+       to be position:fixed so it never scrolled away, but that meant it
+       sat permanently on top of whatever page content happened to be
+       underneath that top-right corner, in the way while scrolling. It's
+       now plain scrolling content, positioned to the brand row's right
+       edge, so it behaves exactly like the brand mark itself: visible at
+       the top of the page, gone once you scroll past it. -->
   <main class="gl-app" id="appScroll">
     <button class="gl-back-inline" id="pageBackBtn" hidden aria-label="Back">&larr; Back</button>
     <div class="gl-page-brand">
       <img class="gl-page-brand-logo" src="https://gillylab.com/gl-logo.png?v=8" alt="">
       <span>GILLY<span class="a">LAB</span></span>
+      <button class="gl-avatar-btn" id="avatarBtn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" class="gl-avatar-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <div class="gl-avatar-menu" id="avatarMenu" hidden role="menu" aria-label="Account menu">
+        <button type="button" class="gl-avatar-menu-item" data-avatar-action="account" role="menuitem">Account</button>
+        <button type="button" class="gl-avatar-menu-item" data-avatar-action="settings" role="menuitem">Settings</button>
+        <button type="button" class="gl-avatar-menu-item" data-avatar-action="signout" role="menuitem">Sign Out</button>
+      </div>
     </div>
     <div id="app"></div>
   </main>

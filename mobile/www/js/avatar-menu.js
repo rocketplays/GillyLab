@@ -1,8 +1,9 @@
 // Persistent top-right account entry point -- see index.html's #avatarBtn/
-// #avatarMenu (fixed-position siblings of #appScroll, so they're on every
-// screen and never get wiped by a screen's own innerHTML replacement of
-// #app) and the tab-bar comment in index.html for why Account moved out
-// of the bottom tab bar entirely. A small dropdown, not a bottom sheet like
+// #avatarMenu (scrolling content inside the brand row, a sibling of #app,
+// so they're on every screen and never get wiped by a screen's own
+// innerHTML replacement of #app) and the tab-bar comment in index.html for
+// why Account moved out of the bottom tab bar entirely. A small dropdown,
+// not a bottom sheet like
 // js/more-sheet.js's -- three short menu items don't need a sheet, and a
 // dropdown anchored under the button is the more familiar pattern for an
 // account/settings/sign-out menu specifically.

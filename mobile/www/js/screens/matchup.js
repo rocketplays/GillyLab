@@ -113,6 +113,28 @@ function mountMatchup(container){
     return '';
   }
 
+  // Regular (non-numbered, non-DWCS) event title treatment -- there's no
+  // exact site function to port here: the site's own highlightFightNight()
+  // just highlights a literal "Fight Night" substring, because the site's
+  // evt.name collapses every regular event to that generic string (the real
+  // billed title lives only in evt.espnName, which the site itself barely
+  // uses). This app is different: worker/pages.js's eventToCard() already
+  // builds card.event with espnName prioritized first, so c.event/card.event
+  // here already carry the full real title (e.g. "Noche UFC: Silva vs.
+  // Delgado") for every event. So for a regular event, split on the last
+  // colon -- the promotion prefix stays the default text color, the fight
+  // billing after it renders in the accent green (.mf-event-billing) --
+  // falling back to highlighting a literal "Fight Night" substring (mirrors
+  // the site's own generic-event treatment) when there's no colon to split.
+  function regularEventNameHTML(name){
+    var n = String(name || '');
+    var i = n.lastIndexOf(':');
+    if (i !== -1){
+      return esc(n.slice(0, i + 1)) + ' <span class="mf-event-billing">' + esc(n.slice(i + 1).trim()) + '</span>';
+    }
+    return esc(n).replace(/Fight Night/i, function(m){ return '<span class="mf-event-billing">' + m + '</span>'; });
+  }
+
   function avatar(slug, name){
     var ini = window.GL_FIGHTER.initials(name);
     return (
@@ -302,7 +324,10 @@ function mountMatchup(container){
   }
   function closingOddsHTML(f, res){
     if (f.o1 == null && f.o2 == null) return '';
-    var fmt = function(o){ return o == null ? '—' : (o > 0 ? '+' + o : '' + o); };
+    // f.o1/f.o2 are already pre-formatted, signed strings (e.g. "+128"),
+    // same convention as this file's top-level fmtOdds -- do not re-prepend
+    // "+", that double-signs any plus-money value ("++128").
+    var fmt = function(o){ return o == null ? '—' : String(o); };
     var favSide = (f.o1 != null && f.o2 != null) ? (f.o1 <= f.o2 ? 1 : 2) : null;
     var winSide = (res && res.winner) ? (res.winner === f.f1 ? 1 : (res.winner === f.f2 ? 2 : 0)) : 0;
     var winOdds = winSide === 1 ? f.o1 : (winSide === 2 ? f.o2 : null);
@@ -328,8 +353,12 @@ function mountMatchup(container){
       '<button type="button" class="mf-statsbtn" data-box-i="' + i + '" onclick="event.stopPropagation()">View Full Fight Stats &rsaquo;</button></div>';
   }
   function completedPanelHTML(f, res){
-    var body = resultRecapHTML(f, res) + statsGlanceHTML(f);
-    if (subscribed) body += closingOddsHTML(f, res) + statsBtnHTML(f);
+    // Mirrors the site's fightDetailsPanelHTML order exactly: result recap,
+    // then closing odds, then stats-at-a-glance, then the box-score button.
+    var body = resultRecapHTML(f, res);
+    if (subscribed) body += closingOddsHTML(f, res);
+    body += statsGlanceHTML(f);
+    if (subscribed) body += statsBtnHTML(f);
     return body;
   }
 
@@ -428,7 +457,7 @@ function mountMatchup(container){
       return (
         '<div class="mf-ev-slide" data-slug="' + esc(c.slug) + '">' +
           '<div class="mf-ev-slide-hdr' + (special ? ' ' + special : '') + '">' +
-            '<div class="mf-ev-slide-name">' + esc(c.event) + '</div>' +
+            '<div class="mf-ev-slide-name">' + (special ? esc(c.event) : regularEventNameHTML(c.event)) + '</div>' +
             '<div class="mf-ev-slide-sub">' + esc([when, c.location || c.city].filter(Boolean).join(' · ')) + '</div>' +
           '</div>' +
           cardBodyHTML(c, c.deepDive || { available: false }, c.breakdown || null) +
@@ -758,7 +787,7 @@ function mountMatchup(container){
     return (
       '<div class="mf-event-header' + (special ? ' ' + special : '') + '">' +
         '<div class="mf-event-info">' +
-          '<h1 class="mf-event-name">' + (card ? esc(card.event) : 'No card yet') + '</h1>' +
+          '<h1 class="mf-event-name">' + (card ? (special ? esc(card.event) : regularEventNameHTML(card.event)) : 'No card yet') + '</h1>' +
           (card ? '<div class="mf-event-details">' + esc(fmtDate(card.prelimsAt || card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</div>' : '') +
         '</div>' +
         (card ? '<div class="mf-event-countdown"><div class="mf-cd-label">Time Until Event</div><div class="mf-cd-time" id="mfCountdown">—</div></div>' : '') +
