@@ -16,6 +16,23 @@
   <div id="bgfx"></div>
   <div id="bgedge"></div>
 
+  <!-- Persistent top-right account entry point -- lives as a fixed-position
+       sibling of #appScroll (not inside it), so it survives every screen's
+       full innerHTML replacement of #app the same way the tab bar does, and
+       stays onscreen instead of scrolling away with the page. Replaces the
+       old bottom-tab "Account" button (free users) / "More" sheet's Account
+       row (premium users) -- see js/avatar-menu.js for the open/close wiring
+       and CLIMB... no, see the tab-bar comment below for why Account moved
+       out of the tab bar entirely. -->
+  <button class="gl-avatar-btn" id="avatarBtn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
+    <svg viewBox="0 0 24 24" class="gl-avatar-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+  <div class="gl-avatar-menu" id="avatarMenu" hidden role="menu" aria-label="Account menu">
+    <button type="button" class="gl-avatar-menu-item" data-avatar-action="account" role="menuitem">Account</button>
+    <button type="button" class="gl-avatar-menu-item" data-avatar-action="settings" role="menuitem">Settings</button>
+    <button type="button" class="gl-avatar-menu-item" data-avatar-action="signout" role="menuitem">Sign Out</button>
+  </div>
+
   <!-- No fixed top bar -- the bottom tab bar already shows what section
        you're in, so a persistent black title strip is redundant. Instead,
        both the back button and the brand mark below are plain scrolling
@@ -40,17 +57,17 @@
        milestone. A carefully-styled web tab bar with safe-area insets and
        haptic feedback on tap reads as native to nearly everyone using the app.
 
-       Free users keep the original 7-destination bar in full -- Home, Card,
-       Pick'em, Climb, Rankings, Roster, Account -- nothing hidden behind an
-       extra tap. Premium adds enough net-new tools (Fight Simulator, and
-       more to come) that cramming them in as direct tabs too would blow past
-       7 items, so for a PREMIUM account only, the last slot swaps from
-       Account to a "More" tab (js/more-sheet.js's bottom sheet), which holds
-       Account plus the premium-only tools. Both the "account" and "more"
-       buttons below always exist in the DOM; js/subscription.js toggles
-       which one is hidden once it knows the signed-in account's plan (see
-       router.js's setPremiumMode). Order/curation here is provisional --
-       to be revisited once more premium features land. -->
+       Account is no longer a tab at all, for free OR premium -- it moved to
+       the persistent top-right avatar button (see #avatarBtn above, and
+       js/avatar-menu.js) so it's reachable from every screen without eating
+       a tab slot. Free users get 6 direct tabs -- Home, Card, Pick'em,
+       Climb, Rankings, Roster. Premium adds a 7th, "More" (js/more-sheet.js's
+       bottom sheet), for net-new tools that don't warrant their own button
+       yet (Fight Simulator today). The "more" button below always exists in
+       the DOM; js/subscription.js toggles it hidden/visible once it knows
+       the signed-in account's plan (see router.js's setPremiumMode). Order/
+       curation here is provisional -- to be revisited once more premium
+       features land. -->
   <nav class="gl-tabbar" id="tabbar">
     <button class="gl-tab" data-route="home" aria-label="Home">
       <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
@@ -82,21 +99,17 @@
       <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="5.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18.5" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 19c.7-3 2.8-4.6 5.2-4.9M20 19c-.7-3-2.8-4.6-5.2-4.9M8.5 19.5c.6-3.2 1.9-4.9 3.5-4.9s2.9 1.7 3.5 4.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       <span>Roster</span>
     </button>
-    <button class="gl-tab" data-route="account" aria-label="Account">
-      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span>Account</span>
-    </button>
     <button class="gl-tab" data-route="more" aria-label="More" hidden>
       <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
       <span>More</span>
     </button>
   </nav>
 
-  <!-- "More" tab's overflow sheet -- premium-only, replaces the Account tab
-       in that same slot (see the tab-bar comment above + more-sheet.js).
-       Holds Account plus premium-only tools (Fight Simulator today, more as
-       they ship) -- Rankings/Climb are direct tabs for everyone, so they're
-       not in here. A new, app-native bottom-sheet pattern (slides up from
+  <!-- "More" tab's overflow sheet -- premium-only, the 7th tab slot (see the
+       tab-bar comment above + more-sheet.js). Holds premium-only tools
+       (Fight Simulator today, more as they ship) -- Account lives in the
+       top-right avatar menu now, not in here, and Rankings/Climb are direct
+       tabs for everyone. A new, app-native bottom-sheet pattern (slides up from
        behind the tab bar), not the site's borrowed centered-dialog #mh-box
        style used for the Deep Dive modal -- that CSS is the SITE's own
        injected stylesheet and has no bottom-sheet variant to copy. -->
@@ -111,6 +124,7 @@
   <script src="js/native.js"></script>
   <script src="js/router.js"></script>
   <script src="js/more-sheet.js"></script>
+  <script src="js/avatar-menu.js"></script>
   <script src="js/subscription.js"></script>
   <script src="js/screens/home.js"></script>
   <script src="js/screens/climb.js"></script>
@@ -120,6 +134,7 @@
   <script src="js/screens/matchup.js"></script>
   <script src="js/screens/rankings.js"></script>
   <script src="js/screens/account.js"></script>
+  <script src="js/screens/settings.js"></script>
   <script src="js/screens/premium.js"></script>
   <script src="js/screens/simulator.js"></script>
   <script src="js/screens/login.js"></script>

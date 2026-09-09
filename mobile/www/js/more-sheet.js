@@ -1,9 +1,9 @@
-// The tab bar's "More" overflow -- PREMIUM ONLY. Free users keep Account as
-// its own direct tab (see index.html's tab-bar comment); for a premium
-// account, that slot becomes this "More" tab instead, holding Account plus
-// whatever premium-only tools don't get (or don't yet warrant) their own
-// bar button -- Fight Simulator today, more as they ship. Rankings/Climb
-// stay direct tabs for everyone, so they're not listed here.
+// The tab bar's "More" overflow -- PREMIUM ONLY, the 7th tab slot for a
+// premium account (see index.html's tab-bar comment). Holds premium-only
+// tools that don't get (or don't yet warrant) their own bar button -- Fight
+// Simulator today, more as they ship. Account lives in the persistent
+// top-right avatar menu now (see js/avatar-menu.js), not in here, and
+// Rankings/Climb stay direct tabs for everyone.
 // A bottom sheet (slides up from behind the tab bar), not the site-borrowed
 // centered #mh-box dialog matchup.js's Deep Dive modal uses -- that CSS is
 // the SITE's own injected stylesheet (worker/matchup-free.js's hubCss) and
@@ -14,26 +14,18 @@
 window.GL_MORE = (function(){
   // Order here is the order the premium FEATURE items appear in the sheet --
   // this curation is provisional, to be revisited once more premium
-  // features land. Account is deliberately kept separate from this list
-  // (not just placed last in it) and always appended after it at render
-  // time, so it's guaranteed to stay the bottom-most item no matter what
-  // gets added to FEATURE_ITEMS later -- nobody has to remember to keep it
-  // last.
+  // features land.
   var FEATURE_ITEMS = [
     {
       route: 'simulator', label: 'Fight Simulator', premium: true,
       icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.7v6.6l5.5-3.3z" fill="currentColor"/></svg>',
     },
   ];
-  var ACCOUNT_ITEM = {
-    route: 'account', label: 'Account',
-    icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
-  };
 
   var overlay, sheet, list, scrollY = 0, wired = false, isOpen = false;
 
   function render(activeRoute){
-    var items = FEATURE_ITEMS.concat([ACCOUNT_ITEM]);
+    var items = FEATURE_ITEMS;
     list.innerHTML = items.map(function(it){
       return (
         '<button type="button" class="more-item' + (it.route === activeRoute ? ' active' : '') + '" data-route="' + it.route + '">' +

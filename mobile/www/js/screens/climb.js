@@ -12,10 +12,21 @@
 // game's CSS assumes it owns the whole page (fonts, background, viewport),
 // which an iframe gives it for free without a fight against the app shell's
 // own styles.
+//
+// NOT fullbleed (that flag existed for exactly this screen, but was dropped
+// -- see git history/CSS comments if it resurfaces elsewhere): fullbleed
+// pinned the brand header in a flex row above the iframe with the
+// container's own overflow:hidden, which kept the header on screen
+// permanently instead of scrolling away the way it does on every other
+// page. Rendering as a normal (scrolling) screen instead, with the iframe
+// itself sized to fill the visible viewport below the header via
+// .gl-embed-frame's own calc'd height (app.css) -- looks identical to the
+// old fullbleed layout when the page hasn't been scrolled, but the header
+// is real scrolling content above it now, same mechanism as any other
+// screen, rather than a second, independent thing.
 window.GL_ROUTER.register('climb', {
   title: 'The Climb',
   tab: 'climb',
-  fullbleed: true,
   render: function(container){
     container.innerHTML = '<iframe class="gl-embed-frame" src="climb-game.html" title="The Climb"></iframe>';
   }

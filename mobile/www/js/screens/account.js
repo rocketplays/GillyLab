@@ -1,6 +1,10 @@
 window.GL_ROUTER.register('account', {
   title: 'Account',
-  tab: 'account',
+  // No longer a tab-bar destination -- reached via the top-right avatar
+  // menu (see js/avatar-menu.js) instead, so there's no `tab` here for
+  // router.js to highlight. showBack gives it the plain inline back arrow
+  // like any other pushed screen (fighter profile, settings, etc).
+  showBack: true,
   render: function(container){
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
     function fmtDate(ms){

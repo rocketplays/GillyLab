@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function(){
   window.GL_NATIVE.init();
   window.GL_AUTH.ready.then(function(){
     window.GL_ROUTER.init();
+    window.GL_AVATAR_MENU.init();
     // Tab bar starts in the plain (non-premium) layout -- this swaps the
     // Account tab for More once the subscription check resolves, so a
     // premium user briefly sees Account before it flips to More rather
