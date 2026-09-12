@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T21:50:48.096Z",
+ "generatedAt": "2026-09-12T22:21:31.098Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9398,6 +9398,194 @@
       ]
      },
      "capturedAt": "2026-09-12T21:50:47.970Z"
+    }
+   ]
+  },
+  "Waldo Cortes Acosta": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Curtis Blaydes",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Curtis Blaydes",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 95,
+      "totL": 30,
+      "totA": 97,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       21,
+       87
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       28,
+       95
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 74,
+      "totL": 32,
+      "totA": 82,
+      "tdL": 4,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:38",
+      "head": [
+       5,
+       50
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       23,
+       73
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-12T22:21:30.966Z"
+    }
+   ]
+  },
+  "Curtis Blaydes": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Waldo Cortes Acosta",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Waldo Cortes Acosta",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 74,
+      "totL": 32,
+      "totA": 82,
+      "tdL": 4,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:38",
+      "head": [
+       5,
+       50
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       23,
+       73
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 95,
+      "totL": 30,
+      "totA": 97,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       21,
+       87
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       28,
+       95
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-12T22:21:30.966Z"
     }
    ]
   }
