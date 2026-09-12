@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T20:04:02.330Z",
+ "generatedAt": "2026-09-12T20:34:28.752Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8834,6 +8834,194 @@
       ]
      },
      "capturedAt": "2026-09-12T20:04:02.202Z"
+    }
+   ]
+  },
+  "Ignacio Bahamondes": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Muslim Salikhov",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Muslim Salikhov",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 78,
+      "sigA": 160,
+      "totL": 91,
+      "totA": 175,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       39,
+       104
+      ],
+      "body": [
+       17,
+       26
+      ],
+      "leg": [
+       22,
+       30
+      ],
+      "dist": [
+       66,
+       143
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       10,
+       15
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 42,
+      "sigA": 97,
+      "totL": 44,
+      "totA": 102,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:16",
+      "head": [
+       12,
+       57
+      ],
+      "body": [
+       10,
+       17
+      ],
+      "leg": [
+       20,
+       23
+      ],
+      "dist": [
+       38,
+       87
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       4,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-12T20:34:28.624Z"
+    }
+   ]
+  },
+  "Muslim Salikhov": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Ignacio Bahamondes",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Ignacio Bahamondes",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 42,
+      "sigA": 97,
+      "totL": 44,
+      "totA": 102,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:16",
+      "head": [
+       12,
+       57
+      ],
+      "body": [
+       10,
+       17
+      ],
+      "leg": [
+       20,
+       23
+      ],
+      "dist": [
+       38,
+       87
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       4,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 78,
+      "sigA": 160,
+      "totL": 91,
+      "totA": 175,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       39,
+       104
+      ],
+      "body": [
+       17,
+       26
+      ],
+      "leg": [
+       22,
+       30
+      ],
+      "dist": [
+       66,
+       143
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       10,
+       15
+      ]
+     },
+     "capturedAt": "2026-09-12T20:34:28.624Z"
     }
    ]
   }
