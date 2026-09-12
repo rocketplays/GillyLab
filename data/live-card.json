@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T23:22:56.952Z",
+ "generatedAt": "2026-09-12T23:53:24.374Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9962,6 +9962,194 @@
       ]
      },
      "capturedAt": "2026-09-12T23:22:56.839Z"
+    }
+   ]
+  },
+  "Brandon Moreno": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Joseph Morales",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Joseph Morales",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 67,
+      "sigA": 180,
+      "totL": 71,
+      "totA": 184,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:34",
+      "head": [
+       35,
+       144
+      ],
+      "body": [
+       22,
+       26
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       61,
+       171
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       2,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 183,
+      "totL": 77,
+      "totA": 189,
+      "tdL": 1,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:35",
+      "head": [
+       58,
+       163
+      ],
+      "body": [
+       9,
+       14
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       61,
+       170
+      ],
+      "clinch": [
+       7,
+       10
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-09-12T23:53:24.241Z"
+    }
+   ]
+  },
+  "Joseph Morales": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Brandon Moreno",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Brandon Moreno",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 183,
+      "totL": 77,
+      "totA": 189,
+      "tdL": 1,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:35",
+      "head": [
+       58,
+       163
+      ],
+      "body": [
+       9,
+       14
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       61,
+       170
+      ],
+      "clinch": [
+       7,
+       10
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 67,
+      "sigA": 180,
+      "totL": 71,
+      "totA": 184,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:34",
+      "head": [
+       35,
+       144
+      ],
+      "body": [
+       22,
+       26
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       61,
+       171
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       2,
+       5
+      ]
+     },
+     "capturedAt": "2026-09-12T23:53:24.241Z"
     }
    ]
   }
