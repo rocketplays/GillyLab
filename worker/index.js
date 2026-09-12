@@ -20,7 +20,7 @@
 import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
 import fighterExtras from "./fighter-extras.js";
-import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown } from "./fight-sim.js";
+import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown, customSimBase, customSimMethodBaseline } from "./fight-sim.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -3282,6 +3282,48 @@ export default {
           // here for an arbitrary pair instead of precomputed at build time.
           breakdown: matchupBreakdown(nameA, nameB),
         }, 200, cors);
+      }
+      // "Build Your Own Simulation" -- the custom-weighting simulator modal's
+      // one data dependency. Same premium gate and name-resolution shape as
+      // /api/app/fight-sim just above, but returns the small fixed "base"
+      // object (per-category power-score components for both fighters, plus
+      // the style/closeness/h2h/unproven/k pipeline pieces) that
+      // customSimBase() computes once from the real functions -- see that
+      // function's own comment in worker/fight-sim.js. Everything the modal
+      // does AFTER that (edge sliders, the shared-100% weight pool, the
+      // calibrated-vs-custom probability comparison) is pure client-side
+      // arithmetic over this one payload, so this endpoint is called once per
+      // "Build Your Own Simulation" tap, never again per slider drag.
+      if (path === "/api/app/custom-sim-base" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
+        const rawA = (url.searchParams.get("a") || "").trim();
+        const rawB = (url.searchParams.get("b") || "").trim();
+        if (!rawA || !rawB) return json({ error: "missing a/b fighter name" }, 400, cors);
+        const nameA = canonicalSimName(rawA);
+        const nameB = canonicalSimName(rawB);
+        if (!nameA) return json({ error: "unknown fighter: " + rawA }, 404, cors);
+        if (!nameB) return json({ error: "unknown fighter: " + rawB }, 404, cors);
+        if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
+        const rounds = url.searchParams.get("rounds") === "5" ? 5 : 3;
+        const base = customSimBase(nameA, nameB, rounds);
+        const methodBaseline = customSimMethodBaseline(nameA, nameB, rounds);
+        // Same slug lookup as /api/app/fight-sim, for the modal's clickable
+        // header avatars/names.
+        const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+        const bySlug = (lite && lite.bySlug) || {};
+        let slugA = null, slugB = null, recA = null, recB = null;
+        for (const slug in bySlug) {
+          const f = bySlug[slug];
+          if (!f) continue;
+          if (!slugA && f.name === nameA) { slugA = f.slug || slug; recA = f.record || null; }
+          if (!slugB && f.name === nameB) { slugB = f.slug || slug; recB = f.record || null; }
+          if (slugA && slugB) break;
+        }
+        return json({ base, methodBaseline, slugA, slugB, recA, recB }, 200, cors);
       }
       // Home dashboard's Bet Tracker teaser: top of the real units
       // leaderboard, same underlying data handleBetsLeaderboard uses (see

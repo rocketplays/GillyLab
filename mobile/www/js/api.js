@@ -67,6 +67,14 @@ window.GL_API = (function(){
     fightSim: function(nameA, nameB, rounds){
       return request('/api/app/fight-sim?a=' + encodeURIComponent(nameA) + '&b=' + encodeURIComponent(nameB) + '&rounds=' + (rounds === 5 ? 5 : 3));
     },
+    // "Build Your Own Simulation" -- the one data fetch the custom-weighting
+    // modal needs (see worker/index.js's /api/app/custom-sim-base +
+    // worker/fight-sim.js's customSimBase/customSimMethodBaseline). Called
+    // once when the modal opens; every slider drag after that is pure
+    // client-side math in simulator.js, no further requests.
+    customSimBase: function(nameA, nameB, rounds){
+      return request('/api/app/custom-sim-base?a=' + encodeURIComponent(nameA) + '&b=' + encodeURIComponent(nameB) + '&rounds=' + (rounds === 5 ? 5 : 3));
+    },
     fighterSearch: function(q){ return request('/api/fighter-search?q=' + encodeURIComponent(q)); },
     // The site's own /subscribe feature-tile carousel (CSS/markup/script,
     // already premium-only), reused as-is for Go Premium -- see

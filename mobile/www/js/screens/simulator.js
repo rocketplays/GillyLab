@@ -31,6 +31,9 @@ window.GL_SIMULATOR = (function(){
   // below for what these hold and why this screen only ever has one entry
   // rather than matchup.js's slug-keyed map.
   var hubEntry = null, hubTabState = { tab: 'striking', filter: 'all' }, hubScrollY = 0, activeContainer = null;
+  // Custom Simulator ("Build Your Own Simulation") state -- see the section
+  // below this file's own breakdownHTML() for what these hold.
+  var csState = null, csScrollY = 0;
   function surname(n){
     var p = String(n || '').trim().split(/\s+/);
     var i = p.length - 1;
@@ -262,6 +265,461 @@ window.GL_SIMULATOR = (function(){
     return parts.join('');
   }
 
+  // ── Build Your Own Simulation ("Custom Simulator") ──────────────────────
+  // App-native port of index.html's cs*() functions (see that block's own
+  // header comment). One fetch when the modal opens (GL_API.customSimBase --
+  // worker/index.js's /api/app/custom-sim-base -> worker/fight-sim.js's
+  // customSimBase()/customSimMethodBaseline(), the real per-category
+  // power-score components for both fighters plus the fixed style/closeness/
+  // h2h/unproven/k pipeline pieces the site's own csBuildBase() computes),
+  // then every slider drag below is pure client-side arithmetic over that
+  // one small object -- no further requests, same as the site.
+  var CS_CATEGORIES = [
+    { key: 'striking',   name: 'Striking',              desc: 'Volume and accuracy landed minus damage absorbed.' },
+    { key: 'wrestling',  name: 'Wrestling',              desc: 'Ability to get it to the mat or keep the fight standing.' },
+    { key: 'grappling',  name: 'Grappling / Submissions', desc: 'Ability to find submissions on the mat, or stay safe from submission attempts.' },
+    { key: 'finishing',  name: 'Finishing power',        desc: 'Finish rate and knockdowns scored.' },
+    { key: 'form',       name: 'Recent form',            desc: 'Current win streak / momentum.' },
+    { key: 'durability', name: 'Durability / chin',      desc: 'A proven pattern of being able to withstand damage.' },
+    { key: 'schedule',   name: 'Strength of schedule',   desc: 'Quality-of-opposition multiplier applied to striking, grappling, and finishing.' },
+    { key: 'fightIQ',    name: 'Fight IQ',               desc: 'Gameplanning, in-fight adjustments, and ability to execute the gameplan.', userOnly: true },
+  ];
+  var CS_EDGE_FLOOR = { striking: 4, wrestling: 3, grappling: 2.5, finishing: 5, form: 1.5, durability: 1.2, schedule: 1.5, fightIQ: 5 };
+  var CS_EQUAL_SHARE = 100 / CS_CATEGORIES.length;
+  var CS_METHOD_SENSITIVITY = 0.35;
+  // Matches worker/fight-sim.js's customSimMethodBaseline() comment: the two
+  // constants simMethodDistribution's own winProb-dependent "dominance" bend
+  // uses, applied here client-side against the server-supplied pre-dominance
+  // {selfFin, koShare} baseline instead of round-tripping per slider drag.
+  var CS_DOMINANCE_K = 0.30, CS_DOMINANCE_FACTOR_CAP = 2.2;
+
+  function csRawGap(catKey, base) {
+    if (catKey === 'fightIQ') return 0;
+    return base.bdB.components[catKey] - base.bdA.components[catKey];
+  }
+  function csEdgeMax(catKey, base) {
+    var floor = CS_EDGE_FLOOR[catKey] || 4;
+    return Math.max(floor, Math.abs(csRawGap(catKey, base)) * 1.8);
+  }
+  function csClampedGap(catKey, base) {
+    var max = csEdgeMax(catKey, base);
+    return Math.max(-max, Math.min(max, csRawGap(catKey, base)));
+  }
+  function csWeightMult(catKey) { return csState.cats[catKey].weightPct / CS_EQUAL_SHARE; }
+  function csDefaultCats(base) {
+    var cats = {};
+    CS_CATEGORIES.forEach(function(c){ cats[c.key] = { edge: csRawGap(c.key, base), weightPct: CS_EQUAL_SHARE, locked: false }; });
+    return cats;
+  }
+  function csLockedSum(excludeKey) {
+    return CS_CATEGORIES.reduce(function(s, c){
+      return s + ((c.key !== excludeKey && csState.cats[c.key].locked) ? csState.cats[c.key].weightPct : 0);
+    }, 0);
+  }
+  // "Pie allocator" redistribution -- locked categories are walled off
+  // entirely (never move, never counted as room to borrow from); only the
+  // unlocked "free" categories (excluding the one being dragged) absorb the
+  // remainder, proportional to their current shares, so the total across all
+  // eight always comes out to 100.
+  function csNormalizeWeights(catKey, newVal) {
+    var lockedSum = csLockedSum(catKey);
+    var room = Math.max(0, 100 - lockedSum);
+    newVal = Math.max(0, Math.min(room, newVal));
+    var freeOthers = CS_CATEGORIES.map(function(c){ return c.key; }).filter(function(k){ return k !== catKey && !csState.cats[k].locked; });
+    var remaining = room - newVal;
+    if (freeOthers.length > 0) {
+      var oldFreeSum = freeOthers.reduce(function(s, k){ return s + csState.cats[k].weightPct; }, 0);
+      if (oldFreeSum <= 0.0001) {
+        freeOthers.forEach(function(k){ csState.cats[k].weightPct = remaining / freeOthers.length; });
+      } else {
+        freeOthers.forEach(function(k){ csState.cats[k].weightPct = (csState.cats[k].weightPct / oldFreeSum) * remaining; });
+      }
+    }
+    csState.cats[catKey].weightPct = newVal;
+  }
+  function csToggleLock(catKey) {
+    var st = csState.cats[catKey];
+    if (st.locked) { st.locked = false; return; }
+    var room = Math.max(0, 100 - csLockedSum(catKey));
+    if (st.weightPct > room) csNormalizeWeights(catKey, room);
+    st.locked = true;
+  }
+  function csCustomDiff() {
+    var diff = csState.base.bdA.components.other - csState.base.bdB.components.other;
+    CS_CATEGORIES.forEach(function(c){
+      var st = csState.cats[c.key];
+      diff += -st.edge * csWeightMult(c.key);
+    });
+    return diff;
+  }
+  function csProbFromDiff(saMinusSb, base) {
+    var statDiff = (saMinusSb + base.styleDelta) * (1 - 0.8 * base.closeness);
+    var diff = statDiff + base.h2h - base.unpA + base.unpB;
+    var raw = 1 / (1 + Math.exp(-diff / base.k));
+    return Math.min(0.96, Math.max(0.04, raw));
+  }
+  // The winProb-dependent tail of index.html's simMethodDistribution --
+  // dominance bend (a bigger favorite finishes more) plus the 5-round
+  // decision-to-finish shift -- run here against the server-supplied
+  // pre-dominance baseline instead of FIGHT_HISTORY, so it's cheap enough to
+  // rerun on every slider input event. See worker/fight-sim.js's
+  // customSimMethodBaseline() for the baseline half of this split.
+  function csMethodFromBaseline(baseline, winProb, rounds) {
+    var selfFin = baseline.selfFin, koShare = baseline.koShare;
+    if (winProb != null && winProb > 0 && winProb < 1) {
+      var domFactor = Math.min(CS_DOMINANCE_FACTOR_CAP, Math.max(1 / CS_DOMINANCE_FACTOR_CAP,
+        Math.pow(winProb / (1 - winProb), CS_DOMINANCE_K)));
+      var fo = (selfFin / (1 - selfFin)) * domFactor;
+      selfFin = fo / (1 + fo);
+    }
+    var pKO = selfFin * koShare;
+    var pSub = selfFin * (1 - koShare);
+    var pDec = 1 - selfFin;
+    if (rounds === 5 && pDec > 0) {
+      var shift = pDec * 0.15;
+      var finTot = (pKO + pSub) || 1;
+      pKO += shift * (pKO / finTot);
+      pSub += shift * (pSub / finTot);
+      pDec -= shift;
+    }
+    return { 'KO/TKO': pKO, 'Submission': pSub, 'Decision': pDec };
+  }
+  function csMethodDeviation(catKey) {
+    var base = csState.base;
+    var max = csEdgeMax(catKey, base);
+    if (!max) return 0;
+    return (csState.cats[catKey].edge - csClampedGap(catKey, base)) / max;
+  }
+  // {KO/TKO, Submission, Decision} for a win by nameA (winnerKey 'A') or
+  // nameB ('B'). applyDeviation=false reproduces the calibrated model's own
+  // method read (winProb = the calibrated probability); applyDeviation=true
+  // bends it by the finishing/grappling/durability slider deviations only,
+  // for "Your custom read" -- same split as the site's csMethodFor().
+  function csMethodFor(winnerKey, winProb, applyDeviation) {
+    var baseline = winnerKey === 'A' ? csState.methodBaseline.aWins : csState.methodBaseline.bWins;
+    var real = csMethodFromBaseline(baseline, winProb, csState.base.rounds);
+    if (!applyDeviation) return real;
+    var finDev = csMethodDeviation('finishing');
+    var grapDev = csMethodDeviation('grappling');
+    var durDev = csMethodDeviation('durability');
+    var sideSign = winnerKey === 'A' ? -1 : 1;
+    var koAdj = sideSign * finDev * CS_METHOD_SENSITIVITY;
+    var subAdj = sideSign * grapDev * CS_METHOD_SENSITIVITY;
+    var loserIsB = winnerKey === 'A';
+    var finRateAdj = (loserIsB ? -1 : 1) * durDev * CS_METHOD_SENSITIVITY;
+    var ko = real['KO/TKO'], sub = real['Submission'];
+    var finRate = ko + sub;
+    var koShare0 = finRate > 0 ? ko / finRate : 0.5;
+    var subShare0 = finRate > 0 ? sub / finRate : 0.5;
+    var finRateNew = Math.max(0, Math.min(1, finRate + finRateAdj));
+    var koShareNew = Math.max(0, Math.min(1, koShare0 + koAdj));
+    var subShareNew = Math.max(0, Math.min(1, subShare0 + subAdj));
+    var shareTot = koShareNew + subShareNew;
+    if (shareTot > 0.0001) { koShareNew /= shareTot; subShareNew /= shareTot; }
+    else { koShareNew = 0.5; subShareNew = 0.5; }
+    var koNew = finRateNew * koShareNew;
+    var subNew = finRateNew * subShareNew;
+    return { 'KO/TKO': koNew, 'Submission': subNew, 'Decision': Math.max(0, 1 - koNew - subNew) };
+  }
+  function csMethodText(dist) {
+    return 'KO/TKO ' + Math.round(dist['KO/TKO'] * 100) + '% &middot; Sub ' +
+      Math.round(dist['Submission'] * 100) + '% &middot; Dec ' + Math.round(dist['Decision'] * 100) + '%';
+  }
+  function csEdgeBucket(value, catKey, base) {
+    var max = csEdgeMax(catKey, base);
+    var abs = Math.abs(value);
+    var mag;
+    if (abs < max * 0.1) mag = 'Roughly even';
+    else if (abs < max * 0.3) mag = 'Slight edge';
+    else if (abs < max * 0.6) mag = 'Clear edge';
+    else mag = 'Huge edge';
+    if (mag === 'Roughly even') return { text: mag, leader: null };
+    return { text: mag, leader: value < 0 ? csState.nameA : csState.nameB };
+  }
+  function csBucketLabel(b) { return b.leader ? (b.text + ': ' + b.leader) : b.text; }
+  function csFmtPct(v) {
+    var r = Math.round(v * 10) / 10;
+    return Number.isInteger(r) ? String(r) : r.toFixed(1);
+  }
+
+  function csModalHTML() {
+    return (
+      '<div id="cs-overlay"></div>' +
+      '<div id="cs-box" role="dialog" aria-modal="true" aria-label="Build your own simulation">' +
+        '<div class="cs-hd" id="cs-hd"></div>' +
+        '<div class="cs-tag">' +
+          '<div class="cs-tag-lbl">For each category, set <b>who\'s better and by how much</b>, then how much it <b>matters in this matchup</b> — a shared 100% pool across all eight, so raising one always lowers the others.</div>' +
+          '<button type="button" class="cs-x" id="csCloseBtn" aria-label="Close">&times;</button>' +
+        '</div>' +
+        '<div class="cs-body" id="cs-body"></div>' +
+      '</div>'
+    );
+  }
+  function csHeaderHtml() {
+    var s = csState;
+    function side(name, slug, rec, right) {
+      var av = slug
+        ? '<div style="' + HUB_AV_STYLE + '"><img src="' + window.GL_FIGHTER.PHOTO_BASE + esc(slug) + '.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\'' + esc(hubInitials(name)) + '\'"></div>'
+        : '<div style="' + HUB_AV_STYLE + '">' + esc(hubInitials(name)) + '</div>';
+      return (
+        '<div class="cs-hd-f' + (right ? ' r' : '') + '" data-cs-open="' + (right ? 'b' : 'a') + '" role="button" tabindex="0">' +
+          '<span class="mh-hd-av">' + av + '</span>' +
+          '<div class="cs-hd-tx"><div class="cs-hd-nm">' + esc(name) + '</div>' + (rec ? '<div class="cs-hd-rc">' + esc(rec) + '</div>' : '') + '</div>' +
+        '</div>'
+      );
+    }
+    return side(s.nameA, s.slugA, s.recA, false) +
+      '<div class="cs-hd-mid"><div class="cs-hd-vs">VS</div></div>' +
+      side(s.nameB, s.slugB, s.recB, true);
+  }
+  function csOpenFighter(slug) {
+    if (!slug) return;
+    closeCustomSimulator();
+    setTimeout(function(){ window.GL_ROUTER.go('fighter', { slug: slug }); }, 80);
+  }
+  function csRenderResults() {
+    var base = csState.base;
+    var calDiff = base.bdA.total - base.bdB.total;
+    var curDiff = csCustomDiff();
+    var calPA = csProbFromDiff(calDiff, base), calPB = 1 - calPA;
+    var curPA = csProbFromDiff(curDiff, base), curPB = 1 - curPA;
+    var host = csState.host;
+    function setBar(prefix, pA, pB) {
+      var fillA = host.querySelector('#' + prefix + 'FillA'), fillB = host.querySelector('#' + prefix + 'FillB');
+      var pctA = host.querySelector('#' + prefix + 'PctA'), pctB = host.querySelector('#' + prefix + 'PctB');
+      if (fillA) fillA.style.width = (pA * 100).toFixed(1) + '%';
+      if (fillB) fillB.style.width = (pB * 100).toFixed(1) + '%';
+      if (pctA) pctA.textContent = Math.round(pA * 100) + '%';
+      if (pctB) pctB.textContent = Math.round(pB * 100) + '%';
+    }
+    setBar('csCal', calPA, calPB);
+    setBar('csCur', curPA, curPB);
+    function setMethod(idName, idVals, name, dist) {
+      var nmEl = host.querySelector('#' + idName), valEl = host.querySelector('#' + idVals);
+      if (nmEl) nmEl.textContent = surname(name);
+      if (valEl) valEl.innerHTML = csMethodText(dist);
+    }
+    setMethod('csCalMethodNameA', 'csCalMethodA', csState.nameA, csMethodFor('A', calPA, false));
+    setMethod('csCalMethodNameB', 'csCalMethodB', csState.nameB, csMethodFor('B', calPB, false));
+    setMethod('csCurMethodNameA', 'csCurMethodA', csState.nameA, csMethodFor('A', curPA, true));
+    setMethod('csCurMethodNameB', 'csCurMethodB', csState.nameB, csMethodFor('B', curPB, true));
+    var drift = Math.round((curPA - calPA) * 100);
+    var driftEl = host.querySelector('#csDriftNote');
+    if (driftEl) driftEl.textContent = Math.abs(drift) < 1 ? '' : (surname(csState.nameA) + ': ' + (drift > 0 ? '+' : '') + drift + ' pts win chance vs GillyLab model');
+  }
+  function csUpdateComputedBits() {
+    var base = csState.base;
+    var host = csState.host;
+    CS_CATEGORIES.forEach(function(c){
+      var st = csState.cats[c.key];
+      var cur = csEdgeBucket(st.edge, c.key, base);
+      var labelEl = host.querySelector('[data-cs-edge-label="' + c.key + '"]');
+      if (labelEl) labelEl.innerHTML = cur.leader ? (cur.text + ': <span class="cs-who">' + esc(cur.leader) + '</span>') : cur.text;
+      var subEl = host.querySelector('[data-cs-edge-sub="' + c.key + '"]');
+      if (subEl) {
+        if (c.userOnly) {
+          subEl.classList.remove('diff');
+          subEl.textContent = 'No model signal here — this one is your read only.';
+        } else {
+          var cal = csEdgeBucket(csClampedGap(c.key, base), c.key, base);
+          var same = cur.text === cal.text && cur.leader === cal.leader;
+          subEl.classList.toggle('diff', !same);
+          subEl.textContent = same ? 'Matches what the GillyLab model says' : ('GillyLab model says: ' + csBucketLabel(cal));
+        }
+      }
+      var wInput = host.querySelector('input[data-cs-role="weight"][data-cs-cat="' + c.key + '"]');
+      if (wInput) wInput.value = Math.round(st.weightPct);
+      var wLbl = host.querySelector('[data-cs-weight-pct="' + c.key + '"]');
+      if (wLbl) { wLbl.textContent = csFmtPct(st.weightPct) + '%'; wLbl.classList.toggle('zero', st.weightPct < 0.5); }
+    });
+  }
+  function csUpdateOutputsOnly() {
+    csUpdateComputedBits();
+    csRenderResults();
+  }
+  function csRenderCategories() {
+    var host = csState.host;
+    var catsHost = host.querySelector('#csCatsHost');
+    if (!catsHost) return;
+    var base = csState.base;
+    var html = '';
+    CS_CATEGORIES.forEach(function(c){
+      var st = csState.cats[c.key];
+      var tickHtml = c.userOnly ? '' :
+        '<div class="cs-edge-tick" style="left:' + (((csClampedGap(c.key, base) + csEdgeMax(c.key, base)) / (2 * csEdgeMax(c.key, base))) * 100) + '%"></div>';
+      var max = csEdgeMax(c.key, base);
+      html += '' +
+        '<div class="cs-cat">' +
+          '<div class="cs-cat-nm">' + esc(c.name) + (c.userOnly ? ' <span style="color:var(--muted);font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em">(your read only)</span>' : '') + '</div>' +
+          '<div class="cs-cat-desc">' + esc(c.desc) + '</div>' +
+          '<div class="cs-step">' +
+            '<div class="cs-step-lbl">Who\'s better here, and how clearly</div>' +
+            '<div class="cs-edge-label" data-cs-edge-label="' + c.key + '"></div>' +
+            '<div class="cs-edge-sub" data-cs-edge-sub="' + c.key + '"></div>' +
+            '<div class="cs-edge-track-wrap">' + tickHtml +
+              '<input type="range" min="' + (-max) + '" max="' + max + '" step="' + (max / 100) + '" value="' + st.edge + '" data-cs-cat="' + c.key + '" data-cs-role="edge">' +
+            '</div>' +
+            '<div class="cs-edge-endcaps"><span>' + esc(csState.nameA) + '</span><span>' + esc(csState.nameB) + '</span></div>' +
+          '</div>' +
+          '<div class="cs-step">' +
+            '<div class="cs-step-lbl">How much does it matter in this matchup? (pool of 100% across all eight' +
+              (st.locked ? ' &mdash; locked, the rest split the remainder' : '') + ')</div>' +
+            '<div class="cs-weight-row">' +
+              '<input type="range" min="0" max="100" step="1" value="' + Math.round(st.weightPct) + '" data-cs-cat="' + c.key + '" data-cs-role="weight"' + (st.locked ? ' disabled' : '') + '>' +
+              '<span class="cs-weight-pct' + (st.weightPct < 0.5 ? ' zero' : '') + '" data-cs-weight-pct="' + c.key + '">' + csFmtPct(st.weightPct) + '%</span>' +
+              '<button type="button" class="cs-lock-btn' + (st.locked ? ' locked' : '') + '" data-cs-cat="' + c.key + '" data-cs-role="lock">' + (st.locked ? 'Locked' : 'Lock') + '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    });
+    catsHost.innerHTML = html;
+    catsHost.querySelectorAll('input[data-cs-role="edge"]').forEach(function(inp){
+      inp.addEventListener('input', function(e){
+        var cat = e.target.getAttribute('data-cs-cat');
+        csState.cats[cat].edge = parseFloat(e.target.value);
+        csUpdateOutputsOnly();
+      });
+    });
+    catsHost.querySelectorAll('input[data-cs-role="weight"]').forEach(function(inp){
+      inp.addEventListener('input', function(e){
+        var cat = e.target.getAttribute('data-cs-cat');
+        csNormalizeWeights(cat, parseFloat(e.target.value));
+        csUpdateOutputsOnly();
+      });
+    });
+    catsHost.querySelectorAll('button[data-cs-role="lock"]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        window.GL_NATIVE.tap();
+        var cat = e.currentTarget.getAttribute('data-cs-cat');
+        csToggleLock(cat);
+        csRenderCategories();
+        csRenderResults();
+      });
+    });
+    csUpdateComputedBits();
+  }
+  function csResultsHtml() {
+    return '' +
+      '<div class="cs-results">' +
+        '<div class="cs-resbox">' +
+          '<div class="cs-res-lbl"><span>GillyLab Model</span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCalNameA"></span><div class="cs-track"><div class="cs-fill a" id="csCalFillA" style="width:50%"></div></div><span class="cs-pct" id="csCalPctA">50%</span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCalNameB"></span><div class="cs-track"><div class="cs-fill b" id="csCalFillB" style="width:50%"></div></div><span class="cs-pct" id="csCalPctB">50%</span></div>' +
+          '<div class="cs-method">' +
+            '<div class="cs-method-hd">Method of victory</div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCalMethodNameA"></span><span class="cs-method-vals" id="csCalMethodA"></span></div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCalMethodNameB"></span><span class="cs-method-vals" id="csCalMethodB"></span></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cs-resbox custom">' +
+          '<div class="cs-res-lbl"><span>Your custom read</span><span class="cs-drift" id="csDriftNote"></span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCurNameA"></span><div class="cs-track"><div class="cs-fill a" id="csCurFillA" style="width:50%"></div></div><span class="cs-pct" id="csCurPctA">50%</span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCurNameB"></span><div class="cs-track"><div class="cs-fill b" id="csCurFillB" style="width:50%"></div></div><span class="cs-pct" id="csCurPctB">50%</span></div>' +
+          '<div class="cs-method">' +
+            '<div class="cs-method-hd">Method of victory <span style="color:var(--muted);font-weight:600">(driven by finishing power, grappling, and durability only)</span></div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCurMethodNameA"></span><span class="cs-method-vals" id="csCurMethodA"></span></div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCurMethodNameB"></span><span class="cs-method-vals" id="csCurMethodB"></span></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div id="csCatsHost"></div>' +
+      '<button type="button" class="cs-run-btn" id="csRunBtn">Jump to Results</button>' +
+      '<button type="button" class="cs-reset-btn" id="csResetBtn">Reset</button>';
+  }
+  function csRenderAll() {
+    var host = csState.host;
+    host.querySelector('#cs-hd').innerHTML = csHeaderHtml();
+    host.querySelector('#cs-hd').querySelectorAll('[data-cs-open]').forEach(function(el){
+      el.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        csOpenFighter(el.getAttribute('data-cs-open') === 'a' ? csState.slugA : csState.slugB);
+      });
+    });
+    host.querySelector('#cs-body').innerHTML = csResultsHtml();
+    host.querySelector('#csCalNameA').textContent = csState.nameA;
+    host.querySelector('#csCalNameB').textContent = csState.nameB;
+    host.querySelector('#csCurNameA').textContent = csState.nameA;
+    host.querySelector('#csCurNameB').textContent = csState.nameB;
+    csRenderCategories();
+    csRenderResults();
+    host.querySelector('#csResetBtn').addEventListener('click', function(){
+      window.GL_NATIVE.tap();
+      csState.cats = csDefaultCats(csState.base);
+      csRenderCategories();
+      csRenderResults();
+    });
+    // Every slider already updates the result bars live -- this just scrolls
+    // #cs-body back to the top so the results are visible again after
+    // scrolling down through the eight category cards, same reasoning as the
+    // site's own csRunBtn.
+    host.querySelector('#csRunBtn').addEventListener('click', function(){
+      window.GL_NATIVE.tap();
+      var body = host.querySelector('#cs-body');
+      if (body) body.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+  function _csKey(e) { if (e.key === 'Escape') closeCustomSimulator(); }
+  function csLockScroll() {
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    csScrollY = scroller.scrollTop || 0;
+    scroller.style.overflow = 'hidden';
+  }
+  function csUnlockScroll() {
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    scroller.style.overflow = '';
+    scroller.scrollTop = csScrollY;
+  }
+  function openCustomSimulator(container, nameA, nameB, rounds, byoBtn) {
+    if (!nameA || !nameB || nameA === nameB) return;
+    var prevText = byoBtn ? byoBtn.textContent : '';
+    if (byoBtn) { byoBtn.disabled = true; byoBtn.textContent = 'Loading…'; }
+    window.GL_API.customSimBase(nameA, nameB, rounds).then(function(res){
+      if (byoBtn) { byoBtn.disabled = false; byoBtn.textContent = prevText; }
+      if (!res || !res.base) return;
+      var box = container.querySelector('#cs-box'), ov = container.querySelector('#cs-overlay');
+      if (!box || !ov) return;
+      csState = {
+        host: container, nameA: res.base.nameA, nameB: res.base.nameB,
+        slugA: res.slugA || null, slugB: res.slugB || null, recA: res.recA || null, recB: res.recB || null,
+        base: res.base, methodBaseline: res.methodBaseline, cats: csDefaultCats(res.base),
+      };
+      csRenderAll();
+      ov.style.display = 'block'; ov.style.opacity = '0';
+      box.classList.add('cs-on'); box.style.opacity = '0';
+      box.style.transform = 'translate(-50%,-50%) translateY(8px)';
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){
+        ov.style.opacity = '1'; box.style.opacity = '1';
+        box.style.transform = 'translate(-50%,-50%)';
+      }); });
+      csLockScroll();
+      document.addEventListener('keydown', _csKey);
+    }).catch(function(){
+      if (byoBtn) { byoBtn.disabled = false; byoBtn.textContent = prevText; }
+    });
+  }
+  function closeCustomSimulator() {
+    if (!csState) return;
+    var host = csState.host;
+    var box = host.querySelector('#cs-box'), ov = host.querySelector('#cs-overlay');
+    if (box && ov && box.classList.contains('cs-on')) {
+      ov.style.opacity = '0';
+      box.style.opacity = '0';
+      box.style.transform = 'translate(-50%,-50%) translateY(8px)';
+      setTimeout(function(){ ov.style.display = 'none'; box.classList.remove('cs-on'); }, 220);
+    }
+    csState = null;
+    csUnlockScroll();
+    document.removeEventListener('keydown', _csKey);
+  }
+  function wireCustomSim(container) {
+    var overlay = container.querySelector('#cs-overlay');
+    if (overlay) overlay.addEventListener('click', function(){ window.GL_NATIVE.tap(); closeCustomSimulator(); });
+    var closeBtn = container.querySelector('#csCloseBtn');
+    if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); closeCustomSimulator(); });
+  }
+
   // ── Matchup Analytics Deep Dive -- reappears on this screen for the exact
   // matchup the Events page's own "Simulate Matchup" button already has real
   // deep-dive data for (see matchup.js's simBarHTML comment), rather than
@@ -479,8 +937,10 @@ window.GL_SIMULATOR = (function(){
         '</div>' +
       '</div>' +
       '<button type="button" class="gl-btn gl-btn-primary" id="simRunBtn" disabled style="margin-top:1.1rem">Pick both fighters to simulate</button>' +
+      '<button type="button" class="sim-byo-btn" id="simByoBtn" disabled>Build Your Own Simulation</button>' +
       '<div id="simOutput" style="margin-top:1.4rem"></div>' +
-      hubModalHTML()
+      hubModalHTML() +
+      csModalHTML()
     );
   }
 
@@ -498,18 +958,22 @@ window.GL_SIMULATOR = (function(){
     var picked = { a: prefillA || null, b: prefillB || null };
     var rounds = prefillRounds === 5 ? 5 : 3;
     var runBtn = container.querySelector('#simRunBtn');
+    var byoBtn = container.querySelector('#simByoBtn');
     var output = container.querySelector('#simOutput');
 
     function refreshButton(){
       if (picked.a && picked.b && picked.a !== picked.b){
         runBtn.disabled = false;
         runBtn.textContent = 'Simulate';
+        if (byoBtn) byoBtn.disabled = false;
       } else if (picked.a && picked.b && picked.a === picked.b){
         runBtn.disabled = true;
         runBtn.textContent = 'Pick two different fighters';
+        if (byoBtn) byoBtn.disabled = true;
       } else {
         runBtn.disabled = true;
         runBtn.textContent = 'Pick both fighters to simulate';
+        if (byoBtn) byoBtn.disabled = true;
       }
     }
 
@@ -553,6 +1017,12 @@ window.GL_SIMULATOR = (function(){
     runBtn.addEventListener('click', function(){
       window.GL_NATIVE.tap();
       runSimulation();
+    });
+
+    if (byoBtn) byoBtn.addEventListener('click', function(){
+      if (byoBtn.disabled) return;
+      window.GL_NATIVE.tap();
+      openCustomSimulator(container, picked.a, picked.b, rounds, byoBtn);
     });
 
     // Arriving here already knowing both fighters (the Card page's own
@@ -600,6 +1070,7 @@ window.GL_SIMULATOR = (function(){
         activeContainer = container;
         wireShell(container, prefillA, prefillB, prefillRounds);
         wireHub(container);
+        wireCustomSim(container);
       });
     });
   }

@@ -132,6 +132,7 @@ const simJS = html.slice(a, b);
 const REQUIRED_FNS = [
   'simPct', 'getSimProfile', 'simRateCredibility', 'simTrajectory', 'simAgeFactor',
   'simFinishStats', 'simVolatility', 'simStyleMatchupDelta', 'simPowerScore',
+  'simPowerScoreBreakdown', 'simDivisionFinishPrior',
   'simRankTier', 'simRankClosenessFactor', 'simUnprovenPenalty', 'simHeadToHeadBoost',
   'simWinProbability', 'simMethodPool', 'simMethodDistribution', 'simPickMethod', 'simRunTrials',
 ];
@@ -467,6 +468,107 @@ const entryJS =
   '    finishDur: _finishDur(canonA, canonB),\n' +
   '    common: _commonOpps(canonA, canonB),\n' +
   '  };\n' +
+  '}\n' +
+  '// ── Build Your Own Simulation ("Custom Simulator") ─────────────────────\n' +
+  '// Feeds the app\'s port of index.html\'s cs*() custom-weighting modal (see\n' +
+  '// that block\'s own header comment, "Ported from prototypes/custom-\n' +
+  '// simulator.html (V6)..."). The modal\'s actual weighting/redistribution/\n' +
+  '// probability math (csNormalizeWeights, csCustomDiff, csProbFromDiff,\n' +
+  '// csMethodDeviation, csEdgeBucket, ...) is pure number-crunching over a\n' +
+  '// small fixed "base" object -- no FIGHTER_STATS/FIGHT_HISTORY access once\n' +
+  '// that base exists -- so it runs natively client-side in simulator.js,\n' +
+  '// re-typed from the site\'s own functions rather than re-fetched per\n' +
+  '// slider drag. This entry point computes exactly that base object once,\n' +
+  '// server-side, the same way csBuildBase(nameA, nameB, rounds) does on the\n' +
+  '// site.\n' +
+  'export function customSimBase(nameA, nameB, rounds) {\n' +
+  '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
+  '  if (!canonA || !canonB) return null;\n' +
+  '  const r = rounds === 5 ? 5 : 3;\n' +
+  '  const profA = getSimProfile(canonA, r), profB = getSimProfile(canonB, r);\n' +
+  '  const bdA = simPowerScoreBreakdown(profA), bdB = simPowerScoreBreakdown(profB);\n' +
+  '  const styleDelta = simStyleMatchupDelta(canonA, canonB, profA, profB);\n' +
+  '  const closeness = simRankClosenessFactor(canonA, canonB);\n' +
+  '  const h2h = simHeadToHeadBoost(canonA, canonB);\n' +
+  '  const unpA = simUnprovenPenalty(canonA, canonB), unpB = simUnprovenPenalty(canonB, canonA);\n' +
+  '  const volatility = Math.max(simVolatility(canonA), simVolatility(canonB));\n' +
+  '  const lowCredibility = Math.max(1 - simRateCredibility(canonA), 1 - simRateCredibility(canonB));\n' +
+  '  const uncertainty = Math.max(volatility, lowCredibility * 0.7);\n' +
+  '  const k = 5.4 * (1 + 0.5 * uncertainty);\n' +
+  '  return { nameA: canonA, nameB: canonB, rounds: r, bdA: bdA, bdB: bdB, styleDelta: styleDelta, closeness: closeness, h2h: h2h, unpA: unpA, unpB: unpB, k: k };\n' +
+  '}\n' +
+  '// Everything simMethodDistribution(winner, loser, rounds, winProb) computes\n' +
+  '// EXCEPT the final winProb-dependent "dominance" bend and the 5-round\n' +
+  '// decision-to-finish shift -- both of which are simple, data-free formulas\n' +
+  '// (see below) that the client re-runs itself against whatever curPA the\n' +
+  '// custom sliders currently produce. Splitting it here means the modal\'s\n' +
+  '// method-of-victory box updates live as a slider moves, the same as every\n' +
+  '// other number in it, without a round-trip per drag. Faithful reimplemen-\n' +
+  '// tation of index.html\'s simMethodDistribution up through its `koShare`\n' +
+  '// assignment (see that function for the full reasoning behind each step) --\n' +
+  '// kept in sync by construction since every helper/constant it calls\n' +
+  '// (simMethodPool, simDivisionFinishPrior, FIGHT_HISTORY, the SIM_* tuning\n' +
+  '// constants) is the exact one sliced verbatim from index.html above, not a\n' +
+  '// second copy.\n' +
+  'function _csMethodBaselinePre(winnerName, loserName) {\n' +
+  '  const pool = simMethodPool(winnerName);\n' +
+  '  let ko = 0, sub = 0, dec = 0;\n' +
+  '  pool.forEach(function(p) {\n' +
+  "    if (p.method === 'KO/TKO') ko++;\n" +
+  "    else if (p.method === 'Submission') sub++;\n" +
+  '    else dec++;\n' +
+  '  });\n' +
+  '  const tot = (ko + sub + dec) || 1;\n' +
+  '  const selfFinRaw = (ko + sub) / tot;\n' +
+  '  const selfKOshare = (ko + sub) > 0 ? ko / (ko + sub) : 0.5;\n' +
+  '  const winCount = ((FIGHT_HISTORY[winnerName]) || []).filter(function(f) { return f.result === "W"; }).length;\n' +
+  '  const priorMean = simDivisionFinishPrior(winnerName);\n' +
+  '  let selfFin = (selfFinRaw * winCount + priorMean * SIM_SELF_FIN_PRIOR_STRENGTH) / (winCount + SIM_SELF_FIN_PRIOR_STRENGTH);\n' +
+  '  const hist = (FIGHT_HISTORY[loserName]) || [];\n' +
+  '  let oppKO = 0, oppSub = 0, oppDec = 0, oppDecisive = 0;\n' +
+  '  hist.forEach(function(f) {\n' +
+  '    if (!f.method) return;\n' +
+  "    if (f.result === 'W' || f.result === 'L') oppDecisive++;\n" +
+  "    if (f.result !== 'L') return;\n" +
+  '    const m = f.method.toUpperCase();\n' +
+  "    if (m.indexOf('KO') !== -1 || m.indexOf('TKO') !== -1) oppKO++;\n" +
+  "    else if (m.indexOf('SUB') !== -1) oppSub++;\n" +
+  '    else oppDec++;\n' +
+  '  });\n' +
+  '  const oppFin = oppKO + oppSub;\n' +
+  '  const oppLosses = oppFin + oppDec;\n' +
+  '  let koShare = selfKOshare;\n' +
+  '  if (oppDecisive > 0) {\n' +
+  '    const oppFinFrac = oppLosses > 0 ? oppFin / oppLosses : 0;\n' +
+  '    let effLosses = oppLosses;\n' +
+  '    if (oppFinFrac < SIM_BASELINE_FINISHABILITY) {\n' +
+  '      const unFinished = Math.max(0, oppDecisive - oppFin);\n' +
+  '      effLosses += Math.min(SIM_DURABILITY_BONUS_CAP, unFinished * SIM_DURABILITY_PER_FIGHT);\n' +
+  '    }\n' +
+  '    const wConf = effLosses / (effLosses + SIM_FINISH_CONF_K);\n' +
+  '    const ffAdj = SIM_BASELINE_FINISHABILITY + (oppFinFrac - SIM_BASELINE_FINISHABILITY) * wConf;\n' +
+  '    const factor = ffAdj / SIM_BASELINE_FINISHABILITY;\n' +
+  '    const k = factor >= 1 ? SIM_FINISHABILITY_K_UP : SIM_FINISHABILITY_K_DOWN;\n' +
+  '    const selfOdds = selfFin / (1 - selfFin);\n' +
+  '    const newOdds = selfOdds * Math.pow(factor, k);\n' +
+  '    selfFin = newOdds / (1 + newOdds);\n' +
+  '    if (oppFin > 0) {\n' +
+  '      const wType = Math.min(SIM_OPP_TYPE_WEIGHT_CAP, oppFin / (oppFin + SIM_TYPE_CONF_K));\n' +
+  '      koShare = selfKOshare * (1 - wType) + (oppKO / oppFin) * wType;\n' +
+  '    }\n' +
+  '  }\n' +
+  '  return { selfFin: selfFin, koShare: koShare };\n' +
+  '}\n' +
+  '// {aWins:{selfFin,koShare}, bWins:{selfFin,koShare}} -- pre-dominance\n' +
+  '// baselines for each possible winner, computed once per matchup alongside\n' +
+  '// customSimBase(). See mobile/www/js/screens/simulator.js\'s own\n' +
+  '// csMethodFromBaseline() for the client-side dominance-bend + 5-round\n' +
+  '// shift that turns this (plus an arbitrary winProb) into the actual\n' +
+  '// {KO/TKO, Submission, Decision} distribution shown in the modal.\n' +
+  'export function customSimMethodBaseline(nameA, nameB, rounds) {\n' +
+  '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
+  '  if (!canonA || !canonB) return null;\n' +
+  '  return { aWins: _csMethodBaselinePre(canonA, canonB), bWins: _csMethodBaselinePre(canonB, canonA) };\n' +
   '}\n';
 
 const mod =
