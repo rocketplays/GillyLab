@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T20:34:28.752Z",
+ "generatedAt": "2026-09-12T21:04:55.195Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-09-12T20:34:28.624Z"
+    }
+   ]
+  },
+  "Tim Elliott": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Édgar Cháirez",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Édgar Cháirez",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 64,
+      "sigA": 204,
+      "totL": 142,
+      "totA": 309,
+      "tdL": 5,
+      "tdA": 11,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:54",
+      "head": [
+       52,
+       176
+      ],
+      "body": [
+       6,
+       19
+      ],
+      "leg": [
+       6,
+       9
+      ],
+      "dist": [
+       43,
+       161
+      ],
+      "clinch": [
+       5,
+       8
+      ],
+      "ground": [
+       16,
+       35
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 58,
+      "sigA": 124,
+      "totL": 70,
+      "totA": 136,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       41,
+       106
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       56,
+       121
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "capturedAt": "2026-09-12T21:04:55.064Z"
+    }
+   ]
+  },
+  "Édgar Cháirez": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Tim Elliott",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Tim Elliott",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 58,
+      "sigA": 124,
+      "totL": 70,
+      "totA": 136,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       41,
+       106
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       56,
+       121
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 64,
+      "sigA": 204,
+      "totL": 142,
+      "totA": 309,
+      "tdL": 5,
+      "tdA": 11,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:54",
+      "head": [
+       52,
+       176
+      ],
+      "body": [
+       6,
+       19
+      ],
+      "leg": [
+       6,
+       9
+      ],
+      "dist": [
+       43,
+       161
+      ],
+      "clinch": [
+       5,
+       8
+      ],
+      "ground": [
+       16,
+       35
+      ]
+     },
+     "capturedAt": "2026-09-12T21:04:55.064Z"
     }
    ]
   }
