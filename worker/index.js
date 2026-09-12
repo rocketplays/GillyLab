@@ -2871,6 +2871,30 @@ export default {
         if (isOtherEvent && card && mainsMap[card.slug]) {
           card = Object.assign({}, card, { main: mainsMap[card.slug] });
         }
+        // Per-FIGHT breakdown (Fight Info's full style/pace/path analytics,
+        // not just the whole-event `main`) for every bout, unlocked for
+        // premium users on every fight -- not only the main event (see
+        // matchup.js's fightHTML). `currentCard` already carries this
+        // directly on each fight, baked in at build time by buildCard() in
+        // scripts/gen-landing-data.cjs. An `?event=`/carousel pick, though,
+        // is built here via eventToCard() (Worker runtime, no access to the
+        // heavy stats history that computes a breakdown) -- so those fights
+        // get it merged in from landingData.fightBreakdowns, matched by
+        // fighter-name pair (order-independent: eventToCard's f1/f2 order
+        // isn't guaranteed to match gen-landing-data.cjs's).
+        const fightBreakdownsMap = (currentLanding() || {}).fightBreakdowns || {};
+        const attachFightBreakdowns = (fights, slug) => {
+          const entries = fightBreakdownsMap[slug];
+          if (!entries || !entries.length) return fights;
+          return (fights || []).map((f) => {
+            if (f.breakdown) return f;
+            const match = entries.find((e) => (e.f1 === f.f1 && e.f2 === f.f2) || (e.f1 === f.f2 && e.f2 === f.f1));
+            return match && match.breakdown ? Object.assign({}, f, { breakdown: match.breakdown }) : f;
+          });
+        };
+        if (isOtherEvent && card) {
+          card = Object.assign({}, card, { fights: attachFightBreakdowns(card.fights, card.slug) });
+        }
 
         // Same request-time freshness merge matchupPage does for the site's OWN
         // featured card (never for a carousel/override pick, which was just
@@ -3000,10 +3024,10 @@ export default {
         const carousel = carouselRaws.map((raw) => {
           const c = eventToCard(raw, fighterLiteBySlug, false, oddsData);
           const cDD = !isDwcsEvent(c.event) ? ddDataFor(c.slug) : null;
-          const patchedFights = withRankBadges((c.fights || []).map((f) => Object.assign({}, f, {
+          const patchedFights = withRankBadges(attachFightBreakdowns((c.fights || []).map((f) => Object.assign({}, f, {
             s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
             s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
-          })));
+          })), c.slug));
           return Object.assign({}, c, {
             fights: patchedFights,
             breakdown: mainsMap[c.slug] || null,

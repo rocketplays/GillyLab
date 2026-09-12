@@ -15,6 +15,10 @@ function mountRoster(container){
   container.innerHTML = '<p class="gl-muted">Loading roster…</p>';
   var fighters = [], changes = [];
   var activeLetter = 'All';
+  // Fetched once at mount (mirrors home.js's / rankings.js's own account()
+  // check) so the bottom "Go Premium" CTA -- aimed at non-subscribers --
+  // doesn't show to someone who's already premium.
+  var subscribed = false;
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
 
@@ -71,7 +75,7 @@ function mountRoster(container){
       '<p class="gl-muted" style="margin:0 0 1.1rem">' + fighters.length + ' fighters, kept up to date with the week’s signings and releases.</p>' +
       changesHTML() +
       '<div id="arList">' + listHTML() + '</div>' +
-      '<div class="gl-cta">Roster is free. <button type="button" class="gl-link-btn" data-goto="premium">Go Premium</button> for every fighter’s full analytics, the simulator and more.</div>';
+      (subscribed ? '' : '<div class="gl-cta">Roster is free. <button type="button" class="gl-link-btn" data-goto="premium">Go Premium</button> for every fighter’s full analytics, the simulator and more.</div>');
     wireList();
   }
 
@@ -98,9 +102,17 @@ function mountRoster(container){
     if (goPrem) goPrem.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
   }
 
-  window.GL_API.roster().then(function(res){
+  // Same loggedIn/account() shape as home.js's/rankings.js's own subscription
+  // check -- account() requires a session, so it's only attempted when one
+  // exists; any failure just leaves `subscribed` false.
+  var loggedIn = window.GL_AUTH && window.GL_AUTH.isLoggedIn && window.GL_AUTH.isLoggedIn();
+  var acctPromise = loggedIn ? window.GL_API.account().catch(function(){ return null; }) : Promise.resolve(null);
+
+  Promise.all([window.GL_API.roster(), acctPromise]).then(function(results){
+    var res = results[0], acct = results[1];
     fighters = res.fighters || [];
     changes = res.changes || [];
+    subscribed = !!(acct && acct.subscribed);
     renderList();
   }).catch(function(){
     container.innerHTML = '<h3 style="margin:0 0 .4rem">Roster unavailable right now</h3><p class="gl-muted">Couldn’t reach gillylab.com. Check your connection and try again shortly.</p>';

@@ -391,11 +391,34 @@ function mountMatchup(container){
     );
   }
 
+  // For a not-yet-fought bout: the main event always gets its full breakdown
+  // (the free tier's one "peek" per card, same as the site's own free
+  // preview elsewhere) plus the Analytics Deep Dive button. Every OTHER bout
+  // used to always show the locked teaser regardless of subscription status
+  // -- the actual bug being fixed here. Premium users now get the same full
+  // breakdown on every fight (mirroring index.html's renderScouting(), which
+  // computes this live for every bout with no main-event gate at all, since
+  // the whole site is already subscription-gated at the HTTP layer). Free
+  // users still only see the main event unlocked; the locked teaser upsell
+  // stays on every other bout for them. A subscribed user whose fight
+  // happens to have no breakdown data (missing underlying stats) gets a
+  // quiet "not enough data" note instead of the marketing box -- showing
+  // "Go Premium" to someone who already is one would be an obvious bug.
+  function noBreakdownHTML(){
+    return '<p class="gl-muted" style="padding:.5rem 0">Not enough data yet for a full breakdown of this fight.</p>';
+  }
   function fightHTML(f, isMain, deepDive, breakdown, eventSlug, special){
     var res = f.result || null;
-    var panelBody = res
-      ? completedPanelHTML(f, res)
-      : (tapeHTML(f.tape) + (isMain ? breakdownHTML(f, breakdown, deepDive, eventSlug) : lockedTeaserHTML()));
+    var panelBody;
+    if (res) {
+      panelBody = completedPanelHTML(f, res);
+    } else if (isMain) {
+      panelBody = tapeHTML(f.tape) + breakdownHTML(f, breakdown, deepDive, eventSlug);
+    } else if (subscribed) {
+      panelBody = tapeHTML(f.tape) + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML());
+    } else {
+      panelBody = tapeHTML(f.tape) + lockedTeaserHTML();
+    }
     return (
       '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + (canSim(f, special) ? ' mf-card--sim' : '') + '">' +
         '<div class="mf-row">' +

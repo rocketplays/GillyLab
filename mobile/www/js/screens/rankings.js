@@ -31,6 +31,10 @@ function mountRankings(container){
   var source = 'media';
   var data = null;      // last successful response for the current source
   var activeDiv = null;
+  // Fetched once at mount (mirrors home.js's own account() check) so the
+  // bottom "Go Premium" CTA -- a marketing box aimed at non-subscribers --
+  // doesn't show to someone who's already premium.
+  var subscribed = false;
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
   function divLabel(d){ return DIV_LABELS[d] || d; }
@@ -91,7 +95,7 @@ function mountRankings(container){
       '</div>' +
       '<div class="rk-tabs">' + tabsHTML() + '</div>' +
       '<div id="rkPanel">' + panelHTML() + '</div>' +
-      '<div class="gl-cta">Rankings are free. <button type="button" class="gl-link-btn" data-goto="premium">Go Premium</button> for every fighter’s full analytics, the simulator and more.</div>';
+      (subscribed ? '' : '<div class="gl-cta">Rankings are free. <button type="button" class="gl-link-btn" data-goto="premium">Go Premium</button> for every fighter’s full analytics, the simulator and more.</div>');
     wire();
   }
 
@@ -152,5 +156,13 @@ function mountRankings(container){
     });
   }
 
-  load();
+  // Same loggedIn/account() shape as home.js's own fetchPremiumPreviews call
+  // -- account() requires a session, so it's only attempted when one exists;
+  // any failure (offline, expired token) just leaves `subscribed` false,
+  // same fallback subscription.js uses for the tab bar.
+  var loggedIn = window.GL_AUTH && window.GL_AUTH.isLoggedIn && window.GL_AUTH.isLoggedIn();
+  (loggedIn ? window.GL_API.account().catch(function(){ return null; }) : Promise.resolve(null)).then(function(acct){
+    subscribed = !!(acct && acct.subscribed);
+    load();
+  });
 }
