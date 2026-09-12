@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T19:33:01.067Z",
+ "generatedAt": "2026-09-12T19:48:39.168Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8458,6 +8458,194 @@
       ]
      },
      "capturedAt": "2026-09-12T19:33:00.926Z"
+    }
+   ]
+  },
+  "Drakkar Klose": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Tommy Gantt",
+     "result": "L",
+     "method": "Submission (Triangle Choke)",
+     "round": 3,
+     "time": "2:46",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Tommy Gantt",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 30,
+      "totL": 87,
+      "totA": 108,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:21",
+      "head": [
+       6,
+       17
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       5,
+       12
+      ],
+      "clinch": [
+       10,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 82,
+      "totL": 95,
+      "totA": 126,
+      "tdL": 2,
+      "tdA": 8,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "9:55",
+      "head": [
+       24,
+       45
+      ],
+      "body": [
+       28,
+       32
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       7,
+       27
+      ],
+      "clinch": [
+       35,
+       39
+      ],
+      "ground": [
+       14,
+       16
+      ]
+     },
+     "capturedAt": "2026-09-12T19:48:39.034Z"
+    }
+   ]
+  },
+  "Tommy Gantt": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Drakkar Klose",
+     "result": "W",
+     "method": "Submission (Triangle Choke)",
+     "round": 3,
+     "time": "2:46",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Drakkar Klose",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 82,
+      "totL": 95,
+      "totA": 126,
+      "tdL": 2,
+      "tdA": 8,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "9:55",
+      "head": [
+       24,
+       45
+      ],
+      "body": [
+       28,
+       32
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       7,
+       27
+      ],
+      "clinch": [
+       35,
+       39
+      ],
+      "ground": [
+       14,
+       16
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 30,
+      "totL": 87,
+      "totA": 108,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:21",
+      "head": [
+       6,
+       17
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       5,
+       12
+      ],
+      "clinch": [
+       10,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-12T19:48:39.034Z"
     }
    ]
   }
