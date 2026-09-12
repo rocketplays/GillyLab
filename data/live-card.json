@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T21:04:55.195Z",
+ "generatedAt": "2026-09-12T21:50:48.096Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9210,6 +9210,194 @@
       ]
      },
      "capturedAt": "2026-09-12T21:04:55.064Z"
+    }
+   ]
+  },
+  "David Martinez": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Dan Ige",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Dan Ige",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 52,
+      "sigA": 139,
+      "totL": 58,
+      "totA": 146,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:19",
+      "head": [
+       25,
+       100
+      ],
+      "body": [
+       10,
+       19
+      ],
+      "leg": [
+       17,
+       20
+      ],
+      "dist": [
+       52,
+       138
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 124,
+      "totL": 27,
+      "totA": 124,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       19,
+       101
+      ],
+      "body": [
+       4,
+       15
+      ],
+      "leg": [
+       4,
+       8
+      ],
+      "dist": [
+       26,
+       123
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-12T21:50:47.970Z"
+    }
+   ]
+  },
+  "Dan Ige": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "David Martinez",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "David Martinez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 124,
+      "totL": 27,
+      "totA": 124,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       19,
+       101
+      ],
+      "body": [
+       4,
+       15
+      ],
+      "leg": [
+       4,
+       8
+      ],
+      "dist": [
+       26,
+       123
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 52,
+      "sigA": 139,
+      "totL": 58,
+      "totA": 146,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:19",
+      "head": [
+       25,
+       100
+      ],
+      "body": [
+       10,
+       19
+      ],
+      "leg": [
+       17,
+       20
+      ],
+      "dist": [
+       52,
+       138
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-12T21:50:47.970Z"
     }
    ]
   }
