@@ -568,12 +568,17 @@ function mountMatchup(container){
   // as its own small avatar here (not .mf-av) since the modal header CSS
   // (mh-hd-av/mh-hd-f) comes straight from the site's stylesheet, which
   // expects this exact inline-styled circle, not the app's own avatar class.
+  // A clickable side needs a `data-hub-slug` attribute for hubRenderEntry()'s
+  // own click wiring below to find -- only added when a real profile slug
+  // came back (a fighter this app doesn't have a profile for still shows
+  // fine, just not as a link, same as every other "only linkify when there's
+  // a slug" spot in this file, e.g. nameHTML in rankings.js/roster.js).
   function hubSide(nm, slug, rec, right){
     var av = slug
       ? '<div style="' + HUB_AV_STYLE + '"><img src="' + window.GL_FIGHTER.PHOTO_BASE + esc(slug) + '.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\'' + esc(hubInitials(nm)) + '\'"></div>'
       : '<div style="' + HUB_AV_STYLE + '">' + esc(hubInitials(nm)) + '</div>';
     return (
-      '<div class="mh-hd-f' + (right ? ' r' : '') + '">' +
+      '<div class="mh-hd-f' + (right ? ' r' : '') + '"' + (slug ? ' data-hub-slug="' + esc(slug) + '" style="cursor:pointer"' : '') + '>' +
         '<span class="mh-hd-av">' + av + '</span>' +
         '<div class="mh-hd-tx"><div class="mh-hd-nm">' + esc(nm) + '</div>' + (rec ? '<div class="mh-hd-rc">' + esc(rec) + '</div>' : '') + '</div>' +
       '</div>'
@@ -591,7 +596,22 @@ function mountMatchup(container){
     var subBits = [e.weight, e.rounds ? (e.rounds + ' RDS') : ''].filter(Boolean);
     var mid = '<div class="mh-hd-vs">VS</div>' + (subBits.length ? '<div class="mh-hd-sub">' + esc(subBits.join(' · ')) + '</div>' : '');
     var hd = container.querySelector('#mh-hd');
-    if (hd) hd.innerHTML = hubSide(e.n1, e.s1, e.rec1, false) + '<div class="mh-hd-mid">' + mid + '</div>' + hubSide(e.n2, e.s2, e.rec2, true);
+    if (hd) {
+      hd.innerHTML = hubSide(e.n1, e.s1, e.rec1, false) + '<div class="mh-hd-mid">' + mid + '</div>' + hubSide(e.n2, e.s2, e.rec2, true);
+      // Tapping either fighter's name/photo in the modal header opens their
+      // full profile, same as tapping their name anywhere else in the app --
+      // this used to go nowhere at all. Closes the modal first so the
+      // visitor lands on a normal full-screen profile, not a page pushed
+      // underneath a still-open overlay.
+      hd.querySelectorAll('[data-hub-slug]').forEach(function(el){
+        el.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          var slug = el.getAttribute('data-hub-slug');
+          hubClose();
+          window.GL_ROUTER.go('fighter', { slug: slug });
+        });
+      });
+    }
     var body = container.querySelector('#mh-body');
     if (body) body.innerHTML =
       '<div data-mh-pane="striking-all">' + e.striking.all + '</div>' +

@@ -125,26 +125,25 @@ window.GL_SIMULATOR = (function(){
   // rather than a third copy of the same circular-photo-with-initials-
   // fallback pattern matchup.js/home.js/roster.js already each have their
   // own version of.
+  // `data-sim-slug` is only added when a real profile slug came back --
+  // wireResult() below wires a click on it to open that fighter's profile.
+  // Neither side was clickable at all before this: the simulator was a dead
+  // end even though every other fighter photo/name in the app opens a
+  // profile.
   function resultsHeaderHTML(nameA, nameB, slugA, slugB, result){
     var aFav = result.winsA >= result.winsB;
-    return (
-      '<div class="sim-res-top">' +
-        '<div class="sim-res-fighter' + (aFav ? ' fav' : '') + '">' +
-          window.GL_FIGHTER.avatarHtml({ name: nameA, photo: slugA || null }) +
+    function side(name, slug, wins, fav, right){
+      return (
+        '<div class="sim-res-fighter' + (fav ? ' fav' : '') + (right ? ' right' : '') + '"' + (slug ? ' data-sim-slug="' + esc(slug) + '" style="cursor:pointer"' : '') + '>' +
+          window.GL_FIGHTER.avatarHtml({ name: name, photo: slug || null }) +
           '<div>' +
-            '<div class="sim-res-name">' + esc(nameA) + '</div>' +
-            '<div class="sim-res-count">' + result.winsA.toLocaleString() + ' / ' + result.n.toLocaleString() + ' wins</div>' +
+            '<div class="sim-res-name">' + esc(name) + '</div>' +
+            '<div class="sim-res-count">' + wins.toLocaleString() + ' / ' + result.n.toLocaleString() + ' wins</div>' +
           '</div>' +
-        '</div>' +
-        '<div class="sim-res-fighter right' + (aFav ? '' : ' fav') + '">' +
-          window.GL_FIGHTER.avatarHtml({ name: nameB, photo: slugB || null }) +
-          '<div>' +
-            '<div class="sim-res-name">' + esc(nameB) + '</div>' +
-            '<div class="sim-res-count">' + result.winsB.toLocaleString() + ' / ' + result.n.toLocaleString() + ' wins</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>'
-    );
+        '</div>'
+      );
+    }
+    return '<div class="sim-res-top">' + side(nameA, slugA, result.winsA, aFav, false) + side(nameB, slugB, result.winsB, !aFav, true) + '</div>';
   }
 
   // The composite rating simWinProbability actually runs on -- shown so the
@@ -358,6 +357,12 @@ window.GL_SIMULATOR = (function(){
       output.innerHTML = '';
       window.GL_API.fightSim(picked.a, picked.b, rounds).then(function(res){
         output.innerHTML = resultHTML(res.a, res.b, res.slugA, res.slugB, res.result, res.tapeA, res.tapeB, res.breakdown);
+        output.querySelectorAll('[data-sim-slug]').forEach(function(el){
+          el.addEventListener('click', function(){
+            window.GL_NATIVE.tap();
+            window.GL_ROUTER.go('fighter', { slug: el.getAttribute('data-sim-slug') });
+          });
+        });
         runBtn.disabled = false;
         runBtn.textContent = 'Run It Again';
       }).catch(function(err){

@@ -7,7 +7,19 @@
 window.GL_ROUTER = (function(){
   var screens = {};       // routeName -> { title, render(container, params), tab }
   var current = null;
-  var previous = null;    // last DIFFERENT route, for back() -- see fighter.js
+  var currentParams = {};
+  // Real back-STACK, not just a single "last route" pointer. The old
+  // `previous` variable only ever remembered the last route whose NAME
+  // differed from the current one -- so profile A -> profile B (both route
+  // "fighter", just different params) never updated it, and hitting back
+  // from B fell all the way through to whatever screen was open before A.
+  // Every forward navigation (go(), including tab-bar taps) now pushes the
+  // screen being LEFT -- name, params, and its live scroll position -- onto
+  // this stack; back() pops one frame and restores it exactly, however many
+  // levels deep the visitor pushed. Capped so a very long session can't grow
+  // this unboundedly.
+  var stack = [];
+  var STACK_CAP = 40;
   var appEl, appScrollEl, backBtn, tabbarEl;
   // go() writes location.hash itself (so the URL reflects the current
   // screen), but a hash write fires the browser's own 'hashchange' event --
@@ -149,11 +161,54 @@ window.GL_ROUTER = (function(){
     }
   }
 
-  function go(name, params){
+  function paramsEqual(a, b){
+    a = a || {}; b = b || {};
+    var ak = Object.keys(a), bk = Object.keys(b);
+    if (ak.length !== bk.length) return false;
+    for (var i=0;i<ak.length;i++){ if (a[ak[i]] !== b[ak[i]]) return false; }
+    return true;
+  }
+
+  // Keeps forcing the target scroll position for a bit after landing on a
+  // screen popped off the back-stack. A single scrollTop write right after
+  // render() isn't enough: most screens start with a "Loading…" placeholder
+  // and fill in real content once their fetch resolves, which changes the
+  // page's height out from under an early scroll write. This reapplies the
+  // target until it "sticks" for a few checks in a row (real content has
+  // settled, or there's simply nothing taller to scroll into), then stops --
+  // with a hard cap so a screen that never finishes loading can't spin this
+  // forever.
+  function restoreScroll(target){
+    if (!appScrollEl || !target) return;
+    var attempts = 0, stable = 0;
+    function attempt(){
+      if (!appScrollEl) return;
+      appScrollEl.scrollTop = target;
+      var settled = appScrollEl.scrollTop === Math.min(target, appScrollEl.scrollHeight);
+      stable = settled ? stable + 1 : 0;
+      attempts++;
+      if (stable >= 3 || attempts >= 40) return;
+      setTimeout(attempt, attempts < 10 ? 50 : 150);
+    }
+    attempt();
+  }
+
+  function go(name, params, opts){
     var screen = screens[name];
     if (!screen){ console.error('GL_ROUTER: unknown route', name); return; }
-    if (current && current !== name) previous = current;
+    opts = opts || {};
+    params = params || {};
+    // Push the screen being LEFT onto the back-stack, together with its live
+    // scroll position -- unless this call IS a back() (which pops instead of
+    // pushing) or it's just re-navigating to the exact same screen+params
+    // already showing (e.g. tapping the tab you're already on), which would
+    // otherwise pile up a pointless duplicate frame.
+    if (!opts.isBack && current && !(current === name && paramsEqual(params, currentParams))){
+      stack.push({ name: current, params: currentParams, scroll: appScrollEl ? appScrollEl.scrollTop : 0 });
+      if (stack.length > STACK_CAP) stack.shift();
+    }
     current = name;
+    currentParams = params;
     var newHash = '#/' + name;
     // Only when the hash is actually changing -- if it's already what we
     // want (e.g. re-opening a different fighter while the hash is still
@@ -182,16 +237,28 @@ window.GL_ROUTER = (function(){
     appScrollEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '');
     appEl.innerHTML = '';
     appScrollEl.scrollTop = 0;
-    screen.render(appEl, params || {});
+    screen.render(appEl, params);
+    // Only a back() navigation ever wants to land somewhere other than the
+    // top -- restore the scroll position this screen was at before the
+    // visitor pushed forward off of it.
+    if (opts.isBack && opts.scroll) restoreScroll(opts.scroll);
   }
 
   // Real "go back to wherever this screen was pushed from" -- used by the
   // back button so a fighter profile opened from Matchup returns to
   // Matchup, one opened from Roster returns to Roster, etc., rather than
-  // always dumping the visitor back on Home. Mirrors the website itself:
-  // clicking a fighter is a full page navigation with a real back button,
-  // not a panel layered over the page you were on.
-  function back(){ go(previous || 'home'); }
+  // always dumping the visitor back on Home -- and now pops the ACTUAL
+  // back-stack (see `stack` above) rather than a single remembered route, so
+  // profile A -> profile B -> back correctly returns to profile A instead of
+  // skipping past it to whatever was open before A. Also restores the
+  // scroll position that screen was at when the visitor left it. Mirrors the
+  // website itself: clicking a fighter is a full page navigation with a real
+  // back button, not a panel layered over the page you were on.
+  function back(){
+    var frame = stack.pop();
+    if (!frame){ go('home'); return; }
+    go(frame.name, frame.params, { isBack: true, scroll: frame.scroll });
+  }
 
   function fromHash(){
     var name = (location.hash || '#/home').replace(/^#\//, '') || 'home';

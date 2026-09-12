@@ -3898,11 +3898,18 @@ ${AURORA_CSS}
     // (av ring, initials fallback on a 404) -- duplicated here, not imported,
     // because this runs client-side to switch between events with no reload.
     var MH_AV_STYLE="width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;color:#fff";
+    // slug present -> a real <a href="/fighter/..">, same pattern every other
+    // clickable fighter name on the site uses (see e.g. mf-side/ar-name) --
+    // this used to render as plain unlinked text no matter what, so there
+    // was no way to reach either fighter's profile from the modal at all.
     function mhHubSide(nm,slug,rec,right){
       var av = slug
         ? '<div style="'+MH_AV_STYLE+'"><img src="/photos/thumb/'+mhEsc(slug)+'.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=mhInitials('+JSON.stringify(nm)+')"></div>'
         : '<div style="'+MH_AV_STYLE+'">'+mhEsc(mhInitials(nm))+'</div>';
-      return '<div class="mh-hd-f'+(right?" r":"")+'"><span class="mh-hd-av">'+av+'</span><div class="mh-hd-tx"><div class="mh-hd-nm">'+mhEsc(nm)+'</div>'+(rec?'<div class="mh-hd-rc">'+mhEsc(rec)+'</div>':'')+'</div></div>';
+      var inner = '<span class="mh-hd-av">'+av+'</span><div class="mh-hd-tx"><div class="mh-hd-nm">'+mhEsc(nm)+'</div>'+(rec?'<div class="mh-hd-rc">'+mhEsc(rec)+'</div>':'')+'</div>';
+      return slug
+        ? '<a class="mh-hd-f'+(right?" r":"")+'" href="/fighter/'+mhEsc(slug)+'" style="text-decoration:none;color:inherit">'+inner+'</a>'
+        : '<div class="mh-hd-f'+(right?" r":"")+'">'+inner+'</div>';
     }
     var mfHubState={slug:null,tab:"striking",filter:"all"};
     function mfHubShowPane(){

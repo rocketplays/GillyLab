@@ -195,7 +195,35 @@ function mainBoutOf(raw) {
 }
 const main = mainBoutOf(ev);
 if (!main) throw new Error('no live bouts on ' + ev.slug);
-const n1 = main.fighters[0].fighterName, n2 = main.fighters[1].fighterName;
+
+// Resolve a raw ESPN feed name to the DB's canonical name -- same logic,
+// same reasoning, as gen-landing-data.cjs's own canonStatName() (its header
+// comment names "Jose Miguel Delgado" -> "Jose Delgado" as the case this
+// exists for). This script used to skip that step entirely: n1/n2 shipped
+// as the raw feed name, so worker/index.js's buildHub() -- which looks up
+// this pair's real card entry by an EXACT name match against
+// `x.f1 === dd.n1 && x.f2 === dd.n2` to pull the fighter's slug/record/
+// weight/rounds -- silently failed to match whenever the feed name and the
+// canonical name differed. That's why the deep-dive modal could show no
+// photo (falls back to initials), the raw unaliased name, and no profile
+// link: s1/s2/rec1/rec2/weight/rounds all came back null/empty from a
+// lookup that never matched. Ported here (rather than shared) because this
+// script and gen-landing-data.cjs are two independent Node processes with
+// no import between them -- see this file's own header comment on why nothing
+// here is shared with the app/site's other generators.
+const STAT_ALIASES = ctx.ACTIVE_ROSTER_ALIASES || {};
+function _statMatch(name) {
+  return html.match(new RegExp('"' + String(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '":\\s*\\{([^}]*)\\}', 'i'));
+}
+function canonStatName(name) {
+  if (!name) return name;
+  if (_statMatch(name)) return name;
+  if (STAT_ALIASES[name] && _statMatch(STAT_ALIASES[name])) return STAT_ALIASES[name];
+  const p = String(name).trim().split(/\s+/);
+  if (p.length >= 3) { const fl = p[0] + ' ' + p[p.length - 1]; if (_statMatch(fl)) return fl; }
+  return STAT_ALIASES[name] || name;
+}
+const n1 = canonStatName(main.fighters[0].fighterName), n2 = canonStatName(main.fighters[1].fighterName);
 
 // Mirrors mhRenderBody's noData/note logic (index.html) exactly, since that is
 // the app's rule for what "no wins on record" should look like — a rule
@@ -264,7 +292,7 @@ if (primary) eventPayloads[ev.slug] = primary;
 for (const raw of carouselEvs) {
   const b = mainBoutOf(raw);
   if (!b) continue;
-  const p = buildEventPayload(raw.slug, b.fighters[0].fighterName, b.fighters[1].fighterName);
+  const p = buildEventPayload(raw.slug, canonStatName(b.fighters[0].fighterName), canonStatName(b.fighters[1].fighterName));
   if (p) eventPayloads[raw.slug] = p;
 }
 
