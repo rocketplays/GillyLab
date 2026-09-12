@@ -132680,7 +132680,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     return pairings;
   }
+  // evt.fights' f1/f2 are already run through resolveCanonicalFighterName (see
+  // parseApiEvent), but the raw data/odds.json home_team/away_team we're
+  // matching them against here never is. Usually that's fine -- lastNameOf()
+  // /namesLikelyMatch() paper over spelling differences on their own -- but a
+  // name the odds feed SPLITS that our DB keeps FUSED (e.g. "Rongzhu" ->
+  // "Zhu Rong") fails both: one token can't equal two, and the length gap is
+  // too big for namesLikelyMatch's edit-distance fuzz. Whole bouts were
+  // silently dropping off the Odds/Projections pages, not just failing to
+  // link. Route the raw name through the same NAME_ALIASES map
+  // resolveCanonicalFighterName uses (exact lowercase match only, no slug
+  // logic needed here) before every comparison below.
+  function canonOddsName(n) {
+    return (typeof NAME_ALIASES !== 'undefined' && NAME_ALIASES[String(n || '').toLowerCase()]) || n;
+  }
   function isScheduledBout(pairings, full1, full2) {
+    full1 = canonOddsName(full1); full2 = canonOddsName(full2);
     const n1 = lastNameOf(full1).toLowerCase(), n2 = lastNameOf(full2).toLowerCase();
     return pairings.some(([pf1, pf2]) => {
       const a = lastNameOf(pf1).toLowerCase(), b = lastNameOf(pf2).toLowerCase();
@@ -133142,7 +133157,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // namesLikelyMatch fuzzy fallback). Collapse to one row per boutPairings
       // entry, preferring the exact-match row when both exist.
       function matchedPairingIndex(f) {
-        const n1 = lastNameOf(f.home_team).toLowerCase(), n2 = lastNameOf(f.away_team).toLowerCase();
+        // Canonicalize first — see canonOddsName() above isScheduledBout: a name
+        // the odds feed splits that our DB keeps fused (e.g. "Zhu Rong" ->
+        // "Rongzhu") must resolve here too, or a bout that passed isScheduledBout
+        // above gets silently dropped again right here (the "shouldn't happen"
+        // idx===-1 case below).
+        const home = canonOddsName(f.home_team), away = canonOddsName(f.away_team);
+        const n1 = lastNameOf(home).toLowerCase(), n2 = lastNameOf(away).toLowerCase();
         for (let i = 0; i < boutPairings.length; i++) {
           const [pf1, pf2] = boutPairings[i];
           const a = lastNameOf(pf1).toLowerCase(), b = lastNameOf(pf2).toLowerCase();
@@ -133150,8 +133171,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         }
         for (let i = 0; i < boutPairings.length; i++) {
           const [pf1, pf2] = boutPairings[i];
-          if ((namesLikelyMatch(pf1, f.home_team) && namesLikelyMatch(pf2, f.away_team)) ||
-              (namesLikelyMatch(pf1, f.away_team) && namesLikelyMatch(pf2, f.home_team))) {
+          if ((namesLikelyMatch(pf1, home) && namesLikelyMatch(pf2, away)) ||
+              (namesLikelyMatch(pf1, away) && namesLikelyMatch(pf2, home))) {
             return { idx: i, exact: false };
           }
         }
@@ -133177,12 +133198,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // fuzzy-matches "Cory Sandhagen" ("Cody"≈"Cory", 1 edit), which mapped a
       // prelim to the wrong (main-card) bout and misplaced it in the order.
       function findEvtFight(fight) {
-        const n1 = lastNameOf(fight.home_team).toLowerCase(), n2 = lastNameOf(fight.away_team).toLowerCase();
+        // Canonicalize first — see canonOddsName() above isScheduledBout.
+        const home = canonOddsName(fight.home_team), away = canonOddsName(fight.away_team);
+        const n1 = lastNameOf(home).toLowerCase(), n2 = lastNameOf(away).toLowerCase();
         return (evt.fights || []).find(ef => {
           const a = lastNameOf(ef.f1).toLowerCase(), b = lastNameOf(ef.f2).toLowerCase();
           if ((a === n1 && b === n2) || (a === n2 && b === n1)) return true;
-          return (namesLikelyMatch(ef.f1, fight.home_team) && namesLikelyMatch(ef.f2, fight.away_team)) ||
-                 (namesLikelyMatch(ef.f1, fight.away_team) && namesLikelyMatch(ef.f2, fight.home_team));
+          return (namesLikelyMatch(ef.f1, home) && namesLikelyMatch(ef.f2, away)) ||
+                 (namesLikelyMatch(ef.f1, away) && namesLikelyMatch(ef.f2, home));
         });
       }
       // Sort fights to match the EVENTS page display order. The featured card
@@ -137098,7 +137121,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // namesLikelyMatch fuzzy fallback). Collapse to one row per boutPairings
       // entry, preferring the exact-match row when both exist.
       function matchedPairingIndex(f) {
-        const n1 = lastNameOf(f.home_team).toLowerCase(), n2 = lastNameOf(f.away_team).toLowerCase();
+        // Canonicalize first — see canonOddsName() above isScheduledBout: a name
+        // the odds feed splits that our DB keeps fused (e.g. "Zhu Rong" ->
+        // "Rongzhu") must resolve here too, or a bout that passed isScheduledBout
+        // above gets silently dropped again right here (the "shouldn't happen"
+        // idx===-1 case below).
+        const home = canonOddsName(f.home_team), away = canonOddsName(f.away_team);
+        const n1 = lastNameOf(home).toLowerCase(), n2 = lastNameOf(away).toLowerCase();
         for (let i = 0; i < boutPairings.length; i++) {
           const [pf1, pf2] = boutPairings[i];
           const a = lastNameOf(pf1).toLowerCase(), b = lastNameOf(pf2).toLowerCase();
@@ -137106,8 +137135,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         }
         for (let i = 0; i < boutPairings.length; i++) {
           const [pf1, pf2] = boutPairings[i];
-          if ((namesLikelyMatch(pf1, f.home_team) && namesLikelyMatch(pf2, f.away_team)) ||
-              (namesLikelyMatch(pf1, f.away_team) && namesLikelyMatch(pf2, f.home_team))) {
+          if ((namesLikelyMatch(pf1, home) && namesLikelyMatch(pf2, away)) ||
+              (namesLikelyMatch(pf1, away) && namesLikelyMatch(pf2, home))) {
             return { idx: i, exact: false };
           }
         }
@@ -137139,12 +137168,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Single-name fuzzy matching mapped e.g. "Cody Durden" to "Cory Sandhagen"
       // ("Cody"≈"Cory"), misplacing a prelim among the main-card bouts.
       function evtFightIndexOf(fight) {
-        const n1 = lastNameOf(fight.home_team).toLowerCase(), n2 = lastNameOf(fight.away_team).toLowerCase();
+        // Canonicalize first — see canonOddsName() above isScheduledBout.
+        const home = canonOddsName(fight.home_team), away = canonOddsName(fight.away_team);
+        const n1 = lastNameOf(home).toLowerCase(), n2 = lastNameOf(away).toLowerCase();
         const idx = oddsDisplayOrder.findIndex(ef => {
           const a = lastNameOf(ef.f1).toLowerCase(), b = lastNameOf(ef.f2).toLowerCase();
           if ((a === n1 && b === n2) || (a === n2 && b === n1)) return true;
-          return (namesLikelyMatch(ef.f1, fight.home_team) && namesLikelyMatch(ef.f2, fight.away_team)) ||
-                 (namesLikelyMatch(ef.f1, fight.away_team) && namesLikelyMatch(ef.f2, fight.home_team));
+          return (namesLikelyMatch(ef.f1, home) && namesLikelyMatch(ef.f2, away)) ||
+                 (namesLikelyMatch(ef.f1, away) && namesLikelyMatch(ef.f2, home));
         });
         return idx === -1 ? 999 : idx;
       }
@@ -138162,6 +138193,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Odds & Projections page showed "Won Il Kwon" unlinked, no photo -- same
     // failure mode as 'carlos diego ferreira' etc. above.
     'won il kwon': 'Kwon Won Il',
+    // The Odds API spells her with periods ("J.J."); our DB uses no periods.
+    // nameToSlug() drops the periods but still leaves TWO separate letter
+    // tokens ("j-j-aldrich") vs. our DB's single-token "jj-aldrich" -- the
+    // slug-based half of resolveCanonicalFighterName() doesn't collapse that,
+    // so without this exact-lowercase-name entry the odds page showed her
+    // unlinked, no photo (same failure mode as the entries above).
+    'j.j. aldrich': 'JJ Aldrich',
+    // UFC Fight Night Sep 12, 2026 (Garcia vs Rongzhu): the odds feed splits
+    // "Rongzhu" -- a single fused Chinese name with no surname to split, same
+    // situation as 'su mudaerji' above -- into two words, "Zhu Rong". Unlike
+    // the other split-name aliases here, this one alone doesn't fix the bout:
+    // isScheduledBout()/matchedPairingIndex()/findEvtFight() (and their odds-
+    // board twins) compare data/odds.json's raw home_team/away_team against
+    // evt.fights' already-canonical names via lastNameOf()/namesLikelyMatch(),
+    // and "Rongzhu" (one token) vs. "Zhu Rong" (two) fails both -- so the
+    // whole fight silently dropped off the Odds and Projections pages instead
+    // of just failing to link. Those matching functions now canonicalize both
+    // raw names through this same map first (see canonOddsName() above
+    // isScheduledBout) so the alias fixes both the missing bout AND the link.
+    'zhu rong': 'Rongzhu',
   };
 
   // Share-sheet only: "Dana White's Contender Series: Season 10, Week 1" is long
