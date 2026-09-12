@@ -867,6 +867,37 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-lock-id{ font-size:.68rem; color:var(--muted); line-height:1.4; }
 @media (max-width:360px){ .fp-lock-grid{ grid-template-columns:1fr; } }
 
+/* ---- Fighter profile: Record Breakdown -- ported from the site's own
+   .fight-info-toggle + .record-breakdown-panel/.rb-grid (index.html), right
+   under the record line same as there. Same measured-max-height slide-open
+   technique as matchup.js's Fight Info toggle (see fighter.js's
+   wireRecordBreakdown for why: a WKWebView doesn't reliably collapse a 0fr
+   grid row to a true zero for a panel with real content). ---- */
+.fp-record-toggle{
+  display:inline-block; background:none; border:1px solid var(--border); border-radius:5px;
+  color:var(--muted); font-family:'Barlow Condensed',sans-serif; font-size:.66rem;
+  letter-spacing:.05em; text-transform:uppercase; padding:.28rem .55rem; cursor:pointer;
+  transition:border-color .15s, color .15s; margin-top:.4rem;
+}
+.fp-record-toggle:active, .fp-record-toggle.open{ border-color:var(--accent); color:var(--accent); }
+.fp-record-panel{
+  max-height:0; opacity:0; overflow:hidden;
+  transition:max-height .3s ease, opacity .22s ease, margin-top .3s ease;
+  margin-top:0;
+}
+.fp-record-panel.open{ opacity:1; margin-top:.7rem; }
+.fp-record-panel-inner{ padding-top:.1rem; }
+.fp-rb-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.9rem 1rem; }
+.fp-rb-section{ min-width:0; }
+.fp-rb-title{ font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:.4rem; }
+.fp-rb-stat{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; padding:.28rem 0; border-top:1px solid var(--border); font-size:.78rem; }
+.fp-rb-stat:first-of-type{ border-top:none; }
+.fp-rb-lbl{ color:var(--muted); min-width:0; }
+.fp-rb-org-lbl{ display:inline-flex; align-items:center; flex-wrap:wrap; gap:4px; row-gap:2px; color:var(--text); }
+.fp-rb-val{ font-weight:800; flex:0 0 auto; }
+.fp-tier-text{ font-size:.6rem; font-weight:800; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap; }
+@media (max-width:360px){ .fp-rb-grid{ grid-template-columns:1fr; } }
+
 /* ---- Fighter profile: Premium Fight History / Tape Study / Odds History /
    Accolades / News -- up to 5 possible tabs (site order, see fighter.js's
    tabsHTML), only the ones with content for this fighter. Ported straight
@@ -946,6 +977,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .fp-hist-result.bad{ color:#c76a54; }
 .fp-hist-sub{ color:var(--muted); font-size:.72rem; margin-top:2px; }
 .fp-hist-event{ color:var(--muted); font-size:.76rem; }
+/* Regional promotion strength -- bordered pill next to a non-UFC bout's
+   event name, same treatment as the site's promotionTierBadgeHTML(). Wraps
+   under the event text on a narrow cell rather than forcing extra scroll
+   width, since the Event column already sits at the end of a horizontally-
+   scrolling table. */
+.fp-tier-badge{
+  display:inline-flex; align-items:center; margin-left:5px; padding:1px 7px;
+  border:1px solid currentColor; border-radius:999px;
+  font-size:.58rem; font-weight:800; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap;
+}
 .fp-hist-upcoming{
   display:inline-flex; align-items:center; padding:2px 10px;
   border:1px solid var(--accent); border-radius:999px; color:var(--accent);

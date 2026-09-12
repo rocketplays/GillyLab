@@ -195,22 +195,131 @@ function buildAccolades(name) {
   return raw.map((a) => ({ icon: a.icon || null, title: a.title || null, detail: a.detail || null }));
 }
 
+// ── promotion strength, ported verbatim from index.html's inferPromotion()/
+// PROMOTION_ALIASES/PROMOTION_TIERS/promotionTier() (~114944-115010). Not a
+// `const` grabConst() can pull out on its own (inferPromotion/promotionTier
+// are functions, not object literals, and PROMOTION_TIERS/EXCLUDED_ORGS sit
+// alongside a big block of hand-curated commentary) -- duplicated here in
+// full instead, same reasoning gen-matchup-free.cjs's canonStatName gives for
+// its own port: two independent Node processes, no import between them. A
+// drift risk either way; keep this block byte-for-byte in sync with
+// index.html's copy if that curated tier list ever changes.
+const PROMOTION_ALIASES = {
+  'dwcs': 'UFC', 'tuf': 'UFC', 'the ultimate fighter': 'UFC',
+  "dana white's contender series": 'UFC',
+  'one championship': 'ONE Championship', 'one fc': 'ONE Championship',
+  'one fighting championship': 'ONE Championship',
+};
+function inferPromotion(eventName) {
+  let e = String(eventName == null ? '' : eventName).trim();
+  e = e.replace(/\s*\([^)]*\)\s*$/, '').trim();
+  if (!e) return 'Unknown';
+  if (/^UFC\b/i.test(e) || /^(DWCS|TUF|The Ultimate Fighter)\b/i.test(e)) return 'UFC';
+  e = e.replace(/^\d{4}\s+/, '');
+  const m = e.match(/^([A-Za-z0-9][A-Za-z0-9.&'%\-]*(?:\s+[A-Za-z][A-Za-z0-9.&'%\-]*)*?)(?=\s*:|\s+(?:\d|vs\.?|-)|$)/i);
+  const name = (m && m[1] && m[1].trim()) || e;
+  return PROMOTION_ALIASES[name.toLowerCase()] || name;
+}
+const EXCLUDED_ORGS = ['ufc', 'unknown', 'dwcs', 'tuf', 'the ultimate fighter', "dana white's contender series", 'road to ufc'];
+const PROMOTION_TIERS = {
+  1: { label: 'Elite (Tier 1)', orgs: ['bellator', 'pfl', 'rizin', 'one championship', 'one'] },
+  2: { label: 'Near-elite (Tier 2)', orgs: ['pride', 'strikeforce', 'wec', 'ksw', 'aca', 'acb', 'wfca'] },
+  3: { label: 'Established feeder (Tier 3)', orgs: ['lfa', 'cage warriors', 'invicta fc', 'brave cf', 'm-1 global', 'shooto', 'shooto brazil', 'cffc', 'titan fc', 'wsof', 'road fc', 'pancrase', 'uae warriors', 'oktagon', 'ares fc', 'kotc', 'combate global', 'combate americas', 'combate', 'fight nights global', 'rcc', 'eagle fc', 'kok', 'legend fc', 'pfl europe', 'fury fc'] },
+  4: { label: 'Developmental (Tier 4)', orgs: ['wlf', 'afc', 'ces', 'uwc', 'fen', 'gladiator challenge', 'spf', 'stfc', 'tpf', 'rings', 'lfl', 'armmada', 'mfc', 'sfh', 'hexagone', 'sft', 'fcr', 'shamrock fc', 'xfc', 'wlmma', 'cxf', 'ckfc', 'deep', 'roc', 'fcc', 'sfc', 'wfc', 'pfc', 'gc', 'loc', 'jungle fight', 'fcoc', 'combat zone', 'cage titans', 'demo fight', 'sf', 'cfs', 'mma series', 'wow', 'kunlun fight', 'desert force', 'lights out', 'venator fc', 'efc', 'hkfc', 'mr. cage', 'fnc', 'a1 combat', 'naiza fc', 'kof', 'ocl', 'sbc', 'ufl', 'tuff-n-uff'] },
+};
+const LOW_QUALITY_TIER = { tier: 5, label: 'Low quality (Tier 5)' };
+const _PROMO_TIER_LOOKUP = (() => {
+  const m = {};
+  Object.keys(PROMOTION_TIERS).forEach((t) => { PROMOTION_TIERS[t].orgs.forEach((o) => { m[o] = +t; }); });
+  return m;
+})();
+function promotionTier(org) {
+  const key = String(org == null ? '' : org).trim().toLowerCase();
+  if (!key || EXCLUDED_ORGS.indexOf(key) !== -1) return null;
+  const t = _PROMO_TIER_LOOKUP[key];
+  return t ? { tier: t, label: PROMOTION_TIERS[t].label } : LOW_QUALITY_TIER;
+}
+
 // ── fight history, ported from populateFightHistory() in index.html ─────────
 // Only dated (completed) rows -- see header comment on why the "Upcoming"
 // placeholder isn't ported. No `stats` field here -- worker/index.js attaches
 // per-row box scores at request time (see the FIGHT_STATS comment above).
+// `org`/`orgTier` mirror the site's own Event-column badge (f.org ||
+// inferPromotion(f.event), then promotionTier() of that) -- computed once
+// here at build time rather than shipping the ~90-org tier table to the app
+// client just to recompute the same thing per row.
 function buildFightHistory(name) {
   const raw = (FIGHT_HISTORY[name] || []).filter((f) => f && f.date);
-  return raw.map((f) => ({
-    date: f.date || null,
-    opponent: f.opponent || null,
-    result: f.result || null,
-    method: f.method || null,
-    round: f.round || null,
-    time: f.time || null,
-    event: f.event || null,
-    org: f.org || null,
-  }));
+  return raw.map((f) => {
+    const org = f.org || inferPromotion(f.event);
+    return {
+      date: f.date || null,
+      opponent: f.opponent || null,
+      result: f.result || null,
+      method: f.method || null,
+      round: f.round || null,
+      time: f.time || null,
+      event: f.event || null,
+      org: org || null,
+      orgTier: promotionTier(org),
+    };
+  });
+}
+
+// ── Record Breakdown, ported from populateRecordBreakdown() in index.html
+// (~115040-115113) -- precomputed here rather than shipped as raw data for
+// the app to recompute client-side, same reasoning as the tier table above.
+// Uses the SAME stricter filter the site's own version does (dated, decided,
+// not a still-"Upcoming" row) -- not just buildFightHistory's own looser
+// "has a date" filter -- so a booked-but-not-yet-fought bout never counts
+// toward either method tally or the organization list.
+function buildRecordBreakdown(name) {
+  const fights = (FIGHT_HISTORY[name] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
+  if (!fights.length) return null;
+  let koTko = 0, sub = 0, dec = 0, dq = 0, draws = 0, noContests = 0;
+  let lKoTko = 0, lSub = 0, lDec = 0, lDq = 0;
+  const orgCounts = {};
+  fights.forEach((f) => {
+    const method = String(f.method || '');
+    const isKoTko = /^(KO|TKO|KO\/TKO)\b/i.test(method) || /\binjury\b/i.test(method);
+    const isSub = /^(Sub(mission)?|Technical\s+Sub(mission)?|Rear[\s-]Naked|Anaconda|Triangle|Guillotine|Arm[\s-]?[Bb]ar|Kimura|Heel\s*Hook|D'?arce|Ezekiel|Kneebar|Omoplata)\b/i.test(method);
+    const isDec = /^Decision\b/i.test(method);
+    const isDq = /^DQ\b|^Disqualif/i.test(method);
+    if (f.result === 'W') {
+      if (isKoTko) koTko++;
+      else if (isSub) sub++;
+      else if (isDec) dec++;
+      else if (isDq) dq++;
+    } else if (f.result === 'L') {
+      if (isKoTko) lKoTko++;
+      else if (isSub) lSub++;
+      else if (isDec) lDec++;
+      else if (isDq) lDq++;
+    } else if (f.result === 'D') {
+      draws++;
+    } else if (f.result === 'NC') {
+      noContests++;
+    }
+    const org = f.org || inferPromotion(f.event);
+    orgCounts[org] = (orgCounts[org] || 0) + 1;
+  });
+  // Same sort as the site: UFC/DWCS/etc (promotionTier() null) as a group
+  // first, then everything else by tier (best first), fight count as the
+  // tiebreak -- so a single Tier-1 bout outranks five Tier-5 ones.
+  const orgs = Object.keys(orgCounts)
+    .sort((a, b) => {
+      const ta = promotionTier(a), tb = promotionTier(b);
+      const ra = ta ? ta.tier : -1, rb = tb ? tb.tier : -1;
+      if (ra !== rb) return ra - rb;
+      return (orgCounts[b] - orgCounts[a]) || a.localeCompare(b);
+    })
+    .map((org) => ({ org, count: orgCounts[org], tier: promotionTier(org) }));
+  return {
+    winsByMethod: { koTko, sub, dec, dq },
+    lossesByMethod: { koTko: lKoTko, sub: lSub, dec: lDec, dq: lDq },
+    draws, noContests,
+    orgs,
+  };
 }
 
 // ── odds history, ported from populateOddsHistory()/matchFightHistoryRow() in
@@ -289,7 +398,7 @@ function buildNews(name) {
 // space matches /api/app/fighter's exactly (one source of truth: fighter-lite) ──
 const lite = readJSON(R('data/fighter-lite.json'));
 const bySlug = {};
-let withAccolades = 0, withTape = 0, withHistory = 0, withOdds = 0, withNews = 0;
+let withAccolades = 0, withTape = 0, withHistory = 0, withOdds = 0, withNews = 0, withBreakdown = 0;
 for (const slug of Object.keys(lite.bySlug || {})) {
   const name = lite.bySlug[slug] && lite.bySlug[slug].name;
   if (!name) continue;
@@ -298,7 +407,8 @@ for (const slug of Object.keys(lite.bySlug || {})) {
   const fightHistory = buildFightHistory(name);
   const oddsHistory = buildOddsHistory(name);
   const news = buildNews(name);
-  if (!accolades.length && !tapeStudy.length && !fightHistory.length && !oddsHistory.length && !news) continue;
+  const recordBreakdown = buildRecordBreakdown(name);
+  if (!accolades.length && !tapeStudy.length && !fightHistory.length && !oddsHistory.length && !news && !recordBreakdown) continue;
   const entry = {};
   // Each field independently present-or-omitted (never an empty array/null
   // placeholder) so the app can tell "no tab" from "empty tab" the same way
@@ -308,6 +418,7 @@ for (const slug of Object.keys(lite.bySlug || {})) {
   if (fightHistory.length) { entry.fightHistory = fightHistory; withHistory++; }
   if (oddsHistory.length) { entry.oddsHistory = oddsHistory; withOdds++; }
   if (news) { entry.news = news; withNews++; }
+  if (recordBreakdown) { entry.recordBreakdown = recordBreakdown; withBreakdown++; }
   bySlug[slug] = entry;
 }
 
@@ -315,15 +426,17 @@ const out = { generatedAt: new Date().toISOString(), bySlug };
 const json = JSON.stringify(out);
 const mod = '// AUTO-GENERATED by scripts/gen-app-fighter-extras.cjs — do not edit by hand.\n' +
             "// Per-fighter Career Accolades, Tape Study, Fight History (with embedded\n" +
-            '// box scores), Odds History and News for the app\'s premium fighter profile\n' +
-            '// tabs (see worker/index.js\'s /api/app/fighter-extras). Keyed by the same\n' +
-            '// slug space as data/fighter-lite.json\'s bySlug. Regenerate rather than\n' +
-            '// patch: see the script header.\n' +
+            '// box scores + a regional-promotion-strength tier per row), Odds History,\n' +
+            '// News and Record Breakdown for the app\'s premium fighter profile (see\n' +
+            '// worker/index.js\'s /api/app/fighter-extras). Keyed by the same slug space\n' +
+            '// as data/fighter-lite.json\'s bySlug. Regenerate rather than patch: see the\n' +
+            '// script header.\n' +
             'export default ' + json + ';\n';
 if (!DRY) fs.writeFileSync(OUT, mod);
 const kb = (n) => (n / 1024).toFixed(0) + 'KB';
 console.log('worker/fighter-extras.js  ' + kb(mod.length) +
   '  ' + Object.keys(bySlug).length + ' fighter(s) with extras' +
   ' (' + withAccolades + ' accolades, ' + withTape + ' tape study, ' +
-  withHistory + ' fight history, ' + withOdds + ' odds history, ' + withNews + ' news)' +
+  withHistory + ' fight history, ' + withOdds + ' odds history, ' + withNews + ' news, ' +
+  withBreakdown + ' record breakdown)' +
   (DRY ? '   [dry-run, nothing written]' : ''));

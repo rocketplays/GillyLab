@@ -151,6 +151,90 @@ window.GL_FIGHTER = (function(){
   // uses across Fight History and Odds History.
   function resultClass(r){ return r === 'W' ? 'good' : (r === 'L' ? 'bad' : ''); }
 
+  // ── Regional promotion strength -- same tier/color convention matchup.js's
+  // own PROMO_TIER_COLORS uses for the Fight Info breakdown, duplicated here
+  // rather than shared (this app's per-screen-self-contained convention).
+  // The actual tier LOOKUP (index.html's ~90-org PROMOTION_TIERS table)
+  // isn't ported client-side at all -- gen-app-fighter-extras.cjs already
+  // resolved each fight-history row's `orgTier`/the Record Breakdown's
+  // per-org `tier` to a plain {tier,label} at build time, so these two
+  // renderers just need the color mapping, not the table itself.
+  var PROMO_TIER_COLORS = { 1: '#00e668', 2: '#3ecbff', 3: 'var(--accent)', 4: '#ffb020', 5: '#ff5c5c' };
+  // Bordered pill -- same treatment as the site's promotionTierBadgeHTML(),
+  // used next to the Event column in Fight History.
+  function promoTierBadgeHTML(tier){
+    if (!tier) return '';
+    var c = PROMO_TIER_COLORS[tier.tier] || PROMO_TIER_COLORS[5];
+    return '<span class="fp-tier-badge" style="border-color:' + c + ';color:' + c + '">' + esc(tier.label) + '</span>';
+  }
+  // Plain color-coded text, no border -- same treatment as the site's
+  // promotionTierTextHTML(), used in Record Breakdown's Fights By
+  // Organization list (a wrapping grid, where a bordered pill on every row
+  // read as too heavy, per that function's own comment in index.html).
+  function promoTierTextHTML(tier){
+    if (!tier) return '';
+    var c = PROMO_TIER_COLORS[tier.tier] || PROMO_TIER_COLORS[5];
+    return '<span class="fp-tier-text" style="color:' + c + '">' + esc(tier.label) + '</span>';
+  }
+
+  // ── Record Breakdown -- ported from populateRecordBreakdown() in
+  // index.html: Wins/Losses By Method, Other Results (draws/no-contests,
+  // only when either is nonzero, same as the site), and Fights By
+  // Organization with each org's regional promotion strength called out.
+  // All the actual counting/sorting already happened at build time
+  // (gen-app-fighter-extras.cjs's buildRecordBreakdown) -- this is pure
+  // display over that precomputed shape.
+  function rbStatRow(label, value){
+    return '<div class="fp-rb-stat"><span class="fp-rb-lbl">' + esc(label) + '</span><span class="fp-rb-val">' + value + '</span></div>';
+  }
+  function rbOrgRow(o){
+    return (
+      '<div class="fp-rb-stat">' +
+        '<span class="fp-rb-lbl fp-rb-org-lbl">' + esc(o.org) + promoTierTextHTML(o.tier) + '</span>' +
+        '<span class="fp-rb-val">' + o.count + '</span>' +
+      '</div>'
+    );
+  }
+  function recordBreakdownHTML(rb){
+    if (!rb) return '';
+    var w = rb.winsByMethod || {}, l = rb.lossesByMethod || {};
+    var other = (rb.draws || rb.noContests)
+      ? '<div class="fp-rb-section"><div class="fp-rb-title">Other Results</div>' +
+          (rb.draws ? rbStatRow('Draws', rb.draws) : '') +
+          (rb.noContests ? rbStatRow('No Contests', rb.noContests) : '') +
+        '</div>'
+      : '';
+    var orgs = (rb.orgs || []).map(rbOrgRow).join('') || rbStatRow('No data', 0);
+    return (
+      '<div class="fp-rb-grid">' +
+        '<div class="fp-rb-section"><div class="fp-rb-title">Wins By Method</div>' +
+          rbStatRow('KO/TKO', w.koTko || 0) + rbStatRow('Submission', w.sub || 0) + rbStatRow('Decision', w.dec || 0) +
+          (w.dq ? rbStatRow('Disqualification', w.dq) : '') +
+        '</div>' +
+        '<div class="fp-rb-section"><div class="fp-rb-title">Losses By Method</div>' +
+          rbStatRow('KO/TKO', l.koTko || 0) + rbStatRow('Submission', l.sub || 0) + rbStatRow('Decision', l.dec || 0) +
+          (l.dq ? rbStatRow('Disqualification', l.dq) : '') +
+        '</div>' +
+        other +
+        '<div class="fp-rb-section"><div class="fp-rb-title">Fights By Organization</div>' + orgs + '</div>' +
+      '</div>'
+    );
+  }
+  // Toggle + panel, right under the record line -- same placement as the
+  // site's own Record Breakdown (next to the W-L-D numbers, above the tab
+  // content), and the same measured-max-height slide-open animation
+  // matchup.js's Fight Info toggle uses (see wireRecordBreakdown below for
+  // why: a WKWebView doesn't reliably collapse a 0fr grid row to true zero).
+  function recordBreakdownBlockHTML(rb){
+    if (!rb) return '';
+    return (
+      '<div style="margin-top:.5rem">' +
+        '<button type="button" class="fp-record-toggle" data-rb-toggle="1">Record Breakdown ⌄</button>' +
+        '<div class="fp-record-panel" id="fpRecordPanel"><div class="fp-record-panel-inner">' + recordBreakdownHTML(rb) + '</div></div>' +
+      '</div>'
+    );
+  }
+
   // Ported from index.html's static #fh-table/#fh-stats-hint markup and
   // populateFightHistory() -- a real 5-column table (Date/Opponent/Result/
   // Method/Event, Round+Time folded into a second line under Method, same
@@ -217,7 +301,7 @@ window.GL_FIGHTER = (function(){
           '<td class="fp-hist-td fp-hist-method">' + esc(f.method || '') +
             (subLine ? '<div class="fp-hist-sub">' + esc(subLine) + '</div>' : '') +
           '</td>' +
-          '<td class="fp-hist-td fp-hist-event">' + esc(f.event || '') + '</td>' +
+          '<td class="fp-hist-td fp-hist-event">' + esc(f.event || '') + promoTierBadgeHTML(f.orgTier) + '</td>' +
         '</tr>'
       );
     }).join('');
@@ -434,7 +518,40 @@ window.GL_FIGHTER = (function(){
     unlockScroll();
   }
 
+  // Same measured-max-height slide-open technique as matchup.js's own Fight
+  // Info toggle (see its own comment on why: this app's WKWebView doesn't
+  // reliably collapse a CSS grid-template-rows 0fr row to a true zero for a
+  // panel with real content, which the site's simpler class-toggle approach
+  // relies on).
+  function wireRecordBreakdown(container){
+    var btn = container.querySelector('[data-rb-toggle]');
+    var panel = container.querySelector('#fpRecordPanel');
+    if (!btn || !panel) return;
+    btn.addEventListener('click', function(){
+      window.GL_NATIVE.tap();
+      var isOpen = panel.classList.contains('open');
+      if (isOpen){
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        void panel.offsetHeight;
+        panel.classList.remove('open');
+        panel.style.maxHeight = '0px';
+      } else {
+        panel.classList.add('open');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        var onEnd = function(e){
+          if (e.target !== panel || e.propertyName !== 'max-height') return;
+          if (panel.classList.contains('open')) panel.style.maxHeight = 'none';
+          panel.removeEventListener('transitionend', onEnd);
+        };
+        panel.addEventListener('transitionend', onEnd);
+      }
+      btn.textContent = 'Record Breakdown ' + (isOpen ? '⌄' : '⌃');
+      btn.classList.toggle('open', !isOpen);
+    });
+  }
+
   function wireExtras(container, fighterName, extras){
+    wireRecordBreakdown(container);
     var tabs = container.querySelectorAll('[data-fptab]');
     tabs.forEach(function(btn){
       btn.addEventListener('click', function(){
@@ -497,6 +614,10 @@ window.GL_FIGHTER = (function(){
     var rankLabel = f.rank && f.rank !== 'NR' ? (/C/.test(f.rank) ? 'Champion' : f.rank) : '';
     var metaBits = [f.record, f.division, f.country].filter(Boolean).join(' · ');
     var tail = subscribed ? (tabsHTML(extras || {}) + statsModalHTML()) : lockedHTML();
+    // Same placement as the site: right under the record, above everything
+    // else -- only for a subscribed viewer with actual breakdown data (the
+    // toggle simply doesn't render rather than opening onto an empty panel).
+    var recordBreakdown = (subscribed && extras && extras.recordBreakdown) ? recordBreakdownBlockHTML(extras.recordBreakdown) : '';
     return (
       '<div class="fp-head">' +
         avatarHtml(f) +
@@ -504,6 +625,7 @@ window.GL_FIGHTER = (function(){
           (rankLabel ? '<div class="gl-label" style="margin:0 0 .1rem;color:var(--accent)">' + esc(rankLabel) + '</div>' : '') +
           '<h1 class="gl-heading" style="margin:0;font-size:1.3rem">' + esc(f.name) + '</h1>' +
           (metaBits ? '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(metaBits) + '</p>' : '') +
+          recordBreakdown +
         '</div>' +
       '</div>' +
       bioHTML(f.phys) +
