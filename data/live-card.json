@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T22:52:13.871Z",
+ "generatedAt": "2026-09-12T23:22:56.952Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9774,6 +9774,194 @@
       ]
      },
      "capturedAt": "2026-09-12T22:52:13.745Z"
+    }
+   ]
+  },
+  "Tommy McMillen": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Marwan Rahiki",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Marwan Rahiki",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 89,
+      "sigA": 237,
+      "totL": 128,
+      "totA": 280,
+      "tdL": 5,
+      "tdA": 5,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "4:53",
+      "head": [
+       56,
+       192
+      ],
+      "body": [
+       21,
+       30
+      ],
+      "leg": [
+       12,
+       15
+      ],
+      "dist": [
+       78,
+       220
+      ],
+      "clinch": [
+       9,
+       14
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 79,
+      "sigA": 178,
+      "totL": 80,
+      "totA": 179,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:07",
+      "head": [
+       46,
+       135
+      ],
+      "body": [
+       24,
+       32
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       69,
+       168
+      ],
+      "clinch": [
+       10,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-12T23:22:56.839Z"
+    }
+   ]
+  },
+  "Marwan Rahiki": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Tommy McMillen",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Tommy McMillen",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 79,
+      "sigA": 178,
+      "totL": 80,
+      "totA": 179,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:07",
+      "head": [
+       46,
+       135
+      ],
+      "body": [
+       24,
+       32
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       69,
+       168
+      ],
+      "clinch": [
+       10,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 89,
+      "sigA": 237,
+      "totL": 128,
+      "totA": 280,
+      "tdL": 5,
+      "tdA": 5,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "4:53",
+      "head": [
+       56,
+       192
+      ],
+      "body": [
+       21,
+       30
+      ],
+      "leg": [
+       12,
+       15
+      ],
+      "dist": [
+       78,
+       220
+      ],
+      "clinch": [
+       9,
+       14
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-09-12T23:22:56.839Z"
     }
    ]
   }
