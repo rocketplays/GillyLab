@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T18:46:36.193Z",
+ "generatedAt": "2026-09-12T19:02:15.160Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8082,6 +8082,194 @@
       ]
      },
      "capturedAt": "2026-09-12T18:46:36.085Z"
+    }
+   ]
+  },
+  "Sean King": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Jessie Rosas",
+     "result": "W",
+     "method": "KO/TKO (Slam)",
+     "round": 1,
+     "time": "0:36",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Jessie Rosas",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 13,
+      "totL": 7,
+      "totA": 13,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       4,
+       8
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-12T19:02:15.047Z"
+    }
+   ]
+  },
+  "Jessie Rosas": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Sean King",
+     "result": "L",
+     "method": "KO/TKO (Slam)",
+     "round": 1,
+     "time": "0:36",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Sean King",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 13,
+      "totL": 7,
+      "totA": 13,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       4,
+       8
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-09-12T19:02:15.047Z"
     }
    ]
   }
