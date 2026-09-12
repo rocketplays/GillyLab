@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T19:02:15.160Z",
+ "generatedAt": "2026-09-12T19:33:01.067Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8270,6 +8270,194 @@
       ]
      },
      "capturedAt": "2026-09-12T19:02:15.047Z"
+    }
+   ]
+  },
+  "Rafa Garcia": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Rongzhu",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Rongzhu",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 73,
+      "sigA": 189,
+      "totL": 77,
+      "totA": 193,
+      "tdL": 1,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:15",
+      "head": [
+       64,
+       178
+      ],
+      "body": [
+       4,
+       6
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       60,
+       171
+      ],
+      "clinch": [
+       12,
+       17
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 109,
+      "sigA": 247,
+      "totL": 110,
+      "totA": 248,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       78,
+       210
+      ],
+      "body": [
+       9,
+       13
+      ],
+      "leg": [
+       22,
+       24
+      ],
+      "dist": [
+       108,
+       245
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-12T19:33:00.926Z"
+    }
+   ]
+  },
+  "Rongzhu": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Rafa Garcia",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Rafa Garcia",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 109,
+      "sigA": 247,
+      "totL": 110,
+      "totA": 248,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       78,
+       210
+      ],
+      "body": [
+       9,
+       13
+      ],
+      "leg": [
+       22,
+       24
+      ],
+      "dist": [
+       108,
+       245
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 73,
+      "sigA": 189,
+      "totL": 77,
+      "totA": 193,
+      "tdL": 1,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:15",
+      "head": [
+       64,
+       178
+      ],
+      "body": [
+       4,
+       6
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       60,
+       171
+      ],
+      "clinch": [
+       12,
+       17
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-12T19:33:00.926Z"
     }
    ]
   }
