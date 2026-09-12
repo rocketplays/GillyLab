@@ -382,10 +382,29 @@ function mountMatchup(container){
   function canSim(f, special){
     return !!subscribed && !f.result && special !== 'mf-dwcs';
   }
-  function simBarHTML(f, special){
+  // `data-dd-slug` is only added when this exact bout already has real
+  // Matchup Analytics Deep Dive data on THIS screen (hubData[eventSlug],
+  // same lookup hubOpen() itself uses) -- i.e. only the main event of a card
+  // this app already generates deep-dive analytics for (see
+  // scripts/gen-matchup-free.cjs), never an arbitrary pairing. Read by the
+  // [data-sim-a] click handler below, which threads it through to the
+  // simulator screen as `dd` so its own "Matchup Analytics Deep Dive" button
+  // can reuse this SAME already-computed data instead of the feature having
+  // to cover every possible simulated pairing -- see simulator.js's own
+  // comment on why it deliberately doesn't do that.
+  function simBarHTML(f, special, eventSlug){
     if (!canSim(f, special)) return '';
+    // hubData is keyed by EVENT slug and describes exactly one pairing (that
+    // card's main event) -- every simmable fight on the card shares the same
+    // eventSlug, so this bout's own f1/f2 have to actually match hubData's
+    // pairing (order-independent) before attaching data-dd-slug, or every
+    // OTHER bout on a card with deep-dive data would wrongly claim it too.
+    var hd = eventSlug && hubData[eventSlug];
+    var ddMatches = hd && ((hd.n1 === f.f1 && hd.n2 === f.f2) || (hd.n1 === f.f2 && hd.n2 === f.f1));
+    var ddSlug = ddMatches ? eventSlug : '';
     return (
-      '<button type="button" class="mf-sim-bar" data-sim-a="' + esc(f.f1) + '" data-sim-b="' + esc(f.f2) + '" data-sim-rounds="' + (f.rounds === 5 ? 5 : 3) + '">' +
+      '<button type="button" class="mf-sim-bar" data-sim-a="' + esc(f.f1) + '" data-sim-b="' + esc(f.f2) + '" data-sim-rounds="' + (f.rounds === 5 ? 5 : 3) + '"' +
+        (ddSlug ? ' data-dd-slug="' + esc(ddSlug) + '"' : '') + '>' +
         'Simulate Matchup' +
       '</button>'
     );
@@ -426,7 +445,7 @@ function mountMatchup(container){
           '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + centerResultHTML(res) + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
           '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + resTagHTML(f, 2) + '</div><div class="mf-rec">' + mlRecHTML(f, 2, f.rec2, res) + '</div></div></div>' +
         '</div>' +
-        simBarHTML(f, special) +
+        simBarHTML(f, special, eventSlug) +
         '<div class="mf-panel"><div class="mf-panel-inner">' + panelBody + '</div></div>' +
       '</div>'
     );
@@ -924,10 +943,12 @@ function mountMatchup(container){
       btn.addEventListener('click', function(e){
         e.stopPropagation();
         window.GL_NATIVE.tap();
+        var ddSlug = btn.getAttribute('data-dd-slug');
         window.GL_ROUTER.go('simulator', {
           a: btn.getAttribute('data-sim-a'),
           b: btn.getAttribute('data-sim-b'),
           rounds: parseInt(btn.getAttribute('data-sim-rounds'), 10),
+          dd: ddSlug || undefined,
         });
       });
     });

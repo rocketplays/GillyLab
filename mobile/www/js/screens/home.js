@@ -77,13 +77,23 @@ window.GL_ROUTER.register('home', {
           '</div>'
         );
       };
+      // Tappable straight to the fighter's profile when a slug came back --
+      // same generic [data-slug] delegate wire() already wires up for
+      // Movers/Odds below, just a plain reset-button here (not .gl-link-btn)
+      // so the hero name keeps its own bold/centered look instead of picking
+      // up that treatment's underline+accent color.
+      var heName = function(name, slug){
+        return slug
+          ? '<button type="button" class="he-name" style="background:none;border:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer" data-slug="' + esc(slug) + '">' + esc(name) + '</button>'
+          : '<div class="he-name">' + esc(name) + '</div>';
+      };
       return (
         '<div class="gl-sec gl-sec--first">' +
           head +
           '<div class="he-row">' +
-            '<div class="he-side">' + av(main.s1, main.f1) + '<div class="he-name">' + esc(main.f1) + '</div></div>' +
+            '<div class="he-side">' + av(main.s1, main.f1) + heName(main.f1, main.s1) + '</div>' +
             '<div class="he-vs">VS</div>' +
-            '<div class="he-side">' + av(main.s2, main.f2) + '<div class="he-name">' + esc(main.f2) + '</div></div>' +
+            '<div class="he-side">' + av(main.s2, main.f2) + heName(main.f2, main.s2) + '</div>' +
           '</div>' +
           '<p class="gl-muted" style="margin:.6rem 0 0;text-align:center">' + esc(card.event) + '</p>' +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
@@ -207,11 +217,11 @@ window.GL_ROUTER.register('home', {
       var main = matchupCard && (matchupCard.fights || [])[0];
       var peek = (main && (main.o1 != null || main.o2 != null))
         ? '<div class="gl-dash-row gl-dash-row--odds" style="margin-top:.5rem">' +
-            '<span class="gl-dash-oddscell">' + moverAvatar(main.f1, main.s1) + '<span class="gl-dash-row-name">' + esc(main.f1) + '</span></span>' +
+            '<span class="gl-dash-oddscell">' + moverAvatar(main.f1, main.s1) + moverName(main.f1, main.s1) + '</span>' +
             '<span class="gl-muted" style="font-size:.82rem">' + esc(fmtOdds(main.o1)) + '</span>' +
             '<span class="gl-muted" style="font-size:.78rem">vs</span>' +
             '<span class="gl-muted" style="font-size:.82rem">' + esc(fmtOdds(main.o2)) + '</span>' +
-            '<span class="gl-dash-oddscell">' + '<span class="gl-dash-row-name">' + esc(main.f2) + '</span>' + moverAvatar(main.f2, main.s2) + '</span>' +
+            '<span class="gl-dash-oddscell">' + moverName(main.f2, main.s2) + moverAvatar(main.f2, main.s2) + '</span>' +
           '</div>'
         : '';
       return toolPreviewSection(

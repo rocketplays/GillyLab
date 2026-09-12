@@ -26,6 +26,11 @@ window.GL_ROUTER.register('simulator', {
 
 window.GL_SIMULATOR = (function(){
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+
+  // Deep Dive modal state -- see the "Matchup Analytics Deep Dive" section
+  // below for what these hold and why this screen only ever has one entry
+  // rather than matchup.js's slug-keyed map.
+  var hubEntry = null, hubTabState = { tab: 'striking', filter: 'all' }, hubScrollY = 0, activeContainer = null;
   function surname(n){
     var p = String(n || '').trim().split(/\s+/);
     var i = p.length - 1;
@@ -257,6 +262,175 @@ window.GL_SIMULATOR = (function(){
     return parts.join('');
   }
 
+  // ── Matchup Analytics Deep Dive -- reappears on this screen for the exact
+  // matchup the Events page's own "Simulate Matchup" button already has real
+  // deep-dive data for (see matchup.js's simBarHTML comment), rather than
+  // this feature growing to cover every possible simulated pairing. This
+  // screen never computes availability itself -- `hubEntry` is either the
+  // one already-generated {n1,n2,...} payload for the eventSlug the visitor
+  // arrived from (fetched once in load(), see its own comment), or null when
+  // they got here some other way (fighter.js's "Run this fighter against
+  // anyone" entry point, the tab bar, a typed-in pairing) -- in which case
+  // this whole section simply never renders, same as the site has no way to
+  // show it for a pairing outside its own grid manifest either.
+  //
+  // Modal markup/behavior below is a straight duplicate of matchup.js's own
+  // hub (same IDs/classes, same site-shipped hubCss, same slide-open-free
+  // instant show/hide, same iOS-Safari scroll-lock fix) adapted from a
+  // slug-keyed map to a single entry, since this screen only ever has the
+  // one matchup open at a time -- see matchup.js's own comments on each
+  // piece for the underlying reasoning, not repeated here.
+  function ddBarMatches(nameA, nameB){
+    return !!hubEntry && ((hubEntry.n1 === nameA && hubEntry.n2 === nameB) || (hubEntry.n1 === nameB && hubEntry.n2 === nameA));
+  }
+  function ddBarHTML(nameA, nameB){
+    if (!ddBarMatches(nameA, nameB)) return '';
+    return '<button type="button" class="mf-dd-bar" id="simDDBtn">Matchup Analytics Deep Dive <span class="mf-dd-go">›</span></button>';
+  }
+  function ensureHubCss(css){
+    if (!css || document.getElementById('mfHubCssTag')) return;
+    var tag = document.createElement('style');
+    tag.id = 'mfHubCssTag';
+    tag.textContent = css;
+    document.head.appendChild(tag);
+  }
+  function hubModalHTML(){
+    return (
+      '<div id="mh-overlay"></div>' +
+      '<div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics">' +
+        '<div class="mh-hd" id="mh-hd"></div>' +
+        '<div class="mh-tabs" id="mh-tabs">' +
+          '<button type="button" class="mh-tab on" data-mh-tab="striking">Striking</button>' +
+          '<button type="button" class="mh-tab" data-mh-tab="grappling">Grappling</button>' +
+          '<button type="button" class="mh-x" id="mhCloseBtn" aria-label="Close">&times;</button>' +
+        '</div>' +
+        '<div class="mh-filter" id="mh-filter">' +
+          '<span class="mh-filter-lbl">Fights</span>' +
+          '<button type="button" class="mh-filter-btn on" data-mh-filter="all">All</button>' +
+          '<button type="button" class="mh-filter-btn" data-mh-filter="win">Wins</button>' +
+          '<button type="button" class="mh-filter-btn" data-mh-filter="loss">Losses</button>' +
+        '</div>' +
+        '<div class="mh-body" id="mh-body"></div>' +
+      '</div>'
+    );
+  }
+  var HUB_AV_STYLE = 'width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;color:#fff';
+  function hubInitials(nm){
+    var p = String(nm || '').trim().split(/\s+/).filter(Boolean);
+    if (!p.length) return '?';
+    if (p.length === 1) return p[0].slice(0, 2).toUpperCase();
+    return (p[0][0] + p[p.length - 1][0]).toUpperCase();
+  }
+  function hubSide(nm, slug, rec, right){
+    var av = slug
+      ? '<div style="' + HUB_AV_STYLE + '"><img src="' + window.GL_FIGHTER.PHOTO_BASE + esc(slug) + '.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\'' + esc(hubInitials(nm)) + '\'"></div>'
+      : '<div style="' + HUB_AV_STYLE + '">' + esc(hubInitials(nm)) + '</div>';
+    return (
+      '<div class="mh-hd-f' + (right ? ' r' : '') + '"' + (slug ? ' data-hub-slug="' + esc(slug) + '" style="cursor:pointer"' : '') + '>' +
+        '<span class="mh-hd-av">' + av + '</span>' +
+        '<div class="mh-hd-tx"><div class="mh-hd-nm">' + esc(nm) + '</div>' + (rec ? '<div class="mh-hd-rc">' + esc(rec) + '</div>' : '') + '</div>' +
+      '</div>'
+    );
+  }
+  function hubShowPane(){
+    if (!activeContainer) return;
+    var key = hubTabState.tab + '-' + hubTabState.filter;
+    activeContainer.querySelectorAll('[data-mh-pane]').forEach(function(p){ p.style.display = (p.getAttribute('data-mh-pane') === key) ? '' : 'none'; });
+    var b = activeContainer.querySelector('#mh-body');
+    if (b) b.scrollTop = 0;
+  }
+  function hubRenderEntry(){
+    var e = hubEntry;
+    if (!e || !activeContainer) return;
+    var subBits = [e.weight, e.rounds ? (e.rounds + ' RDS') : ''].filter(Boolean);
+    var mid = '<div class="mh-hd-vs">VS</div>' + (subBits.length ? '<div class="mh-hd-sub">' + esc(subBits.join(' · ')) + '</div>' : '');
+    var hd = activeContainer.querySelector('#mh-hd');
+    if (hd) {
+      hd.innerHTML = hubSide(e.n1, e.s1, e.rec1, false) + '<div class="mh-hd-mid">' + mid + '</div>' + hubSide(e.n2, e.s2, e.rec2, true);
+      hd.querySelectorAll('[data-hub-slug]').forEach(function(el){
+        el.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          var slug = el.getAttribute('data-hub-slug');
+          hubClose();
+          window.GL_ROUTER.go('fighter', { slug: slug });
+        });
+      });
+    }
+    var body = activeContainer.querySelector('#mh-body');
+    if (body) body.innerHTML =
+      '<div data-mh-pane="striking-all">' + e.striking.all + '</div>' +
+      '<div data-mh-pane="striking-win" style="display:none">' + e.striking.win + '</div>' +
+      '<div data-mh-pane="striking-loss" style="display:none">' + e.striking.loss + '</div>' +
+      '<div data-mh-pane="grappling-all" style="display:none">' + e.grappling.all + '</div>' +
+      '<div data-mh-pane="grappling-win" style="display:none">' + e.grappling.win + '</div>' +
+      '<div data-mh-pane="grappling-loss" style="display:none">' + e.grappling.loss + '</div>';
+    hubShowPane();
+  }
+  function hubLockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    hubScrollY = scroller.scrollTop || 0;
+    scroller.style.overflow = 'hidden';
+  }
+  function hubUnlockScroll(){
+    var scroller = document.getElementById('appScroll');
+    if (!scroller) return;
+    scroller.style.overflow = '';
+    scroller.scrollTop = hubScrollY;
+  }
+  function hubOpen(){
+    if (!hubEntry || !activeContainer) return;
+    var ov = activeContainer.querySelector('#mh-overlay'), bx = activeContainer.querySelector('#mh-box');
+    if (!ov || !bx) return;
+    window.GL_NATIVE.tap();
+    hubTabState = { tab: 'striking', filter: 'all' };
+    hubRenderEntry();
+    activeContainer.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-tab') === 'striking'); });
+    activeContainer.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-filter') === 'all'); });
+    ov.style.display = 'block';
+    bx.classList.add('mh-on');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        ov.style.opacity = '1';
+        bx.style.opacity = '1';
+        bx.style.transform = 'translate(-50%,-50%)';
+      });
+    });
+    hubLockScroll();
+  }
+  function hubClose(){
+    if (!activeContainer) return;
+    var ov = activeContainer.querySelector('#mh-overlay'), bx = activeContainer.querySelector('#mh-box');
+    if (!ov || !bx) return;
+    ov.style.opacity = '0';
+    bx.style.opacity = '0';
+    bx.style.transform = 'translate(-50%,-50%) translateY(8px)';
+    setTimeout(function(){ ov.style.display = 'none'; bx.classList.remove('mh-on'); }, 220);
+    hubUnlockScroll();
+  }
+  function wireHub(container){
+    var overlay = container.querySelector('#mh-overlay');
+    if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) hubClose(); });
+    var closeBtn = container.querySelector('#mhCloseBtn');
+    if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); hubClose(); });
+    container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        hubTabState.tab = btn.getAttribute('data-mh-tab');
+        container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        hubShowPane();
+      });
+    });
+    container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        hubTabState.filter = btn.getAttribute('data-mh-filter');
+        container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        hubShowPane();
+      });
+    });
+  }
+
   function resultHTML(nameA, nameB, slugA, slugB, result, tapeA, tapeB, breakdown){
     return (
       '<div class="sim-result">' +
@@ -269,6 +443,7 @@ window.GL_SIMULATOR = (function(){
         '</div>' +
         powerRowHTML(result) +
         tapeHTML(tapeA, tapeB) +
+        ddBarHTML(nameA, nameB) +
         breakdownHTML(nameA, nameB, breakdown) +
         '<p class="gl-muted" style="margin-top:1rem;font-size:.72rem">Based on ' + result.n.toLocaleString() + ' simulated fights. A projection, not a prediction — anyone can win on the night.</p>' +
       '</div>'
@@ -304,7 +479,8 @@ window.GL_SIMULATOR = (function(){
         '</div>' +
       '</div>' +
       '<button type="button" class="gl-btn gl-btn-primary" id="simRunBtn" disabled style="margin-top:1.1rem">Pick both fighters to simulate</button>' +
-      '<div id="simOutput" style="margin-top:1.4rem"></div>'
+      '<div id="simOutput" style="margin-top:1.4rem"></div>' +
+      hubModalHTML()
     );
   }
 
@@ -363,6 +539,8 @@ window.GL_SIMULATOR = (function(){
             window.GL_ROUTER.go('fighter', { slug: el.getAttribute('data-sim-slug') });
           });
         });
+        var ddBtn = output.querySelector('#simDDBtn');
+        if (ddBtn) ddBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); hubOpen(); });
         runBtn.disabled = false;
         runBtn.textContent = 'Run It Again';
       }).catch(function(err){
@@ -403,8 +581,26 @@ window.GL_SIMULATOR = (function(){
       var prefillA = (params && (params.a || params.name)) || null;
       var prefillB = (params && params.b) || null;
       var prefillRounds = (params && params.rounds === 5) ? 5 : 3;
-      container.innerHTML = shellHTML(prefillA, prefillB, prefillRounds);
-      wireShell(container, prefillA, prefillB, prefillRounds);
+      // `dd` is only ever set by matchup.js's own Simulate Matchup button,
+      // and only on the one bout per card that already has real Matchup
+      // Analytics Deep Dive data -- see its own comment. Reuses the exact
+      // same /api/app/matchup endpoint + hub payload the Events page itself
+      // just rendered from, rather than this screen computing or fetching
+      // anything new on its own.
+      var ddSlug = (params && params.dd) || null;
+      var hubPromise = ddSlug
+        ? window.GL_API.matchup(ddSlug).then(function(res){
+            if (res && res.hubCss) ensureHubCss(res.hubCss);
+            return (res && res.hub) || null;
+          }).catch(function(){ return null; })
+        : Promise.resolve(null);
+      hubPromise.then(function(hub){
+        hubEntry = hub;
+        container.innerHTML = shellHTML(prefillA, prefillB, prefillRounds);
+        activeContainer = container;
+        wireShell(container, prefillA, prefillB, prefillRounds);
+        wireHub(container);
+      });
     });
   }
 
