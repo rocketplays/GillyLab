@@ -6511,7 +6511,7 @@
  { name: "Christien Savoie", division: "WW", rank: "NR", record: "10-2-1", initials: "CS", country: "Canada" },
  { name: "Mohamed Ado", division: "WW", rank: "NR", record: "5-1-0", initials: "MA", country: "Niger" },
  { name: "Lucas Camacho", division: "HW", rank: "NR", record: "6-1-0", initials: "LC", country: "Brazil" },
- { name: "Antonio Monteiro", division: "FW", rank: "NR", record: "17-5-2", initials: "AM", country: "Brazil" },
+ { name: "Antonio Monteiro", division: "FW", rank: "NR", record: "18-5-1", initials: "AM", country: "Brazil" }, // 1 NC
  { name: "Julieta Martinez", division: "WSW", rank: "NR", record: "8-0-0", initials: "JM", country: "Argentina" },
  { name: "Heraldo Souza", division: "MW", rank: "NR", record: "9-2-1", initials: "HS", country: "Brazil" },
  { name: "Nick Piccininni", division: "FLW", rank: "NR", record: "7-1-0", initials: "NP", country: "USA" },
@@ -10475,7 +10475,15 @@
   "Christien Savoie": { ht:"5'11\"", dob:"1992-08-29", reach:'72"', stance:"Orthodox", slpm:1.39, strAcc:"46%", sapm:6.95, strDef:"24%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"12%", subAvg:0.0, finRate:"70%", streak:0, gym:"House Of Champions" },
   "Mohamed Ado": { ht:"5'11\"", dob:"2000-05-03", reach:'76"', stance:"Switch", slpm:1.66, strAcc:"83%", sapm:0.33, strDef:"75%", kd:0.0, tdLanded:4.97, tdAcc:"50%", tdDef:"50%", subAvg:4.97, finRate:"100%", streak:0, gym:"613 Fight Factory" },
   "Lucas Camacho": { ht:"6'4\"", dob:"1992-12-15", reach:'80"', stance:"Orthodox", slpm:4.08, strAcc:"39%", sapm:8.16, strDef:"7%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"83%", streak:0, gym:"Nova Uniao " },
-  "Antonio Monteiro": { ht:"5'7\"", dob:"1995-07-02", reach:'70"', stance:"Orthodox", slpm:3.93, strAcc:"49%", sapm:8.33, strDef:"34%", kd:0.0, tdLanded:1.0, tdAcc:"33%", tdDef:"67%", subAvg:1.0, finRate:"47%", streak:0, gym:"Nova Uniao " },
+  // Refreshed for DWCS Week 6 (Sep 15, 2026), vs. Tyshawn Williams -- his
+ // second DWCS appearance. finRate and streak corrected using ESPN's
+ // current 18-5-1 header (3 KO/TKO + 6 submission = 9 of 18 wins are
+ // finishes = 50%; streak = 1, the Jun 2025 win, since the very next
+ // fight back is the Oct 2024 DWCS loss). Left the per-fight numeric
+ // fields (slpm, strAcc, etc.) untouched -- those came from his official
+ // Oct 2024 DWCS/UFC-tracked appearance and nothing since contradicts
+ // them. Fixed a trailing-space typo in the gym name.
+ "Antonio Monteiro": { ht:"5'7\"", dob:"1995-07-02", reach:'70"', stance:"Orthodox", slpm:3.93, strAcc:"49%", sapm:8.33, strDef:"34%", kd:0.0, tdLanded:1.0, tdAcc:"33%", tdDef:"67%", subAvg:1.0, finRate:"50%", streak:1, gym:"Nova União" },
   "Julieta Martinez": { ht:"5'1\"", dob:"2004-09-14", reach:'62"', stance:"Orthodox", slpm:2.53, strAcc:"44%", sapm:3.6, strDef:"41%", kd:0.0, tdLanded:5.0, tdAcc:"45%", tdDef:"100%", subAvg:0.0, finRate:"75%", streak:8, gym:"Brazilian Fight Argentina" },
   "Heraldo Souza": { ht:"5'11\"", dob:"1994-12-15", reach:'73"', stance:"Orthodox", slpm:1.62, strAcc:"33%", sapm:1.62, strDef:"50%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"0%", subAvg:0.0, finRate:"89%", streak:0, gym:"Evolucao Thai" },
   "Nick Piccininni": { ht:"5'6\"", dob:"1996-12-16", reach:'66"', stance:"Orthodox", slpm:3.2, strAcc:"44%", sapm:6.03, strDef:"43%", kd:0.0, tdLanded:8.0, tdAcc:"44%", tdDef:"100%", subAvg:0.0, finRate:"71%", streak:0, gym:"Fortis MMA" },
@@ -45413,6 +45421,15 @@
   // unrelated "Williams" candidates, none a match. Small regional-card
   // fighter, unsurprising.
   "Tyshawn Williams": [],
+  // Closing lines for his 2 BFO-tracked completed fights (added -- he
+  // previously had no ODDS_HISTORY entry at all). His regional Shooto
+  // Brazil bouts, including the Jun 2025 win, predate/lack BFO coverage.
+  // The upcoming DWCS line vs. Tyshawn Williams is excluded -- this array
+  // is closing-line history for COMPLETED fights, not the next one.
+  "Antonio Monteiro": [
+    { opponent: "Yadier Delvalle", odds: -138 },
+    { opponent: "Leandro Rodrigues", odds: -250 }
+  ],
   // Closing lines for his two BFO-tracked completed fights (both losses).
   // The upcoming DWCS Week 6 line vs. Oscar Ravello is excluded -- this
   // array is closing-line history for COMPLETED fights, not the next one.
@@ -81600,30 +81617,40 @@ const FIGHT_HISTORY = {
     { date: "Sep 28, 2018", opponent: "Felipe Conceicao", result: "W", method: "Submission (Arm Triangle)", round: 2, time: "2:57", event: "Shooto Brazil: Shooto Brazil 88" },
     { date: "Dec 10, 2016", opponent: "Jeverson Goncalves", result: "W", method: "Submission (Arm Triangle)", round: 2, time: "4:27", event: "Big Fighters Championship 1" },
   ],
+  // Refreshed for DWCS Week 6 (Sep 15, 2026), vs. Tyshawn Williams. Local
+  // data was stale -- missing the Jun 2025 win over Savio Renato da Silva
+  // (added below), which brings the header record from the old 17-5-2 to
+  // ESPN's current 18-5-1. Also fixed the Oct 2014 Andre Batata bout,
+  // which was mislabeled result:"D" despite its own method text reading
+  // "No Contest" -- corrected to result:"NC" per convention, matching
+  // ESPN's header (only 1 draw counted: the separate Apr 2014 Rafael
+  // Cabeca bout). Re-verified all dates against ESPN (authoritative),
+  // which corrects several 1-day offsets the old entries had.
   "Antonio Monteiro": [
+    { date: "Jun 26, 2025", opponent: "Savio Renato da Silva", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "2:15", event: "Shooto Brazil 130: Da Silva vs. Monteiro" },
     { date: "Oct 15, 2024", opponent: "Yadier del Valle", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 8, Week 10", org: "UFC" },
-    { date: "Nov 24, 2023", opponent: "Lucas Tavares", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Shooto Brazil 120" },
-    { date: "Jun 16, 2023", opponent: "Fabricio Martins", result: "W", method: "Submission (Arm Lock)", round: 3, time: "4:25", event: "Centurion FC: Non Ducor, Duco" },
-    { date: "Jun 16, 2023", opponent: "Leandro Rodrigues", result: "W", method: "Submission (Arm Triangle)", round: 2, time: "1:51", event: "Centurion FC: Non Ducor, Duco" },
-    { date: "Dec 18, 2021", opponent: "Paulo Ricardo Rodrigues", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brasil: Shooto Brasil 110" },
+    { date: "Nov 23, 2023", opponent: "Lucas Tavares", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Shooto Brazil 120" },
+    { date: "Jun 15, 2023", opponent: "Fabricio Martins", result: "W", method: "Submission (Arm Lock)", round: 3, time: "4:25", event: "Centurion FC: Non Ducor, Duco" },
+    { date: "Jun 15, 2023", opponent: "Leandro Rodrigues", result: "W", method: "Submission (Arm Triangle)", round: 2, time: "1:51", event: "Centurion FC: Non Ducor, Duco" },
+    { date: "Dec 17, 2021", opponent: "Paulo Ricardo Rodrigues", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brasil: Shooto Brasil 110" },
     { date: "Jul 24, 2021", opponent: "Sandro Dantas", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "3:31", event: "Shooto Brazil: Shooto Brazil 107" },
-    { date: "Mar 27, 2021", opponent: "Rogerio Furtado", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Rio MMA Fight: Fight Night 1" },
+    { date: "Mar 26, 2021", opponent: "Rogerio Furtado", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Rio MMA Fight: Fight Night 1" },
     { date: "Dec 21, 2019", opponent: "Marcos Silva do Nascimento", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Shooto Brazil: Shooto Brazil 99" },
     { date: "May 25, 2019", opponent: "Pedro Farias", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil: Shooto Brazil 92" },
     { date: "Aug 24, 2018", opponent: "Milson Castro", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brasil 87: BOPE" },
-    { date: "Jun 9, 2018", opponent: "Felipe Souza", result: "W", method: "Submission (Rear Naked Choke)", round: 3, time: "4:10", event: "AWC: Anama Warriors Combat" },
+    { date: "Jun 8, 2018", opponent: "Felipe Souza", result: "W", method: "Submission (Rear Naked Choke)", round: 3, time: "4:10", event: "AWC: Anama Warriors Combat" },
     { date: "Dec 30, 2017", opponent: "Melquizael Costa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Mr. Cage 32" },
     { date: "Oct 27, 2017", opponent: "Francivaldo Trinaldo", result: "W", method: "KO/TKO", round: 1, time: "1:46", event: "Shooto Brazil: Shooto Brazil 77" },
-    { date: "Apr 30, 2017", opponent: "Jackson de Oliveira", result: "W", method: "KO/TKO", round: 1, time: "4:14", event: "Shooto: Shooto Brasil 71" },
+    { date: "Apr 29, 2017", opponent: "Jackson de Oliveira", result: "W", method: "KO/TKO", round: 1, time: "4:14", event: "Shooto: Shooto Brasil 71" },
     { date: "May 1, 2016", opponent: "Cleiton Araujo", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Mr. Cage 22" },
-    { date: "Feb 13, 2016", opponent: "Antonio Carlos Ribeiro", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil: Shoot Brazil 61" },
+    { date: "Feb 12, 2016", opponent: "Antonio Carlos Ribeiro", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil: Shoot Brazil 61" },
     { date: "Oct 18, 2015", opponent: "Thiago Luis Bonifacio Silva", result: "L", method: "Submission (Rear Naked Choke)", round: 1, time: "2:50", event: "Shooto Brazil 58: Fight for BOPE 5" },
-    { date: "Nov 13, 2014", opponent: "Diego Silva", result: "W", method: "KO/TKO", round: 2, time: "-", event: "MC: Mr. Cage 14" },
-    { date: "Oct 2, 2014", opponent: "Andre Batata", result: "D", method: "No Contest", round: 1, time: "-", event: "MC: Mr. Cage 13" },
-    { date: "Jul 26, 2014", opponent: "Marcos Rodrigues", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "AK: Amazon Kombat 4.0" },
-    { date: "Apr 16, 2014", opponent: "Rafael Cabeca", result: "D", method: "Draw", round: 3, time: "5:00", event: "ITC: It's Time Combat 4" },
-    { date: "Nov 30, 2013", opponent: "Allen Gabriel Silva", result: "W", method: "Decision", round: 3, time: "5:00", event: "RDSC: Rei da Selva Combat 2" },
-    { date: "Jul 20, 2013", opponent: "Robson Dantas", result: "W", method: "Win", round: 0, time: "-", event: "MF: Manaus Fight" },
+    { date: "Nov 12, 2014", opponent: "Diego Silva", result: "W", method: "KO/TKO", round: 2, time: null, event: "MC: Mr. Cage 14" },
+    { date: "Oct 1, 2014", opponent: "Andre Batata", result: "NC", method: "No Contest", round: 1, time: null, event: "MC: Mr. Cage 13" },
+    { date: "Jul 25, 2014", opponent: "Marcos Rodrigues", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "AK: Amazon Kombat 4.0" },
+    { date: "Apr 15, 2014", opponent: "Rafael Cabeca", result: "D", method: "Draw", round: 3, time: "5:00", event: "ITC: It's Time Combat 4" },
+    { date: "Nov 29, 2013", opponent: "Allen Gabriel Silva", result: "W", method: "Decision", round: 3, time: "5:00", event: "RDSC: Rei da Selva Combat 2" },
+    { date: "Jul 19, 2013", opponent: "Robson Dantas", result: "W", method: "Win", round: 0, time: null, event: "MF: Manaus Fight" },
     { date: "Jun 29, 2013", opponent: "Samuel Rocha", result: "W", method: "Submission (Rear Naked Choke)", round: 4, time: "4:10", event: "AUF: Armazem Ultra Fight" },
   ],
   "Julieta Martinez": [
@@ -119321,6 +119348,12 @@ const ACCOLADES = {
     { icon: "🥋", title: "Wrestling background since age 5; collegiate career at Southern Illinois Edwardsville cut short by the pandemic before transitioning to MMA", detail: null },
     { icon: "⭐", title: "Lifelong friend and training partner of UFC's Mansur Abdul-Malik, whose own path to the UFC has served as a blueprint (per UFC.com bio)", detail: null },
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Antonio Monteiro (Sep 15, 2026)", detail: null }
+  ],
+  "Antonio Monteiro": [
+    { icon: "🥋", title: "Battle-tested featherweight with a strong Brazilian Jiu-Jitsu base out of the legendary Nova União team, under the guidance of Dedé Pederneiras (per UFC.com bio)", detail: null },
+    { icon: "⭐", title: "Overcame a hot-headed youth and a near-death experience in Rio's Cantagalo favela in 2014 before Pederneiras helped turn him into the disciplined father, husband, and professional he is today (per UFC.com bio)", detail: null },
+    { icon: "🎯", title: "Returning for a second DWCS opportunity after a hard-fought decision loss on short notice in his 2024 debut, having been promised another shot by the UFC", detail: null },
+    { icon: "🎯", title: "Faces Tyshawn Williams on Dana White's Contender Series Season 10, Episode 6 (Sep 15, 2026)", detail: null }
   ],
   "Igor Cavalcanti": [
     { icon: "🥊", title: "10 KO/TKO and 3 submission wins (13 of 13 wins by finish, zero decisions)", detail: null },
