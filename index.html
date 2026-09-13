@@ -5312,6 +5312,7 @@
  { name: "Zevan Hunt", division: "WW", rank: "NR", record: "7-0-0", initials: "ZH", country: "USA" },
  { name: "Oscar Ravello", division: "MW", rank: "NR", record: "13-3-1", initials: "OR", country: "Peru" },
  { name: "Ednilson Santos", division: "LW", rank: "NR", record: "14-7-1", initials: "ES", country: "Brazil" },
+ { name: "Akbar Abdullaev", division: "LW", rank: "NR", record: "13-0-0", initials: "AAB", country: "Kyrgyzstan" },
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-5-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "8-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
@@ -9386,6 +9387,17 @@
  // 2026 win over Shaheen Santana, stops at the Mar 2025 KO loss to Dylan
  // Mantello).
  "Ednilson Santos": { ht:"5'9\"", dob:"1992-03-07", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"57%", streak:1, gym:"Peso Pesado Gold Team" },
+ // DWCS Week 6 (Sep 15, 2026), vs. Ednilson Santos -- stepped in after his
+ // originally-booked opponent Anthony Figueroa fell out. Undefeated ONE
+ // Championship veteran. Height genuinely conflicts across sources (ESPN
+ // 5'7", Tapology 5'10", Sherdog 5'9") -- used Sherdog's as the middle
+ // value; reach (70") and DOB agree everywhere except Sherdog's DOB is one
+ // day off (Sep 21 vs. Sep 20), so ESPN's date is used per usual. No
+ // per-fight striking/grappling stats exist on any source (ONE
+ // Championship bouts aren't tracked by UFC.com or ESPN's stats tables).
+ // finRate = 100% (all 13 wins are finishes: 12 KO/TKO + 1 submission,
+ // zero decisions). streak = 13 (undefeated).
+ "Akbar Abdullaev": { ht:"5'9\"", dob:"1997-09-20", reach:'70"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:13, gym:"Al-Munar FC" },
  "Bruno Gustavo da Silva":{ ht:"5'9\"", dob:"1990-03-16", reach:'71"', stance:"Orthodox", slpm:3.95, strAcc:"51%", sapm:4.72, strDef:"51%", kd:0.85, tdLanded:1.94, tdAcc:"24%", tdDef:"72%", subAvg:0.24, finRate:"73%", streak:0, gym:"American Top Team (2024–present)" },
  "Daniel Marcos": { ht:"5'7\"", dob:"1993-03-07", reach:'69"', stance:"Orthodox", slpm:4.90, strAcc:"54%", sapm:3.79, strDef:"61%", kd:0.45, tdLanded:1.35, tdAcc:"53%", tdDef:"85%", subAvg:0.15, finRate:"50%", streak:1, gym:"American Combat Gym" },
  "Mairon Santos": { ht:"5'7\"", dob:"2000-06-10", reach:'72"', stance:"Orthodox", slpm:3.33, strAcc:"48%", sapm:2.24, strDef:"66%", kd:0.64, tdLanded:0.0, tdAcc:"0%", tdDef:"69%", subAvg:0.0, finRate:"53%", streak:5, gym:"The Fighting Nerds" },
@@ -45343,6 +45355,17 @@
   // No BestFightOdds profile exists for him at all -- searched and only
   // got unrelated "Santos" candidates back, none a match.
   "Ednilson Santos": [],
+  // Closing lines for his 5 BFO-tracked ONE Championship fights (his
+  // earlier regional bouts, e.g. WEF Selection 42, predate BFO coverage).
+  // The upcoming DWCS line vs. Ednilson Santos is excluded -- this array
+  // is closing-line history for COMPLETED fights, not the next one.
+  "Akbar Abdullaev": [
+    { opponent: "Ibragim Dauev", odds: -333 },
+    { opponent: "Kai Tang", odds: -260 },
+    { opponent: "Halil Amir", odds: -160 },
+    { opponent: "Aaron Cañarte", odds: -330 },
+    { opponent: "Ho Taek Oh", odds: -192 }
+  ],
   // Closing lines for his two BFO-tracked completed fights (both losses).
   // The upcoming DWCS Week 6 line vs. Oscar Ravello is excluded -- this
   // array is closing-line history for COMPLETED fights, not the next one.
@@ -65116,6 +65139,25 @@ const FIGHT_HISTORY = {
     { date: "Apr 30, 2016", opponent: "Gilberto Sousa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Sidney Sibamba Fight 4" },
     { date: "Sep 19, 2015", opponent: "Cristian Barbosa", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "2:37", event: "Elite Fight Night" },
     { date: "Dec 19, 2014", opponent: "Ezequiel Lima", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Thunder Fight 2: MMA Championship" }
+  ],
+  // ESPN (authoritative) -- fully populated and matches header record
+  // 13-0-0 and method breakdown ((T)KO 12-0, SUB 1-0) exactly. Note the
+  // three same-night finishes on Nov 15, 2022 at WEF Selection 42 -- a
+  // one-night tournament format, not a data error.
+  "Akbar Abdullaev": [
+    { date: "Sep 4, 2025", opponent: "Ibragim Dauev", result: "W", method: "KO/TKO", round: 3, time: "3:49", event: "ONE Fight Night 35: Buntan vs. Hemetsberger" },
+    { date: "Jan 10, 2025", opponent: "Kai Tang", result: "W", method: "TKO (Ground and Pound)", round: 5, time: "1:21", event: "ONE Fight Night 27: Tang vs. Abdullaev" },
+    { date: "May 3, 2024", opponent: "Halil Amir", result: "W", method: "KO/TKO", round: 2, time: "2:52", event: "ONE Fight Night 22: Sundell vs. Diachkova" },
+    { date: "Jul 14, 2023", opponent: "Aaron Cañarte", result: "W", method: "KO/TKO", round: 1, time: "0:41", event: "ONE Fight Night 12: Kryklia vs. Xhaja" },
+    { date: "Mar 24, 2023", opponent: "Ho Taek Oh", result: "W", method: "KO/TKO", round: 1, time: "0:44", event: "ONE Fight Night 8: Superlek vs. Williams" },
+    { date: "Nov 15, 2022", opponent: "Kyyalbek Keldibay Uulu", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "0:49", event: "WEF Selection 42" },
+    { date: "Nov 15, 2022", opponent: "Erbol Zholdoshbekov", result: "W", method: "KO/TKO", round: 1, time: "1:12", event: "WEF Selection 42" },
+    { date: "Nov 15, 2022", opponent: "Omurbek Toktoali", result: "W", method: "KO/TKO", round: 1, time: "3:35", event: "WEF Selection 42" },
+    { date: "Sep 22, 2022", opponent: "Alexander Treskin", result: "W", method: "KO/TKO", round: 3, time: "3:35", event: "RCC: Intro 23" },
+    { date: "Jun 24, 2022", opponent: "Konstantin Simonov", result: "W", method: "KO/TKO", round: 1, time: "2:48", event: "RCC: Intro 21" },
+    { date: "Jun 19, 2021", opponent: "Tolkunbek Mamatov", result: "W", method: "KO/TKO", round: 1, time: "1:56", event: "WEF Selection 33" },
+    { date: "Dec 11, 2020", opponent: "Asadulla Rustamov", result: "W", method: "KO/TKO", round: 1, time: "4:10", event: "FFC: Selection 5" },
+    { date: "Oct 23, 2020", opponent: "Kurbon Aminov", result: "W", method: "KO/TKO", round: 1, time: "4:42", event: "FFC: Selection 4" }
   ],
 
 
@@ -119170,6 +119212,12 @@ const ACCOLADES = {
   "Ednilson Santos": [
     { icon: "🥊", title: "7 KO/TKO and 1 submission win (8 of 14 wins by finish)", detail: null },
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Akbar Abdullaev (Sep 15, 2026)", detail: null }
+  ],
+  "Akbar Abdullaev": [
+    { icon: "🥊", title: "Undefeated 13-0 with a perfect finish rate (12 KO/TKO + 1 submission, zero decisions)", detail: null },
+    { icon: "🏆", title: "Swept a same-night, 3-fight tournament card at WEF Selection 42 (Nov 15, 2022), finishing all three opponents in Round 1", detail: null },
+    { icon: "⭐", title: "Former ONE Championship standout -- finished the veteran, ranked Kai Tang (19-3) via 5th-round ground-and-pound TKO at ONE Fight Night 27", detail: null },
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Ednilson Santos (Sep 15, 2026), after originally-booked opponent Anthony Figueroa fell out", detail: null }
   ],
   "Igor Cavalcanti": [
     { icon: "🥊", title: "10 KO/TKO and 3 submission wins (13 of 13 wins by finish, zero decisions)", detail: null },
