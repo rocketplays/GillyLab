@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T14:51:42.945Z",
+  "generatedAt": "2026-09-13T01:37:45.991Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
@@ -85,6 +85,11 @@
     "Montse Rendon|Mar 14, 2026|Bia Mesquita": {
       "real": "Bia Mesquita",
       "theyCallHim": "Montserrat Rendón",
+      "note": "alias"
+    },
+    "Jose Delgado|Sep 12, 2026|Jean Silva": {
+      "real": "Jean Silva",
+      "theyCallHim": "Jose Miguel Delgado",
       "note": "alias"
     },
     "Jose Delgado|Jul 18, 2026|Austin Bashi": {
