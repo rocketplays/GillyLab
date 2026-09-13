@@ -5314,6 +5314,7 @@
  { name: "Ednilson Santos", division: "LW", rank: "NR", record: "14-7-1", initials: "ES", country: "Brazil" },
  { name: "Akbar Abdullaev", division: "LW", rank: "NR", record: "13-0-0", initials: "AAB", country: "Kyrgyzstan" },
  { name: "Luis Hernandez", division: "MW", rank: "NR", record: "7-0-0", initials: "LHE", country: "USA" },
+ { name: "Hugo Guillon", division: "MW", rank: "NR", record: "7-1-0", initials: "HGU", country: "France" }, // 1 NC
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-5-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "8-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
@@ -9405,6 +9406,17 @@
  // per-fight striking/grappling stats exist on any source. finRate = 100%
  // (all 7 wins are finishes, zero decisions). streak = 7 (undefeated).
  "Luis Hernandez": { ht:"5'10\"", dob:"1996-08-22", reach:'72"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:7, gym:"Freedom Fighters MMA / Kill Cliff FC" },
+ // DWCS Week 6 (Sep 15, 2026), vs. Luis Hernandez. Record 7-1-0 (1 NC) --
+ // the Apr 2022 Matthew Byfield bout is a genuine No Contest (both ESPN's
+ // own "Decision" column and Tapology's classification say "No Contest"),
+ // so it's excluded from W-L-D and marked NC per convention. Cross-checked
+ // against Tapology, which independently confirms 7-1-0 + 1 NC and the
+ // same 6-fight current win streak. Reach is unavailable on every source
+ // checked (ESPN, UFC.com, Tapology). No per-fight striking/grappling
+ // stats exist anywhere. finRate = 86% (6 of 7 wins are finishes: 4
+ // KO/TKO + 2 submission, 1 decision). streak = 6 (stops at the May 2022
+ // KO loss to Jacky Jeanne).
+ "Hugo Guillon": { ht:"6'4\"", dob:"1997-04-12", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:6, gym:"Ghost Arena / Team CIT" },
  "Bruno Gustavo da Silva":{ ht:"5'9\"", dob:"1990-03-16", reach:'71"', stance:"Orthodox", slpm:3.95, strAcc:"51%", sapm:4.72, strDef:"51%", kd:0.85, tdLanded:1.94, tdAcc:"24%", tdDef:"72%", subAvg:0.24, finRate:"73%", streak:0, gym:"American Top Team (2024–present)" },
  "Daniel Marcos": { ht:"5'7\"", dob:"1993-03-07", reach:'69"', stance:"Orthodox", slpm:4.90, strAcc:"54%", sapm:3.79, strDef:"61%", kd:0.45, tdLanded:1.35, tdAcc:"53%", tdDef:"85%", subAvg:0.15, finRate:"50%", streak:1, gym:"American Combat Gym" },
  "Mairon Santos": { ht:"5'7\"", dob:"2000-06-10", reach:'72"', stance:"Orthodox", slpm:3.33, strAcc:"48%", sapm:2.24, strDef:"66%", kd:0.64, tdLanded:0.0, tdAcc:"0%", tdDef:"69%", subAvg:0.0, finRate:"53%", streak:5, gym:"The Fighting Nerds" },
@@ -45377,6 +45389,18 @@
   // unrelated "Hernandez" candidates, none a match. Small regional-card
   // fighter, unsurprising.
   "Luis Hernandez": [],
+  // Closing lines for his 5 BFO-tracked completed fights. Excludes the
+  // "Ale Joseph" line BFO also carries (odds were posted for both a Jan
+  // 2023 and Jun 2023 booking) -- Tapology confirms both bookings were
+  // cancelled and the fight never happened, so it's dropped per the
+  // odds-entry rule against cancelled bookings.
+  "Hugo Guillon": [
+    { opponent: "Vlad Gutu", odds: 105 },
+    { opponent: "Shakhbulat Abuev", odds: -333 },
+    { opponent: "Franck Martin", odds: -455 },
+    { opponent: "Jacky Jeanne", odds: 140 },
+    { opponent: "Matthew Byfield", odds: 550 }
+  ],
   // Closing lines for his two BFO-tracked completed fights (both losses).
   // The upcoming DWCS Week 6 line vs. Oscar Ravello is excluded -- this
   // array is closing-line history for COMPLETED fights, not the next one.
@@ -65180,6 +65204,21 @@ const FIGHT_HISTORY = {
     { date: "Jul 20, 2023", opponent: "Brian Topp", result: "W", method: "KO/TKO", round: 1, time: "0:03", event: "Titan FC 83: Lewis vs. Decca" },
     { date: "Jan 21, 2022", opponent: "Nolan Legg", result: "W", method: "KO/TKO", round: 1, time: "3:20", event: "iKON FC 1: iKON Fighting Championship" },
     { date: "Dec 17, 2021", opponent: "Christopher Lavant", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:05", event: "Titan FC 73: Taylor vs. Edwards" }
+  ],
+  // ESPN (authoritative), matches header record 7-1-0 and method breakdown
+  // exactly. The Apr 2022 Byfield bout is a genuine No Contest (result:
+  // "NC", not counted in W-L-D) -- confirmed by both ESPN's own "No
+  // Contest" decision text and Tapology's classification.
+  "Hugo Guillon": [
+    { date: "Nov 14, 2025", opponent: "Kamil Smetoch", result: "W", method: "KO/TKO", round: 1, time: "2:27", event: "Kingdom Fighting 3: Guillon vs. Smetoch" },
+    { date: "May 15, 2025", opponent: "Vladislav Gutu", result: "W", method: "KO/TKO", round: 1, time: "3:57", event: "Ares FC 30: Chamsoudinov vs. Lima" },
+    { date: "Dec 15, 2023", opponent: "Shakhbulat Abuev", result: "W", method: "Submission (Rear Naked Choke)", round: 3, time: "0:54", event: "Ares FC 18: Augen vs. Shiguemoto" },
+    { date: "Jan 20, 2023", opponent: "Franck Martin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ares FC 11: Abdoul vs. Haratyk" },
+    { date: "Sep 1, 2022", opponent: "Mathieu Langlais", result: "W", method: "Submission (Anaconda Choke)", round: 1, time: "2:06", event: "Samourai MMA 3" },
+    { date: "Jul 1, 2022", opponent: "Endrit Emini", result: "W", method: "KO/TKO", round: 1, time: "1:03", event: "Ultimate Sparta Championship 2" },
+    { date: "May 20, 2022", opponent: "Jacky Jeanne", result: "L", method: "KO/TKO", round: 1, time: "4:52", event: "Ares FC 6: Damiani vs. Tulshaev" },
+    { date: "Apr 1, 2022", opponent: "Matthew Byfield", result: "NC", method: "No Contest", round: 2, time: "2:57", event: "Cage Warriors 135" },
+    { date: "Oct 22, 2021", opponent: "Cedric Koung", result: "W", method: "KO/TKO", round: 1, time: "3:56", event: "European Beatdown 8" }
   ],
 
 
@@ -119246,6 +119285,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Regional 185 lb title at Combat Night, won via 3rd-round KO/TKO of Paulo Machado (per UFC.com bio)", detail: null },
     { icon: "⭐", title: "Deputy sheriff for the Miami-Dade Sheriff's Department and member of its priority response team, alongside his fighting career (per UFC.com bio)", detail: null },
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Hugo Guillon (Sep 15, 2026)", detail: null }
+  ],
+  "Hugo Guillon": [
+    { icon: "🥊", title: "5 of his 7 wins have come in Round 1 (per UFC.com bio)", detail: null },
+    { icon: "⭐", title: "Trains at CIT in South Africa, where he has served as a sparring partner for UFC middleweight champion Dricus Du Plessis", detail: null },
+    { icon: "🎯", title: "Fighting to honor his late father Pierre, who passed two years before this UFC opportunity (per UFC.com bio)", detail: null },
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Luis Hernandez (Sep 15, 2026)", detail: null }
   ],
   "Igor Cavalcanti": [
     { icon: "🥊", title: "10 KO/TKO and 3 submission wins (13 of 13 wins by finish, zero decisions)", detail: null },
