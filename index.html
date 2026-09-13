@@ -5313,6 +5313,7 @@
  { name: "Oscar Ravello", division: "MW", rank: "NR", record: "13-3-1", initials: "OR", country: "Peru" },
  { name: "Ednilson Santos", division: "LW", rank: "NR", record: "14-7-1", initials: "ES", country: "Brazil" },
  { name: "Akbar Abdullaev", division: "LW", rank: "NR", record: "13-0-0", initials: "AAB", country: "Kyrgyzstan" },
+ { name: "Luis Hernandez", division: "MW", rank: "NR", record: "7-0-0", initials: "LHE", country: "USA" },
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-5-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "8-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
@@ -9398,6 +9399,12 @@
  // finRate = 100% (all 13 wins are finishes: 12 KO/TKO + 1 submission,
  // zero decisions). streak = 13 (undefeated).
  "Akbar Abdullaev": { ht:"5'9\"", dob:"1997-09-20", reach:'70"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:13, gym:"Al-Munar FC" },
+ // DWCS Week 6 (Sep 15, 2026), vs. Hugo Guillon. ESPN fully populated and
+ // matches UFC.com's own DWCS preview bio (7-0, Freedom Fighters MMA/Kill
+ // Cliff FC, 100% finish rate with 3 KO/TKO + 4 submission wins). No
+ // per-fight striking/grappling stats exist on any source. finRate = 100%
+ // (all 7 wins are finishes, zero decisions). streak = 7 (undefeated).
+ "Luis Hernandez": { ht:"5'10\"", dob:"1996-08-22", reach:'72"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:7, gym:"Freedom Fighters MMA / Kill Cliff FC" },
  "Bruno Gustavo da Silva":{ ht:"5'9\"", dob:"1990-03-16", reach:'71"', stance:"Orthodox", slpm:3.95, strAcc:"51%", sapm:4.72, strDef:"51%", kd:0.85, tdLanded:1.94, tdAcc:"24%", tdDef:"72%", subAvg:0.24, finRate:"73%", streak:0, gym:"American Top Team (2024–present)" },
  "Daniel Marcos": { ht:"5'7\"", dob:"1993-03-07", reach:'69"', stance:"Orthodox", slpm:4.90, strAcc:"54%", sapm:3.79, strDef:"61%", kd:0.45, tdLanded:1.35, tdAcc:"53%", tdDef:"85%", subAvg:0.15, finRate:"50%", streak:1, gym:"American Combat Gym" },
  "Mairon Santos": { ht:"5'7\"", dob:"2000-06-10", reach:'72"', stance:"Orthodox", slpm:3.33, strAcc:"48%", sapm:2.24, strDef:"66%", kd:0.64, tdLanded:0.0, tdAcc:"0%", tdDef:"69%", subAvg:0.0, finRate:"53%", streak:5, gym:"The Fighting Nerds" },
@@ -45366,6 +45373,10 @@
     { opponent: "Aaron Cañarte", odds: -330 },
     { opponent: "Ho Taek Oh", odds: -192 }
   ],
+  // No BestFightOdds profile exists for him -- searched and only got back
+  // unrelated "Hernandez" candidates, none a match. Small regional-card
+  // fighter, unsurprising.
+  "Luis Hernandez": [],
   // Closing lines for his two BFO-tracked completed fights (both losses).
   // The upcoming DWCS Week 6 line vs. Oscar Ravello is excluded -- this
   // array is closing-line history for COMPLETED fights, not the next one.
@@ -65158,6 +65169,17 @@ const FIGHT_HISTORY = {
     { date: "Jun 19, 2021", opponent: "Tolkunbek Mamatov", result: "W", method: "KO/TKO", round: 1, time: "1:56", event: "WEF Selection 33" },
     { date: "Dec 11, 2020", opponent: "Asadulla Rustamov", result: "W", method: "KO/TKO", round: 1, time: "4:10", event: "FFC: Selection 5" },
     { date: "Oct 23, 2020", opponent: "Kurbon Aminov", result: "W", method: "KO/TKO", round: 1, time: "4:42", event: "FFC: Selection 4" }
+  ],
+  // ESPN (authoritative), matches header record 7-0-0 and UFC.com's own
+  // DWCS preview bio exactly.
+  "Luis Hernandez": [
+    { date: "Oct 10, 2025", opponent: "Paulo Machado", result: "W", method: "KO/TKO", round: 3, time: "3:13", event: "Combat Night Hollywood" },
+    { date: "Jun 28, 2025", opponent: "Miles Hunsinger", result: "W", method: "Submission (Guillotine)", round: 2, time: "0:49", event: "Tuff-N-Uff 145" },
+    { date: "Apr 30, 2025", opponent: "Joaquin Campos", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "2:52", event: "XFC Young Guns 7 & 8" },
+    { date: "May 12, 2024", opponent: "Nick Lancaster", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "2:56", event: "Fury Fighting Championship 90" },
+    { date: "Jul 20, 2023", opponent: "Brian Topp", result: "W", method: "KO/TKO", round: 1, time: "0:03", event: "Titan FC 83: Lewis vs. Decca" },
+    { date: "Jan 21, 2022", opponent: "Nolan Legg", result: "W", method: "KO/TKO", round: 1, time: "3:20", event: "iKON FC 1: iKON Fighting Championship" },
+    { date: "Dec 17, 2021", opponent: "Christopher Lavant", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:05", event: "Titan FC 73: Taylor vs. Edwards" }
   ],
 
 
@@ -119218,6 +119240,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Swept a same-night, 3-fight tournament card at WEF Selection 42 (Nov 15, 2022), finishing all three opponents in Round 1", detail: null },
     { icon: "⭐", title: "Former ONE Championship standout -- finished the veteran, ranked Kai Tang (19-3) via 5th-round ground-and-pound TKO at ONE Fight Night 27", detail: null },
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Ednilson Santos (Sep 15, 2026), after originally-booked opponent Anthony Figueroa fell out", detail: null }
+  ],
+  "Luis Hernandez": [
+    { icon: "🥊", title: "Undefeated 7-0 with a perfect finish rate (3 KO/TKO + 4 submission wins, zero decisions)", detail: null },
+    { icon: "🏆", title: "Regional 185 lb title at Combat Night, won via 3rd-round KO/TKO of Paulo Machado (per UFC.com bio)", detail: null },
+    { icon: "⭐", title: "Deputy sheriff for the Miami-Dade Sheriff's Department and member of its priority response team, alongside his fighting career (per UFC.com bio)", detail: null },
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Hugo Guillon (Sep 15, 2026)", detail: null }
   ],
   "Igor Cavalcanti": [
     { icon: "🥊", title: "10 KO/TKO and 3 submission wins (13 of 13 wins by finish, zero decisions)", detail: null },
