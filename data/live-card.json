@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-12T23:53:24.374Z",
+ "generatedAt": "2026-09-13T00:35:21.616Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -10150,6 +10150,194 @@
       ]
      },
      "capturedAt": "2026-09-12T23:53:24.241Z"
+    }
+   ]
+  },
+  "Jean Silva": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Jose Miguel Delgado",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "2:57",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Jose Miguel Delgado",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 39,
+      "sigA": 77,
+      "totL": 40,
+      "totA": 78,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:37",
+      "head": [
+       27,
+       60
+      ],
+      "body": [
+       10,
+       15
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       32,
+       66
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 108,
+      "totL": 41,
+      "totA": 109,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:21",
+      "head": [
+       17,
+       79
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       18,
+       22
+      ],
+      "dist": [
+       35,
+       98
+      ],
+      "clinch": [
+       5,
+       9
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-13T00:35:21.477Z"
+    }
+   ]
+  },
+  "Jose Miguel Delgado": {
+   "history": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Jean Silva",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "2:57",
+     "event": "Noche UFC: Silva vs. Delgado",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 12, 2026",
+     "opponent": "Jean Silva",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 108,
+      "totL": 41,
+      "totA": 109,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:21",
+      "head": [
+       17,
+       79
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       18,
+       22
+      ],
+      "dist": [
+       35,
+       98
+      ],
+      "clinch": [
+       5,
+       9
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 39,
+      "sigA": 77,
+      "totL": 40,
+      "totA": 78,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:37",
+      "head": [
+       27,
+       60
+      ],
+      "body": [
+       10,
+       15
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       32,
+       66
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-09-13T00:35:21.477Z"
     }
    ]
   }
