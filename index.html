@@ -5311,6 +5311,7 @@
  { name: "Zachary Reese", division: "MW", rank: "NR", record: "10-4-0", initials: "ZRE2", country: "USA" },
  { name: "Zevan Hunt", division: "WW", rank: "NR", record: "7-0-0", initials: "ZH", country: "USA" },
  { name: "Oscar Ravello", division: "MW", rank: "NR", record: "13-3-1", initials: "OR", country: "Peru" },
+ { name: "Ednilson Santos", division: "LW", rank: "NR", record: "14-7-1", initials: "ES", country: "Brazil" },
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-5-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "8-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
@@ -9374,6 +9375,17 @@
  // streak = 2 (Apr 2026 and Dec 2025 wins, stops at the Oct 2025 KO loss
  // to Fabricio Martins).
  "Oscar Ravello": { ht:"5'10\"", dob:"1998-09-27", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"77%", streak:2, gym:"Capone BJJ / Sniper Gym" },
+ // DWCS Week 6 (Sep 15, 2026), vs. Akbar Abdullaev. ESPN's fight-history
+ // page for him is essentially empty (shows a bare 0-1-0 with "No available
+ // information" for the actual fights) -- used Sherdog's fully detailed,
+ // internally-consistent fight-history table instead, which derives the
+ // exact 14-7-1 record and matches its own stats breakdown (7 KO/TKO + 1
+ // submission + 6 decision wins). Reach and stance are unavailable on
+ // every source checked (ESPN, UFC.com, Tapology, Sherdog). finRate = 8 of
+ // 14 wins are finishes (7 KO/TKO + 1 submission) = 57%. streak = 1 (May
+ // 2026 win over Shaheen Santana, stops at the Mar 2025 KO loss to Dylan
+ // Mantello).
+ "Ednilson Santos": { ht:"5'9\"", dob:"1992-03-07", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"57%", streak:1, gym:"Peso Pesado Gold Team" },
  "Bruno Gustavo da Silva":{ ht:"5'9\"", dob:"1990-03-16", reach:'71"', stance:"Orthodox", slpm:3.95, strAcc:"51%", sapm:4.72, strDef:"51%", kd:0.85, tdLanded:1.94, tdAcc:"24%", tdDef:"72%", subAvg:0.24, finRate:"73%", streak:0, gym:"American Top Team (2024–present)" },
  "Daniel Marcos": { ht:"5'7\"", dob:"1993-03-07", reach:'69"', stance:"Orthodox", slpm:4.90, strAcc:"54%", sapm:3.79, strDef:"61%", kd:0.45, tdLanded:1.35, tdAcc:"53%", tdDef:"85%", subAvg:0.15, finRate:"50%", streak:1, gym:"American Combat Gym" },
  "Mairon Santos": { ht:"5'7\"", dob:"2000-06-10", reach:'72"', stance:"Orthodox", slpm:3.33, strAcc:"48%", sapm:2.24, strDef:"66%", kd:0.64, tdLanded:0.0, tdAcc:"0%", tdDef:"69%", subAvg:0.0, finRate:"53%", streak:5, gym:"The Fighting Nerds" },
@@ -45328,6 +45340,9 @@
   // exists on BFO, and this array is closing-line history for COMPLETED
   // fights, not the next one.
   "Oscar Ravello": [],
+  // No BestFightOdds profile exists for him at all -- searched and only
+  // got unrelated "Santos" candidates back, none a match.
+  "Ednilson Santos": [],
   // Closing lines for his two BFO-tracked completed fights (both losses).
   // The upcoming DWCS Week 6 line vs. Oscar Ravello is excluded -- this
   // array is closing-line history for COMPLETED fights, not the next one.
@@ -65075,6 +65090,32 @@ const FIGHT_HISTORY = {
     { date: "Nov 21, 2017", opponent: "Zelim Pinzas", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "FFC 30: Mora vs. Navarrete" },
     { date: "Aug 17, 2017", opponent: "Yonathan Marquez", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "3:20", event: "Desafio FC 6" },
     { date: "Jul 28, 2016", opponent: "Miguel Hinojosa", result: "W", method: "KO/TKO", round: 3, time: "1:40", event: "Desafio FC 5" }
+  ],
+  // Sherdog (authoritative here -- see FIGHTER_STATS comment above).
+  // Matches its own header record 14-7-1 and method breakdown exactly.
+  "Ednilson Santos": [
+    { date: "May 22, 2026", opponent: "Shaheen Santana", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 233: Piersma vs. Bianchini" },
+    { date: "Mar 22, 2025", opponent: "Dylan Mantello", result: "L", method: "KO/TKO (Punch)", round: 2, time: "2:36", event: "LFA 204: Cunha vs. Freeman" },
+    { date: "Nov 8, 2024", opponent: "Kamuela Kirk", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 196: Tanner vs. Urena" },
+    { date: "Nov 11, 2022", opponent: "Paulo Henrique Laia", result: "L", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "SFT: PFL International Qualifier Series Brazil" },
+    { date: "Jul 23, 2022", opponent: "Wdison Costa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "SFT 36: Warriors of the Cage" },
+    { date: "Mar 19, 2022", opponent: "Javier Urrumendi", result: "W", method: "KO/TKO (Punch)", round: 1, time: null, event: "Ragnarok 13" },
+    { date: "Dec 3, 2021", opponent: "Daniel Salas", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BSC 5: Budo Sento Championship 5" },
+    { date: "Oct 16, 2020", opponent: "Eduardo Rufino", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Future MMA 12: Night of Champions" },
+    { date: "Jul 27, 2019", opponent: "Lipeng Zhang", result: "D", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Kunlun Fight 81" },
+    { date: "Jun 28, 2019", opponent: "Luigi Gregorio", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Future FC 6: Cado vs. Giacomo" },
+    { date: "Apr 19, 2019", opponent: "Marcos Cirino", result: "W", method: "KO/TKO (Knee and Punches)", round: 3, time: "0:21", event: "Future FC 4: Lyoto vs. Turman" },
+    { date: "Sep 22, 2018", opponent: "Pablo Sepulveda", result: "W", method: "KO/TKO (Knee and Punches)", round: 2, time: "0:20", event: "Ragnarok 10: Argentina vs. Brazil" },
+    { date: "Jan 13, 2018", opponent: "Adam Aliev", result: "L", method: "KO/TKO (Punches)", round: 3, time: "0:59", event: "ACB 78: Grozny Young Eagles 24" },
+    { date: "Dec 22, 2017", opponent: "Vitor Morais", result: "W", method: "KO/TKO (Punches)", round: 1, time: "3:08", event: "Thunder Fight 13: Babuino vs. China" },
+    { date: "Sep 29, 2017", opponent: "Clecio Oliveira", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Thunder Fight 12: Matias vs. Babuino" },
+    { date: "Mar 10, 2017", opponent: "Willian Cilli", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "URF: Ultimate Reborn Fight 5" },
+    { date: "Oct 8, 2016", opponent: "Abias Silva", result: "W", method: "KO/TKO (Punches)", round: 1, time: "4:54", event: "NCE 8: New Corpore Extreme 8" },
+    { date: "Sep 17, 2016", opponent: "Jonathan Dias", result: "W", method: "KO/TKO (Punches)", round: 2, time: "3:30", event: "Premium Fight Championship 5" },
+    { date: "Aug 13, 2016", opponent: "Diogo Nogueira", result: "W", method: "KO/TKO (Punches)", round: 1, time: "1:39", event: "Sidney Sibamba Fight 5" },
+    { date: "Apr 30, 2016", opponent: "Gilberto Sousa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Sidney Sibamba Fight 4" },
+    { date: "Sep 19, 2015", opponent: "Cristian Barbosa", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "2:37", event: "Elite Fight Night" },
+    { date: "Dec 19, 2014", opponent: "Ezequiel Lima", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Thunder Fight 2: MMA Championship" }
   ],
 
 
@@ -119125,6 +119166,10 @@ const ACCOLADES = {
     { icon: "🥊", title: "Diverse striking/grappling background spanning Taekwondo, Muay Thai, and Jiu-Jitsu (per UFC.com bio)", detail: null },
     { icon: "🎯", title: "7 KO/TKO and 3 submission wins (10 of 13 wins by finish)", detail: null },
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Igor Cavalcanti (Sep 15, 2026)", detail: null }
+  ],
+  "Ednilson Santos": [
+    { icon: "🥊", title: "7 KO/TKO and 1 submission win (8 of 14 wins by finish)", detail: null },
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Akbar Abdullaev (Sep 15, 2026)", detail: null }
   ],
   "Igor Cavalcanti": [
     { icon: "🥊", title: "10 KO/TKO and 3 submission wins (13 of 13 wins by finish, zero decisions)", detail: null },
