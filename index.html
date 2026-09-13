@@ -6470,7 +6470,7 @@
  { name: "Kaynan Kruschewsky", division: "LW", rank: "NR", record: "15-3-1", initials: "KK", country: "Brazil" },
  { name: "Loik Radzhabov", division: "LW", rank: "NR", record: "18-6-1", initials: "LR", country: "Tajikistan" },
  { name: "Kyung Ho Kang", division: "BW", rank: "NR", record: "19-11-1", initials: "KK", country: "South Korea" },
- { name: "Igor Cavalcanti", division: "WW", rank: "NR", record: "9-1-0", initials: "IC", country: "Brazil" },
+ { name: "Igor Cavalcanti", division: "WW", rank: "NR", record: "13-2-0", initials: "IC", country: "Brazil" },
  { name: "Danylo Voievodkin", division: "HW", rank: "NR", record: "7-0-0", initials: "DV", country: "Ukraine" },
  { name: "Brian Kelleher", division: "BW", rank: "NR", record: "24-16-0", initials: "BK", country: "USA" },
  { name: "Carlos Calderon", division: "FW", rank: "NR", record: "6-3-1", initials: "CC", country: "USA" },
@@ -10382,7 +10382,13 @@
   "Kaynan Kruschewsky": { ht:"6'0\"", dob:"1991-04-04", reach:'73"', stance:"Orthodox", slpm:5.67, strAcc:"51%", sapm:5.71, strDef:"47%", kd:0.0, tdLanded:2.74, tdAcc:"100%", tdDef:"75%", subAvg:2.06, finRate:"87%", streak:0, gym:"Fighting Nerds" },
   "Loik Radzhabov": { ht:"5'11\"", dob:"1990-09-17", reach:'69"', stance:"Orthodox", slpm:2.89, strAcc:"44%", sapm:3.76, strDef:"46%", kd:0.31, tdLanded:4.65, tdAcc:"58%", tdDef:"43%", subAvg:0.0, finRate:"72%", streak:0, gym:"Kill Cliff FC" },
   "Kyung Ho Kang": { ht:"5'9\"", dob:"1987-09-09", reach:'73"', stance:"Orthodox", slpm:3.13, strAcc:"48%", sapm:3.32, strDef:"54%", kd:0.34, tdLanded:1.97, tdAcc:"50%", tdDef:"68%", subAvg:0.77, finRate:"74%", streak:0, gym:"Busan Team M.A.D." },
-  "Igor Cavalcanti": { ht:"5'11\"", dob:"1997-10-10", reach:'79.5"', stance:"Orthodox", slpm:3.33, strAcc:"43%", sapm:3.6, strDef:"48%", kd:0.0, tdLanded:1.0, tdAcc:"50%", tdDef:"67%", subAvg:0.0, finRate:"100%", streak:0, gym:"Infinity Fight Team" },
+  // streak refreshed for DWCS Week 6 (Sep 15, 2026) -- 2 (May 2026 and Apr
+ // 2026 wins, stops at the Nov 2025 submission loss to Kamil Kraska).
+ // Other fields left as previously sourced: no current UFC.com athlete
+ // page exists for him (he wasn't signed after his 2024 DWCS loss) and
+ // ESPN's aggregate stats tab shows "No available information," so there
+ // is nothing to re-verify these numbers against either way.
+ "Igor Cavalcanti": { ht:"5'11\"", dob:"1997-10-10", reach:'79.5"', stance:"Orthodox", slpm:3.33, strAcc:"43%", sapm:3.6, strDef:"48%", kd:0.0, tdLanded:1.0, tdAcc:"50%", tdDef:"67%", subAvg:0.0, finRate:"100%", streak:2, gym:"Infinity Fight Team" },
   "Danylo Voievodkin": { ht:"6'4\"", dob:"2000-07-19", reach:'78"', stance:"Southpaw", slpm:9.86, strAcc:"46%", sapm:0.0, strDef:"100%", kd:12.33, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:12.33, finRate:"100%", streak:7, gym:"Kratos" },
   "Brian Kelleher": { ht:"5'6\"", dob:"1986-08-19", reach:'66"', stance:"Switch", slpm:3.31, strAcc:"41%", sapm:4.59, strDef:"55%", kd:0.34, tdLanded:1.68, tdAcc:"42%", tdDef:"60%", subAvg:0.67, finRate:"75%", streak:0, gym:"Long Island MMA" },
   "Carlos Calderon": { ht:"5'11\"", dob:"1996-02-10", reach:'71"', stance:"Southpaw", slpm:4.85, strAcc:"42%", sapm:4.98, strDef:"33%", kd:0.0, tdLanded:3.93, tdAcc:"33%", tdDef:null, subAvg:0.0, finRate:"83%", streak:0, gym:"Havoc MMA" },
@@ -45322,6 +45328,13 @@
   // exists on BFO, and this array is closing-line history for COMPLETED
   // fights, not the next one.
   "Oscar Ravello": [],
+  // Closing lines for his two BFO-tracked completed fights (both losses).
+  // The upcoming DWCS Week 6 line vs. Oscar Ravello is excluded -- this
+  // array is closing-line history for COMPLETED fights, not the next one.
+  "Igor Cavalcanti": [
+    { opponent: "Kamil Kraska", odds: 145 },
+    { opponent: "Seokhyeon Ko", odds: -350 }
+  ],
   "DongHun Choi": [],
   "JooSang Yoo": [
     { opponent: "Daniel Santos", odds: 120 },
@@ -80848,17 +80861,28 @@ const FIGHT_HISTORY = {
     { date: "Oct 14, 2007", opponent: "Duk Young Jang", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "2:45", event: "Spirit MC 13: Heavyweight GP Final" },
     { date: "Apr 22, 2007", opponent: "Jae Hyun So", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Spirit MC 11: Invasion" },
   ],
+  // Refreshed for DWCS Week 6 (Sep 15, 2026), vs. Oscar Ravello. Local data
+  // was stale -- last touched after his Sep 2024 DWCS loss, missing 5
+  // fights since (Nov 2024 - May 2026). Rebuilt from ESPN (authoritative),
+  // which also corrects several 1-day date offsets the old entries had
+  // (e.g. "Mar 17" -> "Mar 16", "Dec 10" -> "Dec 9") -- matches ESPN's own
+  // header record 13-2-0 and (T)KO 10-0 / SUB 3-1 breakdown exactly.
   "Igor Cavalcanti": [
+    { date: "May 29, 2026", opponent: "Marek Jakimowicz", result: "W", method: "KO/TKO", round: 1, time: "4:54", event: "FNC 31: Barbir vs. Ilić" },
+    { date: "Apr 10, 2026", opponent: "Emanuel Lopez", result: "W", method: "KO/TKO", round: 1, time: "0:48", event: "Futhar MMA 6" },
+    { date: "Nov 28, 2025", opponent: "Kamil Kraska", result: "L", method: "Submission (Arm Triangle)", round: 2, time: "4:00", event: "FNC 25: Batur vs. Kita" },
+    { date: "Mar 7, 2025", opponent: "Christian Dominguez", result: "W", method: "KO/TKO", round: 1, time: "3:47", event: "Imperium MMA 9" },
+    { date: "Nov 2, 2024", opponent: "Maurcio Ariel Pare", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:08", event: "Futhar MMA 4" },
     { date: "Sep 3, 2024", opponent: "Seokhyeon Ko", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 8, Week 4", org: "UFC" },
-    { date: "Mar 17, 2024", opponent: "Paulo Mauricio Junior", result: "W", method: "KO/TKO", round: 1, time: "0:42", event: "Inside Fighters' League 13" },
-    { date: "Dec 10, 2023", opponent: "Nicolas Mourglia", result: "W", method: "KO/TKO", round: 1, time: "1:02", event: "Futhar MMA 1" },
-    { date: "Jul 16, 2023", opponent: "Humberto Storti", result: "W", method: "KO/TKO", round: 1, time: "0:18", event: "Infight MMA 2" },
-    { date: "Jun 18, 2023", opponent: "Will Jadeilson", result: "W", method: "Submission (Guillotine)", round: 1, time: "0:58", event: "Revolution MMA 11" },
-    { date: "Mar 12, 2023", opponent: "Marco Berta", result: "W", method: "KO/TKO", round: 1, time: "1:12", event: "Inside Fighters League 11" },
-    { date: "Dec 4, 2022", opponent: "Gilson Cardoso", result: "W", method: "KO/TKO", round: 1, time: "2:40", event: "Inside Fighters' League 10" },
-    { date: "Dec 18, 2021", opponent: "Alex Soares", result: "W", method: "KO/TKO", round: 1, time: "4:25", event: "Inside Fighters' League 8" },
-    { date: "Oct 17, 2021", opponent: "Gabriel Lorenco", result: "W", method: "KO/TKO", round: 1, time: "1:20", event: "Inside Fighters' League 5" },
-    { date: "Aug 14, 2021", opponent: "Antônio Carlos", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "0:27", event: "NFC 20: Natal Fighting Championship" },
+    { date: "Mar 16, 2024", opponent: "Paulo Mauricio Junior", result: "W", method: "KO/TKO", round: 1, time: "0:42", event: "Inside Fighters' League 13" },
+    { date: "Dec 9, 2023", opponent: "Nicolas Mourglia", result: "W", method: "KO/TKO", round: 1, time: "1:02", event: "Futhar MMA 1" },
+    { date: "Jul 15, 2023", opponent: "Humberto Storti", result: "W", method: "KO/TKO", round: 1, time: "0:18", event: "Infight MMA 2" },
+    { date: "Jun 17, 2023", opponent: "Will Jadeilson", result: "W", method: "Submission (Guillotine)", round: 1, time: "0:58", event: "Revolution MMA 11" },
+    { date: "Mar 11, 2023", opponent: "Marco Berta", result: "W", method: "KO/TKO", round: 1, time: "1:12", event: "Inside Fighters League 11" },
+    { date: "Dec 3, 2022", opponent: "Gilson Cardoso", result: "W", method: "KO/TKO", round: 1, time: "2:40", event: "Inside Fighters' League 10" },
+    { date: "Dec 17, 2021", opponent: "Alex Soares", result: "W", method: "KO/TKO", round: 1, time: "4:25", event: "Inside Fighters' League 8" },
+    { date: "Oct 16, 2021", opponent: "Gabriel Lorenço", result: "W", method: "KO/TKO", round: 1, time: "1:20", event: "Inside Fighters' League 5" },
+    { date: "Aug 13, 2021", opponent: "Antônio Carlos", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "0:27", event: "NFC 20: Natal Fighting Championship" },
   ],
   "Danylo Voievodkin": [
     { date: "Sep 24, 2024", opponent: "Bailey Schoenfelder", result: "W", method: "Submission", round: 1, time: "1:13", event: "Dana White's Contender Series: Season 8, Week 7", org: "UFC" },
@@ -119101,6 +119125,10 @@ const ACCOLADES = {
     { icon: "🥊", title: "Diverse striking/grappling background spanning Taekwondo, Muay Thai, and Jiu-Jitsu (per UFC.com bio)", detail: null },
     { icon: "🎯", title: "7 KO/TKO and 3 submission wins (10 of 13 wins by finish)", detail: null },
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Igor Cavalcanti (Sep 15, 2026)", detail: null }
+  ],
+  "Igor Cavalcanti": [
+    { icon: "🥊", title: "10 KO/TKO and 3 submission wins (13 of 13 wins by finish, zero decisions)", detail: null },
+    { icon: "🎯", title: "Previously appeared on Dana White's Contender Series Season 8 (2024), losing a decision to Seokhyeon Ko; returns for a second shot on Season 10, Episode 6 vs. Oscar Ravello (Sep 15, 2026)", detail: null }
   ],
   "Michel Pereira": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Sávio Roveno", detail: null },
