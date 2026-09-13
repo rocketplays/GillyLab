@@ -5310,6 +5310,7 @@
  { name: "Deron Winn", division: "MW", rank: "NR", record: "7-3-0", initials: "DWN", country: "USA" },
  { name: "Zachary Reese", division: "MW", rank: "NR", record: "10-4-0", initials: "ZRE2", country: "USA" },
  { name: "Zevan Hunt", division: "WW", rank: "NR", record: "7-0-0", initials: "ZH", country: "USA" },
+ { name: "Oscar Ravello", division: "MW", rank: "NR", record: "13-3-1", initials: "OR", country: "Peru" },
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-5-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "8-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
@@ -9364,6 +9365,15 @@
  // stance/gym from ESPN's bio sidebar. finRate = (3 KO + 3 sub)/7 wins = 86%
  // (matches FightMatrix's independently-computed "Win Finish %: 85.7%").
  "Zevan Hunt": { ht:"6'0\"", dob:"1998-12-08", reach:'73"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:7, gym:"American Elite MMA" },
+ // DWCS Week 6 (Sep 15, 2026), vs. Igor Cavalcanti. Reach and stance are
+ // genuinely unavailable -- checked ESPN (stance listed as "--"), UFC.com,
+ // Tapology ("Reach: N/A"), and Sherdog (field omitted entirely), none of
+ // his Peruvian regional promotions (FFC, WCC, Desafio FC) report it. Same
+ // for the per-fight striking/grappling numbers. finRate = 10 of 13 wins
+ // are finishes (7 KO/TKO + 3 submission, 3 decisions and 1 draw) = 77%.
+ // streak = 2 (Apr 2026 and Dec 2025 wins, stops at the Oct 2025 KO loss
+ // to Fabricio Martins).
+ "Oscar Ravello": { ht:"5'10\"", dob:"1998-09-27", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"77%", streak:2, gym:"Capone BJJ / Sniper Gym" },
  "Bruno Gustavo da Silva":{ ht:"5'9\"", dob:"1990-03-16", reach:'71"', stance:"Orthodox", slpm:3.95, strAcc:"51%", sapm:4.72, strDef:"51%", kd:0.85, tdLanded:1.94, tdAcc:"24%", tdDef:"72%", subAvg:0.24, finRate:"73%", streak:0, gym:"American Top Team (2024–present)" },
  "Daniel Marcos": { ht:"5'7\"", dob:"1993-03-07", reach:'69"', stance:"Orthodox", slpm:4.90, strAcc:"54%", sapm:3.79, strDef:"61%", kd:0.45, tdLanded:1.35, tdAcc:"53%", tdDef:"85%", subAvg:0.15, finRate:"50%", streak:1, gym:"American Combat Gym" },
  "Mairon Santos": { ht:"5'7\"", dob:"2000-06-10", reach:'72"', stance:"Orthodox", slpm:3.33, strAcc:"48%", sapm:2.24, strDef:"66%", kd:0.64, tdLanded:0.0, tdAcc:"0%", tdDef:"69%", subAvg:0.0, finRate:"53%", streak:5, gym:"The Fighting Nerds" },
@@ -45307,6 +45317,11 @@
   // BFO, and this array is closing-line history for COMPLETED fights, not the
   // next one.
   "Zevan Hunt": [],
+  // BestFightOdds doesn't track his Peruvian regional promotions (FFC, WCC,
+  // Desafio FC) -- only the upcoming DWCS Week 6 line vs. Igor Cavalcanti
+  // exists on BFO, and this array is closing-line history for COMPLETED
+  // fights, not the next one.
+  "Oscar Ravello": [],
   "DongHun Choi": [],
   "JooSang Yoo": [
     { opponent: "Daniel Santos", odds: 120 },
@@ -65019,6 +65034,34 @@ const FIGHT_HISTORY = {
     { date: "May 26, 2023", opponent: "Tanner Arnold", result: "W", method: "KO/TKO", round: 1, time: "1:40", event: "Rage in the Cage OKC 93" },
     { date: "Dec 2, 2022", opponent: "Hunter Muscrat", result: "W", method: "Submission", round: 1, time: "3:18", event: "Rage in the Cage OKC 91" },
     { date: "Mar 4, 2022", opponent: "Cody Gallion", result: "W", method: "KO/TKO", round: 1, time: "4:26", event: "Rage in the Cage OKC 86" }
+  ],
+  // Per ESPN (authoritative), matches header record 13-3-1 exactly and the
+  // per-method breakdown (7 KO/TKO wins, 3 submission wins, 3 decision
+  // wins, 1 decision loss, 2 KO/TKO losses, 1 draw). Cross-checked against
+  // Tapology (which separately lists his 4 amateur/grappling bouts and a
+  // handful of cancelled bookings, both correctly excluded here) and
+  // Sherdog. The Jul 2023 loss to Cristiano Estela and the Jan 2019 bout
+  // vs. Gabriel Maidana that Tapology lists are a decision loss and a
+  // grappling match respectively -- the grappling draw is excluded as
+  // non-MMA, consistent with ESPN's own list.
+  "Oscar Ravello": [
+    { date: "Apr 15, 2026", opponent: "Fernando Gomes", result: "W", method: "Submission (Arm Triangle)", round: 1, time: "4:26", event: "WCC 012: Munoz vs. Kallew" },
+    { date: "Dec 4, 2025", opponent: "Naife Tadeu Correa Junior", result: "W", method: "KO/TKO", round: 2, time: "0:19", event: "WCC 011: Iquitos" },
+    { date: "Oct 30, 2025", opponent: "Fabricio Martins", result: "L", method: "KO/TKO", round: 2, time: "0:30", event: "APEC 2025 Korea Commemorative World MMA Competition" },
+    { date: "Nov 12, 2024", opponent: "Dante Romero", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "FFC 84: Cannetti vs. Adur" },
+    { date: "May 8, 2024", opponent: "Luiz Victor Romero", result: "W", method: "KO/TKO", round: 1, time: "2:14", event: "FFC 75: Ravello vs. Romero" },
+    { date: "Sep 5, 2023", opponent: "Dante Romero", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FFC 65: Basurto vs Mena" },
+    { date: "Jul 6, 2023", opponent: "Omar Jesus Santana", result: "D", method: "Decision (Split)", round: 3, time: "5:00", event: "FFC 63: Batalla en Madrid" },
+    { date: "Mar 1, 2023", opponent: "Elano Andrade", result: "W", method: "KO/TKO", round: 2, time: "4:38", event: "FFC 58: Ravello vs. Andrade" },
+    { date: "Oct 27, 2022", opponent: "Matias Juarez", result: "W", method: "KO/TKO", round: 2, time: "4:05", event: "FFC 54: Llontop vs. Zebroski" },
+    { date: "Jul 20, 2022", opponent: "Christian Dominguez", result: "W", method: "KO/TKO", round: 2, time: "1:27", event: "FFC 51: Estela vs. Zebroski" },
+    { date: "Mar 9, 2022", opponent: "Ricardo Centeno", result: "W", method: "KO/TKO", round: 2, time: "2:11", event: "FFC 49: Mollinedo vs. Corbage" },
+    { date: "Aug 16, 2019", opponent: "David Grandon", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:40", event: "Torneo Samurai 4" },
+    { date: "Jul 16, 2019", opponent: "Michael Morales", result: "L", method: "TKO (Corner Stoppage)", round: 2, time: "5:00", event: "FFC 39: Bananada vs. Zarauz 2" },
+    { date: "Jul 17, 2018", opponent: "Cristiano Estela", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FFC 33: Iwasaki vs. Tubarao" },
+    { date: "Nov 21, 2017", opponent: "Zelim Pinzas", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "FFC 30: Mora vs. Navarrete" },
+    { date: "Aug 17, 2017", opponent: "Yonathan Marquez", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "3:20", event: "Desafio FC 6" },
+    { date: "Jul 28, 2016", opponent: "Miguel Hinojosa", result: "W", method: "KO/TKO", round: 3, time: "1:40", event: "Desafio FC 5" }
   ],
 
 
@@ -119053,6 +119096,11 @@ const ACCOLADES = {
   ],
   "Zevan Hunt": [
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Mayton Perea (Sep 15, 2026)", detail: null }
+  ],
+  "Oscar Ravello": [
+    { icon: "🥊", title: "Diverse striking/grappling background spanning Taekwondo, Muay Thai, and Jiu-Jitsu (per UFC.com bio)", detail: null },
+    { icon: "🎯", title: "7 KO/TKO and 3 submission wins (10 of 13 wins by finish)", detail: null },
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Igor Cavalcanti (Sep 15, 2026)", detail: null }
   ],
   "Michel Pereira": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Sávio Roveno", detail: null },
