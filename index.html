@@ -5315,6 +5315,7 @@
  { name: "Akbar Abdullaev", division: "LW", rank: "NR", record: "13-0-0", initials: "AAB", country: "Kyrgyzstan" },
  { name: "Luis Hernandez", division: "MW", rank: "NR", record: "7-0-0", initials: "LHE", country: "USA" },
  { name: "Hugo Guillon", division: "MW", rank: "NR", record: "7-1-0", initials: "HGU", country: "France" }, // 1 NC
+ { name: "Tyshawn Williams", division: "FW", rank: "NR", record: "8-0-0", initials: "TWI", country: "USA" },
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-5-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "8-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
@@ -9417,6 +9418,13 @@
  // KO/TKO + 2 submission, 1 decision). streak = 6 (stops at the May 2022
  // KO loss to Jacky Jeanne).
  "Hugo Guillon": { ht:"6'4\"", dob:"1997-04-12", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:6, gym:"Ghost Arena / Team CIT" },
+ // DWCS Week 6 (Sep 15, 2026), vs. Antonio Monteiro. Reach is unavailable
+ // on every source checked (ESPN, UFC.com, Tapology). No per-fight
+ // striking/grappling stats exist anywhere. finRate = 63% (5 of 8 wins
+ // are finishes: 4 KO/TKO + 1 submission, 3 decisions). streak = 8
+ // (undefeated pro record; Tapology's "10 Wins" folds in 2 amateur wins
+ // not counted here).
+ "Tyshawn Williams": { ht:"5'6\"", dob:"1996-08-24", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Xtreme Couture" },
  "Bruno Gustavo da Silva":{ ht:"5'9\"", dob:"1990-03-16", reach:'71"', stance:"Orthodox", slpm:3.95, strAcc:"51%", sapm:4.72, strDef:"51%", kd:0.85, tdLanded:1.94, tdAcc:"24%", tdDef:"72%", subAvg:0.24, finRate:"73%", streak:0, gym:"American Top Team (2024–present)" },
  "Daniel Marcos": { ht:"5'7\"", dob:"1993-03-07", reach:'69"', stance:"Orthodox", slpm:4.90, strAcc:"54%", sapm:3.79, strDef:"61%", kd:0.45, tdLanded:1.35, tdAcc:"53%", tdDef:"85%", subAvg:0.15, finRate:"50%", streak:1, gym:"American Combat Gym" },
  "Mairon Santos": { ht:"5'7\"", dob:"2000-06-10", reach:'72"', stance:"Orthodox", slpm:3.33, strAcc:"48%", sapm:2.24, strDef:"66%", kd:0.64, tdLanded:0.0, tdAcc:"0%", tdDef:"69%", subAvg:0.0, finRate:"53%", streak:5, gym:"The Fighting Nerds" },
@@ -45401,6 +45409,10 @@
     { opponent: "Jacky Jeanne", odds: 140 },
     { opponent: "Matthew Byfield", odds: 550 }
   ],
+  // No BestFightOdds profile exists for him -- searched and only got back
+  // unrelated "Williams" candidates, none a match. Small regional-card
+  // fighter, unsurprising.
+  "Tyshawn Williams": [],
   // Closing lines for his two BFO-tracked completed fights (both losses).
   // The upcoming DWCS Week 6 line vs. Oscar Ravello is excluded -- this
   // array is closing-line history for COMPLETED fights, not the next one.
@@ -65219,6 +65231,19 @@ const FIGHT_HISTORY = {
     { date: "May 20, 2022", opponent: "Jacky Jeanne", result: "L", method: "KO/TKO", round: 1, time: "4:52", event: "Ares FC 6: Damiani vs. Tulshaev" },
     { date: "Apr 1, 2022", opponent: "Matthew Byfield", result: "NC", method: "No Contest", round: 2, time: "2:57", event: "Cage Warriors 135" },
     { date: "Oct 22, 2021", opponent: "Cedric Koung", result: "W", method: "KO/TKO", round: 1, time: "3:56", event: "European Beatdown 8" }
+  ],
+  // ESPN (authoritative), matches header record 8-0-0 and method
+  // breakdown ((T)KO 4-0, SUB 1-0, 3 decisions) exactly, cross-checked
+  // against Tapology.
+  "Tyshawn Williams": [
+    { date: "Jan 21, 2026", opponent: "Khabibullo Azizov", result: "W", method: "KO/TKO", round: 1, time: "1:48", event: "Tuff-N-Uff 151" },
+    { date: "Mar 13, 2025", opponent: "Alfred Walker", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Tuff-N-Uff 142" },
+    { date: "Dec 7, 2024", opponent: "Alex Cunuhay", result: "W", method: "KO/TKO", round: 2, time: "3:28", event: "Anthony Pettis FC 15: Virginia Fight Night 3" },
+    { date: "Mar 29, 2024", opponent: "Arthur Walcott-Ceesay", result: "W", method: "KO/TKO", round: 3, time: "4:35", event: "Shogun Fights 28" },
+    { date: "Oct 6, 2023", opponent: "Dusty Little", result: "W", method: "KO/TKO", round: 1, time: "3:35", event: "Shogun Fights 27" },
+    { date: "Mar 24, 2023", opponent: "Chayanne Serrano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shogun Fights 26" },
+    { date: "Nov 11, 2022", opponent: "Steve Moleski", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Shogun Fights 25" },
+    { date: "Mar 25, 2022", opponent: "Marcus Sims", result: "W", method: "Submission (Choke)", round: 1, time: "1:03", event: "Shogun Fights 24" }
   ],
 
 
@@ -119291,6 +119316,11 @@ const ACCOLADES = {
     { icon: "⭐", title: "Trains at CIT in South Africa, where he has served as a sparring partner for UFC middleweight champion Dricus Du Plessis", detail: null },
     { icon: "🎯", title: "Fighting to honor his late father Pierre, who passed two years before this UFC opportunity (per UFC.com bio)", detail: null },
     { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Luis Hernandez (Sep 15, 2026)", detail: null }
+  ],
+  "Tyshawn Williams": [
+    { icon: "🥋", title: "Wrestling background since age 5; collegiate career at Southern Illinois Edwardsville cut short by the pandemic before transitioning to MMA", detail: null },
+    { icon: "⭐", title: "Lifelong friend and training partner of UFC's Mansur Abdul-Malik, whose own path to the UFC has served as a blueprint (per UFC.com bio)", detail: null },
+    { icon: "🎯", title: "Set to make his UFC debut on Dana White's Contender Series Season 10, Episode 6 vs. Antonio Monteiro (Sep 15, 2026)", detail: null }
   ],
   "Igor Cavalcanti": [
     { icon: "🥊", title: "10 KO/TKO and 3 submission wins (13 of 13 wins by finish, zero decisions)", detail: null },
