@@ -1706,3 +1706,61 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   exhausted bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (51d6488c).
+
+
+IWO BARANIEWSKI — SEP 14 2026 — 3/5 GAP BOUTS FOUND, 2 EXHAUSTED
+------------------------------------------------------------------
+Gap list was 5 pre-UFC bouts, all Babilon MMA (Polish regional promotion).
+Already linked (unaffected): Junior Tafa, Austen Lane (Paramount+), İbo Aslan,
+Mahamed Aly (both UFC Fight Pass).
+  Kamil Stachura, Babilon MMA 51, Mar 14 2025 — found, bare-pair search hit
+    immediately, official @BabilonMMApl channel, "Prawdziwy TARAN! Iwo
+    Baraniewski vs Kamil Stachura | Babilon MMA 51", oembed-verified.
+    v=XDV0UH1pFjk
+  Sylwester Borys, Babilon MMA 49, Nov 22 2024 — found, same search/channel,
+    "Iwo idzie jak TARAN - UFC coraz bliżej! Iwo Baraniewski vs Sylwester
+    Borys | Babilon MMA 49", oembed-verified. v=A8ZixhzFwJ4
+  Cemey dos Santos, Babilon MMA 47, Sep 28 2024 — found, same channel,
+    "Demolka! Iwo Baraniewski vs Cemey dos Santos | Babilon MMA 47",
+    oembed-verified. v=eGHWhrqwapo
+  TRAP HIT: bare-pair search for Kamil Stachura also surfaced a second
+  Tapology bout page, "Babilon MMA 42: Baraniewski vs Stachura" — checked
+  before treating it as a rematch/pin case. That bout was CANCELLED pre-event
+  (Stachura injury, confirmed via Tapology bout-status page); Stachura was
+  replaced by Miroslav Uchytil, who is who our FIGHT_HISTORY correctly has
+  for Babilon MMA 42. Only one real Baraniewski-Stachura meeting exists
+  (Babilon 51); no pin needed.
+  Miroslav Uchytil, Babilon MMA 42, Jan 27 2024 — EXHAUSTED. No bare-pair or
+    event-number hit on YouTube. @BabilonMMApl's own channel DID post a
+    per-bout cut for this exact event (Babilon MMA 42: Gładkowicz vs Zając,
+    the main event) — confirming the channel covered that card — but did not
+    cut a video for Baraniewski's bout specifically. Consistent with the
+    channel's practice of only the era's main/featured bout getting a
+    standalone upload; Baraniewski wasn't yet a featured attraction in early
+    2024. Only hits under his name for this event were post-fight interview
+    clips (no fight footage).
+  Kamil Bartosiński, Babilon MMA 39, Sep 30 2023 — EXHAUSTED. Same pattern:
+    no bare-pair or event-number hit; only a journalist blooper/interview
+    video from the event exists. NAME-COLLISION NOTE: a YouTube Short "Iwo
+    Baraniewski o walce Bartosiński - Masaev" surfaced under this query but
+    is Iwo commenting on an unrelated KSW fighter also named Bartosiński
+    (Adrian, not Kamil) — not our opponent, not placed.
+  FALSE LEAD CAUGHT: @BabilonMMApl's "Pierwszy nokaut Iwo Baraniewskiego!
+    Tak debiutował w Babilon MMA" (implies "his Babilon debut") is NOT the
+    Bartosiński pro debut — full description confirms it's Iwo vs Daniel
+    Jóźwiak at Babilon MMA 33 (Dec 2022), a semi-pro bout predating his pro
+    run and not in FIGHT_HISTORY. Caught via TRAPS rule (confirm the title
+    against the actual row, don't assume) before placing.
+  FIGHT PASS: no login session available this run (owner declined to sign
+  in). External evidence checked instead — Wikipedia's Babilon MMA article
+  names Polsat (Polish TV) as its broadcaster with no Fight Pass mention;
+  WebSearch of site:ufcfightpass.com and his FP fighter profile (id 1574)
+  surface only his existing UFC/DWCS Fight Pass videos, nothing Babilon-
+  branded. Treated as not on Fight Pass rather than exhaustively searched
+  there — flag for a real login pass if the owner wants certainty.
+  Ran place-tape-links.cjs --write with all 7 rows (4 pre-existing
+  re-supplied + 3 new, since the script replaces the fighter's whole
+  TAPE_STUDY block). Report: 7 parsed, 7 placed, 0 unplaced, placed(7) >=
+  already(4). fix-tape-sections.cjs --write: 0 section changes. Verified
+  post-write that all 4 pre-existing rows plus the 3 new rows are intact
+  (7 total) before committing index.html back.
