@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-16T00:43:27.753Z",
+ "generatedAt": "2026-09-16T00:58:48.469Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -10150,6 +10150,194 @@
       ]
      },
      "capturedAt": "2026-09-16T00:43:27.612Z"
+    }
+   ]
+  },
+  "Zevan Hunt": {
+   "history": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Mayton Perea",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "0:45",
+     "event": "Dana White's Contender Series: Season 10, Week 6",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Mayton Perea",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 11,
+      "totL": 4,
+      "totA": 11,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:01",
+      "head": [
+       3,
+       10
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 23,
+      "sigA": 37,
+      "totL": 24,
+      "totA": 38,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       21,
+       34
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       14,
+       27
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       8,
+       9
+      ]
+     },
+     "capturedAt": "2026-09-16T00:58:48.348Z"
+    }
+   ]
+  },
+  "Mayton Perea": {
+   "history": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Zevan Hunt",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "0:45",
+     "event": "Dana White's Contender Series: Season 10, Week 6",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Zevan Hunt",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 23,
+      "sigA": 37,
+      "totL": 24,
+      "totA": 38,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       21,
+       34
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       14,
+       27
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       8,
+       9
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 11,
+      "totL": 4,
+      "totA": 11,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:01",
+      "head": [
+       3,
+       10
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-16T00:58:48.348Z"
     }
    ]
   }
