@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-16T00:38:06.514Z",
+ "generatedAt": "2026-09-16T00:43:27.753Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9962,6 +9962,194 @@
       ]
      },
      "capturedAt": "2026-09-16T00:38:06.407Z"
+    }
+   ]
+  },
+  "Oscar Ravello": {
+   "history": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Igor Cavalcanti",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:38",
+     "event": "Dana White's Contender Series: Season 10, Week 6",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Igor Cavalcanti",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 13,
+      "totL": 5,
+      "totA": 16,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       9
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       3,
+       12
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 35,
+      "sigA": 51,
+      "totL": 52,
+      "totA": 73,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       33,
+       49
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       6
+      ],
+      "clinch": [
+       2,
+       6
+      ],
+      "ground": [
+       28,
+       39
+      ]
+     },
+     "capturedAt": "2026-09-16T00:43:27.612Z"
+    }
+   ]
+  },
+  "Igor Cavalcanti": {
+   "history": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Oscar Ravello",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:38",
+     "event": "Dana White's Contender Series: Season 10, Week 6",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 15, 2026",
+     "opponent": "Oscar Ravello",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 35,
+      "sigA": 51,
+      "totL": 52,
+      "totA": 73,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       33,
+       49
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       6
+      ],
+      "clinch": [
+       2,
+       6
+      ],
+      "ground": [
+       28,
+       39
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 13,
+      "totL": 5,
+      "totA": 16,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       9
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       3,
+       12
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-16T00:43:27.612Z"
     }
    ]
   }
