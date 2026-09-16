@@ -3829,7 +3829,152 @@
         "pts": -0.0844,
         "leaned": true
       }
+    },
+    {
+      "fightId": "akbar abdullaev|ednilson santos",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-16T16:00:07.552Z",
+      "a": {
+        "feed": "Ednilson Santos",
+        "db": "Ednilson Santos"
+      },
+      "b": {
+        "feed": "Akbar Abdullaev",
+        "db": "Akbar Abdullaev"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.386,
+      "modelClose": 0.614,
+      "marketOpen": 0.0808,
+      "marketClose": 0.9117,
+      "leanA": 0.3052,
+      "nSnapshots": 7,
+      "clv": {
+        "toward": true,
+        "pts": 0.8309,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "antonio monteiro|tyshawn williams",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-16T16:00:07.553Z",
+      "a": {
+        "feed": "Antonio Monteiro",
+        "db": "Antonio Monteiro"
+      },
+      "b": {
+        "feed": "Tyshawn Williams",
+        "db": "Tyshawn Williams"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.3879,
+      "modelClose": 0.3879,
+      "marketOpen": 0.2638,
+      "marketClose": 0.2905,
+      "leanA": 0.1241,
+      "nSnapshots": 7,
+      "clv": {
+        "toward": true,
+        "pts": 0.0267,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "hugo guillon|luis hernandez",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-16T16:00:07.553Z",
+      "a": {
+        "feed": "Hugo Guillon",
+        "db": "Hugo Guillon"
+      },
+      "b": {
+        "feed": "Luis Hernandez",
+        "db": "Luis Hernandez"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4952,
+      "modelClose": 0.4952,
+      "marketOpen": 0.5991,
+      "marketClose": 0.6068,
+      "leanA": -0.1039,
+      "nSnapshots": 7,
+      "clv": {
+        "toward": false,
+        "pts": -0.0077,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "igor cavalcanti|oscar ravello",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-16T16:00:07.553Z",
+      "a": {
+        "feed": "Igor Cavalcanti",
+        "db": "Igor Cavalcanti"
+      },
+      "b": {
+        "feed": "Oscar Ravello",
+        "db": "Oscar Ravello"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4735,
+      "modelClose": 0.4735,
+      "marketOpen": 0.7418,
+      "marketClose": 0.6818,
+      "leanA": -0.2683,
+      "nSnapshots": 7,
+      "clv": {
+        "toward": true,
+        "pts": 0.06,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "mayton perea|zevan hunt",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-16T16:00:07.553Z",
+      "a": {
+        "feed": "Mayton Perea",
+        "db": "Mayton Perea"
+      },
+      "b": {
+        "feed": "Zevan Hunt",
+        "db": "Zevan Hunt"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.4468,
+      "modelClose": 0.4468,
+      "marketOpen": 0.5255,
+      "marketClose": 0.5248,
+      "leanA": -0.0787,
+      "nSnapshots": 7,
+      "clv": {
+        "toward": true,
+        "pts": 0.0007,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-15T16:04:42.630Z"
+  "generatedAt": "2026-09-16T16:00:07.558Z"
 }
