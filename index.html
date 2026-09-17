@@ -130442,22 +130442,27 @@ const GL_SHEET = (function () {
     const listTop = divY + (graded ? 22 : 26);
 
     // Group like the event page already does elsewhere in this file (see the
-    // fight-card renderer's own hasFlag/isMainCard/isMain split): a graded
-    // (completed) card stays one flat block, matching "past events aren't
-    // split into main card / prelims" there. An ungraded picks card gets the
-    // main event pinned to its own full-width row, the rest of the main card
-    // below it, then a PRELIMS divider and the rest — so the sheet reads in
-    // the same order the event itself does, not just the order picks were
-    // made in.
+    // fight-card renderer's own hasFlag/isMainCard/isMain split): main event
+    // pinned to its own full-width row, the rest of the main card below it,
+    // then a PRELIMS divider and the rest — so the sheet reads in the same
+    // order the event itself does. Applied to both the picks card and the
+    // graded results card, so "Share results" isn't structured differently
+    // from "Share picks" — just with results shown instead of picks.
     const gap = 28, divH = 56;
-    let mainEvent = null, mainCardRest = picks, prelims = [];
-    if (!graded) {
-      const hasFlag = picks.some(p => p.isMainCard);
-      const mainCardAll = hasFlag ? picks.filter(p => p.isMainCard || p.isMain) : picks.filter(p => p.isMain);
-      prelims = hasFlag ? picks.filter(p => !p.isMainCard && !p.isMain) : picks.filter(p => !p.isMain);
-      mainEvent = mainCardAll.find(p => p.isMain) || null;
-      mainCardRest = mainCardAll.filter(p => p !== mainEvent);
-    }
+    const hasFlag = picks.some(p => p.isMainCard);
+    const hasMain = picks.some(p => p.isMain);
+    // sharePickemHistory()'s payload (the "My history" per-event share, a
+    // different caller than sharePayload()) never sets isMain or isMainCard
+    // at all — there's no card-segment data to split on there, so without
+    // this guard every one of its bouts would fall into "!isMain" and the
+    // whole card would render as one big, wrongly-labeled PRELIMS section.
+    // Only split when there's an actual main event or isMainCard flag to
+    // split on; otherwise render flat, same as before this feature existed.
+    const canSplit = hasFlag || hasMain;
+    const mainCardAll = !canSplit ? picks : (hasFlag ? picks.filter(p => p.isMainCard || p.isMain) : picks.filter(p => p.isMain));
+    const prelims = !canSplit ? [] : (hasFlag ? picks.filter(p => !p.isMainCard && !p.isMain) : picks.filter(p => !p.isMain));
+    const mainEvent = mainCardAll.find(p => p.isMain) || null;
+    const mainCardRest = mainCardAll.filter(p => p !== mainEvent);
     // Two bouts per row within a section once it has more than a couple —
     // one column per bout scrolls to thousands of px for a full 11-14 fight
     // card, nothing like the reference poster; two columns keeps it closer
