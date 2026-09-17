@@ -718,8 +718,12 @@ const GL_SHEET = (function () {
     ctx.fillStyle = TXT; ctx.fillText(clip(ctx, (p.winner || '').toUpperCase(), nameMax), cxA, nameY);
     ctx.fillStyle = '#c8ccd2'; ctx.fillText(clip(ctx, (p.loser || '').toUpperCase(), nameMax), cxB, nameY);
 
-    // one caption line, centred on the whole bout: the pick pre-grade, the
-    // actual result once graded.
+    // one caption line: the pick's method pre-grade — centred under the
+    // picked fighter specifically (cxA), not the whole bout, since it's a
+    // property of that one pick, not of the matchup as a whole. Centring it
+    // under both names made it read as unattached to either side. Once
+    // graded it becomes the actual result, which genuinely is about both
+    // fighters, so that line stays centred on the whole bout.
     const lineY = nameY + 26 * s;
     ctx.textAlign = 'left';   // drawSegs positions from a fixed x, so undo the centring above
     if (!graded) {
@@ -727,7 +731,7 @@ const GL_SHEET = (function () {
       // photo, so this line is just the method — no need to repeat "High/Med/
       // Low pick" in text too.
       ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
-      ctx.fillText(clip(ctx, pkMethodLabel(p), w - 40 * s), x + w / 2, lineY);
+      ctx.fillText(clip(ctx, pkMethodLabel(p), nameMax), cxA, lineY);
       ctx.textAlign = 'left';
     } else if (p.voided) {
       ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
@@ -807,14 +811,25 @@ const GL_SHEET = (function () {
       const cols = arr.length <= 1 ? 1 : 2;
       const rows = Math.ceil(arr.length / cols);
       const colW = (W - 128 - gap * (cols - 1)) / cols;
-      const s = Math.min(1, colW / 952);
+      // Denominator is NOT the 952px single-column width — that would scale
+      // a two-column cell (~460px) down to s≈0.48, which read fine on a
+      // full-size preview but rendered photos and text small enough to be
+      // "almost unreadable" on an actual phone screen. 620 keeps a single
+      // column capped at s=1 (952/620 > 1) while giving a two-column cell
+      // s≈0.74 instead — noticeably larger text and photos in exchange for
+      // a taller two-column grid, which is the right trade given the sheet
+      // is meant to be read, not just to look square.
+      const s = Math.min(1, colW / 620);
       return { cols, rows, colW, s, rowH: ROW_H * s, h: rows * ROW_H * s };
     }
     const mainCardGrid = mainCardRest.length ? gridDims(mainCardRest) : null;
     const prelimsGrid = prelims.length ? gridDims(prelims) : null;
     const bodyH = (mainEvent ? ROW_H : 0) + (mainCardGrid ? mainCardGrid.h : 0) + (prelimsGrid ? divH + prelimsGrid.h : 0);
 
-    const footerBlockH = graded ? 88 : 172;
+    // No footer line and no totals block on this card — see the removal
+    // below for why — so this is just breathing room under the last row,
+    // not space reserved for anything drawn.
+    const footerBlockH = 40;
     const CH = Math.round(listTop + bodyH + footerBlockH);
     cv.height = CH;                 // resizing clears the canvas + resets state
     ctx = cv.getContext('2d');
@@ -883,18 +898,12 @@ const GL_SHEET = (function () {
       cy += prelimsGrid.h;
     }
 
-    // Points-at-stake footer for the picks card; the results card shows its total up top.
-    if (!graded) {
-      const total = data.totalPoints || 0;
-      ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 124); ctx.lineTo(W - 64, CH - 124); ctx.stroke();
-      ctx.textAlign = 'left'; ctx.font = '700 28px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'alphabetic';
-      ctx.fillText('TOTAL POSSIBLE POINTS', 64, CH - 84);
-      ctx.textAlign = 'right'; ctx.font = '800 50px ' + COND; ctx.fillStyle = ACC;
-      ctx.fillText(String(total), W - 64, CH - 76);
-      ctx.textAlign = 'left';
-    }
-
-    footer(ctx, CH);
+    // No "TOTAL POSSIBLE POINTS" block and no "gillylab.com" footer line here
+    // (unlike the other GL_SHEET cards) — per feedback, that was a chunk of
+    // near-empty space at the bottom of an already-long image. The graded
+    // card still shows its total up top next to the legend; the picks card
+    // just doesn't repeat "total possible points" anywhere on the shared
+    // image, since the point total isn't the point of sharing your picks.
     return cv;
   }
 
