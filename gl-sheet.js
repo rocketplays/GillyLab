@@ -943,46 +943,47 @@ const GL_SHEET = (function () {
   // A subtle top-to-bottom sheen instead of flat white — brighter white at
   // the cap-height, fading to a cool light-gray by the baseline, the same
   // "engraved metal" treatment the reference poster's fighter names use
-  // rather than a single flat fill. Sized to the actual text block (top of
-  // caps to bottom of the last line) so it doesn't wash out on a 1-line name.
-  function evNameGradient(ctx, y0, lineCount, lineH) {
-    const top = y0 - lineH * 0.78, bottom = y0 + (lineCount - 1) * lineH + lineH * 0.26;
-    const g = ctx.createLinearGradient(0, top, 0, bottom);
+  // rather than a single flat fill. Sized to the actual text (cap-height to
+  // baseline) around the given baseline y.
+  function evNameGradient(ctx, y, fontPx) {
+    const g = ctx.createLinearGradient(0, y - fontPx * 0.78, 0, y + fontPx * 0.26);
     g.addColorStop(0, '#ffffff');
     g.addColorStop(1, '#cbd6d0');
     return g;
   }
-  // Wraps a fighter's name to at most 2 lines (most names need one; a small
-  // number of long ones need two) and draws it centred at `cx`, top of the
-  // block at `y0`. Callers reserve room for 2 lines regardless of whether a
-  // given name needs it, which is what keeps every row's height a closed
-  // form — see EV_ROW_H's own note.
-  function evDrawName(ctx, text, cx, y0, maxW, font, lineH) {
+  // Just the last name, big and on one line — matching the reference
+  // poster (which shows only surnames) and sidestepping wrap() entirely:
+  // a full "First Last" name needed 2 reserved lines and, worse, a single
+  // long unbreakable surname could still overflow past its column and
+  // overlap the fighter next to it (wrap() only breaks on spaces). A bare
+  // last name is short enough to fit on one line at a much bigger size,
+  // and clip()'s ellipsis (not wrap's) is what keeps even a rare long one
+  // from ever reaching past its own column.
+  function evLastName(full) {
+    const parts = String(full || '').trim().split(/\s+/);
+    return parts[parts.length - 1] || '';
+  }
+  function evDrawName(ctx, text, cx, y, maxW, font, fontPx) {
     ctx.font = font; ctx.textAlign = 'center';
-    const allLines = wrap(ctx, String(text || '').toUpperCase(), maxW);
-    const lines = allLines.slice(0, 2);
-    // A 4-word name (e.g. "Abdul Kareem Al Selwady") can wrap to 3+ lines —
-    // slicing to 2 would otherwise drop the rest with no sign anything was
-    // cut, which reads as a missing surname rather than a truncated one.
-    if (allLines.length > lines.length) lines[lines.length - 1] += '…';
-    ctx.fillStyle = evNameGradient(ctx, y0, lines.length, lineH);
-    lines.forEach((line, i) => ctx.fillText(line, cx, y0 + i * lineH));
+    ctx.fillStyle = evNameGradient(ctx, y, fontPx);
+    ctx.fillText(clip(ctx, evLastName(text).toUpperCase(), maxW), cx, y);
     ctx.textAlign = 'left';
   }
-  // A plain bout: two photos, VS between, names below. No ring colour, no
-  // pick badge, no method/weight-class line — see the note above on why.
+  // A plain bout: two photos, VS between, last names below. No ring
+  // colour, no pick badge, no method/weight-class line — see the note
+  // above on why.
   function evBoutCard(ctx, f, x, y, w, imgA, imgB, s) {
-    const R = 62 * s, vsGap = 26 * s;
+    const R = 62 * s, vsGap = 30 * s;
     const { cxA, cxB } = evPairX(x, w, R, vsGap);
-    const avY = y + 10 * s + R;
+    const avY = y + 6 * s + R;
     avatar(ctx, imgA, cxA, avY, R, pkInitials(f.f1), LINE);
     avatar(ctx, imgB, cxB, avY, R, pkInitials(f.f2), LINE);
-    ctx.textAlign = 'center'; ctx.font = '800 ' + (24 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('VS', x + w / 2, avY + 8 * s);
-    const nameY = avY + R + 32 * s, nameMax = w * 0.46, lineH = 24 * s;
-    const font = '700 ' + (21 * s).toFixed(1) + 'px ' + COND;
-    evDrawName(ctx, f.f1, cxA, nameY, nameMax, font, lineH);
-    evDrawName(ctx, f.f2, cxB, nameY, nameMax, font, lineH);
+    ctx.textAlign = 'center'; ctx.font = '800 ' + (26 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('VS', x + w / 2, avY + 9 * s);
+    const nameFontPx = 32 * s, nameY = avY + R + nameFontPx + 12 * s, nameMax = w * 0.46;
+    const font = '800 ' + nameFontPx.toFixed(1) + 'px ' + COND;
+    evDrawName(ctx, f.f1, cxA, nameY, nameMax, font, nameFontPx);
+    evDrawName(ctx, f.f2, cxB, nameY, nameMax, font, nameFontPx);
   }
   // Same green-tinted aurora blooms as the page background (#bgfx in the
   // main stylesheet: green top-left, blue right, green bottom), baked
@@ -1019,7 +1020,7 @@ const GL_SHEET = (function () {
   // the site (green-tinted gradient fill, green border, bold condensed caps
   // centred inside), so MAIN CARD / PRELIMS read as GillyLab UI rather than
   // a plain text label with a rule under it.
-  const EV_BAR_H = 56, EV_BAR_GAP = 24;
+  const EV_BAR_H = 64, EV_BAR_GAP = 18;
   function evSectionBar(ctx, y, label, borderColor) {
     const x = 64, w = W - 128, h = EV_BAR_H;
     const g = ctx.createLinearGradient(0, y, 0, y + h);
@@ -1027,8 +1028,8 @@ const GL_SHEET = (function () {
     ctx.fillStyle = g; roundRect(ctx, x, y, w, h, 8); ctx.fill();
     ctx.strokeStyle = borderColor || 'rgba(0,230,104,0.35)'; ctx.lineWidth = 1;
     roundRect(ctx, x, y, w, h, 8); ctx.stroke();
-    ctx.textAlign = 'center'; ctx.font = '700 22px ' + COND; ctx.fillStyle = TXT;
-    ctx.fillText(label, W / 2, y + h / 2 + 8);
+    ctx.textAlign = 'center'; ctx.font = '700 30px ' + COND; ctx.fillStyle = TXT;
+    ctx.fillText(label, W / 2, y + h / 2 + 10);
     ctx.textAlign = 'left';
   }
   // The event title, two-toned: the first word (e.g. "UFC") in TXT, every
@@ -1061,14 +1062,13 @@ const GL_SHEET = (function () {
     });
     ctx.textAlign = 'center';
   }
-  // Base row height at s=1 — 2 photo diameters' worth of vertical room isn't
-  // needed here (only one row of photos), but 2 NAME lines are always
-  // reserved (see evDrawName), which the old single-line-only height didn't
-  // budget for and is what clipped longer names to "GEORG…" instead of
-  // wrapping them. Mirrors pkBoutCard/ROW_H's reasoning otherwise: every
-  // font size in evBoutCard is a constant relative to `s`, so the total
-  // card height is still a closed form — no measuring pass needed.
-  const EV_ROW_H = 254;
+  // Base row height at s=1. Last names are one line now (see evDrawName),
+  // so this only has to clear the photo + one line of name + a small
+  // bottom gap — a lot less than the old 2-full-name-line budget, which is
+  // most of where this card's dead space was coming from. Every font size
+  // in evBoutCard is still a constant relative to `s`, so this is still a
+  // closed form — no measuring pass needed.
+  const EV_ROW_H = 196;
   function evGridDims(arr) {
     // 1 bout: full width, nothing to tile. 2: side by side (same reasoning
     // as pkBoutCard's fix — a 2-item group should never stack). 3+: three
@@ -1086,19 +1086,41 @@ const GL_SHEET = (function () {
     const s = Math.min(1, colW / 300);
     return { cols, rows, colW, gap: evGap, s, rowH: EV_ROW_H * s, h: rows * EV_ROW_H * s };
   }
+  // Where a short LAST row (fewer than `cols` bouts — the only kind of
+  // partial row this grid ever has, since every row before it is full)
+  // should place its bouts, instead of packing them into columns 0..k-1
+  // and leaving the rest of the row visibly empty:
+  //  - 1 leftover bout centres in the full row width.
+  //  - cols-1 leftover bouts (the only other case possible, since cols
+  //    tops out at 3) sit where the *gaps* between the full row's column
+  //    centres would be — directly under the seam between bout 1/2, and
+  //    the seam between bout 2/3, above them.
+  // Returns the bout's left edge (x), same units as the normal grid math.
+  function evRowX(cols, colW, gap, rowLen, idx) {
+    if (rowLen >= cols) return 64 + idx * (colW + gap);
+    const totalW = cols * colW + (cols - 1) * gap;
+    if (rowLen === 1) return 64 + (totalW - colW) / 2;
+    // rowLen === cols - 1: centre `idx` on the midpoint between the
+    // (idx)th and (idx+1)th full-row column centres.
+    const cx = 64 + colW + gap / 2 + idx * (colW + gap);
+    return cx - colW / 2;
+  }
   async function drawEventCard(data) {
     await fontsReady();
     const logo = await loadBrandLogo();
     const fights = (data.fights || []).filter(f => f && f.f1 && f.f2);
     const { mainEvent, coMain, restMainCard, prelims } = evGroups(fights);
 
-    const topMargin = 56, heroR = 72, heroVsGap = 56;
+    const topMargin = 56, heroR = 72, heroVsGap = 64;
     // Hero row height: photo diameter + gap to the fighter-name block + 2
     // reserved name lines (see evDrawName) + bottom padding. Fixed, like
     // every other row height in this module — the fonts inside it are
     // constants. (The centre column — logo, wordmark, event name — is
     // shorter than this and never the tall side.)
-    const heroH = mainEvent ? (heroR * 2 + 44 + 30 * 2 + 40) : 0;
+    // Photo diameter + gap-to-name (heroNameFontPx + 14, see drawPair) + one
+    // line of name + bottom pad — one name line now, not two, so this is a
+    // lot shorter than the old 2-line budget was.
+    const heroH = mainEvent ? (heroR * 2 + 92) : 0;
     const mainCardGrid = restMainCard.length ? evGridDims(restMainCard) : null;
     const prelimsGrid = prelims.length ? evGridDims(prelims) : null;
     // MAIN CARD now labels the whole main-card section from the top (hero
@@ -1143,11 +1165,12 @@ const GL_SHEET = (function () {
         const { cxA, cxB } = evPairX(x0, pairW, heroR, heroVsGap);
         avatar(ctx, imgFor.get(f)[0], cxA, avY, heroR, pkInitials(f.f1), ACC);
         avatar(ctx, imgFor.get(f)[1], cxB, avY, heroR, pkInitials(f.f2), ACC);
-        ctx.textAlign = 'center'; ctx.font = '800 30px ' + COND; ctx.fillStyle = MUT;
-        ctx.fillText('VS', x0 + pairW / 2, avY + 10);
-        const nameY = avY + heroR + 44, nameMax = pairW * 0.44;
-        evDrawName(ctx, f.f1, cxA, nameY, nameMax, '700 27px ' + COND, 30);
-        evDrawName(ctx, f.f2, cxB, nameY, nameMax, '700 27px ' + COND, 30);
+        ctx.textAlign = 'center'; ctx.font = '800 34px ' + COND; ctx.fillStyle = MUT;
+        ctx.fillText('VS', x0 + pairW / 2, avY + 11);
+        const heroNameFontPx = 36, nameY = avY + heroR + heroNameFontPx + 14, nameMax = pairW * 0.52;
+        const heroNameFont = '800 ' + heroNameFontPx + 'px ' + COND;
+        evDrawName(ctx, f.f1, cxA, nameY, nameMax, heroNameFont, heroNameFontPx);
+        evDrawName(ctx, f.f2, cxB, nameY, nameMax, heroNameFont, heroNameFontPx);
       };
       drawPair(mainEvent, leftX);
       drawPair(coMain, rightX);
@@ -1159,38 +1182,40 @@ const GL_SHEET = (function () {
       // logo the way the first pass had it.
       ctx.textAlign = 'center';
       let my = cy;
-      brandCentered(ctx, centerX, my + 24, 24);
-      my += 24 + 18;   // room below "gillylab" before the logo
+      brandCentered(ctx, centerX, my + 26, 27);
+      my += 26 + 18;   // room below "gillylab" before the logo
       if (logo && logo.width) {
         const lh = 56, lw = logo.width * (lh / logo.height);
         ctx.drawImage(logo, centerX - lw / 2, my, lw, lh);
         my += lh;
       }
       my += 44;   // extra room below the logo so the event name doesn't crowd it
-      evDrawTitle(ctx, data.name || 'UFC', centerX, my + 30, centerW - 16, '800 28px ' + COND, 32);
+      evDrawTitle(ctx, data.name || 'UFC', centerX, my + 32, centerW - 16, '800 32px ' + COND, 35);
       ctx.textAlign = 'left';
-      cy += heroR * 2 + 44 + 30 * 2 + 40;   // matches heroH's own formula exactly
+      cy += heroR * 2 + 92;   // matches heroH's own formula exactly
     }
 
-    if (mainCardGrid) {
-      restMainCard.forEach((f, i) => {
-        const col = i % mainCardGrid.cols, row = Math.floor(i / mainCardGrid.cols);
-        const bx = 64 + col * (mainCardGrid.colW + mainCardGrid.gap), by = cy + row * mainCardGrid.rowH;
+    // Draws a grid section, evening out a short last row via evRowX instead
+    // of left-packing it into columns 0..k-1 with dead space on the right.
+    function drawEvGrid(arr, grid) {
+      const lastRow = grid.rows - 1;
+      arr.forEach((f, i) => {
+        const row = Math.floor(i / grid.cols);
+        const rowStart = row * grid.cols;
+        const rowLen = row === lastRow ? (arr.length - rowStart) : grid.cols;
+        const idxInRow = i - rowStart;
+        const bx = evRowX(grid.cols, grid.colW, grid.gap, rowLen, idxInRow);
+        const by = cy + row * grid.rowH;
         const imgs = imgFor.get(f);
-        evBoutCard(ctx, f, bx, by, mainCardGrid.colW, imgs[0], imgs[1], mainCardGrid.s);
+        evBoutCard(ctx, f, bx, by, grid.colW, imgs[0], imgs[1], grid.s);
       });
-      cy += mainCardGrid.h;
+      cy += grid.h;
     }
+    if (mainCardGrid) drawEvGrid(restMainCard, mainCardGrid);
     if (prelimsGrid) {
       evSectionBar(ctx, cy, 'PRELIMS', '#fff');
       cy += EV_BAR_H + EV_BAR_GAP;
-      prelims.forEach((f, i) => {
-        const col = i % prelimsGrid.cols, row = Math.floor(i / prelimsGrid.cols);
-        const bx = 64 + col * (prelimsGrid.colW + prelimsGrid.gap), by = cy + row * prelimsGrid.rowH;
-        const imgs = imgFor.get(f);
-        evBoutCard(ctx, f, bx, by, prelimsGrid.colW, imgs[0], imgs[1], prelimsGrid.s);
-      });
-      cy += prelimsGrid.h;
+      drawEvGrid(prelims, prelimsGrid);
     }
 
     return cv;
