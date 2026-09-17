@@ -977,20 +977,30 @@ const GL_SHEET = (function () {
     }
     return parts[parts.length - 1] || '';
   }
-  // Draws the last name on one line, shrinking the font to fit rather than
-  // ellipsis-truncating it — a real surname ("Baraniewski", "Shahbazyan")
-  // is exactly the case that most needs its letters, not "...". clip()'s
-  // ellipsis only kicks in as a last resort, if even minFontPx doesn't fit
-  // (a genuinely extreme name), so it's still there as a backstop but
-  // isn't what the normal "just a bit longer than average" case hits.
-  function evDrawName(ctx, text, cx, y, maxW, weight, maxFontPx, minFontPx) {
-    const name = evLastName(text).toUpperCase();
+  // Finds the biggest font (down to minFontPx) `name` fits at within maxW,
+  // without drawing anything — shrinking to fit rather than ellipsis-
+  // truncating, since a real surname ("Baraniewski", "Shahbazyan") is
+  // exactly the case that most needs its letters, not "...".
+  function evFitNameFont(ctx, name, maxW, weight, maxFontPx, minFontPx) {
     let fontPx = maxFontPx;
     ctx.font = weight + ' ' + fontPx.toFixed(1) + 'px ' + COND;
     while (fontPx > minFontPx && ctx.measureText(name).width > maxW) {
       fontPx -= 1;
       ctx.font = weight + ' ' + fontPx.toFixed(1) + 'px ' + COND;
     }
+    return fontPx;
+  }
+  // Draws the last name at a caller-given size — the size itself is
+  // decided by the caller (see evBoutCard/drawPair), which fits BOTH
+  // fighters' names first and uses the smaller of the two results for
+  // both: one long surname shrinking while the opponent's short one stays
+  // at full size would put two differently-sized names side by side in
+  // the same bout, which reads as a mistake rather than a fit. clip()'s
+  // ellipsis is still a last-resort backstop for a genuinely extreme name
+  // that doesn't fit even at minFontPx.
+  function evDrawName(ctx, text, cx, y, maxW, weight, fontPx) {
+    const name = evLastName(text).toUpperCase();
+    ctx.font = weight + ' ' + fontPx.toFixed(1) + 'px ' + COND;
     ctx.textAlign = 'center';
     ctx.fillStyle = evNameGradient(ctx, y, fontPx);
     ctx.fillText(clip(ctx, name, maxW), cx, y);
@@ -1007,9 +1017,17 @@ const GL_SHEET = (function () {
     avatar(ctx, imgB, cxB, avY, R, pkInitials(f.f2), LINE);
     ctx.textAlign = 'center'; ctx.font = '800 ' + (26 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('VS', x + w / 2, avY + 9 * s);
-    const nameFontPx = 32 * s, nameY = avY + R + nameFontPx + 12 * s, nameMax = w * 0.46;
-    evDrawName(ctx, f.f1, cxA, nameY, nameMax, '800', nameFontPx, 20 * s);
-    evDrawName(ctx, f.f2, cxB, nameY, nameMax, '800', nameFontPx, 20 * s);
+    const nameFontPx = 32 * s, nameY = avY + R + nameFontPx + 12 * s, nameMax = w * 0.46, nameMin = 20 * s;
+    // Fit both names first and draw both at the smaller of the two sizes —
+    // otherwise a bout where only one fighter has a long surname puts a
+    // shrunk name next to a full-size one, which looks like a mistake.
+    const name1 = evLastName(f.f1).toUpperCase(), name2 = evLastName(f.f2).toUpperCase();
+    const fitPx = Math.min(
+      evFitNameFont(ctx, name1, nameMax, '800', nameFontPx, nameMin),
+      evFitNameFont(ctx, name2, nameMax, '800', nameFontPx, nameMin)
+    );
+    evDrawName(ctx, f.f1, cxA, nameY, nameMax, '800', fitPx);
+    evDrawName(ctx, f.f2, cxB, nameY, nameMax, '800', fitPx);
   }
   // Same green-tinted aurora blooms as the page background (#bgfx in the
   // main stylesheet: green top-left, blue right, green bottom), baked
@@ -1197,9 +1215,15 @@ const GL_SHEET = (function () {
         avatar(ctx, imgFor.get(f)[1], cxB, avY, heroR, pkInitials(f.f2), ACC);
         ctx.textAlign = 'center'; ctx.font = '800 34px ' + COND; ctx.fillStyle = MUT;
         ctx.fillText('VS', x0 + pairW / 2, avY + 11);
-        const heroNameFontPx = 36, nameY = avY + heroR + heroNameFontPx + 14, nameMax = pairW * 0.52;
-        evDrawName(ctx, f.f1, cxA, nameY, nameMax, '800', heroNameFontPx, 24);
-        evDrawName(ctx, f.f2, cxB, nameY, nameMax, '800', heroNameFontPx, 24);
+        const heroNameFontPx = 36, nameY = avY + heroR + heroNameFontPx + 14, nameMax = pairW * 0.52, heroNameMin = 24;
+        // Same shared-size fit as evBoutCard — see its comment.
+        const heroName1 = evLastName(f.f1).toUpperCase(), heroName2 = evLastName(f.f2).toUpperCase();
+        const heroFitPx = Math.min(
+          evFitNameFont(ctx, heroName1, nameMax, '800', heroNameFontPx, heroNameMin),
+          evFitNameFont(ctx, heroName2, nameMax, '800', heroNameFontPx, heroNameMin)
+        );
+        evDrawName(ctx, f.f1, cxA, nameY, nameMax, '800', heroFitPx);
+        evDrawName(ctx, f.f2, cxB, nameY, nameMax, '800', heroFitPx);
       };
       drawPair(mainEvent, leftX);
       drawPair(coMain, rightX);
