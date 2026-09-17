@@ -1119,8 +1119,12 @@ const GL_SHEET = (function () {
     // shorter than this and never the tall side.)
     // Photo diameter + gap-to-name (heroNameFontPx + 14, see drawPair) + one
     // line of name + bottom pad — one name line now, not two, so this is a
-    // lot shorter than the old 2-line budget was.
-    const heroH = mainEvent ? (heroR * 2 + 92) : 0;
+    // lot shorter than the old 2-line budget was. The centre column (logo +
+    // wordmark + up to 2 title lines at 46px) can run taller than that once
+    // the title got bigger, so this is whichever of the two is taller —
+    // otherwise a 2-line title silently overflows into the row below.
+    const EV_HERO_CENTER_H = 270;
+    const heroH = mainEvent ? Math.max(heroR * 2 + 92, EV_HERO_CENTER_H) : 0;
     const mainCardGrid = restMainCard.length ? evGridDims(restMainCard) : null;
     const prelimsGrid = prelims.length ? evGridDims(prelims) : null;
     // MAIN CARD now labels the whole main-card section from the top (hero
@@ -1190,9 +1194,9 @@ const GL_SHEET = (function () {
         my += lh;
       }
       my += 44;   // extra room below the logo so the event name doesn't crowd it
-      evDrawTitle(ctx, data.name || 'UFC', centerX, my + 32, centerW - 16, '800 32px ' + COND, 35);
+      evDrawTitle(ctx, data.name || 'UFC', centerX, my + 40, centerW - 16, '800 46px ' + COND, 50);
       ctx.textAlign = 'left';
-      cy += heroR * 2 + 92;   // matches heroH's own formula exactly
+      cy += Math.max(heroR * 2 + 92, EV_HERO_CENTER_H);   // matches heroH's own formula exactly
     }
 
     // Draws a grid section, evening out a short last row via evRowX instead
