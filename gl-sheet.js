@@ -635,84 +635,110 @@ const GL_SHEET = (function () {
     }
     return cx;
   }
-  // One bout, poster-style: a numbered header (weight class / bout label centred,
-  // index at left), the two fighters' photos either side of a VS mark, names
-  // beneath, and — this being a pick'em card, not a fight poster — the thing the
-  // reference image doesn't need to show at all: which side the picks says. The
-  // picked fighter always sits on the left with a coloured ring keying confidence
-  // (or, once graded, green/red keying right/wrong); the line under his name
-  // carries the pick itself. A graded card adds one more centred line: the actual
-  // result plus the points it was worth.
-  function pkBoutCard(ctx, p, num, y, w, imgWin, imgLose, big, graded) {
-    const x = 64;
-    const R = big ? 88 : 60;
-    const headY = y + (big ? 30 : 24);
-    ctx.textAlign = 'left'; ctx.font = '800 ' + (big ? 28 : 22) + 'px ' + COND; ctx.fillStyle = MUT;
+  // Sum the widths of a run of segments without drawing them, so a caller can
+  // centre the whole run (drawSegs itself only ever starts from a fixed x).
+  function segsWidth(ctx, segs) {
+    let w = 0;
+    for (const s of segs) { ctx.font = s.f; w += ctx.measureText(s.t).width; }
+    return w;
+  }
+  function drawSegsCentered(ctx, segs, cx, y, maxX) {
+    const tw = segsWidth(ctx, segs);
+    drawSegs(ctx, segs, cx - tw / 2, y, maxX);
+  }
+  // A small badge on the picked fighter's photo — the thing a plain coloured
+  // ring can't say on its own: "this one, specifically, is the pick." Before
+  // grading it's always a check (green); once graded it flips to green/red to
+  // match whether the pick actually won, so the same badge that marked your
+  // pick now marks whether it hit. Skipped for a voided (draw/NC) bout, where
+  // neither reading applies.
+  function pkPickBadge(ctx, cx, cy, r, hit) {
+    const br = Math.max(13, r * 0.36), bx = cx + r * 0.64, by = cy + r * 0.64;
+    ctx.beginPath(); ctx.arc(bx, by, br + 3, 0, Math.PI * 2); ctx.fillStyle = BG; ctx.fill();   // cut against the bg so it pops off the photo
+    ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fillStyle = hit === false ? PK_RED : ACC; ctx.fill();
+    ctx.strokeStyle = '#0b0c0f'; ctx.lineWidth = Math.max(2, br * 0.26); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    if (hit === false) {
+      const d = br * 0.4;
+      ctx.moveTo(bx - d, by - d); ctx.lineTo(bx + d, by + d);
+      ctx.moveTo(bx + d, by - d); ctx.lineTo(bx - d, by + d);
+    } else {
+      ctx.moveTo(bx - br * 0.42, by);
+      ctx.lineTo(bx - br * 0.06, by + br * 0.36);
+      ctx.lineTo(bx + br * 0.46, by - br * 0.34);
+    }
+    ctx.stroke();
+  }
+  // One bout, poster-style and every bout the same size — the reference image
+  // doesn't single out the main event visually either, just labels it, so a
+  // small "MAIN EVENT" tag is all it gets here. Both fighters get a photo
+  // either side of a VS mark; the pick sits on the left with a coloured ring
+  // (confidence pre-grade, right/wrong once graded) plus the check/✗ badge.
+  // One caption line below the names carries the pick pre-grade, or the
+  // actual result once it's in. Fixed height for every row (ROW_H below) —
+  // every font size here is a constant, so nothing needs measuring first.
+  function pkBoutCard(ctx, p, num, y, w, imgWin, imgLose, graded) {
+    const x = 64, R = 42;
+    const headY = y + 20;
+    ctx.textAlign = 'left'; ctx.font = '800 19px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText(String(num).padStart(2, '0'), x, headY);
-    if (p.label) {
-      ctx.textAlign = 'center'; ctx.font = '700 ' + (big ? 22 : 19) + 'px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(clip(ctx, String(p.label).toUpperCase(), w - 220), x + w / 2, headY);
+    const tag = [p.label ? String(p.label).toUpperCase() : '', p.isMain ? 'MAIN EVENT' : ''].filter(Boolean).join('   ·   ');
+    if (tag) {
+      ctx.textAlign = 'center'; ctx.font = '700 16px ' + SANS; ctx.fillStyle = p.isMain ? ACC : MUT;
+      ctx.fillText(clip(ctx, tag, w - 200), x + w / 2, headY);
     }
-    if (big) {
-      ctx.textAlign = 'right'; ctx.font = '800 20px ' + COND; ctx.fillStyle = ACC;
-      ctx.fillText('MAIN EVENT', x + w, headY);
+    if (graded) {
+      const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
+      ctx.textAlign = 'right'; ctx.font = '800 21px ' + COND;
+      ctx.fillStyle = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
+      ctx.fillText(ptsStr, x + w, headY);
     }
 
-    const cxA = x + w * 0.28, cxB = x + w * 0.72;
-    const avY = headY + (big ? 44 : 36) + R;
-    // Missed picks (graded, wrong winner) get a red ring instead of the
-    // confidence colour — right/wrong is the only thing worth flagging once the
-    // fight is over. Voided (draw/NC) picks get a neutral ring either way.
-    const pickCol = graded ? (p.voided ? MUT : (p.winnerHit ? ACC : PK_RED)) : (PK_CONF_COL[p.confidence] || MUT);
-    avatar(ctx, imgWin, cxA, avY, R, pkInitials(p.winner), pickCol);
+    const cxA = x + w * 0.27, cxB = x + w * 0.73;
+    const avY = headY + 18 + R;
+    const hit = p.voided ? null : (graded ? !!p.winnerHit : true);
+    const ringCol = graded ? (p.voided ? MUT : (p.winnerHit ? ACC : PK_RED)) : (PK_CONF_COL[p.confidence] || MUT);
+    avatar(ctx, imgWin, cxA, avY, R, pkInitials(p.winner), ringCol);
     avatar(ctx, imgLose, cxB, avY, R, pkInitials(p.loser), LINE);
-    ctx.textAlign = 'center'; ctx.font = '800 ' + (big ? 40 : 30) + 'px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('VS', x + w / 2, avY + (big ? 15 : 11));
+    if (!p.voided) pkPickBadge(ctx, cxA, avY, R, hit);
+    ctx.textAlign = 'center'; ctx.font = '800 24px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('VS', x + w / 2, avY + 8);
 
-    const nameY = avY + R + (big ? 46 : 36);
-    const nameMax = w * 0.42;
-    ctx.font = '700 ' + (big ? 32 : 25) + 'px ' + COND;
+    const nameY = avY + R + 32;
+    const nameMax = w * 0.4;
+    ctx.font = '700 22px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText(clip(ctx, (p.winner || '').toUpperCase(), nameMax), cxA, nameY);
     ctx.fillStyle = '#c8ccd2'; ctx.fillText(clip(ctx, (p.loser || '').toUpperCase(), nameMax), cxB, nameY);
 
-    // pick line, centred under the picked fighter — confidence + method pre-grade,
-    // or a plain "the pick" caption post-grade (the ring already says right/wrong).
-    const pickY = nameY + (big ? 34 : 28);
-    ctx.font = '600 ' + (big ? 23 : 20) + 'px ' + SANS;
-    if (graded) {
-      ctx.fillStyle = MUT;
-      ctx.fillText(clip(ctx, 'the pick', nameMax), cxA, pickY);
-    } else {
-      ctx.fillStyle = pickCol;
-      ctx.fillText(clip(ctx, p.confidence + ' · ' + pkMethodLabel(p), nameMax), cxA, pickY);
-    }
-
-    if (!graded) return pickY + (big ? 30 : 24);
-
-    // graded: one centred line with the actual result, then points far right
-    const resY = pickY + (big ? 46 : 38);
-    ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(x, resY - (big ? 30 : 24)); ctx.lineTo(x + w, resY - (big ? 30 : 24)); ctx.stroke();
-    const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
-    const ptsCol = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
-    ctx.textAlign = 'right'; ctx.font = '800 ' + (big ? 36 : 30) + 'px ' + COND; ctx.fillStyle = ptsCol;
-    ctx.fillText(ptsStr, x + w, resY + 6);
-    const rightLimit = x + w - ctx.measureText(ptsStr).width - 26;
-    ctx.textAlign = 'left';
-    if (p.voided) {
-      drawSegs(ctx, [{ t: 'Draw / No Contest', f: '700 26px ' + COND, c: TXT }], x, resY + 6, rightLimit);
+    // one caption line, centred on the whole bout: the pick pre-grade, the
+    // actual result once graded.
+    const lineY = nameY + 26;
+    ctx.textAlign = 'left';   // drawSegs positions from a fixed x, so undo the centring above
+    if (!graded) {
+      ctx.textAlign = 'center'; ctx.font = '600 18px ' + SANS; ctx.fillStyle = ringCol;
+      ctx.fillText(clip(ctx, p.confidence + ' pick · ' + pkMethodLabel(p), w - 160), x + w / 2, lineY);
+      ctx.textAlign = 'left';
+    } else if (p.voided) {
+      ctx.textAlign = 'center'; ctx.font = '600 18px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText('Draw / No Contest', x + w / 2, lineY);
+      ctx.textAlign = 'left';
     } else {
       const win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
       const seg = [
-        { t: win, f: '700 26px ' + COND, c: TXT },
-        { t: ' def. ', f: '400 20px ' + SANS, c: MUT },
-        { t: los, f: '400 22px ' + SANS, c: '#c8ccd2' },
-        { t: p.winnerHit ? '   ✓ winner' : '   ✗ winner', f: '700 20px ' + COND, c: p.winnerHit ? ACC : PK_RED },
+        { t: win, f: '700 19px ' + COND, c: TXT },
+        { t: ' def. ', f: '400 15px ' + SANS, c: MUT },
+        { t: los, f: '400 16px ' + SANS, c: '#c8ccd2' },
       ];
-      if (p.winnerHit && p.methodHit) seg.push({ t: ' · method ✓', f: '700 20px ' + COND, c: ACC });
-      drawSegs(ctx, seg, x, resY + 6, rightLimit);
+      drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
-    return resY + (big ? 20 : 16);
+    return y + ROW_H;
   }
+  // Every bout draws at the same fixed height, so the total card height is
+  // just this times the bout count — see pkBoutCard's own note on why fixed
+  // heights are safe here. One height for both graded and ungraded cards:
+  // the caption line under the names carries either the pick or the result,
+  // never both, so it never needs extra room post-grade.
+  const ROW_H = 190;
   async function drawPickem(data) {
     await fontsReady();
     const logo = await loadBrandLogo();
@@ -720,10 +746,6 @@ const GL_SHEET = (function () {
     const n = picks.length || 1;
     const graded = !!data.graded;
     const title = pkPossessive(data.name) + (graded ? ' Results' : ' Picks');
-
-    const mainIdx = picks.findIndex(p => p.isMain);
-    const main = mainIdx >= 0 ? picks[mainIdx] : null;
-    const rest = mainIdx >= 0 ? picks.filter((_, i) => i !== mainIdx) : picks;
 
     const cv = document.createElement('canvas');
     cv.width = W;
@@ -737,16 +759,8 @@ const GL_SHEET = (function () {
     const divY = legendY + (graded ? 22 : 24);
     const listTop = divY + (graded ? 22 : 26);
 
-    // Fixed per-bout heights (font sizes are constants, so these are deterministic —
-    // no need to measure before we know the canvas height). Main event runs bigger
-    // photos and a bit more air; a graded card adds the result line under every bout.
-    const mainH = graded ? 456 : 380;
-    const regH = graded ? 336 : 264;
-    const sectionH = (main && rest.length) ? 60 : 0;
     const footerBlockH = graded ? 88 : 172;
-    const CH = Math.max(1080, Math.round(
-      listTop + (main ? mainH : 0) + sectionH + rest.length * regH + footerBlockH
-    ));
+    const CH = Math.round(listTop + n * ROW_H + footerBlockH);
     cv.height = CH;                 // resizing clears the canvas + resets state
     ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
@@ -778,27 +792,15 @@ const GL_SHEET = (function () {
     // Load every fighter's photo up front — winner slugs come from the payload,
     // loser slugs don't exist there (sharePayload only tracks the pick), so derive
     // them the same way meta() does.
-    const orderedPicks = (main ? [main] : []).concat(rest);
-    const imgPairs = await Promise.all(orderedPicks.map(p => Promise.all([
+    const imgPairs = await Promise.all(picks.map(p => Promise.all([
       loadImg(p.winnerSlug),
       loadImg((typeof nameToSlug === 'function' && p.loser) ? nameToSlug(p.loser) : null),
     ])));
 
     let ry = listTop;
-    if (main) {
-      pkBoutCard(ctx, main, 1, ry, W - 128, imgPairs[0][0], imgPairs[0][1], true, graded);
-      ry += mainH;
-    }
-    if (sectionH) {
-      ctx.textAlign = 'left'; ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
-      ctx.fillText('THE CARD', 64, ry + 30);
-      ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, ry + sectionH - 14); ctx.lineTo(W - 64, ry + sectionH - 14); ctx.stroke();
-      ry += sectionH;
-    }
-    rest.forEach((p, i) => {
-      const imgs = imgPairs[(main ? 1 : 0) + i];
-      pkBoutCard(ctx, p, (main ? 2 : 1) + i, ry, W - 128, imgs[0], imgs[1], false, graded);
-      ry += regH;
+    picks.forEach((p, i) => {
+      pkBoutCard(ctx, p, i + 1, ry, W - 128, imgPairs[i][0], imgPairs[i][1], graded);
+      ry += ROW_H;
     });
 
     // Points-at-stake footer for the picks card; the results card shows its total up top.
