@@ -1007,16 +1007,46 @@ const GL_SHEET = (function () {
   // centred inside), so MAIN CARD / PRELIMS read as GillyLab UI rather than
   // a plain text label with a rule under it.
   const EV_BAR_H = 56, EV_BAR_GAP = 24;
-  function evSectionBar(ctx, y, label) {
+  function evSectionBar(ctx, y, label, borderColor) {
     const x = 64, w = W - 128, h = EV_BAR_H;
     const g = ctx.createLinearGradient(0, y, 0, y + h);
     g.addColorStop(0, 'rgba(0,230,104,0.09)'); g.addColorStop(1, 'rgba(0,230,104,0.03)');
     ctx.fillStyle = g; roundRect(ctx, x, y, w, h, 8); ctx.fill();
-    ctx.strokeStyle = 'rgba(0,230,104,0.35)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = borderColor || 'rgba(0,230,104,0.35)'; ctx.lineWidth = 1;
     roundRect(ctx, x, y, w, h, 8); ctx.stroke();
     ctx.textAlign = 'center'; ctx.font = '700 22px ' + COND; ctx.fillStyle = TXT;
     ctx.fillText(label, W / 2, y + h / 2 + 8);
     ctx.textAlign = 'left';
+  }
+  // The event title, two-toned: the first word (e.g. "UFC") in TXT, every
+  // word after it (e.g. "331", or "FIGHT NIGHT: ..." for a non-numbered
+  // card) in ACC — regardless of which of the (up to 2) wrapped lines a
+  // given word lands on, since the split is by word index, not by line.
+  // Each line is measured and centred as a whole so mixed-color words don't
+  // throw off centring the way per-word centring would.
+  function evDrawTitle(ctx, text, cx, y0, maxW, font, lineH) {
+    ctx.font = font;
+    const words = String(text || '').toUpperCase().split(/\s+/).filter(Boolean);
+    const lines = [];
+    let cur = [], curW = 0;
+    words.forEach((w, i) => {
+      const wSpaceW = ctx.measureText(w + ' ').width;
+      if (cur.length && curW + ctx.measureText(w).width > maxW) { lines.push(cur); cur = []; curW = 0; }
+      cur.push(i); curW += wSpaceW;
+    });
+    if (cur.length) lines.push(cur);
+    lines.slice(0, 2).forEach((idxs, li) => {
+      const lineText = idxs.map(i => words[i]).join(' ');
+      let x = cx - ctx.measureText(lineText).width / 2;
+      ctx.textAlign = 'left';
+      idxs.forEach((wi) => {
+        const word = words[wi];
+        ctx.fillStyle = wi === 0 ? TXT : ACC;
+        ctx.fillText(word, x, y0 + li * lineH);
+        x += ctx.measureText(word + ' ').width;
+      });
+    });
+    ctx.textAlign = 'center';
   }
   // Base row height at s=1 — 2 photo diameters' worth of vertical room isn't
   // needed here (only one row of photos), but 2 NAME lines are always
@@ -1049,21 +1079,25 @@ const GL_SHEET = (function () {
     const fights = (data.fights || []).filter(f => f && f.f1 && f.f2);
     const { mainEvent, coMain, restMainCard, prelims } = evGroups(fights);
 
-    const heroTop = 56, heroR = 72, heroVsGap = 56;
+    const topMargin = 56, heroR = 72, heroVsGap = 56;
     // Hero row height: photo diameter + gap to the fighter-name block + 2
     // reserved name lines (see evDrawName) + bottom padding. Fixed, like
     // every other row height in this module — the fonts inside it are
     // constants. (The centre column — logo, wordmark, event name — is
     // shorter than this and never the tall side.)
-    const heroH = mainEvent ? (heroTop + heroR * 2 + 44 + 30 * 2 + 40) : 0;
+    const heroH = mainEvent ? (heroR * 2 + 44 + 30 * 2 + 40) : 0;
     const mainCardGrid = restMainCard.length ? evGridDims(restMainCard) : null;
     const prelimsGrid = prelims.length ? evGridDims(prelims) : null;
-    // Each grid section gets its own MAIN CARD / PRELIMS bar directly above
-    // it (EV_BAR_H + EV_BAR_GAP), replacing the old plain-text-plus-rule
-    // divider — no footer any more, just a small close-out margin instead.
+    // MAIN CARD now labels the whole main-card section from the top (hero
+    // included), matching the reference poster — not just the rest-of-
+    // main-card grid below the hero, which is where the first pass put it.
+    const showMainCardBar = !!(mainEvent || coMain || restMainCard.length);
+    // No footer any more, just a small close-out margin instead.
     const bottomPad = 48;
-    const bodyH = heroH
-      + (mainCardGrid ? EV_BAR_H + EV_BAR_GAP + mainCardGrid.h : 0)
+    const bodyH = topMargin
+      + (showMainCardBar ? EV_BAR_H + EV_BAR_GAP : 0)
+      + heroH
+      + (mainCardGrid ? mainCardGrid.h : 0)
       + (prelimsGrid ? EV_BAR_H + EV_BAR_GAP + prelimsGrid.h : 0);
     const CH = Math.round(bodyH + bottomPad);
 
@@ -1077,7 +1111,11 @@ const GL_SHEET = (function () {
     const imgPairs = await Promise.all(allFights.map(f => Promise.all([loadImg(nameToSlug(f.f1)), loadImg(nameToSlug(f.f2))])));
     const imgFor = new Map(allFights.map((f, i) => [f, imgPairs[i]]));
 
-    let cy = heroTop;
+    let cy = topMargin;
+    if (showMainCardBar) {
+      evSectionBar(ctx, cy, 'MAIN CARD', '#fff');
+      cy += EV_BAR_H + EV_BAR_GAP;
+    }
     if (mainEvent) {
       // Main event and co-main sit either side of the brand mark and event
       // name/date — the "separated by the gillylab logo" structure asked
@@ -1114,17 +1152,13 @@ const GL_SHEET = (function () {
         my += lh;
       }
       brandCentered(ctx, centerX, my + 34, 24);
-      my += 34 + 20;
-      ctx.font = '800 28px ' + COND; ctx.fillStyle = TXT;
-      const nameLines = wrap(ctx, data.name || 'UFC', centerW - 16).slice(0, 2);
-      nameLines.forEach((line, i) => ctx.fillText(line, centerX, my + 30 + i * 32));
+      my += 34 + 44;   // extra room below "gillylab" so the event name doesn't crowd it
+      evDrawTitle(ctx, data.name || 'UFC', centerX, my + 30, centerW - 16, '800 28px ' + COND, 32);
       ctx.textAlign = 'left';
       cy += heroR * 2 + 44 + 30 * 2 + 40;   // matches heroH's own formula exactly
     }
 
     if (mainCardGrid) {
-      evSectionBar(ctx, cy, 'MAIN CARD');
-      cy += EV_BAR_H + EV_BAR_GAP;
       restMainCard.forEach((f, i) => {
         const col = i % mainCardGrid.cols, row = Math.floor(i / mainCardGrid.cols);
         const bx = 64 + col * (mainCardGrid.colW + mainCardGrid.gap), by = cy + row * mainCardGrid.rowH;
@@ -1134,7 +1168,7 @@ const GL_SHEET = (function () {
       cy += mainCardGrid.h;
     }
     if (prelimsGrid) {
-      evSectionBar(ctx, cy, 'PRELIMS');
+      evSectionBar(ctx, cy, 'PRELIMS', '#fff');
       cy += EV_BAR_H + EV_BAR_GAP;
       prelims.forEach((f, i) => {
         const col = i % prelimsGrid.cols, row = Math.floor(i / prelimsGrid.cols);
