@@ -130818,13 +130818,14 @@ const GL_SHEET = (function () {
       // logo the way the first pass had it.
       ctx.textAlign = 'center';
       let my = cy;
+      brandCentered(ctx, centerX, my + 24, 24);
+      my += 24 + 18;   // room below "gillylab" before the logo
       if (logo && logo.width) {
         const lh = 56, lw = logo.width * (lh / logo.height);
         ctx.drawImage(logo, centerX - lw / 2, my, lw, lh);
         my += lh;
       }
-      brandCentered(ctx, centerX, my + 34, 24);
-      my += 34 + 44;   // extra room below "gillylab" so the event name doesn't crowd it
+      my += 44;   // extra room below the logo so the event name doesn't crowd it
       evDrawTitle(ctx, data.name || 'UFC', centerX, my + 30, centerW - 16, '800 28px ' + COND, 32);
       ctx.textAlign = 'left';
       cy += heroR * 2 + 44 + 30 * 2 + 40;   // matches heroH's own formula exactly
