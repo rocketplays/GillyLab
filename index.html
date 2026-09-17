@@ -130359,11 +130359,9 @@ const GL_SHEET = (function () {
   // layout. Row height scales the same way (see ROW_H below), so every
   // font size here is still a constant relative to its own row — nothing
   // needs measuring before the canvas height is known.
-  function pkBoutCard(ctx, p, num, x, y, w, imgWin, imgLose, graded, s) {
+  function pkBoutCard(ctx, p, x, y, w, imgWin, imgLose, graded, s) {
     const R = 42 * s;
     const headY = y + 20 * s;
-    ctx.textAlign = 'left'; ctx.font = '800 ' + (19 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText(String(num).padStart(2, '0'), x, headY);
     const tag = [p.label ? String(p.label).toUpperCase() : '', p.isMain ? 'MAIN EVENT' : ''].filter(Boolean).join('   ·   ');
     if (tag) {
       ctx.textAlign = 'center'; ctx.font = '700 ' + (16 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = p.isMain ? ACC : MUT;
@@ -130397,8 +130395,11 @@ const GL_SHEET = (function () {
     const lineY = nameY + 26 * s;
     ctx.textAlign = 'left';   // drawSegs positions from a fixed x, so undo the centring above
     if (!graded) {
+      // Confidence is already shown by the ring around the picked fighter's
+      // photo, so this line is just the method — no need to repeat "High/Med/
+      // Low pick" in text too.
       ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
-      ctx.fillText(clip(ctx, p.confidence + ' pick · ' + pkMethodLabel(p), w - 40 * s), x + w / 2, lineY);
+      ctx.fillText(clip(ctx, pkMethodLabel(p), w - 40 * s), x + w / 2, lineY);
       ctx.textAlign = 'left';
     } else if (p.voided) {
       ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
@@ -130513,10 +130514,10 @@ const GL_SHEET = (function () {
     ])));
     const imgFor = new Map(picks.map((p, i) => [p, imgPairs[i]]));
 
-    let cy = listTop, num = 1;
+    let cy = listTop;
     if (mainEvent) {
       const imgs = imgFor.get(mainEvent);
-      pkBoutCard(ctx, mainEvent, num++, 64, cy, W - 128, imgs[0], imgs[1], graded, 1);
+      pkBoutCard(ctx, mainEvent, 64, cy, W - 128, imgs[0], imgs[1], graded, 1);
       cy += ROW_H;
     }
     if (mainCardGrid) {
@@ -130524,7 +130525,7 @@ const GL_SHEET = (function () {
         const col = i % mainCardGrid.cols, row = Math.floor(i / mainCardGrid.cols);
         const bx = 64 + col * (mainCardGrid.colW + gap), by = cy + row * mainCardGrid.rowH;
         const imgs = imgFor.get(p);
-        pkBoutCard(ctx, p, num++, bx, by, mainCardGrid.colW, imgs[0], imgs[1], graded, mainCardGrid.s);
+        pkBoutCard(ctx, p, bx, by, mainCardGrid.colW, imgs[0], imgs[1], graded, mainCardGrid.s);
       });
       cy += mainCardGrid.h;
     }
@@ -130537,7 +130538,7 @@ const GL_SHEET = (function () {
         const col = i % prelimsGrid.cols, row = Math.floor(i / prelimsGrid.cols);
         const bx = 64 + col * (prelimsGrid.colW + gap), by = cy + row * prelimsGrid.rowH;
         const imgs = imgFor.get(p);
-        pkBoutCard(ctx, p, num++, bx, by, prelimsGrid.colW, imgs[0], imgs[1], graded, prelimsGrid.s);
+        pkBoutCard(ctx, p, bx, by, prelimsGrid.colW, imgs[0], imgs[1], graded, prelimsGrid.s);
       });
       cy += prelimsGrid.h;
     }
