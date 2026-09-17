@@ -2842,6 +2842,17 @@
     .gl-sheet-preview img { display: block; width: 100%; height: auto; }
     .gl-sheet-btn { display: block; width: 100%; margin-top: 0.65rem; background: rgba(0, 230, 104, 0.10); border: 1px solid var(--accent); color: var(--accent); font-family: inherit; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; transition: background 0.15s, color 0.15s; }
     .gl-sheet-btn:hover { background: var(--accent); color: #0e0f13; }
+    /* "Share this card" on the featured fight card and every carousel card:
+       both sit as a sibling AFTER the last .fight-card-section, which has
+       its own 2rem side padding (0.75rem on mobile, see the 768px query
+       below) — so a plain full-width .gl-sheet-btn reads as wider than the
+       fight rows above it, with no matching side inset, and .fight-card-
+       section's own 2rem BOTTOM padding plus this button's top margin
+       stacked into an oversized gap below the final fight. This mirrors
+       .fight-card-section's own side padding as margin instead (so the
+       button's edges line up with the fight rows') and drops the redundant
+       top gap, since the section it follows already padded that space. */
+    .gl-sheet-btn-card { width: calc(100% - 4rem); margin: 0 2rem 1.5rem; }
     .pl-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 30vh; z-index: 90; background: #1c1f26; border: 1px solid #ff6a5e; color: #ffd9d5; padding: 9px 14px; border-radius: 8px; font-size: 0.76rem; max-width: 90vw; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .pl-toast.show { opacity: 1; }
     @media (max-width: 600px) { .pl-foot { gap: 0.6rem; } .pl-leg-pick { font-size: 0.74rem; } .pl-bar-right { gap: 10px; } }
@@ -3289,6 +3300,7 @@
 
       /* ── Fight rows ── */
       .fight-card-section { padding: 0 0.75rem 1.5rem; }
+      .gl-sheet-btn-card { width: calc(100% - 1.5rem); margin: 0 0.75rem 1.5rem; }
       /* The carousel cards carry their own inline padding (0 2rem, set in
          renderCarousel()) which — unlike .fight-card-section above — isn't
          reduced for narrow viewports. That leaves noticeably less usable
@@ -130619,8 +130631,14 @@ const GL_SHEET = (function () {
   // baseline) around the given baseline y.
   function evNameGradient(ctx, y, fontPx) {
     const g = ctx.createLinearGradient(0, y - fontPx * 0.78, 0, y + fontPx * 0.26);
+    // '#cbd6d0' at the baseline read as barely-off-white — practically flat
+    // at name-text sizes. Holding pure white through the upper half, then
+    // dropping hard into a distinctly darker slate-green for the last
+    // stretch, gives the "engraved metal" look actual contrast instead of
+    // a gradient so subtle it disappeared.
     g.addColorStop(0, '#ffffff');
-    g.addColorStop(1, '#cbd6d0');
+    g.addColorStop(0.55, '#ffffff');
+    g.addColorStop(1, '#7e9188');
     return g;
   }
   // Just the last name, big and on one line — matching the reference
@@ -133619,7 +133637,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       stashEventCard(evt);
       container.innerHTML = '<div class="' + specialClass + '" style="max-width:var(--cmax);margin:0 auto;position:relative;' + (specialClass ? 'border-radius:10px;' : '') + '">' + out +
-        '<button type="button" class="gl-sheet-btn" style="margin-top:1rem;" onclick="shareEventCard(\'' + escJsAttr(evt.slug) + '\')">↓ Share this card</button>' +
+        '<button type="button" class="gl-sheet-btn gl-sheet-btn-card" onclick="shareEventCard(\'' + escJsAttr(evt.slug) + '\')">↓ Share this card</button>' +
       '</div>';
 
     } else if (evt.carouselIdx >= 0) {
@@ -139250,7 +139268,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             '</div>' +
           '</div>' +
           sectionsHTML +
-          '<button type="button" class="gl-sheet-btn" style="margin-top:1rem;" onclick="event.stopPropagation();shareEventCard(\'' + escJsAttr(evt.slug) + '\')">↓ Share this card</button>' +
+          '<button type="button" class="gl-sheet-btn gl-sheet-btn-card" onclick="event.stopPropagation();shareEventCard(\'' + escJsAttr(evt.slug) + '\')">↓ Share this card</button>' +
         '</div>' +
       '</div>');
     }

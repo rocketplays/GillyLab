@@ -947,8 +947,14 @@ const GL_SHEET = (function () {
   // baseline) around the given baseline y.
   function evNameGradient(ctx, y, fontPx) {
     const g = ctx.createLinearGradient(0, y - fontPx * 0.78, 0, y + fontPx * 0.26);
+    // '#cbd6d0' at the baseline read as barely-off-white — practically flat
+    // at name-text sizes. Holding pure white through the upper half, then
+    // dropping hard into a distinctly darker slate-green for the last
+    // stretch, gives the "engraved metal" look actual contrast instead of
+    // a gradient so subtle it disappeared.
     g.addColorStop(0, '#ffffff');
-    g.addColorStop(1, '#cbd6d0');
+    g.addColorStop(0.55, '#ffffff');
+    g.addColorStop(1, '#7e9188');
     return g;
   }
   // Just the last name, big and on one line — matching the reference
