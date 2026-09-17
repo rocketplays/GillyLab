@@ -130469,7 +130469,14 @@ const GL_SHEET = (function () {
     // to square while still keeping every fighter's photo legible. `s` (see
     // pkBoutCard) shrinks every size in a bout card to fit its column.
     function gridDims(arr) {
-      const cols = arr.length <= 2 ? 1 : 2;
+      // <=1 (not <=2) — a section with exactly 2 bouts should still tile
+      // side by side, not stack. The <=2 threshold this replaced made sense
+      // when it ran once over the whole card (a 2-bout card genuinely reads
+      // better as one full-width column), but now that it runs per section
+      // (main card, prelims) a 2-bout section is common and stacking it
+      // vertically is exactly the tall, un-square shape splitting into rows
+      // was meant to avoid.
+      const cols = arr.length <= 1 ? 1 : 2;
       const rows = Math.ceil(arr.length / cols);
       const colW = (W - 128 - gap * (cols - 1)) / cols;
       const s = Math.min(1, colW / 952);
