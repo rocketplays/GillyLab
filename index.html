@@ -136566,6 +136566,284 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
+    // UFC 331: Van vs. Pantoja 2 -- Los Angeles, CA, 2026-09-19. Method + round
+    // props + double chance for the card's 12 fights (Moicano vs Ortega was
+    // scrapped -- not entered), sourced from fightodds.io per-fight /odds
+    // pages (props grid read via the page's own table DOM -- each row's
+    // cell index matches the header's book-column index exactly, so there
+    // is no column-position guessing). ML/totals already fully live via
+    // data/odds.json for every fight except Freire vs Choi (BetMGM + Bovada
+    // ML gap, plus BetMGM/Bovada/FanDuel missing on the 2.5 rounds line).
+    // Only entering books/markets that genuinely show a value on
+    // fightodds.io -- coverage is uneven per book across method/round/
+    // double-chance combos, never inferred. f1/f2 assigned per pairKey()'s
+    // alphabetical-last-name rule.
+    'pantoja|van': {
+      rounds: 5,
+      method: {
+        betonlineag: { f1: { ko: 700, sub: 270, dec: 400 }, f2: { ko: 175, sub: 2000, dec: 325 } },
+        bovada:      { f1: { ko: 1100, sub: 275, dec: 450 }, f2: { ko: 185, sub: 2000, dec: 350 } },
+        draftkings:  { f1: { ko: 900, sub: 275, dec: 425 }, f2: { ko: 165, sub: 1800, dec: 350 } },
+        fanduel:     { f1: { ko: 1200, sub: 280, dec: 460 }, f2: { ko: 185, sub: 2000, dec: 370 } },
+        betmgm:      { f1: { ko: 850, sub: 275, dec: 425 }, f2: { ko: 150, sub: 1800, dec: 350 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 250, subDec: 130 }, f2: { koDec: -120, subDec: 300 } },
+        bovada:      { f1: { koDec: 300, koSub: 195, subDec: 135 }, f2: { koDec: -120, koSub: 160, subDec: 285 } },
+        draftkings:  { f1: { koDec: 275, koSub: 200, subDec: 130 }, f2: { koDec: -125, koSub: 150, subDec: 275 } },
+        fanduel:     { f1: { koDec: 300, koSub: 200, subDec: 130 }, f2: { koDec: -125, koSub: 155, subDec: 300 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 600, r2: 900, r3: 1400, r4: 1800, r5: 2500 }, f2: { r1: 900, r2: 900, r3: 900, r4: 900, r5: 900 } },
+        draftkings:  { f1: { r1: 600, r2: 900, r3: 1400, r4: 1800, r5: 2500 }, f2: { r1: 650, r2: 800, r3: 900, r4: 1100, r5: 1400 } },
+        fanduel:     { f1: { r1: 750, r2: 1000, r3: 1500, r4: 1900, r5: 2200 }, f2: { r1: 600, r2: 900, r3: 1200, r4: 1500, r5: 2200 } },
+        betmgm:      { f1: { r1: 650, r2: 900, r3: 1000, r4: 1750, r5: 2500 }, f2: { r1: 500, r2: 700, r3: 1000, r4: 1450, r5: 2200 } },
+      },
+    },
+    'ruffy|tsarukyan': {
+      rounds: 5,
+      method: {
+        betonlineag: { f1: { ko: 350, sub: 3300, dec: 825 }, f2: { ko: 250, sub: 175, dec: 325 } },
+        bovada:      { f1: { ko: 390, sub: 3300, dec: 1200 }, f2: { ko: 225, sub: 225, dec: 350 } },
+        draftkings:  { f1: { ko: 380, sub: 3500, dec: 1200 }, f2: { ko: 200, sub: 200, dec: 350 } },
+        fanduel:     { f1: { ko: 390, sub: 3000, dec: 1300 }, f2: { ko: 220, sub: 230, dec: 360 } },
+        betmgm:      { f1: { ko: 375, sub: 3500, dec: 1200 }, f2: { ko: 175, sub: 200, dec: 350 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 285, subDec: 700 }, f2: { koDec: 130, subDec: 105 } },
+        bovada:      { f1: { koDec: 270, koSub: 340, subDec: 900 }, f2: { koDec: -105, koSub: -145, subDec: -105 } },
+        draftkings:  { f1: { koDec: 265, koSub: 350, subDec: 850 }, f2: { koDec: -115, koSub: -150, subDec: -115 } },
+        fanduel:     { f1: { koDec: 270, koSub: 330, subDec: 950 }, f2: { koDec: -110, koSub: -150, subDec: -105 } },
+        betmgm:      { f1: { koSub: 350 }, f2: { koSub: -165 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 800, r2: 1100, r3: 1400, r4: 2000, r5: 2500 }, f2: { r1: 375, r2: 550, r3: 700, r4: 1000, r5: 1400 } },
+        draftkings:  { f1: { r1: 900, r2: 1400, r3: 1800, r4: 3000, r5: 4000 }, f2: { r1: 320, r2: 450, r3: 600, r4: 900, r5: 1600 } },
+        fanduel:     { f1: { r1: 1000, r2: 1400, r3: 1900, r4: 3000, r5: 4000 }, f2: { r1: 410, r2: 550, r3: 700, r4: 1000, r5: 1500 } },
+        betmgm:      { f1: { r1: 1050, r2: 1450, r3: 1900, r4: 2800, r5: 5000 }, f2: { r1: 275, r2: 425, r3: 575, r4: 900, r5: 1550 } },
+      },
+    },
+    // Patricio "Pitbull" Freire vs Doo Ho Choi -- odds.json only had
+    // betonlineag/draftkings/betrivers/fanduel live; BetMGM + Bovada ML and
+    // the 2.5-rounds total (Bovada/BetMGM/FanDuel) were gaps, filled from
+    // fightodds.io's CURRENT column. NOTE: pairKey uses odds.json's own
+    // fighter-name text ("Patricio Pitbull"), so the key is choi|pitbull,
+    // not choi|freire.
+    'choi|pitbull': {
+      rounds: 3,
+      ml: {
+        betmgm: { f1: -275, f2: 225 },
+        bovada: { f1: -270, f2: 220 },
+      },
+      totals: {
+        '2.5': {
+          fanduel: { over: -102, under: -126 },
+          betmgm:  { over: -110, under: -120 },
+          bovada:  { over: -110, under: -120 },
+        },
+      },
+      method: {
+        betonlineag: { f1: { ko: 120, sub: 850, dec: 200 }, f2: { ko: 850, sub: 1300, dec: 475 } },
+        bovada:      { f1: { ko: 150, sub: 875, dec: 210 }, f2: { ko: 850, sub: 1000, dec: 465 } },
+        draftkings:  { f1: { ko: 130, sub: 900, dec: 215 }, f2: { ko: 800, sub: 1100, dec: 500 } },
+        fanduel:     { f1: { ko: 155, sub: 1000, dec: 220 }, f2: { ko: 900, sub: 1100, dec: 500 } },
+        betmgm:      { f1: { ko: 125, sub: 850, dec: 200 }, f2: { ko: 850, sub: 1100, dec: 450 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -275, subDec: 140 }, f2: { koDec: 275, subDec: 325 } },
+        bovada:      { f1: { koDec: -225, koSub: 115, subDec: 150 }, f2: { koDec: 275, koSub: 525, subDec: 350 } },
+        draftkings:  { f1: { koDec: -260, koSub: 110, subDec: 145 }, f2: { koDec: 275, koSub: 500, subDec: 300 } },
+        fanduel:     { f1: { koDec: -210, koSub: 110, subDec: 155 }, f2: { koDec: 300, koSub: 490, subDec: 330 } },
+        betmgm:      { f1: { koSub: 100 }, f2: { koSub: 500 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 275, r2: 375, r3: 625 }, f2: { r1: 1200, r2: 1800, r3: 2500 } },
+        draftkings:  { f1: { r1: 275, r2: 450, r3: 650 }, f2: { r1: 900, r2: 1400, r3: 2200 } },
+        fanduel:     { f1: { r1: 290, r2: 600, r3: 1000 }, f2: { r1: 1000, r2: 1700, r3: 2200 } },
+        betmgm:      { f1: { r1: 225, r2: 500, r3: 900 }, f2: { r1: 850, r2: 1650, r3: 2500 } },
+      },
+    },
+    'sharaf|steveson': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 2000, sub: 3000, dec: 1500 }, f2: { ko: -450, sub: 425, dec: 1000 } },
+        bovada:      { f1: { ko: 2200, sub: 4000, dec: 2500 }, f2: { ko: -450, sub: 380, dec: 1600 } },
+        draftkings:  { f1: { ko: 2000, sub: 3500, dec: 2800 }, f2: { ko: -550, sub: 500, dec: 1800 } },
+        fanduel:     { f1: { ko: 2200, sub: 3500, dec: 2700 }, f2: { ko: -340, sub: 500, dec: 1800 } },
+        betmgm:      { f1: { ko: 2200, sub: 4000, dec: 2500 }, f2: { ko: -625, sub: 350, dec: 1600 } },
+      },
+      doubleChance: {
+        bovada:      { f1: { koDec: 1100, koSub: 1400, subDec: 1600 }, f2: { koDec: -600, koSub: -1600, subDec: 275 } },
+        draftkings:  { f1: { koDec: 1200, koSub: 1400, subDec: 1600 }, f2: { koDec: -700, koSub: -1600, subDec: 380 } },
+        fanduel:     { f1: { koDec: 1200, koSub: 1500, subDec: 1700 }, f2: { koDec: -450, koSub: -1000, subDec: 380 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 2000, r2: 5000, r3: 7500 }, f2: { r1: -330, r2: 550, r3: 2200 } },
+        fanduel:    { f1: { r1: 2200, r2: 5000, r3: 7500 }, f2: { r1: -270, r2: 470, r3: 1900 } },
+        betmgm:     { f1: { r1: 1500, r2: 5000, r3: 10000 }, f2: { r1: -1000, r2: 575, r3: 2800 } },
+      },
+    },
+    'baraniewski|menifield': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -150, sub: 850, dec: 850 }, f2: { ko: 350, sub: 975, dec: 750 } },
+        bovada:      { f1: { ko: -175, sub: 900, dec: 1100 }, f2: { ko: 400, sub: 950, dec: 800 } },
+        draftkings:  { f1: { ko: -170, sub: 900, dec: 1100 }, f2: { ko: 400, sub: 1000, dec: 800 } },
+        fanduel:     { f1: { ko: -135, sub: 850, dec: 1100 }, f2: { ko: 480, sub: 1000, dec: 900 } },
+        betmgm:      { f1: { ko: -175, sub: 850, dec: 1000 }, f2: { ko: 400, sub: 900, dec: 750 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -225, subDec: 425 }, f2: { koDec: 225, subDec: 400 } },
+        bovada:      { f1: { koDec: -215, koSub: -215, subDec: 475 }, f2: { koDec: 275, koSub: 315, subDec: 450 } },
+        draftkings:  { f1: { koDec: -185, koSub: -200, subDec: 475 }, f2: { koDec: 250, koSub: 300, subDec: 425 } },
+        fanduel:     { f1: { koDec: -175, koSub: -195, subDec: 460 }, f2: { koDec: 270, koSub: 290, subDec: 450 } },
+        betmgm:      { f1: { koSub: -220 }, f2: { koSub: 300 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: -110, r2: 500, r3: 2200 }, f2: { r1: 400, r2: 1000, r3: 2200 } },
+        draftkings:  { f1: { r1: -115, r2: 550, r3: 2200 }, f2: { r1: 450, r2: 1100, r3: 2800 } },
+        fanduel:     { f1: { r1: -105, r2: 600, r3: 2700 }, f2: { r1: 500, r2: 1400, r3: 2700 } },
+        betmgm:      { f1: { r1: -180, r2: 575, r3: 2800 }, f2: { r1: 275, r2: 1650, r3: 6600 } },
+      },
+    },
+    'jourdain|vera': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1000, sub: 650, dec: -130 }, f2: { ko: 550, sub: 900, dec: 400 } },
+        bovada:      { f1: { ko: 1000, sub: 650, dec: -125 }, f2: { ko: 500, sub: 1000, dec: 500 } },
+        draftkings:  { f1: { ko: 1100, sub: 700, dec: -135 }, f2: { ko: 500, sub: 1000, dec: 500 } },
+        fanduel:     { f1: { ko: 1300, sub: 700, dec: -120 }, f2: { ko: 550, sub: 1100, dec: 550 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -160, subDec: -200 }, f2: { koDec: 225, subDec: 290 } },
+        bovada:      { f1: { koDec: -170, koSub: 400, subDec: -205 }, f2: { koDec: 215, koSub: 350, subDec: 350 } },
+        draftkings:  { f1: { koDec: -185, koSub: 450, subDec: -205 }, f2: { koDec: 215, koSub: 350, subDec: 350 } },
+        fanduel:     { f1: { koDec: -155, koSub: 430, subDec: -185 }, f2: { koDec: 230, koSub: 340, subDec: 340 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 850, r2: 1100, r3: 1500 }, f2: { r1: 800, r2: 1000, r3: 1300 } },
+        draftkings:  { f1: { r1: 900, r2: 1200, r3: 1800 }, f2: { r1: 700, r2: 1000, r3: 1600 } },
+        fanduel:     { f1: { r1: 1000, r2: 1400, r3: 2000 }, f2: { r1: 850, r2: 1100, r3: 1700 } },
+      },
+    },
+    'despaigne|tuivasa': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -450, sub: 3000, dec: 900 }, f2: { ko: 500, sub: 3000, dec: 1000 } },
+        bovada:      { f1: { ko: -500, sub: 1200, dec: 1000 }, f2: { ko: 800, sub: 5000, dec: 1600 } },
+        draftkings:  { f1: { ko: -450, sub: 1400, dec: 1000 }, f2: { ko: 750, sub: 4500, dec: 1600 } },
+        fanduel:     { f1: { ko: -360, sub: 1800, dec: 1200 }, f2: { ko: 800, sub: 4500, dec: 1800 } },
+      },
+      doubleChance: {
+        bovada:      { f1: { koDec: -700, koSub: -575, subDec: 500 }, f2: { koDec: 550, koSub: 750, subDec: 1200 } },
+        draftkings:  { f1: { koDec: -600, koSub: -500, subDec: 550 }, f2: { koDec: 500, koSub: 700, subDec: 1200 } },
+        fanduel:     { f1: { koDec: -550, koSub: -450, subDec: 700 }, f2: { koDec: 550, koSub: 700, subDec: 1400 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: -195, r2: 475, r3: 1800 }, f2: { r1: 800, r2: 1400, r3: 2800 } },
+        draftkings:  { f1: { r1: -160, r2: 400, r3: 1100 }, f2: { r1: 1100, r2: 2200, r3: 4000 } },
+        fanduel:     { f1: { r1: -160, r2: 460, r3: 1200 }, f2: { r1: 1300, r2: 2200, r3: 4000 } },
+      },
+    },
+    'aswell|yoo': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 550, sub: 2500, dec: 325 }, f2: { ko: 265, sub: 1600, dec: 110 } },
+        bovada:      { f1: { ko: 700, sub: 2800, dec: 380 }, f2: { ko: 250, sub: 1400, dec: 110 } },
+        draftkings:  { f1: { ko: 650, sub: 2500, dec: 380 }, f2: { ko: 275, sub: 1400, dec: 110 } },
+        fanduel:     { f1: { ko: 700, sub: 2700, dec: 420 }, f2: { ko: 290, sub: 1600, dec: 115 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 190, subDec: 300 }, f2: { koDec: -200, subDec: -120 } },
+        bovada:      { f1: { koDec: 225, koSub: 600, subDec: 310 }, f2: { koDec: -255, koSub: 225, subDec: -120 } },
+        draftkings:  { f1: { koDec: 205, koSub: 550, subDec: 300 }, f2: { koDec: -225, koSub: 225, subDec: -115 } },
+        fanduel:     { f1: { koDec: 230, koSub: 550, subDec: 360 }, f2: { koDec: -230, koSub: 220, subDec: -110 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1200, r2: 1400, r3: 1800 }, f2: { r1: 500, r2: 700, r3: 1000 } },
+        draftkings:  { f1: { r1: 1100, r2: 1400, r3: 2200 }, f2: { r1: 550, r2: 750, r3: 1100 } },
+        fanduel:     { f1: { r1: 1300, r2: 1800, r3: 2700 }, f2: { r1: 600, r2: 800, r3: 1400 } },
+      },
+    },
+    'diaz|gandra': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 500, sub: 2000, dec: 900 }, f2: { ko: -265, sub: 900, dec: 900 } },
+        bovada:      { f1: { ko: 750, sub: 2500, dec: 1200 }, f2: { ko: -350, sub: 900, dec: 1200 } },
+        draftkings:  { f1: { ko: 750, sub: 2500, dec: 1200 }, f2: { ko: -340, sub: 900, dec: 1200 } },
+        fanduel:     { f1: { ko: 750, sub: 2500, dec: 1500 }, f2: { ko: -260, sub: 900, dec: 1300 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 400, subDec: 750 }, f2: { koDec: -375, subDec: 450 } },
+        bovada:      { f1: { koDec: 425, koSub: 600, subDec: 750 }, f2: { koDec: -500, koSub: -400, subDec: 475 } },
+        draftkings:  { f1: { koDec: 425, koSub: 600, subDec: 750 }, f2: { koDec: -350, koSub: -400, subDec: 500 } },
+        fanduel:     { f1: { koDec: 480, koSub: 550, subDec: 950 }, f2: { koDec: -340, koSub: -390, subDec: 500 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 1100, r2: 1800, r3: 3000 }, f2: { r1: -135, r2: 400, r3: 1100 } },
+        fanduel:    { f1: { r1: 1200, r2: 1800, r3: 2700 }, f2: { r1: -130, r2: 380, r3: 1200 } },
+      },
+    },
+    'ferreira|shahbazyan': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 350, sub: 600, dec: 550 }, f2: { ko: 160, sub: 850, dec: 325 } },
+        bovada:      { f1: { ko: 330, sub: 700, dec: 650 }, f2: { ko: 150, sub: 800, dec: 350 } },
+        draftkings:  { f1: { ko: 330, sub: 700, dec: 750 }, f2: { ko: 150, sub: 800, dec: 330 } },
+        fanduel:     { f1: { ko: 390, sub: 750, dec: 700 }, f2: { ko: 160, sub: 900, dec: 400 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 200, subDec: 300 }, f2: { koDec: -120, subDec: 240 } },
+        bovada:      { f1: { koDec: 180, koSub: 215, subDec: 300 }, f2: { koDec: -145, koSub: 125, subDec: 210 } },
+        draftkings:  { f1: { koDec: 225, koSub: 215, subDec: 320 }, f2: { koDec: -150, koSub: 125, subDec: 200 } },
+        fanduel:     { f1: { koDec: 210, koSub: 210, subDec: 330 }, f2: { koDec: -135, koSub: 110, subDec: 240 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 425, r2: 675, r3: 1000 }, f2: { r1: 375, r2: 550, r3: 700 } },
+        draftkings:  { f1: { r1: 450, r2: 750, r3: 1000 }, f2: { r1: 300, r2: 500, r3: 700 } },
+        fanduel:     { f1: { r1: 550, r2: 900, r3: 1200 }, f2: { r1: 340, r2: 550, r3: 750 } },
+      },
+    },
+    'moura|o\'neill': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1600, sub: 550, dec: 325 }, f2: { ko: 475, sub: 750, dec: 100 } },
+        bovada:      { f1: { ko: 1200, sub: 850, dec: 375 }, f2: { ko: 450, sub: 750, dec: 110 } },
+        draftkings:  { f1: { ko: 1200, sub: 800, dec: 350 }, f2: { ko: 450, sub: 750, dec: 100 } },
+        fanduel:     { f1: { ko: 1600, sub: 750, dec: 360 }, f2: { ko: 480, sub: 850, dec: 115 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 250, subDec: 170 }, f2: { koDec: -150, subDec: -120 } },
+        bovada:      { f1: { koDec: 285, koSub: 475, subDec: 225 }, f2: { koDec: -175, koSub: 275, subDec: -130 } },
+        draftkings:  { f1: { koDec: 240, koSub: 500, subDec: 215 }, f2: { koDec: -200, koSub: 275, subDec: -160 } },
+        fanduel:     { f1: { koDec: 270, koSub: 500, subDec: 210 }, f2: { koDec: -165, koSub: 270, subDec: -130 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1100, r2: 1400, r3: 1800 }, f2: { r1: 700, r2: 750, r3: 850 } },
+        draftkings:  { f1: { r1: 1000, r2: 1400, r3: 2200 }, f2: { r1: 650, r2: 850, r3: 1200 } },
+        fanduel:     { f1: { r1: 1100, r2: 1600, r3: 2200 }, f2: { r1: 750, r2: 950, r3: 1300 } },
+      },
+    },
+    'brito|chikadze': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 300, sub: 110, dec: 350 }, f2: { ko: 575, sub: 2600, dec: 800 } },
+        bovada:      { f1: { ko: 460, sub: 115, dec: 275 }, f2: { ko: 650, sub: 2500, dec: 750 } },
+        draftkings:  { f1: { ko: 450, sub: 110, dec: 275 }, f2: { ko: 700, sub: 3000, dec: 750 } },
+        fanduel:     { f1: { ko: 500, sub: 125, dec: 300 }, f2: { ko: 700, sub: 2700, dec: 750 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 125, subDec: -200 }, f2: { koDec: 375, subDec: 625 } },
+        bovada:      { f1: { koDec: 150, koSub: -140, subDec: -220 }, f2: { koDec: 350, koSub: 525, subDec: 600 } },
+        draftkings:  { f1: { koDec: 130, koSub: -145, subDec: -275 }, f2: { koDec: 330, koSub: 600, subDec: 550 } },
+        fanduel:     { f1: { koDec: 145, koSub: -150, subDec: -210 }, f2: { koDec: 340, koSub: 550, subDec: 600 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 165, r2: 270, r3: 600 }, f2: { r1: 1200, r2: 1800, r3: 2500 } },
+        draftkings:  { f1: { r1: 240, r2: 350, r3: 500 }, f2: { r1: 1200, r2: 1600, r3: 2500 } },
+        fanduel:     { f1: { r1: 240, r2: 450, r3: 600 }, f2: { r1: 1200, r2: 1700, r3: 2700 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
