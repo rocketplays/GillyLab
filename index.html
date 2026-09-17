@@ -130579,6 +130579,193 @@ const GL_SHEET = (function () {
     return cv;
   }
 
+  // ── FULL EVENT CARD (no picks — every scheduled bout, photos + names only) ──
+  // The "Share this card" button on the home page and the upcoming-events
+  // carousel: a poster of the whole card, not any one user's picks. Same
+  // main-card/prelims data (isMain/isMainCard) as Pick'em above, but there's
+  // no confidence ring, badge, or method line to draw — every fighter here
+  // is unpicked, so the only two things worth showing are the photo and the
+  // name, per feedback, which is also why the bouts can run bigger than a
+  // Pick'em row: nothing else is competing for the vertical space.
+  function evGroups(fights) {
+    const hasFlag = fights.some(f => f.isMainCard);
+    const mainCardAll = hasFlag ? fights.filter(f => f.isMainCard || f.isMain) : fights.filter(f => f.isMain);
+    const prelims = hasFlag ? fights.filter(f => !f.isMainCard && !f.isMain) : fights.filter(f => !f.isMain);
+    // "Co-main" isn't a flag anywhere in this data — it's just the next
+    // main-card bout after the main event in billed order, same as how a
+    // real card is read top to bottom.
+    const mainEvent = mainCardAll.find(f => f.isMain) || mainCardAll[0] || null;
+    const coMain = mainCardAll.find(f => f !== mainEvent) || null;
+    const restMainCard = mainCardAll.filter(f => f !== mainEvent && f !== coMain);
+    return { mainEvent, coMain, restMainCard, prelims };
+  }
+  // Centres a photo pair within a `w`-wide slot, deriving both photo
+  // x-positions from the radius itself (2R + a gap scaled the same way)
+  // instead of a fixed fraction of `w`. A fraction like 0.27/0.73 only
+  // avoids the photos overlapping for the exact R it was tuned against —
+  // this was the actual bug behind the hero row's main-event and co-main
+  // photos overlapping at their inner edges: 100px-radius photos in a
+  // pairW=366 slot at 0.27/0.73 need to sit only 168px apart, 32px closer
+  // than two 100px-radius circles can get without touching.
+  function evPairX(x0, w, R, vsGap) {
+    const span = 4 * R + vsGap;               // both circles + the VS gap
+    const cxA = x0 + (w - span) / 2 + R;       // centred within the slot
+    return { cxA, cxB: cxA + 2 * R + vsGap };
+  }
+  // Wraps a fighter's name to at most 2 lines (most names need one; a small
+  // number of long ones need two) and draws it centred at `cx`, top of the
+  // block at `y0`. Callers reserve room for 2 lines regardless of whether a
+  // given name needs it, which is what keeps every row's height a closed
+  // form — see EV_ROW_H's own note.
+  function evDrawName(ctx, text, cx, y0, maxW, font, lineH, color) {
+    ctx.font = font; ctx.fillStyle = color; ctx.textAlign = 'center';
+    const allLines = wrap(ctx, String(text || '').toUpperCase(), maxW);
+    const lines = allLines.slice(0, 2);
+    // A 4-word name (e.g. "Abdul Kareem Al Selwady") can wrap to 3+ lines —
+    // slicing to 2 would otherwise drop the rest with no sign anything was
+    // cut, which reads as a missing surname rather than a truncated one.
+    if (allLines.length > lines.length) lines[lines.length - 1] += '…';
+    lines.forEach((line, i) => ctx.fillText(line, cx, y0 + i * lineH));
+    ctx.textAlign = 'left';
+  }
+  // A plain bout: two photos, VS between, names below. No ring colour, no
+  // pick badge, no method/weight-class line — see the note above on why.
+  function evBoutCard(ctx, f, x, y, w, imgA, imgB, s) {
+    const R = 62 * s, vsGap = 26 * s;
+    const { cxA, cxB } = evPairX(x, w, R, vsGap);
+    const avY = y + 10 * s + R;
+    avatar(ctx, imgA, cxA, avY, R, pkInitials(f.f1), LINE);
+    avatar(ctx, imgB, cxB, avY, R, pkInitials(f.f2), LINE);
+    ctx.textAlign = 'center'; ctx.font = '800 ' + (24 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('VS', x + w / 2, avY + 8 * s);
+    const nameY = avY + R + 32 * s, nameMax = w * 0.46, lineH = 24 * s;
+    const font = '700 ' + (21 * s).toFixed(1) + 'px ' + COND;
+    evDrawName(ctx, f.f1, cxA, nameY, nameMax, font, lineH, TXT);
+    evDrawName(ctx, f.f2, cxB, nameY, nameMax, font, lineH, TXT);
+  }
+  // Base row height at s=1 — 2 photo diameters' worth of vertical room isn't
+  // needed here (only one row of photos), but 2 NAME lines are always
+  // reserved (see evDrawName), which the old single-line-only height didn't
+  // budget for and is what clipped longer names to "GEORG…" instead of
+  // wrapping them. Mirrors pkBoutCard/ROW_H's reasoning otherwise: every
+  // font size in evBoutCard is a constant relative to `s`, so the total
+  // card height is still a closed form — no measuring pass needed.
+  const EV_ROW_H = 254;
+  function evGridDims(arr) {
+    // 1 bout: full width, nothing to tile. 2: side by side (same reasoning
+    // as pkBoutCard's fix — a 2-item group should never stack). 3+: three
+    // columns, wrapping into extra rows, which is what keeps a deep prelims
+    // section from scrolling forever the way an un-gridded list would.
+    const cols = arr.length <= 1 ? 1 : (arr.length === 2 ? 2 : 3);
+    const rows = Math.ceil(arr.length / cols);
+    const evGap = 24;
+    const colW = (W - 128 - evGap * (cols - 1)) / cols;
+    // 300 (not 952, and not 620 like Pick'em's grid) — tuned so a 3-column
+    // row, the densest case here, still renders at s=1: no pick/method line
+    // is competing for width in this card, so there's no reason to shrink
+    // fonts and photos below their base size just because there are three
+    // columns instead of one.
+    const s = Math.min(1, colW / 300);
+    return { cols, rows, colW, gap: evGap, s, rowH: EV_ROW_H * s, h: rows * EV_ROW_H * s };
+  }
+  async function drawEventCard(data) {
+    await fontsReady();
+    const logo = await loadBrandLogo();
+    const fights = (data.fights || []).filter(f => f && f.f1 && f.f2);
+    const { mainEvent, coMain, restMainCard, prelims } = evGroups(fights);
+
+    const gap = 24, divH = 56;
+    const heroTop = 56, heroR = 72, heroVsGap = 56;
+    // Hero row height: photo diameter + gap to the name block + 2 reserved
+    // name lines (see evDrawName) + bottom padding. Fixed, like every other
+    // row height in this module — the fonts inside it are constants.
+    const heroH = mainEvent ? (heroTop + heroR * 2 + 44 + 30 * 2 + 40) : 0;
+    const mainCardGrid = restMainCard.length ? evGridDims(restMainCard) : null;
+    const prelimsGrid = prelims.length ? evGridDims(prelims) : null;
+    const bodyH = heroH + (mainCardGrid ? mainCardGrid.h : 0) + (prelimsGrid ? divH + prelimsGrid.h : 0);
+    const footerH = 90;
+    const CH = Math.round(bodyH + footerH);
+
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = Math.max(CH, 640);
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, cv.height);
+
+    // Load every fighter's photo up front, across all three groups.
+    const allFights = (mainEvent ? [mainEvent] : []).concat(coMain ? [coMain] : []).concat(restMainCard, prelims);
+    const imgPairs = await Promise.all(allFights.map(f => Promise.all([loadImg(nameToSlug(f.f1)), loadImg(nameToSlug(f.f2))])));
+    const imgFor = new Map(allFights.map((f, i) => [f, imgPairs[i]]));
+
+    let cy = heroTop;
+    if (mainEvent) {
+      // Main event and co-main sit either side of the brand mark and event
+      // name/date — the "separated by the gillylab logo" structure asked
+      // for, mirroring the reference poster's centre roundel + title.
+      const centerW = 220;
+      const pairW = (W - 128 - centerW) / 2;
+      const leftX = 64, rightX = 64 + pairW + centerW, centerX = 64 + pairW + centerW / 2;
+      const avY = cy + heroR;
+
+      const drawPair = (f, x0) => {
+        if (!f) return;
+        const { cxA, cxB } = evPairX(x0, pairW, heroR, heroVsGap);
+        avatar(ctx, imgFor.get(f)[0], cxA, avY, heroR, pkInitials(f.f1), ACC);
+        avatar(ctx, imgFor.get(f)[1], cxB, avY, heroR, pkInitials(f.f2), ACC);
+        ctx.textAlign = 'center'; ctx.font = '800 30px ' + COND; ctx.fillStyle = MUT;
+        ctx.fillText('VS', x0 + pairW / 2, avY + 10);
+        const nameY = avY + heroR + 44, nameMax = pairW * 0.44;
+        evDrawName(ctx, f.f1, cxA, nameY, nameMax, '700 27px ' + COND, 30, TXT);
+        evDrawName(ctx, f.f2, cxB, nameY, nameMax, '700 27px ' + COND, 30, TXT);
+      };
+      drawPair(mainEvent, leftX);
+      drawPair(coMain, rightX);
+
+      // Centre mark: the GL fist, then the event name, then its date —
+      // vertically centred on the same line the photos sit on.
+      ctx.textAlign = 'center';
+      if (logo && logo.width) {
+        const lh = 56, lw = logo.width * (lh / logo.height);
+        ctx.drawImage(logo, centerX - lw / 2, avY - heroR - 4, lw, lh);
+      }
+      ctx.font = '800 26px ' + COND; ctx.fillStyle = TXT;
+      const nameLines = wrap(ctx, data.name || 'UFC', centerW - 16).slice(0, 2);
+      let ny = avY - heroR + 78;
+      nameLines.forEach((line) => { ctx.fillText(line, centerX, ny); ny += 30; });
+      if (data.details) {
+        ctx.font = '400 18px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(clip(ctx, data.details, centerW - 8), centerX, ny + 4);
+      }
+      ctx.textAlign = 'left';
+      cy += heroR * 2 + 44 + 30 * 2 + 40;   // matches heroH's own formula exactly
+    }
+
+    if (mainCardGrid) {
+      restMainCard.forEach((f, i) => {
+        const col = i % mainCardGrid.cols, row = Math.floor(i / mainCardGrid.cols);
+        const bx = 64 + col * (mainCardGrid.colW + mainCardGrid.gap), by = cy + row * mainCardGrid.rowH;
+        const imgs = imgFor.get(f);
+        evBoutCard(ctx, f, bx, by, mainCardGrid.colW, imgs[0], imgs[1], mainCardGrid.s);
+      });
+      cy += mainCardGrid.h;
+    }
+    if (prelimsGrid) {
+      ctx.textAlign = 'left'; ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
+      ctx.fillText('PRELIMS', 64, cy + 30);
+      ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, cy + divH - 14); ctx.lineTo(W - 64, cy + divH - 14); ctx.stroke();
+      cy += divH;
+      prelims.forEach((f, i) => {
+        const col = i % prelimsGrid.cols, row = Math.floor(i / prelimsGrid.cols);
+        const bx = 64 + col * (prelimsGrid.colW + prelimsGrid.gap), by = cy + row * prelimsGrid.rowH;
+        const imgs = imgFor.get(f);
+        evBoutCard(ctx, f, bx, by, prelimsGrid.colW, imgs[0], imgs[1], prelimsGrid.s);
+      });
+      cy += prelimsGrid.h;
+    }
+
+    footer(ctx, cv.height);
+    return cv;
+  }
+
   // ── the share overlay (mirrors the parlay slip's, including the iOS split) ──
   let asset = null;
   function toFile(cv) {
@@ -131541,6 +131728,11 @@ const GL_SHEET = (function () {
     pickem: (data) => open(() => drawPickem(data || {}),
       'gillylab-picks.png',
       'My picks for ' + ((data && data.eventName) || 'the card') + ' — make yours on gillylab.com'),
+    // The full fight card (no picks) for the "Share this card" button on the
+    // home page and the upcoming-events carousel.
+    eventCard: (data) => open(() => drawEventCard(data || {}),
+      'gillylab-' + ((data && data.name) || 'fight-card').toString().replace(/\s+/g, '-').toLowerCase() + '.png',
+      'The full card for ' + ((data && data.name) || 'this event') + ' — see it on gillylab.com'),
     // Square card of a finished Climb run.
     climb: (data) => open(() => drawClimb(data || {}),
       'gillylab-the-climb.png',
@@ -133146,6 +133338,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return String(m || '').trim();
   }
 
+  // "Share this card" — a full-event poster (no picks, just photos + names)
+  // via GL_SHEET.eventCard(). Both event renderers (the featured card below,
+  // and renderCarousel further down) call this to stash the minimal data the
+  // share draw needs, keyed by slug, since the button itself only carries
+  // the slug in its onclick — not the whole evt object — and either renderer
+  // might be the one on screen when it's clicked.
+  function stashEventCard(evt) {
+    if (!evt || !evt.slug || !Array.isArray(evt.fights) || !evt.fights.length) return;
+    (window.GL_EVENT_CARDS = window.GL_EVENT_CARDS || {})[evt.slug] = {
+      name: evt.name || '', details: evt.details || '',
+      fights: evt.fights.map(f => ({ f1: f.f1, f2: f.f2, isMain: !!f.isMain, isMainCard: !!f.isMainCard })),
+    };
+  }
+  function shareEventCard(slug) {
+    const rec = (window.GL_EVENT_CARDS || {})[slug];
+    if (!rec || !rec.fights.length) return;
+    if (typeof GL_SHEET !== 'undefined' && GL_SHEET.eventCard) GL_SHEET.eventCard(rec);
+  }
+  window.shareEventCard = shareEventCard;
+
   function renderHomeFightCard(evt) {
     const container = document.getElementById('dynamic-fight-card');
     if (!container) return;
@@ -133274,7 +133486,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
               section('Prelims',      evt.fights.filter(function(f) { return !f.isMain; }));
       }
 
-      container.innerHTML = '<div class="' + specialClass + '" style="max-width:var(--cmax);margin:0 auto;position:relative;' + (specialClass ? 'border-radius:10px;' : '') + '">' + out + '</div>';
+      stashEventCard(evt);
+      container.innerHTML = '<div class="' + specialClass + '" style="max-width:var(--cmax);margin:0 auto;position:relative;' + (specialClass ? 'border-radius:10px;' : '') + '">' + out +
+        '<button type="button" class="gl-sheet-btn" style="margin-top:1rem;" onclick="shareEventCard(\'' + escJsAttr(evt.slug) + '\')">↓ Share this card</button>' +
+      '</div>';
 
     } else if (evt.carouselIdx >= 0) {
       const cards = document.querySelectorAll('#carousel-track .carousel-card');
@@ -138865,6 +139080,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (isRoadToUFCRaw(raw)) continue;
 
       eventsForCarousel.push({ id: evt.slug, date: evt.date });
+      stashEventCard(evt);
 
       const mainCard = (evt.fights || []).filter(f => f.isMainCard || f.isMain);
       const prelims  = (evt.fights || []).filter(f => !f.isMainCard && !f.isMain);
@@ -138903,6 +139119,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             '</div>' +
           '</div>' +
           sectionsHTML +
+          '<button type="button" class="gl-sheet-btn" style="margin-top:1rem;" onclick="event.stopPropagation();shareEventCard(\'' + escJsAttr(evt.slug) + '\')">↓ Share this card</button>' +
         '</div>' +
       '</div>');
     }
