@@ -940,19 +940,32 @@ const GL_SHEET = (function () {
     const cxA = x0 + (w - span) / 2 + R;       // centred within the slot
     return { cxA, cxB: cxA + 2 * R + vsGap };
   }
+  // A subtle top-to-bottom sheen instead of flat white — brighter white at
+  // the cap-height, fading to a cool light-gray by the baseline, the same
+  // "engraved metal" treatment the reference poster's fighter names use
+  // rather than a single flat fill. Sized to the actual text block (top of
+  // caps to bottom of the last line) so it doesn't wash out on a 1-line name.
+  function evNameGradient(ctx, y0, lineCount, lineH) {
+    const top = y0 - lineH * 0.78, bottom = y0 + (lineCount - 1) * lineH + lineH * 0.26;
+    const g = ctx.createLinearGradient(0, top, 0, bottom);
+    g.addColorStop(0, '#ffffff');
+    g.addColorStop(1, '#cbd6d0');
+    return g;
+  }
   // Wraps a fighter's name to at most 2 lines (most names need one; a small
   // number of long ones need two) and draws it centred at `cx`, top of the
   // block at `y0`. Callers reserve room for 2 lines regardless of whether a
   // given name needs it, which is what keeps every row's height a closed
   // form — see EV_ROW_H's own note.
-  function evDrawName(ctx, text, cx, y0, maxW, font, lineH, color) {
-    ctx.font = font; ctx.fillStyle = color; ctx.textAlign = 'center';
+  function evDrawName(ctx, text, cx, y0, maxW, font, lineH) {
+    ctx.font = font; ctx.textAlign = 'center';
     const allLines = wrap(ctx, String(text || '').toUpperCase(), maxW);
     const lines = allLines.slice(0, 2);
     // A 4-word name (e.g. "Abdul Kareem Al Selwady") can wrap to 3+ lines —
     // slicing to 2 would otherwise drop the rest with no sign anything was
     // cut, which reads as a missing surname rather than a truncated one.
     if (allLines.length > lines.length) lines[lines.length - 1] += '…';
+    ctx.fillStyle = evNameGradient(ctx, y0, lines.length, lineH);
     lines.forEach((line, i) => ctx.fillText(line, cx, y0 + i * lineH));
     ctx.textAlign = 'left';
   }
@@ -968,8 +981,8 @@ const GL_SHEET = (function () {
     ctx.fillText('VS', x + w / 2, avY + 8 * s);
     const nameY = avY + R + 32 * s, nameMax = w * 0.46, lineH = 24 * s;
     const font = '700 ' + (21 * s).toFixed(1) + 'px ' + COND;
-    evDrawName(ctx, f.f1, cxA, nameY, nameMax, font, lineH, TXT);
-    evDrawName(ctx, f.f2, cxB, nameY, nameMax, font, lineH, TXT);
+    evDrawName(ctx, f.f1, cxA, nameY, nameMax, font, lineH);
+    evDrawName(ctx, f.f2, cxB, nameY, nameMax, font, lineH);
   }
   // Same green-tinted aurora blooms as the page background (#bgfx in the
   // main stylesheet: green top-left, blue right, green bottom), baked
@@ -1133,8 +1146,8 @@ const GL_SHEET = (function () {
         ctx.textAlign = 'center'; ctx.font = '800 30px ' + COND; ctx.fillStyle = MUT;
         ctx.fillText('VS', x0 + pairW / 2, avY + 10);
         const nameY = avY + heroR + 44, nameMax = pairW * 0.44;
-        evDrawName(ctx, f.f1, cxA, nameY, nameMax, '700 27px ' + COND, 30, TXT);
-        evDrawName(ctx, f.f2, cxB, nameY, nameMax, '700 27px ' + COND, 30, TXT);
+        evDrawName(ctx, f.f1, cxA, nameY, nameMax, '700 27px ' + COND, 30);
+        evDrawName(ctx, f.f2, cxB, nameY, nameMax, '700 27px ' + COND, 30);
       };
       drawPair(mainEvent, leftX);
       drawPair(coMain, rightX);
