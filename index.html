@@ -130646,17 +130646,38 @@ const GL_SHEET = (function () {
   // a full "First Last" name needed 2 reserved lines and, worse, a single
   // long unbreakable surname could still overflow past its column and
   // overlap the fighter next to it (wrap() only breaks on spaces). A bare
-  // last name is short enough to fit on one line at a much bigger size,
-  // and clip()'s ellipsis (not wrap's) is what keeps even a rare long one
-  // from ever reaching past its own column.
+  // last name is short enough to fit on one line at a much bigger size in
+  // the large majority of cases (see evDrawName for the rest).
+  //
+  // A generational suffix ("Jr.", "III", ...) is NOT the surname — it's
+  // the last whitespace-split token, though, so a naive "take the last
+  // word" reads "Michael Aswell Jr." as "Jr." and drops the actual name.
+  // Strip any of these off the end before taking what's left as the name.
+  const EV_NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
   function evLastName(full) {
-    const parts = String(full || '').trim().split(/\s+/);
+    const parts = String(full || '').trim().split(/\s+/).filter(Boolean);
+    while (parts.length > 1 && EV_NAME_SUFFIXES.has(parts[parts.length - 1].toLowerCase().replace(/\.$/, ''))) {
+      parts.pop();
+    }
     return parts[parts.length - 1] || '';
   }
-  function evDrawName(ctx, text, cx, y, maxW, font, fontPx) {
-    ctx.font = font; ctx.textAlign = 'center';
+  // Draws the last name on one line, shrinking the font to fit rather than
+  // ellipsis-truncating it — a real surname ("Baraniewski", "Shahbazyan")
+  // is exactly the case that most needs its letters, not "...". clip()'s
+  // ellipsis only kicks in as a last resort, if even minFontPx doesn't fit
+  // (a genuinely extreme name), so it's still there as a backstop but
+  // isn't what the normal "just a bit longer than average" case hits.
+  function evDrawName(ctx, text, cx, y, maxW, weight, maxFontPx, minFontPx) {
+    const name = evLastName(text).toUpperCase();
+    let fontPx = maxFontPx;
+    ctx.font = weight + ' ' + fontPx.toFixed(1) + 'px ' + COND;
+    while (fontPx > minFontPx && ctx.measureText(name).width > maxW) {
+      fontPx -= 1;
+      ctx.font = weight + ' ' + fontPx.toFixed(1) + 'px ' + COND;
+    }
+    ctx.textAlign = 'center';
     ctx.fillStyle = evNameGradient(ctx, y, fontPx);
-    ctx.fillText(clip(ctx, evLastName(text).toUpperCase(), maxW), cx, y);
+    ctx.fillText(clip(ctx, name, maxW), cx, y);
     ctx.textAlign = 'left';
   }
   // A plain bout: two photos, VS between, last names below. No ring
@@ -130671,9 +130692,8 @@ const GL_SHEET = (function () {
     ctx.textAlign = 'center'; ctx.font = '800 ' + (26 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('VS', x + w / 2, avY + 9 * s);
     const nameFontPx = 32 * s, nameY = avY + R + nameFontPx + 12 * s, nameMax = w * 0.46;
-    const font = '800 ' + nameFontPx.toFixed(1) + 'px ' + COND;
-    evDrawName(ctx, f.f1, cxA, nameY, nameMax, font, nameFontPx);
-    evDrawName(ctx, f.f2, cxB, nameY, nameMax, font, nameFontPx);
+    evDrawName(ctx, f.f1, cxA, nameY, nameMax, '800', nameFontPx, 20 * s);
+    evDrawName(ctx, f.f2, cxB, nameY, nameMax, '800', nameFontPx, 20 * s);
   }
   // Same green-tinted aurora blooms as the page background (#bgfx in the
   // main stylesheet: green top-left, blue right, green bottom), baked
@@ -130862,9 +130882,8 @@ const GL_SHEET = (function () {
         ctx.textAlign = 'center'; ctx.font = '800 34px ' + COND; ctx.fillStyle = MUT;
         ctx.fillText('VS', x0 + pairW / 2, avY + 11);
         const heroNameFontPx = 36, nameY = avY + heroR + heroNameFontPx + 14, nameMax = pairW * 0.52;
-        const heroNameFont = '800 ' + heroNameFontPx + 'px ' + COND;
-        evDrawName(ctx, f.f1, cxA, nameY, nameMax, heroNameFont, heroNameFontPx);
-        evDrawName(ctx, f.f2, cxB, nameY, nameMax, heroNameFont, heroNameFontPx);
+        evDrawName(ctx, f.f1, cxA, nameY, nameMax, '800', heroNameFontPx, 24);
+        evDrawName(ctx, f.f2, cxB, nameY, nameMax, '800', heroNameFontPx, 24);
       };
       drawPair(mainEvent, leftX);
       drawPair(coMain, rightX);
