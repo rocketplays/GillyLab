@@ -130643,6 +130643,53 @@ const GL_SHEET = (function () {
     evDrawName(ctx, f.f1, cxA, nameY, nameMax, font, lineH, TXT);
     evDrawName(ctx, f.f2, cxB, nameY, nameMax, font, lineH, TXT);
   }
+  // Same green-tinted aurora blooms as the page background (#bgfx in the
+  // main stylesheet: green top-left, blue right, green bottom), baked
+  // straight into the canvas instead of relying on page CSS, so the share
+  // image reads as GillyLab's even divorced from the site around it.
+  function auroraBG(ctx, w, h) {
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, w, h);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    [
+      { x: 0.10 * w, y: 0.08 * h, r: 0.62 * w, c: 'rgba(0,230,104,0.11)' },
+      { x: 0.92 * w, y: 0.38 * h, r: 0.58 * w, c: 'rgba(50,120,255,0.08)' },
+      { x: 0.45 * w, y: h,        r: 0.62 * w, c: 'rgba(0,230,104,0.09)' },
+    ].forEach((b) => {
+      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+      g.addColorStop(0, b.c); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    });
+    ctx.restore();
+  }
+  // The "gillylab" wordmark, centred on `cx` — same two-tone treatment as
+  // brand() (GILLY in TXT, LAB in ACC, same condensed font) but centred
+  // instead of left-aligned, for the hero row's centre column.
+  function brandCentered(ctx, cx, y, size) {
+    ctx.textAlign = 'left'; ctx.font = '800 ' + size + 'px ' + COND;
+    const gW = ctx.measureText('GILLY').width, lW = ctx.measureText('LAB').width;
+    const x0 = cx - (gW + lW) / 2;
+    ctx.fillStyle = TXT; ctx.fillText('GILLY', x0, y);
+    ctx.fillStyle = ACC; ctx.fillText('LAB', x0 + gW, y);
+    ctx.textAlign = 'center';
+  }
+  // A section divider bar spanning the card's content width — same visual
+  // language as .fight-dd-bar, the "Matchup Analytics Deep Dive" button on
+  // the site (green-tinted gradient fill, green border, bold condensed caps
+  // centred inside), so MAIN CARD / PRELIMS read as GillyLab UI rather than
+  // a plain text label with a rule under it.
+  const EV_BAR_H = 56, EV_BAR_GAP = 24;
+  function evSectionBar(ctx, y, label) {
+    const x = 64, w = W - 128, h = EV_BAR_H;
+    const g = ctx.createLinearGradient(0, y, 0, y + h);
+    g.addColorStop(0, 'rgba(0,230,104,0.09)'); g.addColorStop(1, 'rgba(0,230,104,0.03)');
+    ctx.fillStyle = g; roundRect(ctx, x, y, w, h, 8); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,230,104,0.35)'; ctx.lineWidth = 1;
+    roundRect(ctx, x, y, w, h, 8); ctx.stroke();
+    ctx.textAlign = 'center'; ctx.font = '700 22px ' + COND; ctx.fillStyle = TXT;
+    ctx.fillText(label, W / 2, y + h / 2 + 8);
+    ctx.textAlign = 'left';
+  }
   // Base row height at s=1 — 2 photo diameters' worth of vertical room isn't
   // needed here (only one row of photos), but 2 NAME lines are always
   // reserved (see evDrawName), which the old single-line-only height didn't
@@ -130674,22 +130721,28 @@ const GL_SHEET = (function () {
     const fights = (data.fights || []).filter(f => f && f.f1 && f.f2);
     const { mainEvent, coMain, restMainCard, prelims } = evGroups(fights);
 
-    const gap = 24, divH = 56;
     const heroTop = 56, heroR = 72, heroVsGap = 56;
-    // Hero row height: photo diameter + gap to the name block + 2 reserved
-    // name lines (see evDrawName) + bottom padding. Fixed, like every other
-    // row height in this module — the fonts inside it are constants.
+    // Hero row height: photo diameter + gap to the fighter-name block + 2
+    // reserved name lines (see evDrawName) + bottom padding. Fixed, like
+    // every other row height in this module — the fonts inside it are
+    // constants. (The centre column — logo, wordmark, event name — is
+    // shorter than this and never the tall side.)
     const heroH = mainEvent ? (heroTop + heroR * 2 + 44 + 30 * 2 + 40) : 0;
     const mainCardGrid = restMainCard.length ? evGridDims(restMainCard) : null;
     const prelimsGrid = prelims.length ? evGridDims(prelims) : null;
-    const bodyH = heroH + (mainCardGrid ? mainCardGrid.h : 0) + (prelimsGrid ? divH + prelimsGrid.h : 0);
-    const footerH = 90;
-    const CH = Math.round(bodyH + footerH);
+    // Each grid section gets its own MAIN CARD / PRELIMS bar directly above
+    // it (EV_BAR_H + EV_BAR_GAP), replacing the old plain-text-plus-rule
+    // divider — no footer any more, just a small close-out margin instead.
+    const bottomPad = 48;
+    const bodyH = heroH
+      + (mainCardGrid ? EV_BAR_H + EV_BAR_GAP + mainCardGrid.h : 0)
+      + (prelimsGrid ? EV_BAR_H + EV_BAR_GAP + prelimsGrid.h : 0);
+    const CH = Math.round(bodyH + bottomPad);
 
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = Math.max(CH, 640);
     const ctx = cv.getContext('2d');
-    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, cv.height);
+    auroraBG(ctx, W, cv.height);
 
     // Load every fighter's photo up front, across all three groups.
     const allFights = (mainEvent ? [mainEvent] : []).concat(coMain ? [coMain] : []).concat(restMainCard, prelims);
@@ -130720,26 +130773,30 @@ const GL_SHEET = (function () {
       drawPair(mainEvent, leftX);
       drawPair(coMain, rightX);
 
-      // Centre mark: the GL fist, then the event name, then its date —
-      // vertically centred on the same line the photos sit on.
+      // Centre mark: the GL fist, then the "gillylab" wordmark, then the
+      // event name (no date/venue — that's the only thing the reference
+      // poster puts in the middle, and this card only needs "UFC 331").
+      // Stacked with real gaps between each, not packed tight under the
+      // logo the way the first pass had it.
       ctx.textAlign = 'center';
+      let my = cy;
       if (logo && logo.width) {
         const lh = 56, lw = logo.width * (lh / logo.height);
-        ctx.drawImage(logo, centerX - lw / 2, avY - heroR - 4, lw, lh);
+        ctx.drawImage(logo, centerX - lw / 2, my, lw, lh);
+        my += lh;
       }
-      ctx.font = '800 26px ' + COND; ctx.fillStyle = TXT;
+      brandCentered(ctx, centerX, my + 34, 24);
+      my += 34 + 20;
+      ctx.font = '800 28px ' + COND; ctx.fillStyle = TXT;
       const nameLines = wrap(ctx, data.name || 'UFC', centerW - 16).slice(0, 2);
-      let ny = avY - heroR + 78;
-      nameLines.forEach((line) => { ctx.fillText(line, centerX, ny); ny += 30; });
-      if (data.details) {
-        ctx.font = '400 18px ' + SANS; ctx.fillStyle = MUT;
-        ctx.fillText(clip(ctx, data.details, centerW - 8), centerX, ny + 4);
-      }
+      nameLines.forEach((line, i) => ctx.fillText(line, centerX, my + 30 + i * 32));
       ctx.textAlign = 'left';
       cy += heroR * 2 + 44 + 30 * 2 + 40;   // matches heroH's own formula exactly
     }
 
     if (mainCardGrid) {
+      evSectionBar(ctx, cy, 'MAIN CARD');
+      cy += EV_BAR_H + EV_BAR_GAP;
       restMainCard.forEach((f, i) => {
         const col = i % mainCardGrid.cols, row = Math.floor(i / mainCardGrid.cols);
         const bx = 64 + col * (mainCardGrid.colW + mainCardGrid.gap), by = cy + row * mainCardGrid.rowH;
@@ -130749,10 +130806,8 @@ const GL_SHEET = (function () {
       cy += mainCardGrid.h;
     }
     if (prelimsGrid) {
-      ctx.textAlign = 'left'; ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
-      ctx.fillText('PRELIMS', 64, cy + 30);
-      ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, cy + divH - 14); ctx.lineTo(W - 64, cy + divH - 14); ctx.stroke();
-      cy += divH;
+      evSectionBar(ctx, cy, 'PRELIMS');
+      cy += EV_BAR_H + EV_BAR_GAP;
       prelims.forEach((f, i) => {
         const col = i % prelimsGrid.cols, row = Math.floor(i / prelimsGrid.cols);
         const bx = 64 + col * (prelimsGrid.colW + prelimsGrid.gap), by = cy + row * prelimsGrid.rowH;
@@ -130762,7 +130817,6 @@ const GL_SHEET = (function () {
       cy += prelimsGrid.h;
     }
 
-    footer(ctx, cv.height);
     return cv;
   }
 
