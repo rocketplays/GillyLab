@@ -130347,69 +130347,78 @@ const GL_SHEET = (function () {
   // either side of a VS mark; the pick sits on the left with a coloured ring
   // (confidence pre-grade, right/wrong once graded) plus the check/✗ badge.
   // One caption line below the names carries the pick pre-grade, or the
-  // actual result once it's in. Fixed height for every row (ROW_H below) —
-  // every font size here is a constant, so nothing needs measuring first.
-  function pkBoutCard(ctx, p, num, y, w, imgWin, imgLose, graded) {
-    const x = 64, R = 42;
-    const headY = y + 20;
-    ctx.textAlign = 'left'; ctx.font = '800 19px ' + COND; ctx.fillStyle = MUT;
+  // actual result once it's in.
+  //
+  // Drawn into a (x, y, w) cell rather than always the full card width — a
+  // full 11-14 fight card in one column runs to 2500-3000px tall, nothing
+  // like the reference poster's proportions, so drawPickem tiles bouts two
+  // to a row once there's more than a couple. `s` is that cell's width as a
+  // fraction of the single-column width every constant below was tuned
+  // against (952px) — every size in here scales by it, so a two-column cell
+  // is a faithful shrink of the one-column bout, not a separately-tuned
+  // layout. Row height scales the same way (see ROW_H below), so every
+  // font size here is still a constant relative to its own row — nothing
+  // needs measuring before the canvas height is known.
+  function pkBoutCard(ctx, p, num, x, y, w, imgWin, imgLose, graded, s) {
+    const R = 42 * s;
+    const headY = y + 20 * s;
+    ctx.textAlign = 'left'; ctx.font = '800 ' + (19 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText(String(num).padStart(2, '0'), x, headY);
     const tag = [p.label ? String(p.label).toUpperCase() : '', p.isMain ? 'MAIN EVENT' : ''].filter(Boolean).join('   ·   ');
     if (tag) {
-      ctx.textAlign = 'center'; ctx.font = '700 16px ' + SANS; ctx.fillStyle = p.isMain ? ACC : MUT;
-      ctx.fillText(clip(ctx, tag, w - 200), x + w / 2, headY);
+      ctx.textAlign = 'center'; ctx.font = '700 ' + (16 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = p.isMain ? ACC : MUT;
+      ctx.fillText(clip(ctx, tag, w - 200 * s), x + w / 2, headY);
     }
     if (graded) {
       const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
-      ctx.textAlign = 'right'; ctx.font = '800 21px ' + COND;
+      ctx.textAlign = 'right'; ctx.font = '800 ' + (21 * s).toFixed(1) + 'px ' + COND;
       ctx.fillStyle = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
       ctx.fillText(ptsStr, x + w, headY);
     }
 
     const cxA = x + w * 0.27, cxB = x + w * 0.73;
-    const avY = headY + 18 + R;
+    const avY = headY + 18 * s + R;
     const hit = p.voided ? null : (graded ? !!p.winnerHit : true);
     const ringCol = graded ? (p.voided ? MUT : (p.winnerHit ? ACC : PK_RED)) : (PK_CONF_COL[p.confidence] || MUT);
     avatar(ctx, imgWin, cxA, avY, R, pkInitials(p.winner), ringCol);
     avatar(ctx, imgLose, cxB, avY, R, pkInitials(p.loser), LINE);
     if (!p.voided) pkPickBadge(ctx, cxA, avY, R, hit);
-    ctx.textAlign = 'center'; ctx.font = '800 24px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('VS', x + w / 2, avY + 8);
+    ctx.textAlign = 'center'; ctx.font = '800 ' + (24 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('VS', x + w / 2, avY + 8 * s);
 
-    const nameY = avY + R + 32;
+    const nameY = avY + R + 32 * s;
     const nameMax = w * 0.4;
-    ctx.font = '700 22px ' + COND;
+    ctx.font = '700 ' + (22 * s).toFixed(1) + 'px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText(clip(ctx, (p.winner || '').toUpperCase(), nameMax), cxA, nameY);
     ctx.fillStyle = '#c8ccd2'; ctx.fillText(clip(ctx, (p.loser || '').toUpperCase(), nameMax), cxB, nameY);
 
     // one caption line, centred on the whole bout: the pick pre-grade, the
     // actual result once graded.
-    const lineY = nameY + 26;
+    const lineY = nameY + 26 * s;
     ctx.textAlign = 'left';   // drawSegs positions from a fixed x, so undo the centring above
     if (!graded) {
-      ctx.textAlign = 'center'; ctx.font = '600 18px ' + SANS; ctx.fillStyle = ringCol;
-      ctx.fillText(clip(ctx, p.confidence + ' pick · ' + pkMethodLabel(p), w - 160), x + w / 2, lineY);
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
+      ctx.fillText(clip(ctx, p.confidence + ' pick · ' + pkMethodLabel(p), w - 40 * s), x + w / 2, lineY);
       ctx.textAlign = 'left';
     } else if (p.voided) {
-      ctx.textAlign = 'center'; ctx.font = '600 18px ' + SANS; ctx.fillStyle = MUT;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
       ctx.fillText('Draw / No Contest', x + w / 2, lineY);
       ctx.textAlign = 'left';
     } else {
       const win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
       const seg = [
-        { t: win, f: '700 19px ' + COND, c: TXT },
-        { t: ' def. ', f: '400 15px ' + SANS, c: MUT },
-        { t: los, f: '400 16px ' + SANS, c: '#c8ccd2' },
+        { t: win, f: '700 ' + (19 * s).toFixed(1) + 'px ' + COND, c: TXT },
+        { t: ' def. ', f: '400 ' + (15 * s).toFixed(1) + 'px ' + SANS, c: MUT },
+        { t: los, f: '400 ' + (16 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
-    return y + ROW_H;
   }
-  // Every bout draws at the same fixed height, so the total card height is
-  // just this times the bout count — see pkBoutCard's own note on why fixed
-  // heights are safe here. One height for both graded and ungraded cards:
-  // the caption line under the names carries either the pick or the result,
-  // never both, so it never needs extra room post-grade.
+  // Base row height at s=1 (a single full-width column, 952px). A grid cell
+  // at scale s uses ROW_H*s — see pkBoutCard's note on why that keeps every
+  // font size a constant relative to its own row. One height for both graded
+  // and ungraded cards: the caption line under the names carries either the
+  // pick or the result, never both, so it never needs extra room post-grade.
   const ROW_H = 190;
   async function drawPickem(data) {
     await fontsReady();
@@ -130431,8 +130440,19 @@ const GL_SHEET = (function () {
     const divY = legendY + (graded ? 22 : 24);
     const listTop = divY + (graded ? 22 : 26);
 
+    // Two bouts per row once there's more than a couple — one column per bout
+    // scrolls to 2500-3000px for a full 11-14 fight card, nothing like the
+    // reference poster; two columns roughly halves that, closer to a square,
+    // shareable image while still keeping every fighter's photo legible. `s`
+    // (see pkBoutCard) shrinks every size in a bout card to fit its column.
+    const cols = n <= 2 ? 1 : 2;
+    const rows = Math.ceil(n / cols);
+    const gap = 28;
+    const colW = (W - 128 - gap * (cols - 1)) / cols;
+    const s = Math.min(1, colW / 952);
+    const rowH = ROW_H * s;
     const footerBlockH = graded ? 88 : 172;
-    const CH = Math.round(listTop + n * ROW_H + footerBlockH);
+    const CH = Math.round(listTop + rows * rowH + footerBlockH);
     cv.height = CH;                 // resizing clears the canvas + resets state
     ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
@@ -130469,10 +130489,10 @@ const GL_SHEET = (function () {
       loadImg((typeof nameToSlug === 'function' && p.loser) ? nameToSlug(p.loser) : null),
     ])));
 
-    let ry = listTop;
     picks.forEach((p, i) => {
-      pkBoutCard(ctx, p, i + 1, ry, W - 128, imgPairs[i][0], imgPairs[i][1], graded);
-      ry += ROW_H;
+      const col = i % cols, row = Math.floor(i / cols);
+      const bx = 64 + col * (colW + gap), by = listTop + row * rowH;
+      pkBoutCard(ctx, p, i + 1, bx, by, colW, imgPairs[i][0], imgPairs[i][1], graded, s);
     });
 
     // Points-at-stake footer for the picks card; the results card shows its total up top.
