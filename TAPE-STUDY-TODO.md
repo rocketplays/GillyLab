@@ -9,6 +9,40 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 26. DWCS Season 10, Week 6 (2026-09-17) — 10 of 10 resolved (5 bouts, both corners each)
+
+New-card sweep, not a per-fighter backlog pass: all 10 fighters (Mayton Perea,
+Zevan Hunt, Igor Cavalcanti, Oscar Ravello, Akbar Abdullaev, Ednilson Santos,
+Luis Hernandez, Hugo Guillon, Tyshawn Williams, Antonio Monteiro) were already
+on the roster pre-fight; only their Sep 15, 2026 DWCS bout row was unlinked —
+exactly the "playlist never has the DWCS bout" gap `place-tape-links.cjs`'s
+own docs call out.
+
+Resolved (10, one shared URL — full-event fallback):
+- All 5 bouts — Dana White's Contender Series: Season 10, Week 6, Sep 15,
+  2026 — Paramount+ (DWCS's streaming home now, not ESPN+), full 2h02m
+  episode, `paramountplus.com/shows/video/ALVE01M145VMQJEHB85W3WGS4RDKMJ/`.
+  No per-bout cut exists there (full-episode-only, same unchaptered-VOD
+  shape as the Road to UFC Fight Pass blocks). Checked first for per-bout
+  clips: ufc.com/video/ has individual finish clips for 3 of the 5
+  (Hernandez–Guillon 160136, Abdullaev–Santos 160137, Cavalcanti–Ravello
+  160138, all verified real — title/description match, gated not dead,
+  same as the project's existing 5 ufc.com/video links) but those are
+  20–100s finish highlights, not full fights, and none exist for Perea–Hunt
+  or Williams–Monteiro (a decision, so no finish clip at all). Owner asked
+  to use Paramount+ instead — placed the full-episode link on all 5 bouts
+  (10 rows) for consistency and because it's actual full-fight footage
+  rather than a highlight.
+
+Placed via the standard safe workflow: dumped each fighter's existing rows
+first, appended the new row, confirmed placed == existing+1 for all 10
+before --write, ran fix-tape-sections.cjs after (0 section changes needed —
+DWCS correctly classifies as Pre-UFC route-in already). Diffed the whole
+file after: only the TAPE_STUDY block changed, +10 rows across exactly
+these 10 keys, everything else byte-identical.
+
+---
+
 ## 25. Delphine Benouaich (2026-08-23) — 6 of 9 resolved, 3 confirmed unavailable
 
 Zero UFC fights (TUF 34 cast member, debuts vs. Sofia Montenegro at UFC
