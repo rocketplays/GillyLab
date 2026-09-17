@@ -130440,19 +130440,41 @@ const GL_SHEET = (function () {
     const divY = legendY + (graded ? 22 : 24);
     const listTop = divY + (graded ? 22 : 26);
 
-    // Two bouts per row once there's more than a couple — one column per bout
-    // scrolls to 2500-3000px for a full 11-14 fight card, nothing like the
-    // reference poster; two columns roughly halves that, closer to a square,
-    // shareable image while still keeping every fighter's photo legible. `s`
-    // (see pkBoutCard) shrinks every size in a bout card to fit its column.
-    const cols = n <= 2 ? 1 : 2;
-    const rows = Math.ceil(n / cols);
-    const gap = 28;
-    const colW = (W - 128 - gap * (cols - 1)) / cols;
-    const s = Math.min(1, colW / 952);
-    const rowH = ROW_H * s;
+    // Group like the event page already does elsewhere in this file (see the
+    // fight-card renderer's own hasFlag/isMainCard/isMain split): a graded
+    // (completed) card stays one flat block, matching "past events aren't
+    // split into main card / prelims" there. An ungraded picks card gets the
+    // main event pinned to its own full-width row, the rest of the main card
+    // below it, then a PRELIMS divider and the rest — so the sheet reads in
+    // the same order the event itself does, not just the order picks were
+    // made in.
+    const gap = 28, divH = 56;
+    let mainEvent = null, mainCardRest = picks, prelims = [];
+    if (!graded) {
+      const hasFlag = picks.some(p => p.isMainCard);
+      const mainCardAll = hasFlag ? picks.filter(p => p.isMainCard || p.isMain) : picks.filter(p => p.isMain);
+      prelims = hasFlag ? picks.filter(p => !p.isMainCard && !p.isMain) : picks.filter(p => !p.isMain);
+      mainEvent = mainCardAll.find(p => p.isMain) || null;
+      mainCardRest = mainCardAll.filter(p => p !== mainEvent);
+    }
+    // Two bouts per row within a section once it has more than a couple —
+    // one column per bout scrolls to thousands of px for a full 11-14 fight
+    // card, nothing like the reference poster; two columns keeps it closer
+    // to square while still keeping every fighter's photo legible. `s` (see
+    // pkBoutCard) shrinks every size in a bout card to fit its column.
+    function gridDims(arr) {
+      const cols = arr.length <= 2 ? 1 : 2;
+      const rows = Math.ceil(arr.length / cols);
+      const colW = (W - 128 - gap * (cols - 1)) / cols;
+      const s = Math.min(1, colW / 952);
+      return { cols, rows, colW, s, rowH: ROW_H * s, h: rows * ROW_H * s };
+    }
+    const mainCardGrid = mainCardRest.length ? gridDims(mainCardRest) : null;
+    const prelimsGrid = prelims.length ? gridDims(prelims) : null;
+    const bodyH = (mainEvent ? ROW_H : 0) + (mainCardGrid ? mainCardGrid.h : 0) + (prelimsGrid ? divH + prelimsGrid.h : 0);
+
     const footerBlockH = graded ? 88 : 172;
-    const CH = Math.round(listTop + rows * rowH + footerBlockH);
+    const CH = Math.round(listTop + bodyH + footerBlockH);
     cv.height = CH;                 // resizing clears the canvas + resets state
     ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
@@ -130483,17 +130505,42 @@ const GL_SHEET = (function () {
 
     // Load every fighter's photo up front — winner slugs come from the payload,
     // loser slugs don't exist there (sharePayload only tracks the pick), so derive
-    // them the same way meta() does.
+    // them the same way meta() does. Keyed by pick object since the draw order
+    // below (main event, then main card, then prelims) isn't picks' own order.
     const imgPairs = await Promise.all(picks.map(p => Promise.all([
       loadImg(p.winnerSlug),
       loadImg((typeof nameToSlug === 'function' && p.loser) ? nameToSlug(p.loser) : null),
     ])));
+    const imgFor = new Map(picks.map((p, i) => [p, imgPairs[i]]));
 
-    picks.forEach((p, i) => {
-      const col = i % cols, row = Math.floor(i / cols);
-      const bx = 64 + col * (colW + gap), by = listTop + row * rowH;
-      pkBoutCard(ctx, p, i + 1, bx, by, colW, imgPairs[i][0], imgPairs[i][1], graded, s);
-    });
+    let cy = listTop, num = 1;
+    if (mainEvent) {
+      const imgs = imgFor.get(mainEvent);
+      pkBoutCard(ctx, mainEvent, num++, 64, cy, W - 128, imgs[0], imgs[1], graded, 1);
+      cy += ROW_H;
+    }
+    if (mainCardGrid) {
+      mainCardRest.forEach((p, i) => {
+        const col = i % mainCardGrid.cols, row = Math.floor(i / mainCardGrid.cols);
+        const bx = 64 + col * (mainCardGrid.colW + gap), by = cy + row * mainCardGrid.rowH;
+        const imgs = imgFor.get(p);
+        pkBoutCard(ctx, p, num++, bx, by, mainCardGrid.colW, imgs[0], imgs[1], graded, mainCardGrid.s);
+      });
+      cy += mainCardGrid.h;
+    }
+    if (prelimsGrid) {
+      ctx.textAlign = 'left'; ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
+      ctx.fillText('PRELIMS', 64, cy + 30);
+      ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, cy + divH - 14); ctx.lineTo(W - 64, cy + divH - 14); ctx.stroke();
+      cy += divH;
+      prelims.forEach((p, i) => {
+        const col = i % prelimsGrid.cols, row = Math.floor(i / prelimsGrid.cols);
+        const bx = 64 + col * (prelimsGrid.colW + gap), by = cy + row * prelimsGrid.rowH;
+        const imgs = imgFor.get(p);
+        pkBoutCard(ctx, p, num++, bx, by, prelimsGrid.colW, imgs[0], imgs[1], graded, prelimsGrid.s);
+      });
+      cy += prelimsGrid.h;
+    }
 
     // Points-at-stake footer for the picks card; the results card shows its total up top.
     if (!graded) {
@@ -143408,6 +143455,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           confidence: p.confidence || 'Med',
           label: f.label || f.wc || '',
           isMain: !!f.isMain,
+          isMainCard: !!f.isMainCard,
         };
         if (graded) {
           const g = gradePick(p, f);
