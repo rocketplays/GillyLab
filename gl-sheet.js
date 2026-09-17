@@ -2195,9 +2195,13 @@ const GL_SHEET = (function () {
       'My picks for ' + ((data && data.eventName) || 'the card') + ' — make yours on gillylab.com'),
     // The full fight card (no picks) for the "Share this card" button on the
     // home page and the upcoming-events carousel.
+    // No shareText (null, not a string) — per open()'s own switch, that's
+    // what drops the Share button, leaving just Save photo / Close. Asked
+    // for directly: the full-card poster doesn't need a Share-with-link
+    // action the way Pick'em's free-page card does.
     eventCard: (data) => open(() => drawEventCard(data || {}),
       'gillylab-' + ((data && data.name) || 'fight-card').toString().replace(/\s+/g, '-').toLowerCase() + '.png',
-      'The full card for ' + ((data && data.name) || 'this event') + ' — see it on gillylab.com'),
+      null),
     // Square card of a finished Climb run.
     climb: (data) => open(() => drawClimb(data || {}),
       'gillylab-the-climb.png',
