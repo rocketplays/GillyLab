@@ -2083,3 +2083,47 @@ exhausted. NO index.html CHANGE (nothing to place).
   NOT placed.
   No placer run — nothing resolved this pass, so index.html is untouched.
   Gap-list still shows all 6 expected unresolved bouts.
+
+CASEY O'NEILL — SEP 2026 — 5-bout pre-UFC gap sweep, 3 of 5 placed, 2
+exhausted.
+  All 5 gap bouts are 2019-2020 regional cards from O'Neill's Australian
+  amateur/early-pro run: one UAE Warriors (Abu Dhabi) bout and four Eternal
+  MMA (Australia's premier regional promotion) bouts. Both promotions have
+  clean official channels, which is why this sweep went well overall.
+    SOLVED (3): Christina Stelliou (UAE Warriors 13, Sep 25 2020) — bare
+      pair and event-number searches found no per-bout cut, but UAE
+      Warriors' own channel (@UAEWarriors) hosts the full 5.5-hour event
+      VOD with a chaptered description; "Christina Stelliou vs Casey
+      O'Neill" is chaptered at 1:11:20 (which the video's own timestamp
+      list shows as immediately after the 54:55 chapter, i.e. the bout
+      itself runs from 54:55) — placed with a &t= start-time parameter
+      (t=3295s = 54:55) so the link opens directly on the bout rather than
+      the 5.5-hour VOD's start. v=ING6HRmUT5E&t=3295s. Amira Hafizović
+      (Eternal MMA 43, Apr 5 2019) and Jada Ketley (Eternal MMA 46, Jul 27
+      2019) — both found directly in a dedicated "King Casey O'Neill"
+      playlist (8 videos) curated on Eternal MMA's own official channel,
+      as individually-cut full fight videos (26:34 and 7:22
+      respectively). v=X8Cp3PrVLG4, v=QodLNO5PdSw.
+    UNRESOLVED, EXHAUSTED (2): Caitlin McEwen (Eternal MMA 51, Feb 29 2020)
+      and Miki Motono (Eternal MMA 48, Oct 4 2019) — neither is in the
+      "King Casey O'Neill" playlist nor findable via bare-pair or
+      event-number search on Eternal MMA's channel, even though other
+      undercard bouts from both of those same cards (e.g. Eternal 51:
+      Araneda vs Blake, Hunt vs Cooper) do have individual uploads. Likely
+      explanation: by late 2019/early 2020 Eternal MMA had begun steering
+      title fights and UFC-track prospects' bouts (both of these were
+      O'Neill's flyweight/strawweight title defenses) toward UFC Fight
+      Pass instead of free YouTube, while lower-profile undercard bouts
+      stayed free — worth checking Fight Pass directly for these two if a
+      future pass has login access. Note also a spelling trap: the
+      opponent surfaces as "McEwan" (not our data's "McEwen") in an
+      interview video, though correcting the spelling didn't turn up a
+      fight video either.
+  Ran place-tape-links.cjs (dry run first) with all 11 rows (8 pre-existing
+  re-supplied + 3 new) — placed(11) >= already(8), 0 unplaced. Ran --write:
+  11 rows written (1 fighter, 1 block replaced). fix-tape-sections.cjs
+  --write: 0 section changes. Verified via git diff that all 8
+  pre-existing UFC-era URLs are intact (including the &t= parameter on the
+  Stelliou row surviving the rewrite) and the 3 new pre-UFC rows are
+  appended under a single "Pre-UFC" header. Gap-list script re-run
+  confirms exactly the 2 expected exhausted bouts remain.
