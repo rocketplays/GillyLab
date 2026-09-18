@@ -7975,6 +7975,7 @@
  { name: "Rose Conceição", division: "WSW", rank: "NR", record: "7-2-0", initials: "RC", country: "Brazil" },
  { name: "Norbert Növényi Jr.", division: "MW", rank: "NR", record: "10-1-0", initials: "NN", country: "Hungary" },
  { name: "Jaden Ortega", division: "WW", rank: "NR", record: "6-0-0", initials: "JO", country: "USA" },
+ { name: "Alvi Dasuyev", division: "WW", rank: "NR", record: "9-0-0", initials: "AD", country: "Belgium" },
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11948,6 +11949,7 @@
   "Rose Conceição": { ht:"5'5\"", dob:"1997-05-13", reach:'65"', stance:"Orthodox", slpm:3.07, strAcc:"28%", sapm:6.73, strDef:"60%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"0%", subAvg:0.0, finRate:"43%", streak:0, gym:"Pitbull Brothers" },
   "Norbert Növényi Jr.": { ht:"5'11\"", dob:"1999-10-06", reach:'75"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"90%", streak:3, gym:"London Shootfighters" },
   "Jaden Ortega": { ht:"6'1\"", dob:"2002-09-18", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Sikjitsu" },
+  "Alvi Dasuyev": { ht:"6'1\"", dob:null, reach:'74"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:9, gym:null },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46210,6 +46212,10 @@
     { opponent: "Alan Benson", odds: -909 },
   ],
   "Jaden Ortega": [],
+  "Alvi Dasuyev": [
+    { opponent: "Mohamed Soumah", odds: -1000 },
+    { opponent: "Danila Prikaza", odds: -400 },
+  ],
 };
 
 const FIGHT_HISTORY = {
@@ -113533,6 +113539,17 @@ const FIGHT_HISTORY = {
     { date: "May 11, 2024", opponent: "Jimmie Pace Jr.", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global: Lara vs. Luna" },
     { date: "May 19, 2023", opponent: "Billy Martin", result: "W", method: "TKO (Punches)", round: 1, time: "-", event: "ExciteFight: Conquest of the Cage" },
   ],
+  "Alvi Dasuyev": [
+    { date: "Jun 5, 2026", opponent: "Mohamed Soumah", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:11", event: "Ares FC 41: Dasuyev vs. Soumah" },
+    { date: "Nov 28, 2025", opponent: "Kevin Ruart", result: "W", method: "TKO (Punches)", round: 1, time: "4:04", event: "Arena Elite Championship 16" },
+    { date: "Sep 26, 2025", opponent: "Danila Prikaza", result: "W", method: "TKO (Flying Switch Kick and Punches)", round: 3, time: "2:56", event: "LFA 218: Nascimento vs. Makaev" },
+    { date: "Jun 27, 2025", opponent: "Mauricio Otalora", result: "W", method: "TKO (Flying Knee)", round: 1, time: "1:22", event: "Brussels Warriors League 2" },
+    { date: "Jun 6, 2025", opponent: "Tyrone Pfeifer", result: "W", method: "TKO (Punches)", round: 1, time: "4:01", event: "Arena Elite Championship 14" },
+    { date: "Feb 7, 2025", opponent: "Bryan Felipe", result: "W", method: "KO (Punch to the Body)", round: 1, time: "3:41", event: "Arena Elite Championship 12" },
+    { date: "Nov 28, 2024", opponent: "Bruno Ramos", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:28", event: "Arena Elite Championship 10" },
+    { date: "Jun 28, 2024", opponent: "Guilherme Assis", result: "W", method: "KO (Punch)", round: 1, time: "1:56", event: "FightStar Championship 29" },
+    { date: "May 30, 2024", opponent: "Gabriel Brito", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:32", event: "AEF Championship 7" },
+  ],
 
 
 
@@ -128958,6 +128975,10 @@ const ACCOLADES = {
   "Jaden Ortega": [
     { icon: "🥊", title: "Undefeated (6-0) with 5 of 6 wins by knockout/TKO, 4 of them by kicks (head kick x2, body kick, flying knee)", detail: null },
     { icon: "🏆", title: "Regional standout out of Combate Global and ExciteFight, out of Spokane, Washington", detail: null },
+  ],
+  "Alvi Dasuyev": [
+    { icon: "🥊", title: "Undefeated (9-0) as a pro, every win a finish (6 KO/TKO, 3 submission) — 100% finish rate", detail: null },
+    { icon: "🌍", title: "Belgian regional standout (Arena Elite Championship, Ares FC, Brussels Warriors League); competed for Belgium at the 2023 IMMAF World Championships as an amateur", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
