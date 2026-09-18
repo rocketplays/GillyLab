@@ -139151,6 +139151,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const dateFormatted = dateStr
       ? new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       : '';
+    // Venue/city is no longer shown in evt.details (home hero, carousel card,
+    // and the tape-study event header all read it) — per feedback, "UFC 331:
+    // Van vs. Pantoja 2 · September 19, 2026" should stop there, not run on
+    // into "· Las Vegas, NV". Kept here (unused) rather than deleted outright
+    // in case a future consumer wants it back without re-deriving it.
     const venue = [rawEvt.venue, normalizeApiLocationStr(rawEvt.city)].filter(Boolean).join(' · ');
     // Some API events (esp. past cards in event-recent.json) list each matchup
     // twice under different bout IDs — dedupe by fighter pairing, keeping the
@@ -139258,7 +139263,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // so renderHomeFightCard can tell a DWCS card apart from a regular one
       // without needing the raw event alongside evt. See isRoadToUFCRaw.
       espnName: rawEvt.espnName || null,
-      details: [dateFormatted, venue].filter(Boolean).join(' · '),
+      details: dateFormatted,
       date:    dateStr,
       slug:    rawEvt.slug || dateStr,
       completed: rawEvt.status === 'completed',
