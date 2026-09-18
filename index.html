@@ -7981,6 +7981,7 @@
  { name: "Callum Connor", division: "LW", rank: "NR", record: "8-0-0", initials: "CC", country: "England" },
  { name: "Piero Guaylupo", division: "LW", rank: "NR", record: "12-0-0", initials: "PG", country: "Peru" },
  { name: "Emilio Quissua", division: "LHW", rank: "NR", record: "8-0-0", initials: "EQ", country: "Germany" },
+ { name: "Damian Piwowarczyk", division: "LHW", rank: "NR", record: "11-4-0", initials: "DP", country: "Poland" },
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11960,6 +11961,7 @@
   "Callum Connor": { ht:"6'0\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"75%", streak:8, gym:"Manchester Top Team" },
   "Piero Guaylupo": { ht:"5'9\"", dob:"2004-10-29", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"92%", streak:12, gym:"Los Perros Sarnosos" },
   "Emilio Quissua": { ht:"6'4\"", dob:"1997-04-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Planet Eater" },
+  "Damian Piwowarczyk": { ht:"6'6\"", dob:"1997-09-14", reach:'79"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:3, gym:"Czerwony Smok" },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46250,6 +46252,19 @@
     { opponent: "Mateusz Strzelczyk", odds: -333 },
     { opponent: "Juscelino Ferreira", odds: -400 },
     { opponent: "Kevin Oumar", odds: 100 },
+  ],
+  "Damian Piwowarczyk": [
+    { opponent: "Sergiusz Zajac", odds: -130 },
+    { opponent: "Marcin Wojcik", odds: -143 },
+    { opponent: "Kleber Silva", odds: -188 },
+    { opponent: "Lukasz Sudolski", odds: -188 },
+    { opponent: "Bartlomiej Gladkowicz", odds: -215 },
+    { opponent: "Bogdan Gnidko", odds: -500 },
+    { opponent: "Bartosz Lesko", odds: -225 },
+    { opponent: "Marc Doussis", odds: -300 },
+    { opponent: "Marcin Trzcinski", odds: -500 },
+    { opponent: "Roman Kononov", odds: -1000 },
+    { opponent: "Slawomir Bryla", odds: 150 },
   ],
 };
 
@@ -113658,6 +113673,23 @@ const FIGHT_HISTORY = {
     { date: "Jul 25, 2021", opponent: "Enzo Tobbia", result: "W", method: "TKO (Injury)", round: 1, time: "5:00", event: "NFT Gym: National Fighting Championship 4" },
     { date: "May 22, 2021", opponent: "Florian de la Motte", result: "W", method: "TKO (Punches)", round: 2, time: "-", event: "GMC 25: German MMA Championship" },
   ],
+  "Damian Piwowarczyk": [
+    { date: "Mar 14, 2026", opponent: "Sergiusz Zajac", result: "W", method: "TKO (Punches)", round: 2, time: "1:22", event: "KSW 116: Bartosinski vs. Fleminas" },
+    { date: "Jun 14, 2025", opponent: "Cedric Lushima", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "2:05", event: "KSW 107: De Fries vs. Wrzosek" },
+    { date: "Feb 21, 2025", opponent: "Bartosz Szewczyk", result: "W", method: "KO (Punches)", round: 1, time: "3:19", event: "KSW 103: Brichta vs. Charzewski" },
+    { date: "Sep 14, 2024", opponent: "Marcin Wojcik", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:46", event: "KSW 98: Paczuski vs. Zerhouni" },
+    { date: "Feb 24, 2024", opponent: "Rafal Haratyk", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "KSW Epic: Khalidov vs. Adamek" },
+    { date: "Feb 24, 2024", opponent: "Kleber Silva", result: "W", method: "KO (Punch to the Body)", round: 1, time: "2:42", event: "KSW Epic: Khalidov vs. Adamek" },
+    { date: "Sep 16, 2023", opponent: "Lukasz Sudolski", result: "W", method: "KO (Punch)", round: 1, time: "3:38", event: "KSW 86: Wiklacz vs. Przybysz 4" },
+    { date: "Mar 17, 2023", opponent: "Bartlomiej Gladkowicz", result: "W", method: "TKO (Elbows and Punches)", round: 1, time: "2:39", event: "KSW 80: Eskiev vs. Ruchala" },
+    { date: "Aug 20, 2022", opponent: "Bogdan Gnidko", result: "L", method: "KO (Punch)", round: 1, time: "0:05", event: "KSW 73: Wrzosek vs. Sarara" },
+    { date: "May 28, 2022", opponent: "Bartosz Lesko", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KSW 70: Pudzianowski vs. Materla" },
+    { date: "Dec 18, 2021", opponent: "Marc Doussis", result: "W", method: "Submission (Triangle Armbar)", round: 2, time: "2:21", event: "KSW 65: Khalidov vs. Soldic" },
+    { date: "Sep 4, 2021", opponent: "Marcin Trzcinski", result: "W", method: "Submission (Bulldog Choke)", round: 2, time: "2:07", event: "KSW 63: Crime of the Century" },
+    { date: "Jun 19, 2021", opponent: "Roman Kononov", result: "W", method: "TKO (Punches)", round: 2, time: "1:30", event: "Runda 10: DWM Fight Night" },
+    { date: "Apr 30, 2021", opponent: "Slawomir Bryla", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "0:57", event: "Babilon MMA 21: Pawlak vs. Guzev" },
+    { date: "Nov 23, 2019", opponent: "Seweryn Kucharski", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Runda 9: Lazarz vs. Kalenik" },
+  ],
 
 
 
@@ -129108,6 +129140,11 @@ const ACCOLADES = {
   "Emilio Quissua": [
     { icon: "🥊", title: "Undefeated (8-0) as a pro, 5 of 8 wins by knockout/TKO", detail: null },
     { icon: "🌍", title: "German regional standout out of Planet Eater, with two wins on OKTAGON MMA's main circuit", detail: null },
+  ],
+  "Damian Piwowarczyk": [
+    { icon: "🏆", title: "Finalist in KSW's one-night light heavyweight tournament (KSW Epic, Feb 2024) — beat Kleber Silva by first-round KO in the semifinal before falling to Rafal Haratyk by split decision in the final, same night", detail: null },
+    { icon: "🥊", title: "11-4 pro with a 91% finish rate among wins (6 KO/TKO, 4 submission); on a 3-fight win streak into the UFC APEX", detail: null },
+    { icon: "🌍", title: "Longtime staple of KSW, Poland's premier MMA promotion", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
