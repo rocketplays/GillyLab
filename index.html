@@ -7977,6 +7977,7 @@
  { name: "Jaden Ortega", division: "WW", rank: "NR", record: "6-0-0", initials: "JO", country: "USA" },
  { name: "Alvi Dasuyev", division: "WW", rank: "NR", record: "9-0-0", initials: "AD", country: "Belgium" },
  { name: "Marcos Degli", division: "FLW", rank: "NR", record: "14-3-0", initials: "MD", country: "Brazil" },
+ { name: "Paris Moran", division: "FLW", rank: "NR", record: "14-3-0", initials: "PM", country: "USA" }, // 1 NC
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11952,6 +11953,7 @@
   "Jaden Ortega": { ht:"6'1\"", dob:"2002-09-18", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Sikjitsu" },
   "Alvi Dasuyev": { ht:"6'1\"", dob:null, reach:'74"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:9, gym:null },
   "Marcos Degli": { ht:"5'6\"", dob:"2000-05-13", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"93%", streak:12, gym:"Vale Top Team" },
+  "Paris Moran": { ht:"5'8\"", dob:"1996-02-04", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"43%", streak:2, gym:"Gracie Barra Katy" },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46224,6 +46226,16 @@
     { opponent: "Ignacio Fernandez", odds: -2500 },
     { opponent: "Alisson Murilo", odds: -163 },
     { opponent: "Hugo Paiva", odds: 163 },
+  ],
+  "Paris Moran": [
+    { opponent: "German Orpineda Ponce", odds: -1250 },
+    { opponent: "Peter Caballero", odds: -549 },
+    { opponent: "Jose Ceja", odds: -950 },
+    { opponent: "Anthony Do", odds: -400 },
+    { opponent: "Joey Elzea", odds: -350 },
+    { opponent: "Eddie Fraire", odds: -260 },
+    { opponent: "Alberto Trujillo", odds: -225 },
+    { opponent: "Freddie Rodriguez", odds: -188 },
   ],
 };
 
@@ -113578,6 +113590,26 @@ const FIGHT_HISTORY = {
     { date: "Jul 11, 2021", opponent: "Marceu Pasin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Thunder Fight 28" },
     { date: "May 2, 2021", opponent: "Davi Bittencourt", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Thunder Fight 26" },
   ],
+  "Paris Moran": [
+    { date: "May 17, 2026", opponent: "Roybert Echeverria", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "Fury FC 119" },
+    { date: "Jan 18, 2026", opponent: "German Orpineda Ponce", result: "W", method: "TKO (Punches)", round: 3, time: "4:29", event: "Fury FC 113" },
+    { date: "Aug 17, 2025", opponent: "Jacob Silva", result: "L", method: "Decision (Split)", round: 5, time: "5:00", event: "Fury FC 107" },
+    { date: "Jan 12, 2025", opponent: "Alden Coria", result: "NC", method: "No Contest (Overturned)", round: 1, time: "3:12", event: "Fury FC 100" },
+    { date: "Oct 6, 2024", opponent: "Peter Caballero", result: "W", method: "TKO (Punches)", round: 1, time: "0:31", event: "Fury FC 97" },
+    { date: "Jun 9, 2024", opponent: "Freddie Rodriguez", result: "W", method: "Submission (Arm-Triangle Choke)", round: 2, time: "3:57", event: "Fury FC 91" },
+    { date: "Mar 10, 2024", opponent: "Shameek Harvey", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Fury FC 87" },
+    { date: "Aug 27, 2023", opponent: "Alberto Trujillo", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "Fury FC 82" },
+    { date: "Feb 5, 2023", opponent: "Jose Ceja", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:39", event: "Fury FC 74" },
+    { date: "Aug 14, 2022", opponent: "Joshua Van", result: "L", method: "TKO (Punches)", round: 2, time: "0:36", event: "Fury FC 67" },
+    { date: "Jun 5, 2022", opponent: "Anthony Do", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 64" },
+    { date: "Feb 11, 2022", opponent: "Joey Elzea", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 57" },
+    { date: "Sep 5, 2021", opponent: "Nate Smith", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 50" },
+    { date: "May 16, 2021", opponent: "Shawn Solis", result: "W", method: "TKO (Knee)", round: 1, time: "1:56", event: "Fury FC 46" },
+    { date: "Mar 6, 2021", opponent: "Eddie Fraire", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 44" },
+    { date: "Dec 12, 2020", opponent: "Jonathan Enriquez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 43" },
+    { date: "Feb 23, 2020", opponent: "Francisco Obando", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:24", event: "Fury FC 42" },
+    { date: "Nov 9, 2019", opponent: "Daniel Gabriel", result: "W", method: "TKO (Punches)", round: 2, time: "3:00", event: "Fury FC 39" },
+  ],
 
 
 
@@ -129012,6 +129044,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "LFA interim flyweight champion — successfully defended the title with a first-round KO of Luís Aguiar at LFA 225 (Jan 2026)", detail: null },
     { icon: "🔥", title: "On a 12-fight win streak since his last loss in March 2022, 14-3 overall with a 93% finish rate (9 KO/TKO, 4 submission) among 14 wins", detail: null },
     { icon: "🌍", title: "Brazilian regional standout across LFA, Spartacus MMA, Jungle Fight, and Arena Pride MMA", detail: null },
+  ],
+  "Paris Moran": [
+    { icon: "🥊", title: "8-year Fury Fighting Championship veteran, 18 pro fights deep (14-3-0, 1 NC) with 8 of 14 wins by decision", detail: null },
+    { icon: "🏟️", title: "Lone KO/TKO loss came against Joshua Van (Aug 2022), who has since gone on to a UFC flyweight title fight", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
