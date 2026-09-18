@@ -7974,6 +7974,7 @@
  { name: "Mateo Vogel", division: "LW", rank: "NR", record: "9-3-0", initials: "MV", country: "Canada" },
  { name: "Rose Conceição", division: "WSW", rank: "NR", record: "7-2-0", initials: "RC", country: "Brazil" },
  { name: "Norbert Növényi Jr.", division: "MW", rank: "NR", record: "10-1-0", initials: "NN", country: "Hungary" },
+ { name: "Jaden Ortega", division: "WW", rank: "NR", record: "6-0-0", initials: "JO", country: "USA" },
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11946,6 +11947,7 @@
   "Mateo Vogel": { ht:"5'8\"", dob:"1996-03-05", reach:'71"', stance:"Orthodox", slpm:4.47, strAcc:"46%", sapm:2.87, strDef:"66%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"67%", streak:1, gym:"" },
   "Rose Conceição": { ht:"5'5\"", dob:"1997-05-13", reach:'65"', stance:"Orthodox", slpm:3.07, strAcc:"28%", sapm:6.73, strDef:"60%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"0%", subAvg:0.0, finRate:"43%", streak:0, gym:"Pitbull Brothers" },
   "Norbert Növényi Jr.": { ht:"5'11\"", dob:"1999-10-06", reach:'75"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"90%", streak:3, gym:"London Shootfighters" },
+  "Jaden Ortega": { ht:"6'1\"", dob:"2002-09-18", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Sikjitsu" },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46207,6 +46209,7 @@
     { opponent: "Adam Wamsley", odds: -850 },
     { opponent: "Alan Benson", odds: -909 },
   ],
+  "Jaden Ortega": [],
 };
 
 const FIGHT_HISTORY = {
@@ -113522,6 +113525,14 @@ const FIGHT_HISTORY = {
     { date: "Apr 6, 2018", opponent: "Mehmet Yueksel", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:42", event: "Bellator 196: Henderson vs. Huerta", org: "Bellator" },
     { date: "Feb 9, 2018", opponent: "Ben Reeve", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:27", event: "UCMMA 54: Ultimate Challenge MMA 54" },
   ],
+  "Jaden Ortega": [
+    { date: "Feb 26, 2026", opponent: "Ricardo Chavez", result: "W", method: "TKO (Head Kick and Punches)", round: 2, time: "0:26", event: "Combate Global 96: Mendez vs. Padron" },
+    { date: "Jul 17, 2025", opponent: "Ivan Castillo", result: "W", method: "TKO (Body Kick and Punches)", round: 1, time: "0:49", event: "Combate Global: Enriquez vs. Brobyskov" },
+    { date: "Apr 10, 2025", opponent: "Marcos Lloreda", result: "W", method: "TKO (Head Kick and Punches)", round: 1, time: "4:16", event: "Combate Global: Acosta vs. Anguiano" },
+    { date: "Jan 18, 2025", opponent: "Idrees Wasi", result: "W", method: "TKO (Flying Knee and Punches)", round: 1, time: "-", event: "ExciteFight: Conquest of the Cage" },
+    { date: "May 11, 2024", opponent: "Jimmie Pace Jr.", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global: Lara vs. Luna" },
+    { date: "May 19, 2023", opponent: "Billy Martin", result: "W", method: "TKO (Punches)", round: 1, time: "-", event: "ExciteFight: Conquest of the Cage" },
+  ],
 
 
 
@@ -128943,6 +128954,10 @@ const ACCOLADES = {
     { icon: "🥋", title: "All 7 career wins by submission (5 rear-naked choke, 1 guillotine choke, 1 unspecified) — 100% finish rate among wins", detail: null },
     { icon: "🔁", title: "Rebounded from a first-round KO loss on Dana White's Contender Series (Sep 2025) with a second-round submission win at LFA 227 (Feb 2026) to earn another Contender Series opportunity", detail: null },
     { icon: "🏋️", title: "Trains out of AKA (American Kickboxing Academy), the gym behind champions like Khabib Nurmagomedov, Daniel Cormier, and Cain Velasquez", detail: null },
+  ],
+  "Jaden Ortega": [
+    { icon: "🥊", title: "Undefeated (6-0) with 5 of 6 wins by knockout/TKO, 4 of them by kicks (head kick x2, body kick, flying knee)", detail: null },
+    { icon: "🏆", title: "Regional standout out of Combate Global and ExciteFight, out of Spokane, Washington", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
