@@ -1960,3 +1960,44 @@ exhausted.
   intact (rows reordered to match FIGHT_HISTORY date order) and the 4 new
   pre-UFC rows are appended under a single "Pre-UFC" header. Gap-list
   script re-run confirms exactly the 6 expected exhausted bouts remain.
+
+JOOSANG YOO — SEP 2026 — 5-bout pre-UFC gap sweep, 5 of 5 placed. FULL
+CAREER COVERAGE (10/10 bouts now linked).
+  All 5 gap bouts are 2021-2023 Korean/Japanese regional cards, all but one
+  on AFC (Angel's Fighting Championship, a Korean celebrity-charity MMA
+  promotion) — AFC has one clean official channel with every card fully
+  uploaded, both as standalone per-bout videos and folded into promo/replay
+  reels, making this the fastest full-coverage sweep in the log so far.
+    SOLVED (5): Takuya Kuramoto (HEAT 52 x AFC 27 unification title, Aug 19
+      2023) — generic "AFC 27" search collided with the Asian Football
+      Confederation; found by searching the Korean-script promotion name
+      "AFC엔젤스파이팅챔피언십" + opponent, official channel (@afc78, 62.3K
+      subs), "AFC27 제 7경기 통합타이틀전 쿠라모토 타쿠야 VS 유주상", 5:30
+      full fight. v=_n6GtxePfUQ. Shunichi Shimizu (AFC 22, Dec 30 2022) —
+      same channel, "[AFC22] Shunichi Shimizu vs. Yoo Ju-sang | Featherweight
+      Title Match", 33 min (full card). v=JWynSUx7Sno. Gustavo Wurlitzer
+      (AFC 20, Sep 30 2022) — found via the channel's own in-channel search
+      for "Gustavo", a 10th-anniversary replay reel titled "[AFC20] Match 5
+      Gustavo Weritzer VS Yu Ju-sang", 22 min. v=-WDPOGjm-rg. Jun Hee Jung
+      (AFC 17, Oct 15 2021) — Korean name order flips surname/given name in
+      romanization; guessed the hangul as 정준희 and searched the channel
+      directly, hit "[AFC17] 4경기 정준희 VS 유주상" (Match 4), 19 min full
+      fight. v=ZYWirGXUTqg. Baek Ho Jang (AFC 16 debut, May 31 2021) — same
+      channel search pattern, "[AFC] AFC16 유주상 VS 장백호" / "AFC16 Yoo
+      Ju-sang vs. Jang Baek-ho", 12:02 full fight. v=vUx2fyhEhIE.
+    NOTE ON AFC'S ARCHIVE: @afc78 is a model channel for this kind of sweep
+    — every card is uploaded per-bout under a consistent "[AFCxx] Match N
+    Fighter VS Fighter" naming pattern, in both Korean and (inconsistently)
+    English. When a bare English-name pair search fails, searching the
+    channel's own search box for the Korean romanization of either
+    fighter's name (or just the promotion's Korean name + opponent) reliably
+    surfaces the match, since YouTube's Korean-script indexing for this
+    channel is far more complete than its English-name indexing.
+  Ran place-tape-links.cjs (dry run first) with all 10 rows (5 pre-existing
+  re-supplied + 5 new) — placed(10) >= already(5), 0 unplaced, no name
+  fixes needed. Ran --write: 10 rows written (1 fighter, 1 block replaced).
+  fix-tape-sections.cjs --write: 0 section changes. Verified via git diff
+  that all 5 pre-existing rows are intact and the 5 new rows are appended
+  under the existing "Pre-UFC" header. Gap-list script re-run confirms 0
+  bouts remain unlinked — JooSang Yoo now has full 10/10 career tape
+  coverage.
