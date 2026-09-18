@@ -1764,3 +1764,70 @@ Mahamed Aly (both UFC Fight Pass).
   already(4). fix-tape-sections.cjs --write: 0 section changes. Verified
   post-write that all 4 pre-existing rows plus the 3 new rows are intact
   (7 total) before committing index.html back.
+
+DOOHO CHOI — SEP 2026 — 12-bout pre-UFC gap sweep, 5 of 12 placed, 7 exhausted.
+  All 12 gap bouts are 2009-2013 Japanese regional shows (DEEP x6, Gladiator
+  x2, Sengoku Raiden Championship, M-1 Selection Asia, Grachan) — Choi's own
+  9 existing UFC-era rows (Fight Pass + one Paramount+ link) were untouched,
+  re-supplied in the temp file per the safe workflow.
+    SOLVED, DEEP's OWN CHANNEL (3): Shoji Maruyama (DEEP: Cage Impact 2013,
+      Jun 2013) — bare-pair search hit immediately, official "DEEPチャンネル"
+      (@deep2001MMA, 103K subs) upload titled in Japanese+English, event/
+      venue/date in the description match FIGHT_HISTORY exactly.
+      v=ZVRwGVoo0E0. Tatsunao Nagakura (DEEP 61 Impact, Feb 2013) — same
+      channel, same bare-pair search. v=veuZT9AiEtI. Mitsuhiro Ishida (DEEP
+      56 Impact, Dec 2011) — found via the Japanese-script pass (opponent's
+      kanji 石田, "チェ・ドゥホ 石田" search), same channel, title
+      "MITSUHIRO ISHIDA VS DOO HO CHOI", description confirms DEEP 56
+      IMPACT/Dec 16 2011/Round 1 1:33 TKO exactly. v=-q50q2EO0SM.
+    SOLVED, THIRD-PARTY CHANNEL (2): Kosuke Umeda (DEEP 59 Impact, Aug 2012)
+      — the bare-pair search on DEEP's own channel only turned up a 9-year-
+      old "Moment of the Day" highlight clip (Fight Network) and an
+      unrelated 31-second "Audience Camera" partial, neither the full
+      fight — solved instead via the Japanese-script pass ("DEEP チェ・
+      ドゥホ 梅田"), a 3:17 upload titled "【MMA】チェ・ドゥホ vs 梅田恒介"
+      on a small Japan-vs-Korea MMA compilation channel (160 views, 11
+      months old) — long enough to plausibly be the full Round 1 (fight
+      ended 2:49 into round 1) and not one of the rejected shorter clips.
+      v=9OsntsCivvs. Jong Hwa Lee (M-1 Selection 2010: Asia Round 1, Mar
+      2010) — bare-pair search, "WishOnIce" channel, video titled with the
+      exact date "2010-03-05" matching FIGHT_HISTORY and captioned "Early
+      Fight from a great prospect in MMA" (13:58, full-length). Video spells
+      the opponent "Jong Wha Lee" — placed under FIGHT_HISTORY's own "Jong
+      Hwa Lee" spelling per the TRAPS rule (matched on event+date, not the
+      title's romanization). v=2ljBUSgSz38.
+    UNRESOLVED, EXHAUSTED (7): Nobuhiro Obiya (DEEP: Cage Impact 2011 in
+      Tokyo, Oct 2011) — bare-pair (English and two guessed-kanji
+      spellings, neither confirmed correct) and event-number retries all
+      came up empty; DEEP's own channel has nothing for this specific card.
+      Hisaki Hiraishi (Gladiator 23, Sep 2011) and Yuichiro Ono (Gladiator
+      7, Jun 2010) — "Gladiator" (a small early-2010s Japanese regional
+      promotion) has no identifiable YouTube channel or archive at all;
+      zero hits any phrasing. Atsuhiro Tsuboi (DEEP: clubDeep Nagoya, Sep
+      2010) — bare-pair and a kanji-guess pass (坪井) both empty; predates
+      DEEP's channel's apparent upload floor (see Kagiyama below). Ikuo
+      Usuda (Sengoku Raiden Championship 13, Jun 2010) — only hit was an EA
+      Sports UFC-4 sim video description mentioning the real fight in
+      passing, no actual footage; the 2010 Sengoku Raiden revival brand has
+      no YouTube presence found. Yusuke Kagiyama (DEEP: Cage Impact 2010 in
+      Osaka, Jun 2010) — bare-pair and event-number retries empty; DEEP's
+      own channel's Choi uploads bottom out at Dec 2011 (Ishida/DEEP 56) —
+      this card, 18 months earlier, is before wherever its back-catalog
+      cutoff sits, matching the established "early-era regional card, no
+      back-upload" pattern from other fighters' sweeps in this log. Takashi
+      Matsuoka (Grachan 3, Nov 2009) — Choi's actual pro debut; searched
+      bare pair, event number, and Korean-script (최두호) — Grachan appears
+      to have no surviving YouTube footage from 2009 under any phrasing.
+    NOTE ON UMEDA'S SOURCE: the placed video is a small reupload/compilation
+    channel, not DEEP's own or a channel otherwise vetted in this log's
+    "channels that have paid off" list — kept per the "secondary channels
+    are fine, judge the title not the channel" rule, but flagged here in
+    case a cleaner source turns up later.
+  Ran place-tape-links.cjs --write with all 14 rows (9 pre-existing
+  re-supplied + 5 new). Report: 14 parsed, 14 placed, 0 unplaced,
+  placed(14) >= already(9). fix-tape-sections.cjs --write: 0 section
+  changes (0 fighters affected). Verified post-write via git diff that
+  only Dooho Choi's block changed (moved by the writer's alphabetical
+  re-sort, all 9 pre-existing rows byte-identical, 5 new rows appended
+  under a single "Pre-UFC" header on the first new row) and the gap-list
+  script now reports the correct 7 remaining unlinked bouts.
