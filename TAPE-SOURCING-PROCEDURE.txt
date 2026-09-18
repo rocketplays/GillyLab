@@ -2001,3 +2001,59 @@ CAREER COVERAGE (10/10 bouts now linked).
   under the existing "Pre-UFC" header. Gap-list script re-run confirms 0
   bouts remain unlinked — JooSang Yoo now has full 10/10 career tape
   coverage.
+
+OZZY DIAZ — SEP 2026 — 7-bout pre-UFC gap sweep, 2 of 7 placed, 5
+exhausted (plus 1 pre-existing known-unresolved bout re-confirmed).
+  All 7 gap bouts are 2015-2021 Southern California regional cards across
+  six different small promotions (LFA, LXF, Bellator x2, Fight Club OC x2,
+  KOTC), none of which share a channel — this was a low-hit-rate sweep.
+    SOLVED (2): Chuck Campbell (LFA 178, Mar 8 2024) — bare pair hit
+      directly on UFC FIGHT PASS's own YouTube channel, "LFA 178: Ozzy Diaz
+      vs Chuck Cambell | March 8, 2024" (title misspells the opponent's
+      surname), 8:16 full fight — confirms the procedure's standing note
+      that UFC Fight Pass's channel posts LFA cards free. v=Miyy6B26NwI.
+      Moses Murrietta (LXF 6, Oct 30 2021) — bare pair hit a Fubo Sports
+      Network upload, "Lights Out Extreme Fighting Middleweight Title Fight
+      Highlights | Moses Murrietta vs Ozzy Diaz", 2:00 — a highlights reel,
+      not a full fight; searched further for a full-length cut (including
+      on LXF's own channel) and found none, so placed the highlight reel
+      per precedent (real footage of the actual bout, no fuller cut
+      exists). v=o6bWdk0LSR8.
+    UNRESOLVED, EXHAUSTED (5): Andre Walker (Bellator 228, Sep 28 2019) and
+      Christopher Reyes (Bellator 214, Jan 26 2019) — bare pair and
+      event-number searches both empty; BellatorMMA's own channel (2.02M
+      subs, 4.5K videos) returned zero results for either fighter's name,
+      suggesting this was a prelim-card bout Bellator never uploaded
+      individually. Santiago Diaz (Fight Club OC 50, Feb 15 2018) and Saad
+      Ul-Hasan (Fight Club OC, Dec 7 2017) — bare pair and event-number
+      searches empty; neither of Fight Club OC's two YouTube channels
+      (@FightClubOC, official, and a separate @FCOC-FightClubOC-z5s "OC"
+      channel) has any content this old — @FightClubOC's own catalog only
+      goes back about 3 years. Leon Klee (KOTC: Sanctioned, Jun 14 2015) —
+      bare pair and event-number ("KOTC Sanctioned") searches both empty,
+      no King of the Cage archive hit for this specific card.
+    RE-CONFIRMED UNRESOLVED: Bevon Lewis (LFA 184, May 17 2024) was already
+      carried in TAPE_STUDY as a null-url placeholder from an earlier pass
+      (own main-card LFA bout, evidently never posted free — only a fan
+      vlog and a predictions-video mention turned up, no footage). Re-ran
+      the full search protocol on it as part of this sweep and it remains
+      genuinely unresolved — left in place as null. In the course of
+      re-supplying it to the placer (which requires an existing row to be
+      preserved), found and fixed a latent bug: the row's url field held
+      the STRING "null" (quoted) rather than the literal null, which would
+      have broken any code checking `url == null` — corrected to a real
+      null on rewrite.
+  Ran place-tape-links.cjs (dry run first) with 8 URL-bearing rows (6
+  pre-existing + 2 new) — the placer's input format requires a URL in
+  parens for every row and has no syntax for a deliberate null placeholder,
+  so the Bevon Lewis row was left out of the temp file, placed separately,
+  then manually re-inserted by hand afterward at its correct chronological
+  position (also fixing the "null"-string bug in the same edit). Dry run
+  (Bevon Lewis excluded from both sides of the count): placed(8) >=
+  already(7), 0 unplaced. Ran --write: 8 rows written (1 fighter, 1 block
+  replaced), then manually restored the Bevon Lewis row.
+  fix-tape-sections.cjs --write: 0 section changes.
+  Verified via git diff that all 6 pre-existing linked URLs are intact, the
+  corrected Bevon Lewis row sits in its right chronological slot, and 2 new
+  pre-UFC rows are present. Gap-list script re-run confirms exactly the 6
+  expected unresolved bouts (5 new exhausted + Bevon Lewis) remain.
