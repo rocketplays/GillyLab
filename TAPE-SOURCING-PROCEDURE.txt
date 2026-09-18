@@ -1901,3 +1901,62 @@ MARLON VERA — SEP 2026 — 10-bout pre-UFC gap sweep, 5 of 10 placed, 5 exhaus
   content changed) and the 5 new pre-UFC rows are appended under a single
   "Pre-UFC" header on the first new row. Gap-list script re-run confirms
   exactly the 5 expected exhausted bouts remain.
+
+CHARLES JOURDAIN — SEP 2026 — 10-bout pre-UFC gap sweep, 4 of 10 placed, 6
+exhausted.
+  All 10 gap bouts are 2016-2019 Canadian regional shows, nearly all the
+  Montreal/Quebec promotion "TKO" (TKO 36 through TKO 47, plus one "TKO
+  Fight Night 1") and one amateur bout at LAMMQ 5 (Ligue Amateur MMA
+  Québec). TKO has no single obvious archival channel — its footage is
+  scattered across small personal-upload channels, a promotion-adjacent
+  "MMA Talk" channel that covers weigh-ins/interviews but not fights, and
+  Fight Network's event-recap/top-3-moments videos, none of which are
+  full per-bout cuts.
+    SOLVED (4, all short clips — no full-length per-bout footage was found
+      for any TKO-era bout in this sweep): Alex Morgan (TKO 45, Dec 27
+      2018) — bare pair hit "TKO MMA Jourdain vs Morgan" on a 2-subscriber
+      channel (Osmicka), 1:01, no description. v=Iniom1ZyqqA. Kevin
+      Généreux (TKO Fight Night 1, Aug 2 2018) — bare pair hit "TKO MMA
+      Fight Night 1 - 2018-08-02 - Jourdain vs Genereux" (Valour Martial
+      Arts Fitness Club), exact date in the title, 2:48. v=twCJU7waT6M.
+      Matar Lo (TKO 42, Mar 16 2018) — bare pair hit directly, "Charles
+      Jourdain vs Matar Lo" (Way Productions, "Enregistré lors du gala de
+      TKO 42" in the description), 4:30. v=eC4e-0yLOdU. Mathieu Morciano
+      (TKO 38, Apr 7 2017) — bare pair and event-number searches for this
+      bout came up empty; found instead by searching Jourdain's own
+      official channel (@CharlesJourdainUFC) for the event number, "Charles
+      Air Jourdain TKO 38", no description but exact event match and
+      posted by the fighter himself, 0:30. v=qmubLjSRPaU.
+    UNRESOLVED, EXHAUSTED (6): Damien Lapilus (TKO 47, Apr 11 2019) — bare
+      pair and "TKO 47" event-number searches only surfaced a weigh-in
+      video (mislabeled opponent "Jesse Ronson" in one MMA Talk upload,
+      likely a different bout on the same card) and a post-fight interview
+      and full-results recap, no fight footage. T.J. Laramie (TKO 41, Dec 8
+      2017) — same pattern: pre-fight interview ("MMA OddsBreaker") and a
+      Fight Network "Top 3 Must-See Moments" event compilation (not a
+      per-bout cut) were the only hits. William Romero (TKO 39, Jun 16
+      2017) — only a Fight Network "Top 3 Must-See Moments" event
+      compilation found, no per-bout cut. Michael Cyr (TKO 37, Jan 13 2017)
+      — only a Fight Network full-event recap found. Marc-Antoine Lidji
+      (TKO 36, Nov 4 2016) — bare pair and event-number searches both
+      empty, no identifiable footage at all. Thomas Sumantri (LAMMQ 5, May
+      21 2016) — Jourdain's amateur debut; bare pair and event-number
+      searches both empty, no footage found for this amateur card.
+    NOTE ON TKO'S ARCHIVE: unlike DEEP or INKA MMA PRO, TKO does not appear
+    to have one canonical channel with full per-bout uploads — its
+    surviving footage on this sweep was all short (<5 min) clips from small
+    personal channels or the fighter's own channel, while every larger
+    MMA-media channel (Fight Network, MMA Talk, MMA OddsBreaker) only had
+    pre/post-fight content or event-wide top-moments reels. Worth treating
+    any future TKO-era gap the same way: expect short clips at best, and
+    check the fighter's own official channel by event number specifically.
+  Ran place-tape-links.cjs (dry run first) with all 20 rows (16 pre-existing
+  re-supplied + 4 new) — caught two opponent-name mismatches on first pass:
+  "Josh Culibao" needed to be "Joshua Culibao" and "Dooho Choi" needed to be
+  "Choi Doo-ho" per FIGHT_HISTORY's own spelling — fixed both, then
+  placed(20) >= already(16), 0 unplaced. Ran --write: 20 rows written (1
+  fighter, 1 block replaced). fix-tape-sections.cjs --write: 0 section
+  changes. Verified via git diff that all 16 pre-existing UFC-era URLs are
+  intact (rows reordered to match FIGHT_HISTORY date order) and the 4 new
+  pre-UFC rows are appended under a single "Pre-UFC" header. Gap-list
+  script re-run confirms exactly the 6 expected exhausted bouts remain.
