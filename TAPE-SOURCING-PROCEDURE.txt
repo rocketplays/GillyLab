@@ -2226,3 +2226,42 @@ exhausted.
   for Ross and Hernandez ("2017") that don't match eventLabel()'s
   month-day regex — a data-precision quirk inherited from the source,
   left alone. Full-file syntax check passes clean.
+
+THEO HAIG — SEP 2026 — 7-bout pre-UFC gap sweep, 6 of 7 placed, 1
+exhausted.
+  Started this sweep assuming only 1 of 7 pre-DWCS bouts had a link
+  (based on an earlier read of the block), but the actual TAPE_STUDY
+  entry already had 3 rows (Cezary Oleksiejczuk, Said-Magomed
+  Abdulgaziev, Dylan Diebitz — all Fight Pass), caught before any writes
+  by re-checking the live block instead of trusting the earlier read.
+  Real gaps were the other 4: Marcus Gaines, Blair Sannoh, Adam Wamsley,
+  Alan Benson.
+    SOLVED (3): Marcus Gaines (Dragon House MMA: Zhong Luo Cage Fighting
+      Series 11, Nov 9 2024) — "Zhong Luo Cage Fighting Series 11 Theo
+      Haig vs Marcus Gaines. 11.09.2024," official Dragon House MMA
+      channel. v=6IIRSP6hQqE. Blair Sannoh (San Francisco Combat: Lucky
+      13, Aug 26 2023) — "CF Combat 13 Haig vs Sannoh" on the official SF
+      Combat channel (@sfcombat1002); event numbering doesn't match our
+      data's "Lucky 13" name (video says "CF Combat 13"), but it's the
+      same promotion's own upload of the same two names — accepted on
+      that basis. v=PzxNsFfvODI. Adam Wamsley (Bellator 292, Mar 10 2023)
+      — official BellatorMMA channel free-fight upload, "Full Fight | Adam
+      Wamsley vs. Theo Haig | Bellator 292." v=7SGwAHEosXM.
+    UNRESOLVED, EXHAUSTED (1): Alan Benson (Bellator 277, Apr 15 2022) —
+      no per-bout cut exists; the only trace is BellatorMMA's 3-hour
+      "Monster Energy Prelims" YouTube livestream VOD for that card,
+      confirmed by a viewer comment ("I really like that Theo Haig kid")
+      to include his bout somewhere in it, but the video carries no
+      chapter markers or description timestamps (another commenter noted
+      YouTube/Bellator stripped timestamp comments off this specific
+      video). Per the standing rule from the Shahbazyan sweep, a
+      multi-bout video with no way to open on the specific bout doesn't
+      satisfy the link contract — not placed.
+  Ran place-tape-links.cjs (dry run first) with all 6 rows (3
+  pre-existing re-supplied + 3 new) — placed(6) >= already(3), 0
+  unplaced. Ran --write: 6 rows written (1 fighter, 1 block replaced).
+  fix-tape-sections.cjs --write: 0 section changes. Verified via git diff
+  that all 3 pre-existing Fight Pass rows are intact and the 3 new rows
+  insert in FIGHT_HISTORY order under the existing null section (no new
+  header — all pre-UFC, same section as the existing rows). Full-file
+  syntax check passes clean.
