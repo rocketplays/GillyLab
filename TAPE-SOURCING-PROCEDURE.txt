@@ -2127,3 +2127,53 @@ exhausted.
   Stelliou row surviving the rewrite) and the 3 new pre-UFC rows are
   appended under a single "Pre-UFC" header. Gap-list script re-run
   confirms exactly the 2 expected exhausted bouts remain.
+
+EDUARDA MOURA — SEP 2026 — 7-bout pre-UFC gap sweep, 6 of 7 placed, 1
+exhausted.
+  All 7 gaps sit below her Dana White's Contender Series win, on the
+  Brazilian regional scene (Demo Fight, WS Fighting, Valhalla Extreme
+  Challenger, Matilha Champions Fight, Jardim Fight). A single small
+  personal channel, Leonardo Pateira (@LeoPateira), turned out to have
+  filmed and uploaded her entire pre-UFC career — every solved bout below
+  came from it, confirmed live via oembed.
+    SOLVED (6): Claudiene Ferreira Alves (Demo Fight 16, Mar 25 2023) —
+      "Eduarda Moura vs Claudia Alves - Demo Fight Strawweight Title"
+      (8:56). v=o9YUIWVkrLY. Paisiella De Souza Moraes (WS Fighting 6, Nov
+      5 2022) — titled "Eduarda Moura vs. Dielly Sousa - WS Fighting Belt"
+      (2:36); opponent name in the title doesn't match our data's spelling
+      at all, but event, date-adjacency, "second belt," and a round-1
+      submission win in ~1 minute all line up — accepted per the TRAPS
+      rule on event+date context rather than title spelling. v=c_49xtADqAU.
+      Aline Sattelmayer (Demo Fight 14, Sep 24 2022) — "Eduarda Moura vs
+      Aline Sattelmayer - Demo Fight Title" (5:21). v=JNNVB65T3UA.
+      Sharolayne Almeida (Valhalla Extreme Challenger, Jun 19 2022) —
+      "Eduarda Moura vs Sharolayne Almeida" (1:19), description confirms
+      "fourth fight in a row." v=5PzQLHGVirc. Renata Aline Santos Silva
+      (Matilha Champions Fight 1, May 7 2022) — titled "Eduarda Moura vs
+      Renata Gentileza" (1:12); another title/data name mismatch, accepted
+      per TRAPS on the description's "third pro mma fight" and event/date
+      match. v=MS_ZupRkDFg. Ana Vitoria Cardoso Santana (Jardim Fight 4,
+      Mar 27 2022, her pro debut) — "Eduarda Moura vs Vitoria Cardoso"
+      (0:40), description confirms pro debut win by TKO at 0:35 of round
+      1. v=WH45iiNhu6Q.
+    UNRESOLVED, EXHAUSTED (1): Suiane Teixeira dos Santos (Demo Fight 12,
+      Apr 30 2022) — not on the Leonardo Pateira channel despite it
+      covering every other bout in this window; bare-pair, "Demo Fight 12
+      Eduarda Moura," and full-name searches all missed. One near-miss
+      surfaced and was ruled out: "Virna Jandiroba x Suiane Teixeira -
+      Imperium MMA 12" (Leonardo Pateira, Nov 26 2016) is a different
+      Suiane Teixeira fight entirely — six years earlier, different
+      opponent, different promotion (Imperium, not Demo Fight). A second
+      candidate, "Luta demo fight / duda santana" (@marcondesteam4144, 44
+      views), was also ruled out — unrelated small channel, no fighter or
+      date confirmation, and "Duda Santana" is ambiguous with the already-
+      solved Maria Eduarda Santana bout rather than clearly this one.
+  Ran place-tape-links.cjs (dry run first) with all 13 rows (7
+  pre-existing re-supplied + 6 new) — placed(13) >= already(7), 0
+  unplaced. Ran --write: 13 rows written (1 fighter, 1 block replaced).
+  fix-tape-sections.cjs --write: 0 section changes. Verified via git diff
+  that all 7 pre-existing UFC-era rows are intact and the 6 new pre-UFC
+  rows are inserted in FIGHT_HISTORY's newest-first order under the
+  existing "Pre-UFC" header (no new header needed — DWCS was already the
+  most recent pre-UFC transition). Full-file syntax check (new Function()
+  over every inline script) passes clean.
