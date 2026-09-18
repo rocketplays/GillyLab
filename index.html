@@ -132203,9 +132203,10 @@ const GL_SHEET = (function () {
       'My card on gillylab.com'),
     // SAVE PHOTO ONLY — null shareText, which drops the Share button (see open()).
     // Both of these live behind the paywall, so a shared link points at a door the
-    // recipient cannot open; the image is the whole gift. The FREE sheets below
-    // (pickem, climb) keep their share line on purpose — that link is how a picks
-    // card in a group chat brings someone in.
+    // recipient cannot open; the image is the whole gift. Climb (below) is the one
+    // free sheet that still keeps its share line — that link is how a Climb run
+    // in a group chat brings someone in. Pick'em dropped its share line per
+    // feedback; Save photo covers it now.
     // Full 1080x1920 by default. Pass 'portrait' for the lighter 4:5 feed cut.
     matchup: (a, b, info, fmt) => open(() => drawMatchup(a, b, info || {}, fmt),
       'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() +
@@ -132223,9 +132224,12 @@ const GL_SHEET = (function () {
       'gillylab-grappling-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
       null),
     // Square card of the user's pick'em selections for the featured event.
+    // No shareText (null) — per feedback, Save photo is the only action
+    // needed here; drops the Share button the same way matchup/sim/eventCard
+    // already do (see open()'s own switch on shareText).
     pickem: (data) => open(() => drawPickem(data || {}),
       'gillylab-picks.png',
-      'My picks for ' + ((data && data.eventName) || 'the card') + ' — make yours on gillylab.com'),
+      null),
     // The full fight card (no picks) for the "Share this card" button on the
     // home page and the upcoming-events carousel.
     // No shareText (null, not a string) — per open()'s own switch, that's
