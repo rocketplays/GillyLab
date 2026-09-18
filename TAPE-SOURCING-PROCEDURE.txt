@@ -2177,3 +2177,52 @@ exhausted.
   existing "Pre-UFC" header (no new header needed — DWCS was already the
   most recent pre-UFC transition). Full-file syntax check (new Function()
   over every inline script) passes clean.
+
+GIGA CHIKADZE — SEP 2026 — 8-bout pre-UFC gap sweep, 3 of 8 placed, 5
+exhausted.
+  All 8 gaps sit below his Dana White's Contender Series loss: one WSOF
+  bout (his MMA debut) and seven small-promotion Gladiator Challenge
+  bouts, most from bare-year FIGHT_HISTORY dates ("2016", "2017", "2019")
+  with no month/day. Pulled Wikipedia's full fight-by-fight table (with
+  exact dates and locations, sourced to Sherdog) to disambiguate which
+  Gladiator Challenge card was which before searching, since our own data
+  doesn't carry enough precision to do it from FIGHT_HISTORY alone.
+    SOLVED (3): Gil Guardado (WSOF 26, 18 Dec 2015, his lightweight/MMA
+      debut) — official PFL channel (successor org to WSOF) hosts the
+      full 18:24 fight, "Gil Guardado vs Giga Chikadze | WSOF 26, 2015."
+      v=M1u-aD9bCDI. Anthony Ross (Gladiator Challenge: Absolute Beat
+      Down, 25 Mar 2017) — his own channel (@gigachikadze9722) posted
+      "Giga Chikadze 8 seconds KO MMA" with a description dating it "25
+      March 2017 Gladiator Challenge Soboba Sport Complex California,"
+      which lines up exactly with Wikipedia's date/location for Ross and
+      not any other bout on his record — the "8 seconds" title vs. our
+      data's 0:10 finish time is the same fight, rounded.
+      v=Qfy546kaLIs. Julian Hernandez (Gladiator Challenge: Summer Feud,
+      10 Jun 2017) — same personal channel, "Giga Chikadze vs Hernandez
+      2017 MMA," a Short; his is the only 2017 Gladiator Challenge
+      opponent named Hernandez, so the title's partial name plus year is
+      unambiguous. v=HrU9Q-GkhWg.
+    UNRESOLVED, EXHAUSTED (5): Joe Bear (Gladiator Challenge: Season's
+      Beatings, 17 Dec 2016), C.J. Baines (Gladiator Challenge: Summer
+      Showdown, 11 Aug 2018), Kevin Ceron (Gladiator Challenge: MMA
+      Fighting Championship, 21 Apr 2018), Kevin Gratts (Gladiator
+      Challenge: Season's Beatings, 16 Dec 2017), and Damien Manzanares
+      (Gladiator Challenge: MMA World Championships, 23 Mar 2019) — none
+      findable via bare-pair search, and the official Gladiator Challenge
+      channel (@gcmmafights, 964 subscribers) turned out to be a modern
+      rebrand with no archive reaching back to 2016-2019; its in-channel
+      search doesn't surface anything for "Chikadze" either. Chikadze's
+      own channel (@gigachikadze9722) has only 5 videos total, of which 2
+      cover this window (Ross, Hernandez) — the other 3 gaps just weren't
+      among what he personally uploaded.
+  Ran place-tape-links.cjs (dry run first) with all 16 rows (13
+  pre-existing re-supplied + 3 new) — placed(16) >= already(13), 0
+  unplaced. Ran --write: 16 rows written (1 fighter, 1 block replaced).
+  fix-tape-sections.cjs --write: 0 section changes. Verified via git diff
+  that all 13 pre-existing UFC-era rows are intact and the 3 new pre-UFC
+  rows append under the existing "Pre-UFC" header (no new header needed).
+  Two of the three new rows carry a bare "Gladiator Challenge" event
+  label with no month/year, since FIGHT_HISTORY only has bare-year dates
+  for Ross and Hernandez ("2017") that don't match eventLabel()'s
+  month-day regex — a data-precision quirk inherited from the source,
+  left alone. Full-file syntax check passes clean.
