@@ -695,33 +695,39 @@ const GL_SHEET = (function () {
   // font size here is still a constant relative to its own row — nothing
   // needs measuring before the canvas height is known.
   function pkBoutCard(ctx, p, x, y, w, imgWin, imgLose, graded, s) {
-    const R = 42 * s;
-    const headY = y + 20 * s;
+    // Every size below is ~15% up from the original pass — photos, names,
+    // and captions were all reading a little small (especially in the
+    // two-column grid, where s already shrinks everything further). Bumping
+    // the base constants here scales up both the single-column main event
+    // (s=1) and every grid cell, since grid cells multiply these same
+    // numbers by their own smaller s.
+    const R = 48 * s;
+    const headY = y + 23 * s;
     const tag = [p.label ? String(p.label).toUpperCase() : '', p.isMain ? 'MAIN EVENT' : ''].filter(Boolean).join('   ·   ');
     if (tag) {
-      ctx.textAlign = 'center'; ctx.font = '700 ' + (16 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = p.isMain ? ACC : MUT;
+      ctx.textAlign = 'center'; ctx.font = '700 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = p.isMain ? ACC : MUT;
       ctx.fillText(clip(ctx, tag, w - 200 * s), x + w / 2, headY);
     }
     if (graded) {
       const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
-      ctx.textAlign = 'right'; ctx.font = '800 ' + (21 * s).toFixed(1) + 'px ' + COND;
+      ctx.textAlign = 'right'; ctx.font = '800 ' + (24 * s).toFixed(1) + 'px ' + COND;
       ctx.fillStyle = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
       ctx.fillText(ptsStr, x + w, headY);
     }
 
     const cxA = x + w * 0.27, cxB = x + w * 0.73;
-    const avY = headY + 18 * s + R;
+    const avY = headY + 21 * s + R;
     const hit = p.voided ? null : (graded ? !!p.winnerHit : true);
     const ringCol = graded ? (p.voided ? MUT : (p.winnerHit ? ACC : PK_RED)) : (PK_CONF_COL[p.confidence] || MUT);
     avatar(ctx, imgWin, cxA, avY, R, pkInitials(p.winner), ringCol);
     avatar(ctx, imgLose, cxB, avY, R, pkInitials(p.loser), LINE);
     if (!p.voided) pkPickBadge(ctx, cxA, avY, R, hit);
-    ctx.textAlign = 'center'; ctx.font = '800 ' + (24 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('VS', x + w / 2, avY + 8 * s);
+    ctx.textAlign = 'center'; ctx.font = '800 ' + (28 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('VS', x + w / 2, avY + 9 * s);
 
-    const nameY = avY + R + 32 * s;
+    const nameY = avY + R + 37 * s;
     const nameMax = w * 0.4;
-    ctx.font = '700 ' + (22 * s).toFixed(1) + 'px ' + COND;
+    ctx.font = '700 ' + (25 * s).toFixed(1) + 'px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText(clip(ctx, (p.winner || '').toUpperCase(), nameMax), cxA, nameY);
     ctx.fillStyle = '#c8ccd2'; ctx.fillText(clip(ctx, (p.loser || '').toUpperCase(), nameMax), cxB, nameY);
 
@@ -731,25 +737,25 @@ const GL_SHEET = (function () {
     // under both names made it read as unattached to either side. Once
     // graded it becomes the actual result, which genuinely is about both
     // fighters, so that line stays centred on the whole bout.
-    const lineY = nameY + 26 * s;
+    const lineY = nameY + 30 * s;
     ctx.textAlign = 'left';   // drawSegs positions from a fixed x, so undo the centring above
     if (!graded) {
       // Confidence is already shown by the ring around the picked fighter's
       // photo, so this line is just the method — no need to repeat "High/Med/
       // Low pick" in text too.
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (21 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
       ctx.fillText(clip(ctx, pkMethodLabel(p), nameMax), cxA, lineY);
       ctx.textAlign = 'left';
     } else if (p.voided) {
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (18 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (21 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
       ctx.fillText('Draw / No Contest', x + w / 2, lineY);
       ctx.textAlign = 'left';
     } else {
       const win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
       const seg = [
-        { t: win, f: '700 ' + (19 * s).toFixed(1) + 'px ' + COND, c: TXT },
-        { t: ' def. ', f: '400 ' + (15 * s).toFixed(1) + 'px ' + SANS, c: MUT },
-        { t: los, f: '400 ' + (16 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: win, f: '700 ' + (22 * s).toFixed(1) + 'px ' + COND, c: TXT },
+        { t: ' def. ', f: '400 ' + (17 * s).toFixed(1) + 'px ' + SANS, c: MUT },
+        { t: los, f: '400 ' + (18 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
@@ -759,7 +765,8 @@ const GL_SHEET = (function () {
   // font size a constant relative to its own row. One height for both graded
   // and ungraded cards: the caption line under the names carries either the
   // pick or the result, never both, so it never needs extra room post-grade.
-  const ROW_H = 190;
+  // 220 (up from 190) to match the ~15% larger photos/text in pkBoutCard.
+  const ROW_H = 220;
   async function drawPickem(data) {
     await fontsReady();
     const logo = await loadBrandLogo();
