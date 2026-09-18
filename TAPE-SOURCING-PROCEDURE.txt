@@ -1831,3 +1831,73 @@ DOOHO CHOI — SEP 2026 — 12-bout pre-UFC gap sweep, 5 of 12 placed, 7 exhaust
   re-sort, all 9 pre-existing rows byte-identical, 5 new rows appended
   under a single "Pre-UFC" header on the first new row) and the gap-list
   script now reports the correct 7 remaining unlinked bouts.
+
+MARLON VERA — SEP 2026 — 10-bout pre-UFC gap sweep, 5 of 10 placed, 5 exhausted.
+  All 10 gap bouts are 2010-2013 Latin American regional shows (Inka FC x2,
+  Mexican Fighters Promotions, 300 Sparta, Ultimate Combat Challenge, Punisher
+  Machala, Samurai FC, Extreme FC, Quito Fight Club) — Vera fights as "Chito"
+  Vera on nearly every regional-era upload, so every search in this sweep used
+  "Chito Vera" rather than "Marlon Vera" (the bare "Marlon Vera" pairing came
+  up empty across the board, including for bouts later solved under "Chito").
+    SOLVED (5): Romel Orosco (Quito Fight Club, Jul 24 2010) — bare "Chito
+      Vera vs Romel Orosco" pair hit a small channel (danmassoud, 34 subs)
+      upload "Chito- Quito Fight Club- 24 de julio 2010 (Segunda parte)",
+      description names Marlon "Chito" Vera and the exact date. Only 1:13
+      long and explicitly "Part 2" with no findable "Part 1" — placed anyway
+      per the traps rule (real footage of the named fighter/opponent/event/
+      date, not sim or highlight-reel content) since no fuller cut exists;
+      flagged here as a short/partial clip in case a complete version turns
+      up later. v=eiFyPvynPFw. Cesar Moreno (Extreme FC 2, Jun 18 2011) —
+      bare pair hit directly, "Chito Vera vs Cesar Moreno. Emma" (SHUIBNZ
+      channel), 19-minute full fight. v=TqRIS0KHxcs. Joel Iglesias (300
+      Sparta 1, Apr 24 2013) — found on INKA MMA PRO's own channel (23.2K
+      subs, official Peru MMA promoter), titled "Joel Iglesias (Perú) vs
+      Chito Vera (Ecuador) 24/4/2013", date match exact, 186K views, ~5 min.
+      v=aFpMUOCPtFw. Fábio Bispo (Inka FC 22, Jun 29 2013) — bare pair on
+      Bispo's real name came up empty; INKA MMA PRO's own channel only had
+      a post-fight interview titled "...CHITO VERA VS FABIO GASOLINA - IFC
+      22" (Bispo's ring nickname is "Gasolina"), which led to searching
+      "Chito Vera vs Fabio Gasolina" directly and finding a different
+      channel (clanmma) with the actual 16-minute fight, "IFC 22 Fabio
+      Gasolina (Brasil) vs Chito Vera (Ecuador)". v=wCm6Cxar_S8. Luis Roberto
+      Herrera (Mexican Fighters Promotions 16, May 25 2013) — bare pair on
+      the fighter's real name surfaced a 27-minute multi-bout card upload,
+      "FMP 16 CHITO VERA vs LEON HERRERA, PIMPON LOYA vs LUPILLO PADILLA"
+      (Fidel Ornelas channel) — our data's "Luis Roberto Herrera" fights
+      under "Leon Herrera" on this card; placed the full-card video per the
+      full-event-fallback rule since no isolated per-bout cut exists.
+      v=faQ72tKLKRk.
+    UNRESOLVED, EXHAUSTED (5): D'Juan Owens (Inka FC 24, Oct 23 2013) — INKA
+      MMA PRO's own channel has pre-fight hype and a post-fight interview
+      ("ENTREVISTA POST PELEA: (ECU) CHITO VERA VS (USA) D'JUAN OWENS -
+      INKAFC 24") but no actual fight footage found under any phrasing
+      (bare pair, event number, channel search). Bruno Leandro Lobato (Inka
+      FC 23, Aug 24 2013) — same pattern: INKA MMA PRO has the official
+      weigh-in and two pre-fight interview videos (Lobato's ring nickname is
+      "Cro Cop" / "Crocop"), tried all spelling variants, no fight footage
+      found on that channel or elsewhere. Javier Umana Munoz (Ultimate
+      Combat Challenge 13, Jan 18 2013) — bare pair and event-number retries
+      both empty, no identifiable YouTube presence for this promotion at
+      all. Alexis Patino Pinos (Punisher Machala 4, May 26 2012) — bare pair
+      only surfaced an unrelated same-named fighter's bout at a different
+      Ecuadorian promotion (TFC Santo Domingo); event-number retry for
+      "Punisher Machala 4" empty. Jack Guzman (Samurai FC 7, Feb 20 2012) —
+      bare pair and event-number retries both empty; only unrelated hits
+      (a different Jack Guzman in Peruvian promotion PFC, and an unrelated
+      pop-culture video).
+    NOTE ON NICKNAME PATTERN: this sweep reconfirms that Vera's regional-era
+    footage is almost always titled with "Chito," not "Marlon" — worth
+    trying the ring name first for any Ecuadorian/Latin regional fighter
+    whose UFC.com listing uses a full given name.
+  Ran place-tape-links.cjs (dry run first) with all 25 rows (20 pre-existing
+  re-supplied + 5 new) — caught two mistakes on first pass: opponent name
+  "Guangyou Ning" needed to be "Ning Guangyou" per FIGHT_HISTORY's own
+  spelling, and the two Sean O'Malley rematch pins were wrong (@2023/@2019
+  guessed, actual dates are UFC 299 Mar 2024 and UFC 252 Aug 2020) — fixed
+  both, then placed(25) >= already(20), 0 unplaced. Ran --write: 25 rows
+  written (1 fighter, 1 block replaced). fix-tape-sections.cjs --write: 0
+  section changes. Verified via git diff that all 20 pre-existing UFC-era
+  URLs are intact (rows reordered to match FIGHT_HISTORY date order — no
+  content changed) and the 5 new pre-UFC rows are appended under a single
+  "Pre-UFC" header on the first new row. Gap-list script re-run confirms
+  exactly the 5 expected exhausted bouts remain.
