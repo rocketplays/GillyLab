@@ -7980,6 +7980,7 @@
  { name: "Paris Moran", division: "FLW", rank: "NR", record: "14-3-0", initials: "PM", country: "USA" }, // 1 NC
  { name: "Callum Connor", division: "LW", rank: "NR", record: "8-0-0", initials: "CC", country: "England" },
  { name: "Piero Guaylupo", division: "LW", rank: "NR", record: "12-0-0", initials: "PG", country: "Peru" },
+ { name: "Emilio Quissua", division: "LHW", rank: "NR", record: "8-0-0", initials: "EQ", country: "Germany" },
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11958,6 +11959,7 @@
   "Paris Moran": { ht:"5'8\"", dob:"1996-02-04", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"43%", streak:2, gym:"Gracie Barra Katy" },
   "Callum Connor": { ht:"6'0\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"75%", streak:8, gym:"Manchester Top Team" },
   "Piero Guaylupo": { ht:"5'9\"", dob:"2004-10-29", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"92%", streak:12, gym:"Los Perros Sarnosos" },
+  "Emilio Quissua": { ht:"6'4\"", dob:"1997-04-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Planet Eater" },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46243,6 +46245,12 @@
   ],
   "Callum Connor": [],
   "Piero Guaylupo": [],
+  "Emilio Quissua": [
+    { opponent: "Jorick Montagnac", odds: -250 },
+    { opponent: "Mateusz Strzelczyk", odds: -333 },
+    { opponent: "Juscelino Ferreira", odds: -400 },
+    { opponent: "Kevin Oumar", odds: 100 },
+  ],
 };
 
 const FIGHT_HISTORY = {
@@ -113640,6 +113648,16 @@ const FIGHT_HISTORY = {
     { date: "Sep 3, 2023", opponent: "Renzo Gonzales", result: "W", method: "KO (Punches to the Body)", round: 1, time: "-", event: "Tayta FC 17: Silva vs. Caccya" },
     { date: "Jul 15, 2023", opponent: "Miguel Labrador", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Kumazawa 1" },
   ],
+  "Emilio Quissua": [
+    { date: "Jan 31, 2026", opponent: "Jorick Montagnac", result: "W", method: "TKO (Knee Injury)", round: 1, time: "1:43", event: "OKTAGON 83: Samsonidse vs. Machaev" },
+    { date: "Sep 13, 2025", opponent: "Mateusz Strzelczyk", result: "W", method: "TKO (Punches)", round: 1, time: "3:03", event: "OKTAGON 75: Palokaj vs. Batfalsky" },
+    { date: "Jan 17, 2025", opponent: "Juscelino Ferreira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UAE Warriors 57" },
+    { date: "Jul 29, 2023", opponent: "Georg Bilogrevic", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "NFC Fight Night: The Cage MMA" },
+    { date: "Sep 16, 2022", opponent: "Kevin Oumar", result: "W", method: "TKO (Punches)", round: 1, time: "3:35", event: "UAE Warriors 32: Africa 3" },
+    { date: "Apr 2, 2022", opponent: "Deni Mirnic", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "NFC 8: National Fighting Championship 8" },
+    { date: "Jul 25, 2021", opponent: "Enzo Tobbia", result: "W", method: "TKO (Injury)", round: 1, time: "5:00", event: "NFT Gym: National Fighting Championship 4" },
+    { date: "May 22, 2021", opponent: "Florian de la Motte", result: "W", method: "TKO (Punches)", round: 2, time: "-", event: "GMC 25: German MMA Championship" },
+  ],
 
 
 
@@ -129086,6 +129104,10 @@ const ACCOLADES = {
   "Piero Guaylupo": [
     { icon: "🥊", title: "Undefeated (12-0) as a pro with 11 of 12 wins by knockout/TKO — 92% finish rate", detail: null },
     { icon: "🌍", title: "Peruvian regional standout out of Los Perros Sarnosos, headlining events across Inka FC and 300 Sparta", detail: null },
+  ],
+  "Emilio Quissua": [
+    { icon: "🥊", title: "Undefeated (8-0) as a pro, 5 of 8 wins by knockout/TKO", detail: null },
+    { icon: "🌍", title: "German regional standout out of Planet Eater, with two wins on OKTAGON MMA's main circuit", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
