@@ -130658,7 +130658,11 @@ const GL_SHEET = (function () {
     // event (s=1) and every grid cell, since grid cells multiply these same
     // numbers by their own smaller s.
     const R = 53 * s;
-    const headY = y + 25 * s;
+    // headY/avY gap tightened now that most rows draw no text up here at all
+    // (only MAIN EVENT and, on a graded card, the points badge still use this
+    // line) — the old offsets were sized for a header that used to always
+    // carry the division/rounds tag.
+    const headY = y + 18 * s;
     // Division/rounds (p.label, e.g. "LIGHTWEIGHT · 3 ROUNDS") dropped from
     // this line per feedback — a pick'em card is about who you picked, not
     // the weight class, and it was competing with "MAIN EVENT" for the same
@@ -130676,7 +130680,7 @@ const GL_SHEET = (function () {
     }
 
     const cxA = x + w * 0.27, cxB = x + w * 0.73;
-    const avY = headY + 23 * s + R;
+    const avY = headY + 15 * s + R;
     const hit = p.voided ? null : (graded ? !!p.winnerHit : true);
     const ringCol = graded ? (p.voided ? MUT : (p.winnerHit ? ACC : PK_RED)) : (PK_CONF_COL[p.confidence] || MUT);
     avatar(ctx, imgWin, cxA, avY, R, pkInitials(p.winner), ringCol);
@@ -130725,8 +130729,10 @@ const GL_SHEET = (function () {
   // font size a constant relative to its own row. One height for both graded
   // and ungraded cards: the caption line under the names carries either the
   // pick or the result, never both, so it never needs extra room post-grade.
-  // 240 (up from 220) to match the larger photos/text in pkBoutCard.
-  const ROW_H = 240;
+  // 225 (down from 240) — the header/avatar gap in pkBoutCard tightened now
+  // that most rows draw no header text at all (division/rounds is gone, and
+  // only the main event still shows MAIN EVENT up there).
+  const ROW_H = 225;
   async function drawPickem(data) {
     await fontsReady();
     const logo = await loadBrandLogo();
