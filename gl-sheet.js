@@ -571,10 +571,17 @@ const GL_SHEET = (function () {
     y += 100;
     const bx = 64, bw = W - 128, bh = 22;
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+    // Only the favourite's share gets filled — the bar should read as "56% full",
+    // not a solid green stripe with an invisible seam down the middle (which is
+    // what filling both sides the same colour produced).
     ctx.save();
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.clip();
-    ctx.fillStyle = colA; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
-    ctx.fillStyle = colB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
+    if (pctA >= pctB) {
+      ctx.fillStyle = colA; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
+    } else {
+      const fw = bw * (pctB / 100);
+      ctx.fillStyle = colB; ctx.fillRect(bx + bw - fw, y, fw, bh);
+    }
     ctx.restore();
     y += 74;
 
