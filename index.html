@@ -7979,6 +7979,7 @@
  { name: "Marcos Degli", division: "FLW", rank: "NR", record: "14-3-0", initials: "MD", country: "Brazil" },
  { name: "Paris Moran", division: "FLW", rank: "NR", record: "14-3-0", initials: "PM", country: "USA" }, // 1 NC
  { name: "Callum Connor", division: "LW", rank: "NR", record: "8-0-0", initials: "CC", country: "England" },
+ { name: "Piero Guaylupo", division: "LW", rank: "NR", record: "12-0-0", initials: "PG", country: "Peru" },
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11956,6 +11957,7 @@
   "Marcos Degli": { ht:"5'6\"", dob:"2000-05-13", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"93%", streak:12, gym:"Vale Top Team" },
   "Paris Moran": { ht:"5'8\"", dob:"1996-02-04", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"43%", streak:2, gym:"Gracie Barra Katy" },
   "Callum Connor": { ht:"6'0\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"75%", streak:8, gym:"Manchester Top Team" },
+  "Piero Guaylupo": { ht:"5'9\"", dob:"2004-10-29", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"92%", streak:12, gym:"Los Perros Sarnosos" },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46240,6 +46242,7 @@
     { opponent: "Freddie Rodriguez", odds: -188 },
   ],
   "Callum Connor": [],
+  "Piero Guaylupo": [],
 };
 
 const FIGHT_HISTORY = {
@@ -113623,6 +113626,20 @@ const FIGHT_HISTORY = {
     { date: "Apr 29, 2023", opponent: "Ste McLeland", result: "W", method: "TKO (Elbow)", round: 1, time: "0:21", event: "Budo Fighting Championship 57" },
     { date: "Dec 10, 2022", opponent: "Liam Delsol", result: "W", method: "TKO (Knees and Punches)", round: 1, time: "1:01", event: "VFC: Road to Venator" },
   ],
+  "Piero Guaylupo": [
+    { date: "May 27, 2026", opponent: "Maicon Miler", result: "W", method: "TKO (Punches)", round: 4, time: "0:59", event: "Inka FC 57: Guaylupo vs. Miler" },
+    { date: "Dec 20, 2025", opponent: "Paulo Roberto Aquiles", result: "W", method: "TKO (Punches)", round: 1, time: "1:12", event: "Falcon MMA 6: Aquiles vs. Guaylupo" },
+    { date: "Aug 17, 2025", opponent: "Douglas Silva", result: "W", method: "TKO (Retirement)", round: 2, time: "4:47", event: "300 Sparta 41: Guaylupo vs. Da Silva" },
+    { date: "Mar 30, 2025", opponent: "Robson Lima", result: "W", method: "TKO (Punches)", round: 3, time: "4:50", event: "300 Sparta 39: Guaylupo vs. Lima" },
+    { date: "Dec 3, 2024", opponent: "David Parreño", result: "W", method: "TKO (Leg Kicks)", round: 1, time: "2:21", event: "300 Sparta 38: Guaylupo vs. Ronildo" },
+    { date: "Aug 28, 2024", opponent: "Cristian Espinoza", result: "W", method: "TKO (Retirement)", round: 2, time: "4:35", event: "Inka FC 45: Navarro vs. Silva" },
+    { date: "Jun 20, 2024", opponent: "Mateo Escobar", result: "W", method: "TKO (Punches)", round: 1, time: "2:01", event: "Inka FC 43: Escuza vs. Neto" },
+    { date: "Mar 27, 2024", opponent: "Daniel Souto", result: "W", method: "TKO (Punches)", round: 2, time: "1:50", event: "Inka FC 41: Montalvo vs. Sa Bessa" },
+    { date: "Dec 21, 2023", opponent: "Mario Nuñuvero", result: "W", method: "KO (Punches)", round: 1, time: "4:05", event: "Inka FC 39: Homenaje al Campeon Mundial" },
+    { date: "Dec 2, 2023", opponent: "Miguel Angel Patiño", result: "W", method: "KO (Flying Knee)", round: 1, time: "4:15", event: "Perrera Fight 14: Featherweight Grand Prix" },
+    { date: "Sep 3, 2023", opponent: "Renzo Gonzales", result: "W", method: "KO (Punches to the Body)", round: 1, time: "-", event: "Tayta FC 17: Silva vs. Caccya" },
+    { date: "Jul 15, 2023", opponent: "Miguel Labrador", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Kumazawa 1" },
+  ],
 
 
 
@@ -129065,6 +129082,10 @@ const ACCOLADES = {
   "Callum Connor": [
     { icon: "🥊", title: "Undefeated (8-0) as a pro, 6 of 8 wins by finish (5 KO/TKO, 1 submission) — 75% finish rate", detail: null },
     { icon: "🌍", title: "English regional standout out of Manchester Top Team; competed across FCC, Budo, and Anthony Pettis FC in the UK regional scene", detail: null },
+  ],
+  "Piero Guaylupo": [
+    { icon: "🥊", title: "Undefeated (12-0) as a pro with 11 of 12 wins by knockout/TKO — 92% finish rate", detail: null },
+    { icon: "🌍", title: "Peruvian regional standout out of Los Perros Sarnosos, headlining events across Inka FC and 300 Sparta", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
