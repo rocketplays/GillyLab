@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-19T22:12:01.322Z",
+ "generatedAt": "2026-09-19T23:12:55.704Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -8270,6 +8270,194 @@
       ]
      },
      "capturedAt": "2026-09-19T22:12:01.187Z"
+    }
+   ]
+  },
+  "Edmen Shahbazyan": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Brunno Ferreira",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Brunno Ferreira",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 61,
+      "sigA": 110,
+      "totL": 63,
+      "totA": 112,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       29,
+       66
+      ],
+      "body": [
+       11,
+       14
+      ],
+      "leg": [
+       21,
+       30
+      ],
+      "dist": [
+       56,
+       105
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 32,
+      "sigA": 108,
+      "totL": 33,
+      "totA": 109,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       16,
+       81
+      ],
+      "body": [
+       1,
+       7
+      ],
+      "leg": [
+       15,
+       20
+      ],
+      "dist": [
+       30,
+       105
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-19T23:12:55.568Z"
+    }
+   ]
+  },
+  "Brunno Ferreira": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Edmen Shahbazyan",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Edmen Shahbazyan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 32,
+      "sigA": 108,
+      "totL": 33,
+      "totA": 109,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       16,
+       81
+      ],
+      "body": [
+       1,
+       7
+      ],
+      "leg": [
+       15,
+       20
+      ],
+      "dist": [
+       30,
+       105
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 61,
+      "sigA": 110,
+      "totL": 63,
+      "totA": 112,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       29,
+       66
+      ],
+      "body": [
+       11,
+       14
+      ],
+      "leg": [
+       21,
+       30
+      ],
+      "dist": [
+       56,
+       105
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-19T23:12:55.569Z"
     }
    ]
   }
