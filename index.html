@@ -7984,6 +7984,7 @@
  { name: "Damian Piwowarczyk", division: "LHW", rank: "NR", record: "11-4-0", initials: "DP", country: "Poland" },
  { name: "Mehemmedeli Osmanli", division: "BW", rank: "NR", record: "12-1-0", initials: "MO", country: "Azerbaijan" },
  { name: "Ilimbek Akylbek Uulu", division: "BW", rank: "NR", record: "10-3-0", initials: "IA", country: "Kyrgyzstan" },
+ { name: "Melissa Amaya", division: "WSW", rank: "NR", record: "8-0-0", initials: "MA", country: "USA" },
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11966,6 +11967,7 @@
   "Damian Piwowarczyk": { ht:"6'6\"", dob:"1997-09-14", reach:'79"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:3, gym:"Czerwony Smok" },
   "Mehemmedeli Osmanli": { ht:"5'9\"", dob:"2004-08-05", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:9, gym:"Zabit Samedov Fight Club" },
   "Ilimbek Akylbek Uulu": { ht:"5'7\"", dob:"2003-09-01", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"60%", streak:2, gym:"VFS Academy" },
+  "Melissa Amaya": { ht:"5'4\"", dob:"1994-11-27", reach:'64"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Sikjitsu" },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46342,6 +46344,7 @@
   "Ilimbek Akylbek Uulu": [
     { opponent: "Dzhokhar Eskiev", odds: 130 },
   ],
+  "Melissa Amaya": [],
 };
 
 const FIGHT_HISTORY = {
@@ -113796,6 +113799,16 @@ const FIGHT_HISTORY = {
     { date: "Jun 11, 2021", opponent: "Ali Sanuev", result: "W", method: "Decision", round: 3, time: "5:00", event: "WEF Selection 36" },
     { date: "Apr 11, 2021", opponent: "Shokhrukh Nozirov", result: "W", method: "Submission", round: 3, time: "4:12", event: "Falco FC: Duysheev vs. Kasymov" },
   ],
+  "Melissa Amaya": [
+    { date: "Jun 18, 2025", opponent: "Megumi Sugimoto", result: "W", method: "KO/TKO", round: 1, time: "3:51", event: "Combate Global: Combate Female 2" },
+    { date: "Jun 7, 2024", opponent: "Samantha Jean-Francois", result: "W", method: "TKO (Punches)", round: 2, time: "3:44", event: "Combate Global: Amaya vs. Jean-Francois" },
+    { date: "Apr 1, 2023", opponent: "Gillian Noll", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "Combate Global: Greyson vs. Dayron" },
+    { date: "Oct 30, 2022", opponent: "Alitzel Mariscal", result: "W", method: "Submission (Arm Triangle Choke)", round: 3, time: "3:12", event: "Combate Global: Kraken vs. Azizoun" },
+    { date: "Jun 30, 2022", opponent: "Naomi Tataroglu", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Combate Global: Jimenez vs. Sewell" },
+    { date: "Mar 23, 2022", opponent: "Yessica Ortega", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global: Mexico vs. USA" },
+    { date: "Nov 12, 2021", opponent: "Andrea Amaro", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:00", event: "Combate Global: USA vs. Mexico" },
+    { date: "Oct 21, 2021", opponent: "Gisselle Garcia Villanueva", result: "W", method: "TKO", round: 1, time: "2:11", event: "Combate Global: Romero Hernandez vs. Montanez" },
+  ],
 
 
 
@@ -129261,6 +129274,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "Competing in the Bantamweight final of The Ultimate Fighter Season 34 (Team Bisping) — won a split decision over Sean Mora in the quarterfinal and a unanimous decision over Xavier Franklin in the semifinal to reach the final", detail: null },
     { icon: "🥋", title: "6 of 10 career wins by submission (4 rear-naked choke, 1 triangle choke, 1 unspecified) — 60% finish rate among wins", detail: null },
     { icon: "🌍", title: "Kyrgyzstani regional standout built on Central Asian cards (Octagon Promotion, Alash Pride, WEF Selection) before testing himself against ONE Friday Fights competition", detail: null },
+  ],
+  "Melissa Amaya": [
+    { icon: "🏆", title: "Competing in the Women's Strawweight final of The Ultimate Fighter Season 34 (Team Cormier) — finished Anna Melisano in the first round of the quarterfinal, then rallied from a deep armbar/triangle scramble to score a second-round TKO of Gigi Canuto in the semifinal", detail: null },
+    { icon: "🥊", title: "Undefeated (8-0) as a pro with 5 of 8 wins by finish (3 KO/TKO, 2 submission) — 63% finish rate; has fought exclusively for Combate Global", detail: null },
+    { icon: "🏋️", title: "Trains at Sikjitsu in Spokane, Washington, alongside former UFC Bantamweight champion Julianna Peña; a licensed nurse (University of New Mexico, 2018) before turning to MMA", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
