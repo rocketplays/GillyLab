@@ -7983,6 +7983,7 @@
  { name: "Emilio Quissua", division: "LHW", rank: "NR", record: "8-0-0", initials: "EQ", country: "Germany" },
  { name: "Damian Piwowarczyk", division: "LHW", rank: "NR", record: "11-4-0", initials: "DP", country: "Poland" },
  { name: "Mehemmedeli Osmanli", division: "BW", rank: "NR", record: "12-1-0", initials: "MO", country: "Azerbaijan" },
+ { name: "Ilimbek Akylbek Uulu", division: "BW", rank: "NR", record: "10-3-0", initials: "IA", country: "Kyrgyzstan" },
 ];
  function showFight(fightId, btn) {
  document.querySelectorAll('.fight-odds-panel').forEach(p => p.style.display = 'none');
@@ -11964,6 +11965,7 @@
   "Emilio Quissua": { ht:"6'4\"", dob:"1997-04-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Planet Eater" },
   "Damian Piwowarczyk": { ht:"6'6\"", dob:"1997-09-14", reach:'79"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:3, gym:"Czerwony Smok" },
   "Mehemmedeli Osmanli": { ht:"5'9\"", dob:"2004-08-05", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:9, gym:"Zabit Samedov Fight Club" },
+  "Ilimbek Akylbek Uulu": { ht:"5'7\"", dob:"2003-09-01", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"60%", streak:2, gym:"VFS Academy" },
  };
  function calcAge(dob) {
  const b = new Date(dob), n = new Date();
@@ -46336,6 +46338,9 @@
   "Mehemmedeli Osmanli": [
     { opponent: "Shamil Boraev", odds: -138 },
     { opponent: "Bakhtovar Yunusov", odds: -400 },
+  ],
+  "Ilimbek Akylbek Uulu": [
+    { opponent: "Dzhokhar Eskiev", odds: 130 },
   ],
 };
 
@@ -113776,6 +113781,21 @@ const FIGHT_HISTORY = {
     { date: "Jul 25, 2021", opponent: "Elnar Makhmudov", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:18", event: "WJF 13: World Jaguar Federation Series 13" },
     { date: "Oct 25, 2019", opponent: "Islam Betirsultanov", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:50", event: "Ultimax Fight Night 2" },
   ],
+  "Ilimbek Akylbek Uulu": [
+    { date: "Dec 5, 2025", opponent: "Mo Miller", result: "W", method: "Submission (Rear-Naked Choke)", round: 4, time: "2:14", event: "American Fight Promotions 104" },
+    { date: "Oct 25, 2024", opponent: "Ozodbek Bobokulov", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:02", event: "EFC Global 50: Turdubekov vs. Yuldashev" },
+    { date: "Aug 8, 2024", opponent: "Dzhokhar Eskiev", result: "L", method: "KO/TKO", round: 1, time: "0:15", event: "ONE Friday Fights 74" },
+    { date: "Jan 11, 2024", opponent: "Khalim Nazruloev", result: "L", method: "KO/TKO", round: 2, time: "1:59", event: "ONE Friday Fights 47" },
+    { date: "Aug 31, 2023", opponent: "Gadzhimurad Gasanguseinov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ONE Friday Fights 31" },
+    { date: "Mar 21, 2023", opponent: "Aivaz Aidinov", result: "W", method: "Submission (Triangle Choke)", round: 3, time: "3:15", event: "Octagon 43: Akylbek uulu vs. Aidinov" },
+    { date: "Aug 26, 2022", opponent: "Nodir Aliododov", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:51", event: "Octagon 34" },
+    { date: "May 30, 2022", opponent: "Serik Makul", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Alash Pride 74: Zhaparov vs. Farmonboev" },
+    { date: "May 19, 2022", opponent: "Yunus Aliev", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:29", event: "Octagon 30" },
+    { date: "Dec 11, 2021", opponent: "Teymur Zhaparov", result: "L", method: "KO/TKO", round: 3, time: "4:50", event: "Octagon 26" },
+    { date: "Sep 16, 2021", opponent: "Gani Adilserikov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Octagon 23" },
+    { date: "Jun 11, 2021", opponent: "Ali Sanuev", result: "W", method: "Decision", round: 3, time: "5:00", event: "WEF Selection 36" },
+    { date: "Apr 11, 2021", opponent: "Shokhrukh Nozirov", result: "W", method: "Submission", round: 3, time: "4:12", event: "Falco FC: Duysheev vs. Kasymov" },
+  ],
 
 
 
@@ -129236,6 +129256,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "Competing in the Bantamweight final of The Ultimate Fighter Season 34 (Team Bisping) — submitted Artem Belakh by rear-naked choke in the quarterfinal, then finished Christian Strong with a buggy choke in the semifinal, a submission never before landed in the UFC", detail: null },
     { icon: "🥋", title: "10 of 12 career wins by finish (2 KO/TKO, 8 submission) — 83% finish rate; unbeaten in 9 straight since his lone pro loss in August 2022", detail: null },
     { icon: "🏋️", title: "Trains at Zabit Samedov Fight Club in Baku, founded by K-1 World Grand Prix and WBC Muay Thai world champion Zabit Samedov", detail: null },
+  ],
+  "Ilimbek Akylbek Uulu": [
+    { icon: "🏆", title: "Competing in the Bantamweight final of The Ultimate Fighter Season 34 (Team Bisping) — won a split decision over Sean Mora in the quarterfinal and a unanimous decision over Xavier Franklin in the semifinal to reach the final", detail: null },
+    { icon: "🥋", title: "6 of 10 career wins by submission (4 rear-naked choke, 1 triangle choke, 1 unspecified) — 60% finish rate among wins", detail: null },
+    { icon: "🌍", title: "Kyrgyzstani regional standout built on Central Asian cards (Octagon Promotion, Alash Pride, WEF Selection) before testing himself against ONE Friday Fights competition", detail: null },
   ],
   "Brandon Holmes": [
     { icon: "🥊", title: "5 of 6 career wins by knockout/TKO", detail: null },
