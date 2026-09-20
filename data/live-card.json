@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-20T02:47:59.121Z",
+ "generatedAt": "2026-09-20T03:18:38.333Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -9774,6 +9774,194 @@
       ]
      },
      "capturedAt": "2026-09-20T02:47:58.984Z"
+    }
+   ]
+  },
+  "Arman Tsarukyan": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Mauricio Ruffy",
+     "result": "W",
+     "method": "KO/TKO (Elbow)",
+     "round": 1,
+     "time": "4:56",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Mauricio Ruffy",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 8,
+      "sigA": 19,
+      "totL": 9,
+      "totA": 20,
+      "tdL": 1,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:00",
+      "head": [
+       7,
+       14
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       3,
+       13
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 10,
+      "totL": 22,
+      "totA": 28,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       3,
+       7
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       2,
+       8
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-20T03:18:38.201Z"
+    }
+   ]
+  },
+  "Mauricio Ruffy": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Arman Tsarukyan",
+     "result": "L",
+     "method": "KO/TKO (Elbow)",
+     "round": 1,
+     "time": "4:56",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Arman Tsarukyan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 10,
+      "totL": 22,
+      "totA": 28,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       3,
+       7
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       2,
+       8
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 8,
+      "sigA": 19,
+      "totL": 9,
+      "totA": 20,
+      "tdL": 1,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:00",
+      "head": [
+       7,
+       14
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       3,
+       13
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-20T03:18:38.201Z"
     }
    ]
   }
