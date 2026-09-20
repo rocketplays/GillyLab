@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-19T23:28:33.846Z",
+ "generatedAt": "2026-09-20T00:14:15.270Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -8646,6 +8646,194 @@
       ]
      },
      "capturedAt": "2026-09-19T23:28:33.707Z"
+    }
+   ]
+  },
+  "Michael Aswell": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "JooSang Yoo",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "JooSang Yoo",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 70,
+      "sigA": 145,
+      "totL": 93,
+      "totA": 171,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:11",
+      "head": [
+       40,
+       111
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       25,
+       28
+      ],
+      "dist": [
+       62,
+       136
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 129,
+      "totL": 51,
+      "totA": 135,
+      "tdL": 1,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:18",
+      "head": [
+       35,
+       110
+      ],
+      "body": [
+       4,
+       6
+      ],
+      "leg": [
+       7,
+       13
+      ],
+      "dist": [
+       44,
+       126
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-20T00:14:15.123Z"
+    }
+   ]
+  },
+  "JooSang Yoo": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Michael Aswell",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Michael Aswell",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 129,
+      "totL": 51,
+      "totA": 135,
+      "tdL": 1,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:18",
+      "head": [
+       35,
+       110
+      ],
+      "body": [
+       4,
+       6
+      ],
+      "leg": [
+       7,
+       13
+      ],
+      "dist": [
+       44,
+       126
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 70,
+      "sigA": 145,
+      "totL": 93,
+      "totA": 171,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:11",
+      "head": [
+       40,
+       111
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       25,
+       28
+      ],
+      "dist": [
+       62,
+       136
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-20T00:14:15.123Z"
     }
    ]
   }
