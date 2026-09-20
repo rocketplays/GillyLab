@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-20T00:44:53.407Z",
+ "generatedAt": "2026-09-20T01:15:39.290Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-09-20T00:44:53.273Z"
+    }
+   ]
+  },
+  "Marlon Vera": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Charles Jourdain",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "2:02",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Charles Jourdain",
+     "result": "W",
+     "f": {
+      "kd": 3,
+      "sigL": 72,
+      "sigA": 128,
+      "totL": 80,
+      "totA": 138,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:15",
+      "head": [
+       38,
+       85
+      ],
+      "body": [
+       22,
+       28
+      ],
+      "leg": [
+       12,
+       15
+      ],
+      "dist": [
+       37,
+       81
+      ],
+      "clinch": [
+       21,
+       25
+      ],
+      "ground": [
+       14,
+       22
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 83,
+      "sigA": 127,
+      "totL": 108,
+      "totA": 153,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       27,
+       62
+      ],
+      "body": [
+       38,
+       45
+      ],
+      "leg": [
+       18,
+       20
+      ],
+      "dist": [
+       59,
+       94
+      ],
+      "clinch": [
+       24,
+       33
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-20T01:15:39.157Z"
+    }
+   ]
+  },
+  "Charles Jourdain": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Marlon Vera",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "2:02",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Marlon Vera",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 83,
+      "sigA": 127,
+      "totL": 108,
+      "totA": 153,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       27,
+       62
+      ],
+      "body": [
+       38,
+       45
+      ],
+      "leg": [
+       18,
+       20
+      ],
+      "dist": [
+       59,
+       94
+      ],
+      "clinch": [
+       24,
+       33
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 3,
+      "sigL": 72,
+      "sigA": 128,
+      "totL": 80,
+      "totA": 138,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:15",
+      "head": [
+       38,
+       85
+      ],
+      "body": [
+       22,
+       28
+      ],
+      "leg": [
+       12,
+       15
+      ],
+      "dist": [
+       37,
+       81
+      ],
+      "clinch": [
+       21,
+       25
+      ],
+      "ground": [
+       14,
+       22
+      ]
+     },
+     "capturedAt": "2026-09-20T01:15:39.157Z"
     }
    ]
   }
