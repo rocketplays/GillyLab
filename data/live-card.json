@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-20T00:14:15.270Z",
+ "generatedAt": "2026-09-20T00:44:53.407Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -8834,6 +8834,194 @@
       ]
      },
      "capturedAt": "2026-09-20T00:14:15.123Z"
+    }
+   ]
+  },
+  "Tai Tuivasa": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Robelis Despaigne",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Robelis Despaigne",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 31,
+      "sigA": 68,
+      "totL": 54,
+      "totA": 93,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:58",
+      "head": [
+       17,
+       49
+      ],
+      "body": [
+       9,
+       9
+      ],
+      "leg": [
+       5,
+       10
+      ],
+      "dist": [
+       12,
+       37
+      ],
+      "clinch": [
+       9,
+       19
+      ],
+      "ground": [
+       10,
+       12
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 69,
+      "totL": 83,
+      "totA": 128,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:08",
+      "head": [
+       29,
+       68
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       18,
+       48
+      ],
+      "clinch": [
+       6,
+       11
+      ],
+      "ground": [
+       6,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-20T00:44:53.273Z"
+    }
+   ]
+  },
+  "Robelis Despaigne": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Tai Tuivasa",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Tai Tuivasa",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 69,
+      "totL": 83,
+      "totA": 128,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:08",
+      "head": [
+       29,
+       68
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       18,
+       48
+      ],
+      "clinch": [
+       6,
+       11
+      ],
+      "ground": [
+       6,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 31,
+      "sigA": 68,
+      "totL": 54,
+      "totA": 93,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:58",
+      "head": [
+       17,
+       49
+      ],
+      "body": [
+       9,
+       9
+      ],
+      "leg": [
+       5,
+       10
+      ],
+      "dist": [
+       12,
+       37
+      ],
+      "clinch": [
+       9,
+       19
+      ],
+      "ground": [
+       10,
+       12
+      ]
+     },
+     "capturedAt": "2026-09-20T00:44:53.273Z"
     }
    ]
   }
