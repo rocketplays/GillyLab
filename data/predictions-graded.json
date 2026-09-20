@@ -4148,7 +4148,65 @@
         "pts": -0.5933,
         "leaned": true
       }
+    },
+    {
+      "fightId": "gable steveson|sean sharaf",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T15:22:15.349Z",
+      "a": {
+        "feed": "Gable Steveson",
+        "db": "Gable Steveson"
+      },
+      "b": {
+        "feed": "Sean Sharaf",
+        "db": "Sean Sharaf"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.6712,
+      "modelClose": 0.759,
+      "marketOpen": 0.8937,
+      "marketClose": 0.9228,
+      "leanA": -0.2225,
+      "nSnapshots": 85,
+      "clv": {
+        "toward": false,
+        "pts": -0.0291,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "dooho choi|patricio pitbull",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T15:22:15.363Z",
+      "a": {
+        "feed": "Patricio Pitbull",
+        "db": "Patrício Pitbull"
+      },
+      "b": {
+        "feed": "Dooho Choi",
+        "db": "Dooho Choi"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.2908,
+      "modelClose": 0.2912,
+      "marketOpen": 0.3371,
+      "marketClose": 0.3045,
+      "leanA": -0.0463,
+      "nSnapshots": 34,
+      "clv": {
+        "toward": true,
+        "pts": 0.0326,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-20T01:58:21.674Z"
+  "generatedAt": "2026-09-20T15:22:15.372Z"
 }
