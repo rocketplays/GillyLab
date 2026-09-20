@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-20T01:15:39.290Z",
+ "generatedAt": "2026-09-20T02:06:39.065Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -9210,6 +9210,194 @@
       ]
      },
      "capturedAt": "2026-09-20T01:15:39.157Z"
+    }
+   ]
+  },
+  "Alonzo Menifield": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Iwo Baraniewski",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Iwo Baraniewski",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 62,
+      "sigA": 162,
+      "totL": 140,
+      "totA": 246,
+      "tdL": 1,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:54",
+      "head": [
+       56,
+       155
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       42,
+       132
+      ],
+      "clinch": [
+       20,
+       30
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 67,
+      "sigA": 121,
+      "totL": 89,
+      "totA": 146,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:19",
+      "head": [
+       52,
+       104
+      ],
+      "body": [
+       13,
+       15
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       50,
+       97
+      ],
+      "clinch": [
+       16,
+       23
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-20T02:06:38.929Z"
+    }
+   ]
+  },
+  "Iwo Baraniewski": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Alonzo Menifield",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Alonzo Menifield",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 67,
+      "sigA": 121,
+      "totL": 89,
+      "totA": 146,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:19",
+      "head": [
+       52,
+       104
+      ],
+      "body": [
+       13,
+       15
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       50,
+       97
+      ],
+      "clinch": [
+       16,
+       23
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 62,
+      "sigA": 162,
+      "totL": 140,
+      "totA": 246,
+      "tdL": 1,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:54",
+      "head": [
+       56,
+       155
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       42,
+       132
+      ],
+      "clinch": [
+       20,
+       30
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-20T02:06:38.929Z"
     }
    ]
   }
