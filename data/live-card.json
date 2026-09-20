@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-20T02:17:17.267Z",
+ "generatedAt": "2026-09-20T02:47:59.121Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -9586,6 +9586,194 @@
       ]
      },
      "capturedAt": "2026-09-20T02:17:17.130Z"
+    }
+   ]
+  },
+  "Patricio Pitbull": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Dooho Choi",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "3:28",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Dooho Choi",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 38,
+      "sigA": 75,
+      "totL": 38,
+      "totA": 75,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       29,
+       65
+      ],
+      "body": [
+       9,
+       9
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       26,
+       60
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       9,
+       12
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 46,
+      "totL": 20,
+      "totA": 46,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       17,
+       42
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       18,
+       43
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-20T02:47:58.984Z"
+    }
+   ]
+  },
+  "Dooho Choi": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Patricio Pitbull",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "3:28",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Patricio Pitbull",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 46,
+      "totL": 20,
+      "totA": 46,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       17,
+       42
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       18,
+       43
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 38,
+      "sigA": 75,
+      "totL": 38,
+      "totA": 75,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       29,
+       65
+      ],
+      "body": [
+       9,
+       9
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       26,
+       60
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       9,
+       12
+      ]
+     },
+     "capturedAt": "2026-09-20T02:47:58.984Z"
     }
    ]
   }
