@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-20T03:18:38.333Z",
+ "generatedAt": "2026-09-20T04:05:31.627Z",
  "fighters": {
   "Hunter Smith": {
    "history": [
@@ -9962,6 +9962,194 @@
       ]
      },
      "capturedAt": "2026-09-20T03:18:38.201Z"
+    }
+   ]
+  },
+  "Joshua Van": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Alexandre Pantoja",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Alexandre Pantoja",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 157,
+      "sigA": 290,
+      "totL": 259,
+      "totA": 394,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "2:13",
+      "head": [
+       140,
+       269
+      ],
+      "body": [
+       10,
+       14
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       144,
+       272
+      ],
+      "clinch": [
+       9,
+       12
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 142,
+      "sigA": 316,
+      "totL": 152,
+      "totA": 328,
+      "tdL": 5,
+      "tdA": 18,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "9:11",
+      "head": [
+       99,
+       252
+      ],
+      "body": [
+       26,
+       33
+      ],
+      "leg": [
+       17,
+       31
+      ],
+      "dist": [
+       128,
+       291
+      ],
+      "clinch": [
+       11,
+       15
+      ],
+      "ground": [
+       3,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-20T04:05:31.489Z"
+    }
+   ]
+  },
+  "Alexandre Pantoja": {
+   "history": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Joshua Van",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 331: Van vs. Pantoja 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 19, 2026",
+     "opponent": "Joshua Van",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 142,
+      "sigA": 316,
+      "totL": 152,
+      "totA": 328,
+      "tdL": 5,
+      "tdA": 18,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "9:11",
+      "head": [
+       99,
+       252
+      ],
+      "body": [
+       26,
+       33
+      ],
+      "leg": [
+       17,
+       31
+      ],
+      "dist": [
+       128,
+       291
+      ],
+      "clinch": [
+       11,
+       15
+      ],
+      "ground": [
+       3,
+       10
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 157,
+      "sigA": 290,
+      "totL": 259,
+      "totA": 394,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "2:13",
+      "head": [
+       140,
+       269
+      ],
+      "body": [
+       10,
+       14
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       144,
+       272
+      ],
+      "clinch": [
+       9,
+       12
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-09-20T04:05:31.489Z"
     }
    ]
   }
