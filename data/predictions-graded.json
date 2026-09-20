@@ -3974,7 +3974,181 @@
         "pts": 0.0007,
         "leaned": true
       }
+    },
+    {
+      "fightId": "alonzo menifield|iwo baraniewski",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T01:58:21.667Z",
+      "a": {
+        "feed": "Alonzo Menifield",
+        "db": "Alonzo Menifield"
+      },
+      "b": {
+        "feed": "Iwo Baraniewski",
+        "db": "Iwo Baraniewski"
+      },
+      "winner": "A",
+      "method": "Decision - Split",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.2937,
+      "modelClose": 0.2938,
+      "marketOpen": 0.3159,
+      "marketClose": 0.3284,
+      "leanA": -0.0222,
+      "nSnapshots": 33,
+      "clv": {
+        "toward": false,
+        "pts": -0.0125,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "brunno ferreira|edmen shahbazyan",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T01:58:21.667Z",
+      "a": {
+        "feed": "Edmen Shahbazyan",
+        "db": "Edmen Shahbazyan"
+      },
+      "b": {
+        "feed": "Brunno Ferreira",
+        "db": "Brunno Ferreira"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5713,
+      "modelClose": 0.5715,
+      "marketOpen": 0.5851,
+      "marketClose": 0.6278,
+      "leanA": -0.0138,
+      "nSnapshots": 33,
+      "clv": {
+        "toward": false,
+        "pts": -0.0427,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "casey o neill|eduarda moura",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T01:58:21.667Z",
+      "a": {
+        "feed": "Casey O'Neill",
+        "db": "Casey O'Neill"
+      },
+      "b": {
+        "feed": "Eduarda Moura",
+        "db": "Eduarda Moura"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5192,
+      "modelClose": 0.5183,
+      "marketOpen": 0.615,
+      "marketClose": 0.669,
+      "leanA": -0.0958,
+      "nSnapshots": 33,
+      "clv": {
+        "toward": false,
+        "pts": -0.054,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "charles jourdain|marlon vera",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T01:58:21.667Z",
+      "a": {
+        "feed": "Marlon Vera",
+        "db": "Marlon Vera"
+      },
+      "b": {
+        "feed": "Charles Jourdain",
+        "db": "Charles Jourdain"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4613,
+      "modelClose": 0.4614,
+      "marketOpen": 0.3208,
+      "marketClose": 0.3531,
+      "leanA": 0.1405,
+      "nSnapshots": 33,
+      "clv": {
+        "toward": true,
+        "pts": 0.0323,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "giga chikadze|joanderson brito",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T01:58:21.667Z",
+      "a": {
+        "feed": "Giga Chikadze",
+        "db": "Giga Chikadze"
+      },
+      "b": {
+        "feed": "Joanderson Brito",
+        "db": "Joanderson Brito"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.2149,
+      "modelClose": 0.2149,
+      "marketOpen": 0.2571,
+      "marketClose": 0.2234,
+      "leanA": -0.0422,
+      "nSnapshots": 33,
+      "clv": {
+        "toward": true,
+        "pts": 0.0337,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "ozzy diaz|ryan gandra",
+      "event": "UFC 331",
+      "gradedAt": "2026-09-20T01:58:21.669Z",
+      "a": {
+        "feed": "Ryan Gandra",
+        "db": "Ryan Gandra"
+      },
+      "b": {
+        "feed": "Ozzy Diaz",
+        "db": "Ozzy Diaz"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.863,
+      "modelClose": 0.137,
+      "marketOpen": 0.7867,
+      "marketClose": 0.1934,
+      "leanA": 0.0763,
+      "nSnapshots": 11,
+      "clv": {
+        "toward": false,
+        "pts": -0.5933,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-19T15:14:54.231Z"
+  "generatedAt": "2026-09-20T01:58:21.674Z"
 }
