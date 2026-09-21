@@ -872,6 +872,56 @@ function mountMatchup(container){
     renderCountdown();
     if (window.__mfCountdownTimer) clearInterval(window.__mfCountdownTimer);
     window.__mfCountdownTimer = setInterval(renderCountdown, 30000);
+    if (window.__mfLivePollTimer) clearInterval(window.__mfLivePollTimer);
+    window.__mfLivePollTimer = setInterval(pollLive, 45000);
+  }
+
+  // Live-card polling -- the site's own live window re-deploys with fresh
+  // results roughly every 5 minutes while a card is going (see
+  // .github/workflows/live-results.yml), and /api/app/matchup reads that
+  // exact same data at request time (worker/index.js), so re-fetching here
+  // surfaces those results at essentially the same latency the site gets,
+  // instead of only picking them up the next time this screen happens to
+  // reload. 45s (tighter than the site's own 60s overlay poll, since a
+  // whole-screen re-render is heavier than the site swapping a few numbers)
+  // is cheap: same endpoint the initial load already hits, gated to only
+  // fire during the live window at all.
+  //
+  // Never runs for a manually-selected past event (data.isPast) -- that's a
+  // frozen result the user asked to look back at, not something to refresh
+  // out from under them.
+  function isLiveWindow(){
+    if (data.isPast || !data.card) return false;
+    var v = countdownParts(data.card);
+    return v.text === 'LIVE' || v.text === 'TONIGHT';
+  }
+  // A cheap fingerprint of what's actually visible per fight -- result/
+  // method/round/time -- so a poll that comes back with nothing new (the
+  // common case between finishes) never triggers a re-render, which would
+  // otherwise reset scroll position and collapse any open Fight Info panel
+  // every 45 seconds for no reason.
+  function fightResultsSignature(card){
+    return ((card && card.fights) || []).map(function(f){
+      return [f.result || '', f.method || '', f.round || '', f.time || ''].join('|');
+    }).join(';');
+  }
+  function pollLive(){
+    // The screen was navigated away from (router clears #app's contents on
+    // every go()) but this closure's setInterval keeps firing until
+    // explicitly cleared -- stop hitting the network once our own container
+    // is no longer the one actually on screen, rather than polling forever
+    // in the background for a view nobody's looking at.
+    if (!container.isConnected){ clearInterval(window.__mfLivePollTimer); return; }
+    if (!isLiveWindow()) return;
+    window.GL_API.matchup().then(function(res){
+      if (!container.isConnected || !res || !res.card || !data.card) return;
+      if (fightResultsSignature(res.card) === fightResultsSignature(data.card)) return;
+      data = res;
+      hubData = {};
+      if (res.card && res.hub) hubData[res.card.slug] = res.hub;
+      (res.carousel || []).forEach(function(c){ if (c && c.hub) hubData[c.slug] = c.hub; });
+      render();
+    }).catch(function(){ /* a dropped poll just tries again next tick */ });
   }
 
   function wire(){
