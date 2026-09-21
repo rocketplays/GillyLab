@@ -309,9 +309,25 @@ jobs:
       # Regenerate the public landing page's live data snapshot (featured
       # division rankings + latest roster changes) from the current repo state,
       # so the logged-out marketing page stays current. Self-guards: keeps the
-      # last-good file if a source can't be parsed. Non-fatal.
+      # last-good file if a source can't be parsed. Non-fatal -- but NOT a bare
+      # `|| true`. The generator's own guard prints "incomplete parse" and
+      # exits 0 whenever it keeps the last-good file instead of writing a
+      # half-built one (see gen-landing-data.cjs's main()), which is exactly
+      # the failure mode that let worker/landing-data.js -- and therefore the
+      # app's featured event via /api/app/matchup -- sit frozen on an
+      # already-finished card for days while every run of this job reported
+      # green. Surface that specific message as a ::warning:: instead of
+      # letting it vanish into a log nobody reads, same pattern as the
+      # $FILES / gen-showcase-proto guards further down this file.
       - name: Regenerate landing-page data snapshot
-        run: node scripts/gen-landing-data.cjs || true
+        run: |
+          OUTPUT=$(node scripts/gen-landing-data.cjs 2>&1); STATUS=$?
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "incomplete parse"; then
+            echo "::warning title=gen-landing-data.cjs kept the stale file::$(echo "$OUTPUT" | grep "incomplete parse") -- worker/landing-data.js was NOT regenerated this run."
+          elif [ $STATUS -ne 0 ]; then
+            echo "::warning title=gen-landing-data.cjs failed::exited $STATUS -- worker/landing-data.js was NOT regenerated this run. See the log above."
+          fi
 
       # Regenerate the app's premium Career Accolades + Tape Study bundle
       # (worker/fighter-extras.js) from index.html's ACCOLADES/TAPE_STUDY/
@@ -525,7 +541,11 @@ jobs:
           python3 scripts/recompute-card-stats.py --recent || true
           node scripts/append-card-history.cjs || true
           python3 gillylab_update_records.py || true
-          node scripts/gen-landing-data.cjs || true
+          # Same "incomplete parse" guard as the primary run above -- this reconcile
+          # path is exactly the push-race scenario where a silent no-op is most
+          # likely to go unnoticed for a while, so it gets the same warning.
+          RECONCILE_LD_OUT=$(node scripts/gen-landing-data.cjs 2>&1); echo "$RECONCILE_LD_OUT"
+          echo "$RECONCILE_LD_OUT" | grep -q "incomplete parse" && echo "::warning title=gen-landing-data.cjs kept the stale file (reconcile)::$(echo "$RECONCILE_LD_OUT" | grep "incomplete parse") -- worker/landing-data.js was NOT regenerated this run."
           node scripts/gen-app-fighter-extras.cjs || true
           node scripts/gen-fight-sim.cjs || true
           node scripts/gen-gl-sheet.cjs || true
