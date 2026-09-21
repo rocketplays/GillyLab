@@ -308,12 +308,30 @@ const fmtOdds = (a) => (a > 0 ? '+' : '') + a;
 const lastName = (s) => String(s || '').toLowerCase().split(' ').pop();
 
 // Extract a top-level `NAME = {...}` object literal from index.html and eval it.
+//
+// Must skip `//` line comments before tracking string state, not just
+// strings themselves: several of the object literals this parses (notably
+// ODDS_HISTORY, which is heavily hand-annotated with sourcing notes) contain
+// `//` comments with plain-English apostrophes ("doesn't", "Balletto-Casey's
+// ..."). Without a comment-skip, the scanner reads that apostrophe as the
+// START of a string literal, flips inStr, and doesn't flip back until it
+// happens to hit some LATER unrelated apostrophe -- desyncing every brace
+// count from that point on. Confirmed directly: before this fix, the
+// ODDS_HISTORY scan (real object body ~500KB) ran ten megabytes past its
+// real closing brace into unrelated later code, so `eval()` threw ("window
+// is not defined") on whatever partial JS it grabbed. buildOddsHistory()
+// swallows that into a null return, which the `main()` guard at the bottom
+// of this file treats as "incomplete parse" and silently keeps the
+// last-good worker/landing-data.js forever -- this is why the app's
+// featured event can sit stale indefinitely with no error surfaced anywhere.
 function extractObject(marker) {
   const s = idx.indexOf(marker); if (s < 0) return null;
   let i = idx.indexOf('{', s), depth = 0, end = -1, inStr = false, q = '';
   for (; i < idx.length; i++) {
     const c = idx[i];
     if (inStr) { if (c === '\\') { i++; continue; } if (c === q) inStr = false; continue; }
+    if (c === '/' && idx[i + 1] === '/') { i = idx.indexOf('\n', i); if (i < 0) break; continue; }
+    if (c === '/' && idx[i + 1] === '*') { i = idx.indexOf('*/', i + 2); if (i < 0) break; i++; continue; }
     if (c === '"' || c === "'" || c === '`') { inStr = true; q = c; continue; }
     if (c === '{') depth++;
     else if (c === '}') { depth--; if (depth === 0) { end = i; break; } }
