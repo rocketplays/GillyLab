@@ -752,10 +752,20 @@ window.GL_SIMULATOR = (function(){
     tag.textContent = css;
     document.head.appendChild(tag);
   }
+  // Inline `display:none` on both wrapper elements, NOT left to the injected
+  // hubCss alone: this markup is appended unconditionally in shellHTML() even
+  // when the screen was opened without a `dd` param (no deep-dive data for
+  // this pairing), in which case ensureHubCss() never runs and the site's
+  // stylesheet (which is what actually hides #mh-overlay/#mh-box) never gets
+  // injected. Without this, the raw modal contents -- "Striking", "Grappling",
+  // "All", "Wins", "Losses", "×" -- rendered as plain unstyled text at the
+  // bottom of the page on first load. hubOpen()/hubClose() already set
+  // `.style.display` directly via JS, so this inline default only matters
+  // before hubCss (if it ever loads) or a real open/close has run.
   function hubModalHTML(){
     return (
-      '<div id="mh-overlay"></div>' +
-      '<div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics">' +
+      '<div id="mh-overlay" style="display:none"></div>' +
+      '<div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics" style="display:none">' +
         '<div class="mh-hd" id="mh-hd"></div>' +
         '<div class="mh-tabs" id="mh-tabs">' +
           '<button type="button" class="mh-tab on" data-mh-tab="striking">Striking</button>' +
@@ -846,6 +856,13 @@ window.GL_SIMULATOR = (function(){
     activeContainer.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-tab') === 'striking'); });
     activeContainer.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-filter') === 'all'); });
     ov.style.display = 'block';
+    // Clears the defensive inline `display:none` hubModalHTML() ships with
+    // (see its own comment) -- an inline style outranks the injected
+    // hubCss's `#mh-box.mh-on{display:flex}` class rule regardless of
+    // specificity, so leaving it in place would silently break every open
+    // from here on. Safe unconditionally: reaching this line already means
+    // hubEntry exists, which only happens after ensureHubCss() has run.
+    bx.style.display = '';
     bx.classList.add('mh-on');
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
@@ -936,8 +953,9 @@ window.GL_SIMULATOR = (function(){
           '<button type="button" class="fp-tab' + (is5 ? ' sel' : '') + '" data-rounds="5">5 Rounds</button>' +
         '</div>' +
       '</div>' +
-      '<button type="button" class="gl-btn gl-btn-primary" id="simRunBtn" disabled style="margin-top:1.1rem">Pick both fighters to simulate</button>' +
-      '<button type="button" class="sim-byo-btn" id="simByoBtn" disabled>Build Your Own Simulation</button>' +
+      '<button type="button" class="gl-btn gl-btn-primary gl-btn-notready" id="simRunBtn" style="margin-top:1.1rem">Pick both fighters to simulate</button>' +
+      '<button type="button" class="sim-byo-btn gl-btn-notready" id="simByoBtn">Build Your Own Simulation</button>' +
+      '<div id="simPickError"></div>' +
       '<div id="simOutput" style="margin-top:1.4rem"></div>' +
       hubModalHTML() +
       csModalHTML()
@@ -960,21 +978,39 @@ window.GL_SIMULATOR = (function(){
     var runBtn = container.querySelector('#simRunBtn');
     var byoBtn = container.querySelector('#simByoBtn');
     var output = container.querySelector('#simOutput');
+    var pickError = container.querySelector('#simPickError');
 
+    // Not a real `disabled` on either button -- a genuinely disabled button
+    // never fires a click event at all, which means tapping it (before
+    // picking two fighters) looked exactly like a bug: nothing happened, no
+    // explanation, same failure mode pickem.js's own submit button already
+    // solved with .gl-btn-notready (see that class's comment in app.css).
+    // Left clickable and just dimmed here too, so each click handler can
+    // say what's missing instead of silently swallowing the tap.
+    function pickReadyMessage(){
+      if (!picked.a && !picked.b) return 'Pick both fighters to simulate.';
+      if (!picked.a || !picked.b) return 'Pick both fighters to simulate.';
+      if (picked.a === picked.b) return 'Choose two different fighters.';
+      return '';
+    }
+    function showPickError(msg){
+      if (pickError) pickError.innerHTML = '<p class="gl-error" style="margin:.6rem 0 0">' + esc(msg) + '</p>';
+    }
+    function clearPickError(){
+      if (pickError) pickError.innerHTML = '';
+    }
     function refreshButton(){
+      var notReady = !!pickReadyMessage();
       if (picked.a && picked.b && picked.a !== picked.b){
-        runBtn.disabled = false;
         runBtn.textContent = 'Simulate';
-        if (byoBtn) byoBtn.disabled = false;
       } else if (picked.a && picked.b && picked.a === picked.b){
-        runBtn.disabled = true;
         runBtn.textContent = 'Pick two different fighters';
-        if (byoBtn) byoBtn.disabled = true;
       } else {
-        runBtn.disabled = true;
         runBtn.textContent = 'Pick both fighters to simulate';
-        if (byoBtn) byoBtn.disabled = true;
       }
+      runBtn.classList.toggle('gl-btn-notready', notReady);
+      if (byoBtn) byoBtn.classList.toggle('gl-btn-notready', notReady);
+      if (!notReady) clearPickError();
     }
 
     makePicker(container, 'a', function(name){ picked.a = name; refreshButton(); });
@@ -991,6 +1027,7 @@ window.GL_SIMULATOR = (function(){
 
     function runSimulation(){
       if (runBtn.disabled) return;
+      clearPickError();
       var prevText = runBtn.textContent;
       runBtn.disabled = true;
       runBtn.textContent = 'Simulating…';
@@ -1016,12 +1053,15 @@ window.GL_SIMULATOR = (function(){
 
     runBtn.addEventListener('click', function(){
       window.GL_NATIVE.tap();
+      if (runBtn.classList.contains('gl-btn-notready')){ showPickError(pickReadyMessage()); return; }
       runSimulation();
     });
 
     if (byoBtn) byoBtn.addEventListener('click', function(){
-      if (byoBtn.disabled) return;
       window.GL_NATIVE.tap();
+      if (byoBtn.classList.contains('gl-btn-notready')){ showPickError(pickReadyMessage()); return; }
+      if (byoBtn.disabled) return; // genuinely mid-fetch (openCustomSimulator's own loading state)
+      clearPickError();
       openCustomSimulator(container, picked.a, picked.b, rounds, byoBtn);
     });
 

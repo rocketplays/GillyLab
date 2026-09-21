@@ -555,10 +555,16 @@ function mountMatchup(container){
   // this is the site's exact modal, not a native reimplementation, same
   // reasoning as the striking/grappling grid markup itself already being
   // pre-rendered server-side.
+  // Inline `display:none` on both wrapper elements as a defensive default --
+  // this markup is appended unconditionally in render(), and the only thing
+  // that actually hides it otherwise is the injected hubCss (ensureHubCss()),
+  // which depends on the /api/app/matchup response carrying a non-empty
+  // hubCss string. Same defensive fix as simulator.js's own hubModalHTML();
+  // see that file's comment for the exact symptom this prevents.
   function hubModalHTML(){
     return (
-      '<div id="mh-overlay"></div>' +
-      '<div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics">' +
+      '<div id="mh-overlay" style="display:none"></div>' +
+      '<div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics" style="display:none">' +
         '<div class="mh-hd" id="mh-hd"></div>' +
         '<div class="mh-tabs" id="mh-tabs">' +
           '<button type="button" class="mh-tab on" data-mh-tab="striking">Striking</button>' +
@@ -668,6 +674,12 @@ function mountMatchup(container){
     container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-tab') === 'striking'); });
     container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-filter') === 'all'); });
     ov.style.display = 'block';
+    // Clears hubModalHTML()'s defensive inline `display:none` -- an inline
+    // style outranks the injected hubCss's `#mh-box.mh-on{display:flex}`
+    // class rule regardless of specificity, so leaving it in place would
+    // silently break every open. See simulator.js's hubOpen() for the same
+    // fix and its full reasoning.
+    bx.style.display = '';
     bx.classList.add('mh-on');
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){

@@ -2688,6 +2688,28 @@ const SLUG_ALIASES = {
   "matt-adams": "Matthew Adams",
   "joe-kropschot": "Joseph Kropschot",
 };
+// ESPN's own fighterSlug frequently keeps a Jr./Sr./II/III/IV suffix (e.g.
+// "raul-rosas-jr") that nameToSlug() -- and therefore every key in
+// fighter-lite.json's bySlug -- deliberately strips (see nameToSlug's own
+// regex above). Caught live: Raul Rosas Jr. vs Raoni Barcelos on an
+// upcoming carousel card had NO Tale of the Tape at all, even though
+// Barcelos's own slug resolved fine and both fighters have real
+// FIGHTER_STATS -- because eventToCard() below nulls out the WHOLE tape
+// object (not just the missing side) the instant either lookup misses.
+// Rather than grow SLUG_ALIASES one suffixed fighter at a time forever,
+// try the suffix-stripped form as a second-chance lookup first -- the same
+// class of fix SLUG_ALIASES exists for, just systematic instead of
+// per-name. Falls through to the raw slug unchanged (matching the old
+// behavior) when nothing resolves, so an actually-unknown fighter still
+// degrades the same way it always did.
+const stripNameSuffix = (slug) => String(slug || "").replace(/-(?:jr|sr|i{1,3}|iv|v)$/i, "");
+function resolveLiteSlug(rawSlug, liteBySlug) {
+  if (SLUG_ALIASES[rawSlug]) return nameToSlug(SLUG_ALIASES[rawSlug]);
+  if (liteBySlug && liteBySlug[rawSlug]) return rawSlug;
+  const stripped = stripNameSuffix(rawSlug);
+  if (stripped !== rawSlug && liteBySlug && liteBySlug[stripped]) return stripped;
+  return rawSlug;
+}
 export function eventToCard(raw, liteBySlug, isPast, oddsData) {
   const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
   const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
@@ -2699,8 +2721,8 @@ export function eventToCard(raw, liteBySlug, isPast, oddsData) {
     const [fa, fb] = b.fighters;
     const rawSlugA = fa.fighterSlug || (fa.profile && fa.profile.slug) || "";
     const rawSlugB = fb.fighterSlug || (fb.profile && fb.profile.slug) || "";
-    const slugA = SLUG_ALIASES[rawSlugA] ? nameToSlug(SLUG_ALIASES[rawSlugA]) : rawSlugA;
-    const slugB = SLUG_ALIASES[rawSlugB] ? nameToSlug(SLUG_ALIASES[rawSlugB]) : rawSlugB;
+    const slugA = resolveLiteSlug(rawSlugA, liteBySlug);
+    const slugB = resolveLiteSlug(rawSlugB, liteBySlug);
     const physA = liteBySlug && liteBySlug[slugA] && liteBySlug[slugA].phys;
     const physB = liteBySlug && liteBySlug[slugB] && liteBySlug[slugB].phys;
     // The DISPLAY name needs the same alias resolution as the slug above --
