@@ -93,13 +93,43 @@ const FIGHT_HISTORY = grabConst('FIGHT_HISTORY');
 const ACTIVE_ROSTER_ALIASES = grabConst('ACTIVE_ROSTER_ALIASES');
 
 // ── assemble the module ──────────────────────────────────────────────────
+// window.FIGHT_STATS + FIGHT_HISTORY (Sep 2026 cold-start latency fix -- see
+// git log) are the dominant cost here (~17.7MB of this module's ~18.1MB) and
+// are NOT baked as literals below. They go to data/deep-dive-history.json
+// instead (built and deployed normally, protected the same way every other
+// /data/*.json the Worker serves via env.ASSETS already is -- see
+// worker/fighter-extras.js's own header comment) and are fetched + cached
+// lazily, once per isolate, only by computeDeepDive() -- the one function
+// that actually touches them. window.FIGHT_GRID stays baked here (small,
+// ~292KB): deepDiveAvailable()/glHasGrid() only ever touch window.GRID_NAMES
+// (built from FIGHT_GRID below), never FIGHT_STATS/FIGHT_HISTORY, so keeping
+// that cheap per-pair check synchronous (no env, no await) matters -- it's
+// called on every fight in /api/app/matchup, not just when a user opens a
+// Deep Dive panel.
+const DATA_OUT = R('data/deep-dive-history.json');
+const deepDiveHistoryLoaderJS =
+  'let _ddLoading = null;\n' +
+  'async function _ensureDeepDiveHistory(env) {\n' +
+  '  if (window.FIGHT_STATS && typeof FIGHT_HISTORY !== "undefined" && FIGHT_HISTORY) return;\n' +
+  '  if (_ddLoading) return _ddLoading;\n' +
+  '  _ddLoading = (async () => {\n' +
+  '    const res = await env.ASSETS.fetch(new Request("https://internal.gillylab/data/deep-dive-history.json"));\n' +
+  '    if (!res.ok) throw new Error("deep-dive-history.json missing from the deployed build (status " + res.status + ")");\n' +
+  '    const j = await res.json();\n' +
+  '    window.FIGHT_STATS = j.FIGHT_STATS;\n' +
+  '    FIGHT_HISTORY = j.FIGHT_HISTORY;\n' +
+  '  })();\n' +
+  '  try { await _ddLoading; } finally { _ddLoading = null; }\n' +
+  '}\n';
 const dataJS =
   '// Baked data — same four sources gen-matchup-free.cjs loads for the free\n' +
   '// page\'s main-event-only render, just kept as raw data here instead of\n' +
   '// being consumed into a fixed set of rendered panels.\n' +
   'const window = {};\n' +
+  'let FIGHT_HISTORY;\n' +
+  deepDiveHistoryLoaderJS +
+  '// window.FIGHT_STATS is populated lazily by _ensureDeepDiveHistory() above, not baked here.\n' +
   'window.FIGHT_GRID = ' + JSON.stringify(FIGHT_GRID) + ';\n' +
-  'window.FIGHT_STATS = ' + JSON.stringify(FIGHT_STATS) + ';\n' +
   'window.GRID_BASE = ' + JSON.stringify(gn.base || null) + ';\n' +
   'window.GRID_DIVBASE = ' + JSON.stringify(gn.divBase || {}) + ';\n' +
   'window.GRID_DIVS = ' + JSON.stringify(gn.divs || {}) + ';\n' +
@@ -111,7 +141,6 @@ const dataJS =
   // built AFTER the slice (see the entry-point section), from this raw array.
   'const GRID_NAMES_RAW = ' + JSON.stringify(gn.names || []) + ';\n' +
   'const ACTIVE_ROSTER_ALIASES = ' + JSON.stringify(ACTIVE_ROSTER_ALIASES) + ';\n' +
-  'const FIGHT_HISTORY = ' + JSON.stringify(FIGHT_HISTORY) + ';\n' +
   'const FIGHTERS = [];\n' +
   '// window.GL_SHEET is deliberately absent — mhSheetBtn() (inside the slice)\n' +
   '// checks for it and returns \'\\\'\\\'\', so no "Generate sheet" buttons leak in.\n' +
@@ -179,8 +208,9 @@ const entryJS =
   '// null when the pairing has no grid data (a debut, or a sweep that hasn\'t\n' +
   '// reached one of them) — not an error, same convention as fight-sim.js\'s\n' +
   '// runFightSim() returning null for an unresolvable name.\n' +
-  'export function computeDeepDive(nameA, nameB) {\n' +
+  'export async function computeDeepDive(env, nameA, nameB) {\n' +
   '  if (!glDeepDiveAvailable(nameA, nameB)) return null;\n' +
+  '  await _ensureDeepDiveHistory(env);\n' +
   "  const striking = {}, grappling = {};\n" +
   "  for (const filter of ['all', 'win', 'loss']) {\n" +
   '    const r = renderFilter(nameA, nameB, filter);\n' +
@@ -207,8 +237,12 @@ const mod =
   hubJS +
   entryJS;
 
-if (!DRY) fs.writeFileSync(OUT, mod);
+if (!DRY) {
+  fs.writeFileSync(DATA_OUT, JSON.stringify({ FIGHT_STATS: FIGHT_STATS, FIGHT_HISTORY: FIGHT_HISTORY }));
+  fs.writeFileSync(OUT, mod);
+}
 const kb = (n) => (n / 1024).toFixed(0) + 'KB';
-console.log('worker/deep-dive-data.js  ' + kb(mod.length) +
+console.log('data/deep-dive-history.json  ' + kb(JSON.stringify({ FIGHT_STATS: FIGHT_STATS, FIGHT_HISTORY: FIGHT_HISTORY }).length) + '\n' +
+  'worker/deep-dive-data.js  ' + kb(mod.length) +
   '  ' + Object.keys(FIGHT_GRID).length + ' fighters in grid, ' + (gn.names || []).length + ' in manifest' +
   (DRY ? '   [dry-run, nothing written]' : ''));

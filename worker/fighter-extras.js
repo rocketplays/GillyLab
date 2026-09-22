@@ -6,15 +6,20 @@
 // as data/fighter-lite.json's bySlug. Regenerate rather than patch: see the
 // script header.
 
-// DATA MOVED OUT: this used to be a 19MB `export default {...}` object
-// literal baked directly into the bundle, which meant V8 had to parse and
-// compile it on every cold Worker isolate start -- for EVERY request,
-// because wrangler.toml's run_worker_first=true means this module gets
-// pulled in regardless of route. The data itself now lives in
-// data/fighter-extras-full.json (excluded by name in build-site.sh, same
-// treatment as data/fight-grid-all.json -- see CLAUDE.md #1/#3), fetched
-// once per isolate via env.ASSETS and cached in memory. Callers must now
-// `await getFighterExtras(env)` instead of importing a ready-made object.
+// DATA MOVED OUT (Sep 2026 cold-start latency fix -- see git log): this used
+// to be a 19MB `export default {...}` object literal baked directly into the
+// bundle, which meant V8 had to parse and compile it on every cold Worker
+// isolate start -- for EVERY request, because wrangler.toml's
+// run_worker_first=true means this module gets pulled in regardless of
+// route. The data itself now lives in data/fighter-extras-full.json, built
+// and deployed normally (it is NOT excluded from build-site.sh -- it stays
+// protected the same way every other /data/*.json the Worker serves via
+// env.ASSETS already is: worker/index.js's final routing fallthrough
+// requires a subscribed session for any path that isn't explicitly public;
+// this internal env.ASSETS.fetch() call bypasses that gate entirely, same as
+// loadResults/loadClosingOdds/etc already do). Fetched once per isolate and
+// cached in memory. Callers must now `await getFighterExtras(env)` instead
+// of importing a ready-made object.
 let _cache = null;
 let _loading = null;
 async function getFighterExtras(env) {

@@ -264,9 +264,35 @@ const SIM_DIVISION_ALIASES = { WFLY: 'WFLW' };
 const FIGHTERS_STUB = Object.keys(NAME_DIVISION).map((name) => ({ name, division: NAME_DIVISION[name] }));
 
 // ── assemble the module ──────────────────────────────────────────────────
+// FIGHT_HISTORY (Sep 2026 cold-start latency fix -- see git log) is the
+// dominant cost here (~9.6MB of this module's ~10.5MB) and is NOT baked as a
+// literal below. It goes to data/fight-sim-history.json instead (built and
+// deployed normally, protected by the same runtime session gate as every
+// other /data/*.json -- see worker/fighter-extras.js's own header comment
+// for the full reasoning) and is fetched + cached lazily, once per isolate,
+// only by the functions that actually touch it. FIGHTER_STATS/FIGHTERS stay
+// baked here (~900KB combined -- small): resolveSimName()/canonicalSimName()/
+// fighterTaleOfTape() are called from unrelated sync code elsewhere in the
+// Worker (rank-badge lookups) and never touch FIGHT_HISTORY, so keeping them
+// synchronous (no env, no await) avoids forcing async onto call sites that
+// have nothing to do with the simulator.
+const DATA_OUT = R('data/fight-sim-history.json');
+const fightHistoryLoaderJS =
+  'let FIGHT_HISTORY = null;\n' +
+  'let _fsHistLoading = null;\n' +
+  'async function _ensureFightHistory(env) {\n' +
+  '  if (FIGHT_HISTORY) return;\n' +
+  '  if (_fsHistLoading) return _fsHistLoading;\n' +
+  '  _fsHistLoading = (async () => {\n' +
+  '    const res = await env.ASSETS.fetch(new Request("https://internal.gillylab/data/fight-sim-history.json"));\n' +
+  '    if (!res.ok) throw new Error("fight-sim-history.json missing from the deployed build (status " + res.status + ")");\n' +
+  '    FIGHT_HISTORY = await res.json();\n' +
+  '  })();\n' +
+  '  try { await _fsHistLoading; } finally { _fsHistLoading = null; }\n' +
+  '}\n';
 const dataJS =
   'const FIGHTER_STATS = ' + JSON.stringify(FIGHTER_STATS) + ';\n' +
-  'const FIGHT_HISTORY = ' + JSON.stringify(FIGHT_HISTORY) + ';\n' +
+  fightHistoryLoaderJS +
   'const RANKINGS_LOOKUP = ' + JSON.stringify(RANKINGS_LOOKUP) + ';\n' +
   'const NAME_DIVISION = ' + JSON.stringify(NAME_DIVISION) + ';\n' +
   'const SIM_DIVISION_ALIASES = ' + JSON.stringify(SIM_DIVISION_ALIASES) + ';\n' +
@@ -407,7 +433,8 @@ const entryJS =
   '// (e.g. "Jose Miguel Delgado") still finds "Jose Delgado" in FIGHTER_STATS,\n' +
   '// and runs the actual trials against the CANONICAL names either way, so\n' +
   '// the result and every stat in it lines up with one consistent identity.\n' +
-  'export function runFightSim(nameA, nameB, rounds, n) {\n' +
+  'export async function runFightSim(env, nameA, nameB, rounds, n) {\n' +
+  '  await _ensureFightHistory(env);\n' +
   '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
   '  if (!canonA || !canonB) return null;\n' +
   '  return simRunTrials(canonA, canonB, n, rounds);\n' +
@@ -456,7 +483,8 @@ const entryJS =
   '// matchup.js) -- the app already has the renderer; this is what was\n' +
   '// missing to feed it for an arbitrary (not just scheduled) pairing.\n' +
   '// Returns null for an unresolvable name, same convention as runFightSim.\n' +
-  'export function matchupBreakdown(nameA, nameB) {\n' +
+  'export async function matchupBreakdown(env, nameA, nameB) {\n' +
+  '  await _ensureFightHistory(env);\n' +
   '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
   '  if (!canonA || !canonB) return null;\n' +
   '  const out = renderMatchupBreakdown(null, canonA, canonB, {}) || {};\n' +
@@ -481,7 +509,8 @@ const entryJS =
   '// slider drag. This entry point computes exactly that base object once,\n' +
   '// server-side, the same way csBuildBase(nameA, nameB, rounds) does on the\n' +
   '// site.\n' +
-  'export function customSimBase(nameA, nameB, rounds) {\n' +
+  'export async function customSimBase(env, nameA, nameB, rounds) {\n' +
+  '  await _ensureFightHistory(env);\n' +
   '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
   '  if (!canonA || !canonB) return null;\n' +
   '  const r = rounds === 5 ? 5 : 3;\n' +
@@ -565,7 +594,8 @@ const entryJS =
   '// csMethodFromBaseline() for the client-side dominance-bend + 5-round\n' +
   '// shift that turns this (plus an arbitrary winProb) into the actual\n' +
   '// {KO/TKO, Submission, Decision} distribution shown in the modal.\n' +
-  'export function customSimMethodBaseline(nameA, nameB, rounds) {\n' +
+  'export async function customSimMethodBaseline(env, nameA, nameB, rounds) {\n' +
+  '  await _ensureFightHistory(env);\n' +
   '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
   '  if (!canonA || !canonB) return null;\n' +
   '  return { aWins: _csMethodBaselinePre(canonA, canonB), bWins: _csMethodBaselinePre(canonB, canonA) };\n' +
@@ -584,8 +614,12 @@ const mod =
   simJS +
   entryJS;
 
-if (!DRY) fs.writeFileSync(OUT, mod);
+if (!DRY) {
+  fs.writeFileSync(DATA_OUT, JSON.stringify(FIGHT_HISTORY));
+  fs.writeFileSync(OUT, mod);
+}
 const kb = (n) => (n / 1024).toFixed(0) + 'KB';
-console.log('worker/fight-sim.js  ' + kb(mod.length) +
+console.log('data/fight-sim-history.json  ' + kb(JSON.stringify(FIGHT_HISTORY).length) + '\n' +
+  'worker/fight-sim.js  ' + kb(mod.length) +
   '  ' + Object.keys(FIGHTER_STATS).length + ' fighters, ' + Object.keys(RANKINGS_LOOKUP).length + ' ranked' +
   (DRY ? '   [dry-run, nothing written]' : ''));
