@@ -309,7 +309,25 @@ function mountPickem(container){
     if (openHist) openHist.addEventListener('click', function(){ window.GL_NATIVE.tap(); showHistory(); });
   }
 
-  function showPanel(html){
+  // ── Leaderboard scope tabs + live auto-refresh -----------------------------
+  // Mirrors the site's PK_LB_SCOPE/pkBoardPaint (index.html ~8433-8491): the
+  // "current" scope grades the in-progress card live off the results feed, so
+  // it's worth polling every 45s while that tab is actually on screen. Unlike
+  // matchup.js's live-card poll (which guards on `container.isConnected` --
+  // container there is the router's #app element, which is never itself
+  // removed, only emptied), the element this guards on is the leaderboard
+  // list <div> created fresh inside the panel each time showLeaderboard()
+  // runs -- that element genuinely goes stale/disconnected the moment the
+  // panel is replaced (switching scope, opening a player, backing out to
+  // picks, or the router clearing #app on navigation away), so checking
+  // *its* isConnected actually detects "nobody's looking at this anymore",
+  // which a check on the never-removed container element would not.
+  var PK_LB_SCOPE = 'current';
+  var PK_LB_TIMER = null;
+  function pkClearLbTimer(){ if (PK_LB_TIMER){ clearInterval(PK_LB_TIMER); PK_LB_TIMER = null; } }
+
+  function showPanel(html, opts){
+    opts = opts || {};
     var panel = container.querySelector('#pkPanel');
     var bouts = container.querySelector('#pkBouts');
     var bar = container.querySelector('.pk-submitbar');
@@ -317,49 +335,189 @@ function mountPickem(container){
     var nameCard = container.querySelector('#pkNameCard');
     [bouts, bar, subnav, nameCard].forEach(function(el){ if (el) el.hidden = true; });
     panel.hidden = false;
-    panel.innerHTML = '<button type="button" class="gl-btn gl-btn-outline" id="pkBack" style="margin-bottom:.8rem">← Back to picks</button>' + html;
+    panel.innerHTML = '<button type="button" class="gl-btn gl-btn-outline" id="pkBack" style="margin-bottom:.8rem">' + esc(opts.backLabel || '← Back to picks') + '</button>' + html;
     container.querySelector('#pkBack').addEventListener('click', function(){
       window.GL_NATIVE.tap();
+      if (opts.onBack){ opts.onBack(); return; }
+      pkClearLbTimer();
       panel.hidden = true;
       [bouts, bar, subnav, nameCard].forEach(function(el){ if (el) el.hidden = false; });
     });
   }
 
-  function showLeaderboard(){
-    showPanel('<p class="gl-muted">Loading leaderboard…</p>');
-    window.GL_API.pickemLeaderboard('current').then(function(res){
+  // Shared with showPlayerProfile()/showHistory() -- same fields+layout as
+  // the site's pkStatsHead/pkRankBadges (index.html ~8319-8339).
+  function statsHeadHtml(res){
+    var pct = function(n, d){ return d ? Math.round(100 * n / d) + '%' : '—'; };
+    var n = (res.events || []).length;
+    var badges = [];
+    if (res.rankAll) badges.push('All-time #' + res.rankAll);
+    if (res.rankLast5) badges.push('Last 5 #' + res.rankLast5);
+    return '<div class="pk-hist-head">' +
+      (res.name ? '<div class="pk-hist-name">' + esc(res.name) + '</div>' : '') +
+      (badges.length ? '<div class="pk-hist-ranks">' + badges.map(function(p){ return '<span class="pk-rank-badge">' + esc(p) + '</span>'; }).join('') + '</div>' : '') +
+      '<div class="pk-hist-total"><span class="pk-hist-total-num">' + (res.total || 0) + '</span>' +
+      '<span class="pk-hist-total-lbl">total points · ' + n + ' card' + (n === 1 ? '' : 's') + '</span></div>' +
+      '<div class="pk-hist-stats">' +
+        '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.correct || 0) + '/' + (res.decided || 0) + '</span>' +
+          '<span class="pk-hist-stat-lbl">picks correct · ' + pct(res.correct, res.decided) + '</span></div>' +
+        '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.dogCorrect || 0) + '/' + (res.dogPicks || 0) + '</span>' +
+          '<span class="pk-hist-stat-lbl">underdogs hit · ' + pct(res.dogCorrect, res.dogPicks) + '</span></div>' +
+      '</div></div>';
+  }
+
+  function showLeaderboard(scope){
+    PK_LB_SCOPE = scope || PK_LB_SCOPE || 'current';
+    pkClearLbTimer();
+    var tabs = [['current', 'This card'], ['last5', 'Last 5'], ['all', 'All-time']].map(function(t){
+      return '<button type="button" class="pk-tab' + (PK_LB_SCOPE === t[0] ? ' sel' : '') + '" data-lb-scope="' + t[0] + '">' + t[1] + '</button>';
+    }).join('');
+    showPanel(
+      '<div class="pk-tabs">' + tabs + '</div>' +
+      '<div id="pkLbStatus"></div>' +
+      '<div class="pk-board-list" id="pkLbList"><div class="pk-board-empty">Loading…</div></div>'
+    );
+    container.querySelectorAll('[data-lb-scope]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        showLeaderboard(btn.getAttribute('data-lb-scope'));
+      });
+    });
+    pkPaintLeaderboard();
+    // Same 45s cadence as the site (index.html ~8450). Only "current" is a
+    // live-graded board -- last5/all only change once a card finishes.
+    if (PK_LB_SCOPE === 'current') PK_LB_TIMER = setInterval(pkPaintLeaderboard, 45000);
+  }
+
+  function pkPaintLeaderboard(){
+    var scope = PK_LB_SCOPE;
+    window.GL_API.pickemLeaderboard(scope).then(function(res){
+      var listEl = container.querySelector('#pkLbList');
+      if (!listEl || !listEl.isConnected){ pkClearLbTimer(); return; }   // panel gone/replaced
+      if (scope !== PK_LB_SCOPE) return;                                 // user switched tabs mid-fetch
+      var statusEl = container.querySelector('#pkLbStatus');
       var rows = res.rows || [];
-      var body = !rows.length
-        ? '<p class="gl-muted">No fights scored yet.</p>'
-        : rows.map(function(r){
-            var me = res.me && r.name === res.me.name;
-            return '<div class="gl-card" style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;margin-bottom:.5rem">' +
-              '<span>#' + r.rank + ' ' + esc(r.name) + (me ? ' <span style="color:var(--accent)">(you)</span>' : '') + '</span>' +
-              '<strong>' + r.points + '</strong>' +
-            '</div>';
-          }).join('');
-      showPanel(body);
-    }).catch(function(){
-      showPanel('<p class="gl-error">Leaderboard unavailable right now.</p>');
+      if (statusEl){
+        if (scope === 'current' && res.event){
+          var badge = res.live ? '<span class="pk-live-badge">● LIVE</span>' : '<span class="pk-final-badge">Final</span>';
+          var prog = res.total ? ((res.decided || 0) + ' of ' + res.total + ' fights scored') : '';
+          statusEl.innerHTML = '<div class="pk-board-status-row">' + badge +
+            '<span class="pk-board-event">' + esc(res.event) + '</span>' +
+            (prog ? '<span class="pk-board-prog">' + esc(prog) + '</span>' : '') + '</div>';
+        } else statusEl.innerHTML = '';
+      }
+      if (!rows.length){
+        listEl.innerHTML = '<div class="pk-board-empty">' + (scope === 'current'
+          ? (res.event ? 'No fights scored yet -- standings update as results come in.' : 'No card in progress. Try Last 5 or All-time.')
+          : 'No graded picks yet -- check back after the next card.') + '</div>';
+        return;
+      }
+      var meName = res.me && res.me.name;
+      var rowHtml = function(r, me){
+        return '<button type="button" class="pk-board-row' + (me ? ' me' : '') + '" data-player="' + esc(r.name) + '">' +
+          '<span class="pk-board-rank">' + r.rank + '</span>' +
+          '<span class="pk-board-name">' + esc(r.name) + (me ? ' <span class="pk-you">you</span>' : '') + '</span>' +
+          '<span class="pk-board-pts">' + r.points + '</span><span class="pk-board-chev">›</span></button>';
+      };
+      var out = rows.map(function(r){ return rowHtml(r, meName && r.name === meName); }).join('');
+      if (res.me && !rows.some(function(r){ return r.name === meName; })) out += '<div class="pk-board-sep">···</div>' + rowHtml(res.me, true);
+      listEl.innerHTML = out;
+      listEl.querySelectorAll('[data-player]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          showPlayerProfile(btn.getAttribute('data-player'));
+        });
+      });
+    }).catch(function(err){
+      var listEl = container.querySelector('#pkLbList');
+      if (!listEl || !listEl.isConnected){ pkClearLbTimer(); return; }
+      if (scope !== PK_LB_SCOPE) return;
+      if (err && err.status === 401) pkClearLbTimer();
+      listEl.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>';
     });
   }
 
+  // ── Player profile (opened from a leaderboard name) ------------------------
+  // Mirrors openPickemPlayer/renderPickemPlayer (index.html ~8494-8516).
+  function showPlayerProfile(name){
+    showPanel('<div class="pk-board-empty">Loading…</div>', { backLabel: '← Back to leaderboard', onBack: showLeaderboard });
+    window.GL_API.pickemPlayer(name).then(function(res){
+      if (!res.name) res.name = name;
+      var evs = res.events || [];
+      var rows = evs.map(function(e){
+        var pts = e.points || 0;
+        return '<div class="pk-hist-row pk-hist-row-static">' +
+          '<div class="pk-hist-row-main"><div class="pk-hist-ev">' + esc(e.event || e.slug) + '</div>' +
+          '<div class="pk-hist-meta">' + esc(e.date || '') + ' · ' + (e.correct || 0) + '/' + (e.boutCount || 0) + ' winners</div></div>' +
+          '<div class="pk-hist-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
+      }).join('');
+      var body = statsHeadHtml(res) + (evs.length ? '<div class="pk-hist-list">' + rows + '</div>' : '<div class="pk-hist-empty">No graded cards yet.</div>');
+      showPanel(body, { backLabel: '← Back to leaderboard', onBack: showLeaderboard });
+    }).catch(function(err){
+      var msg = (err && err.status === 404) ? 'Player not found.' : 'Profile unavailable right now.';
+      showPanel('<p class="gl-error">' + esc(msg) + '</p>', { backLabel: '← Back to leaderboard', onBack: showLeaderboard });
+    });
+  }
+
+  // ── History: per-event list, then per-bout drill-down -----------------------
+  // Mirrors renderPickemHistory + renderPickemHistoryEvent (index.html ~8341-8431).
   function showHistory(){
     showPanel('<p class="gl-muted">Loading your history…</p>');
     window.GL_API.pickemHistory().then(function(res){
-      var evs = res.events || [];
-      var body = !evs.length
-        ? '<p class="gl-muted">No graded cards yet. Make your picks -- they’ll be scored here after the event.</p>'
-        : evs.map(function(e){
-            var pts = e.points || 0;
-            return '<div class="gl-card" style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;margin-bottom:.5rem">' +
-              '<span>' + esc(e.event || e.slug) + '<br><span class="gl-muted" style="font-size:.8rem">' + esc(e.date || '') + ' · ' + (e.correct || 0) + '/' + (e.boutCount || 0) + '</span></span>' +
-              '<strong style="color:' + (pts >= 0 ? 'var(--accent)' : 'var(--bad)') + '">' + (pts > 0 ? '+' : '') + pts + '</strong>' +
-            '</div>';
-          }).join('');
-      showPanel(body);
+      renderHistoryList(res);
     }).catch(function(){
       showPanel('<p class="gl-error">History unavailable right now.</p>');
+    });
+  }
+
+  function renderHistoryList(res){
+    var evs = res.events || [];
+    var head = statsHeadHtml(res);
+    var body = !evs.length
+      ? head + '<div class="pk-hist-empty">No graded cards yet. Make your picks -- they’ll be scored here after the event.</div>'
+      : head + '<div class="pk-hist-list">' + evs.map(function(e){
+          var pts = e.points || 0;
+          return '<button type="button" class="pk-hist-row" data-hist-event="' + esc(e.slug) + '">' +
+            '<div class="pk-hist-row-main"><div class="pk-hist-ev">' + esc(e.event || e.slug) + '</div>' +
+            '<div class="pk-hist-meta">' + esc(e.date || '') + ' · ' + (e.correct || 0) + '/' + (e.boutCount || 0) + ' winners</div></div>' +
+            '<div class="pk-hist-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div>' +
+            '<div class="pk-hist-arrow">›</div></button>';
+        }).join('') + '</div>';
+    showPanel(body);
+    container.querySelectorAll('[data-hist-event]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        showHistoryEvent(btn.getAttribute('data-hist-event'), res);
+      });
+    });
+  }
+
+  function showHistoryEvent(slug, listRes){
+    var backToList = function(){ renderHistoryList(listRes); };
+    showPanel('<div class="pk-board-empty">Loading…</div>', { backLabel: '← All cards', onBack: backToList });
+    window.GL_API.pickemHistory(slug).then(function(res){
+      var bouts = res.bouts || [];
+      var rows = bouts.map(function(b){
+        var tag = 'pending', label = 'Pending';
+        if (b.voided) { tag = 'void'; label = 'No contest — void'; }
+        else if (b.pending) { tag = 'pending'; label = 'Pending'; }
+        else if (b.winnerHit) { tag = 'hit'; label = 'Winner' + (b.methodHit ? ' + method' : '') + (b.roundHit ? ' + round' : ''); }
+        else { tag = 'miss'; label = 'Wrong winner'; }
+        var pts = b.points || 0;
+        var sub = (b.method || '—') + (b.round ? ' · R' + b.round : '') + ' · ' + (b.confidence || '') + ' conf · ' + label;
+        return '<div class="pk-hist-bout ' + tag + '">' +
+          '<div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">' + esc(b.winner || '') + '</div>' +
+          '<div class="pk-hist-bout-detail">' + esc(sub) + '</div></div>' +
+          '<div class="pk-hist-bout-pts ' + (pts > 0 ? 'pos' : pts < 0 ? 'neg' : 'zero') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
+      }).join('');
+      var total = res.total || 0;
+      var body = '<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">' + esc(res.event || slug) + '</div>' +
+        '<div class="pk-hist-ev-total ' + (total >= 0 ? 'pos' : 'neg') + '">' + (total > 0 ? '+' : '') + total + ' pts</div></div>' +
+        (res.graded ? '' : '<div class="pk-note pk-locked" style="margin:0 0 .6rem">Not fully graded yet — results still coming in.</div>') +
+        '<div class="pk-hist-bouts">' + rows + '</div>';
+      showPanel(body, { backLabel: '← All cards', onBack: backToList });
+    }).catch(function(){
+      showPanel('<p class="gl-error">Couldn’t load that card.</p>', { backLabel: '← All cards', onBack: backToList });
     });
   }
 

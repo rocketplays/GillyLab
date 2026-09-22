@@ -35,8 +35,8 @@ const ALIASES = (() => {
   while ((x = re.exec(m[1]))) o[x[1]] = x[2];
   return o;
 })();
-// FIGHTERS: canonical name -> country, and slug -> canonical name.
-const NAME_COUNTRY = {}, SLUG_NAME = {};
+// FIGHTERS: canonical name -> country/record, and slug -> canonical name.
+const NAME_COUNTRY = {}, NAME_RECORD = {}, SLUG_NAME = {};
 (() => {
   const start = IDX.indexOf("const FIGHTERS");
   const open = IDX.indexOf("[", start);
@@ -55,7 +55,12 @@ const NAME_COUNTRY = {}, SLUG_NAME = {};
   while ((m = re.exec(block))) {
     const obj = m[0], name = m[1];
     const cm = obj.match(/country:\s*"([^"]*)"/);
+    const rm = obj.match(/record:\s*"([^"]*)"/);
     NAME_COUNTRY[name] = cm ? cm[1] : "";
+    // FIGHTERS stores this as a bare "W-L-D" (e.g. "18-2-0"), already the
+    // shape rankingRecordShort() on the website expects (it strips the
+    // trailing "-0" draws itself) -- no reformatting needed here.
+    NAME_RECORD[name] = rm ? rm[1] : "";
     SLUG_NAME[nameToSlug(name)] = name;
   }
 })();
@@ -103,7 +108,7 @@ const bySlug = {};
   (j.data || []).forEach((e) => {
     const slug = e.fighterSlug; if (!slug || bySlug[slug]) return;
     const canon = resolveCanon(e.fighterName, slug);
-    bySlug[slug] = { name: canon, photo: nameToSlug(canon), flag: flagFor(NAME_COUNTRY[canon]) };
+    bySlug[slug] = { name: canon, photo: nameToSlug(canon), flag: flagFor(NAME_COUNTRY[canon]), record: NAME_RECORD[canon] || "" };
   });
 });
 

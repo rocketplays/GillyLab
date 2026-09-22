@@ -2733,6 +2733,59 @@ function fighterHasInjuryNews(newsData, name) {
   }
   return hits === 1 && !!(hit && hit.hasInjuryNews);
 }
+// Sibling to fighterHasInjuryNews() above: same normalized-name / unambiguous
+// token-subset matching, but returns the fighter's WHOLE entry (with .items[])
+// instead of just the boolean -- ports index.html's fighterNewsEntry() so the app
+// can carry an actual article, not just "yes, there's news".
+function fighterNewsEntry(newsData, name) {
+  if (!newsData || !newsData.fighters || !name) return null;
+  const nn = _newsNorm(name);
+  if (newsData.fighters[nn]) return newsData.fighters[nn];
+  const t = nn.split(" ").filter(Boolean);
+  if (!t.length) return null;
+  let hit = null, hits = 0;
+  for (const k of Object.keys(newsData.fighters)) {
+    const kt = k.split(" ").filter(Boolean);
+    if (t.every((x) => kt.includes(x)) || kt.every((x) => t.includes(x))) { hit = newsData.fighters[k]; if (++hits > 1) break; }
+  }
+  return hits === 1 ? hit : null;
+}
+// Which article to surface for a flagged-injury fighter: the item flagged as
+// injury/card news first -- the same preference openFighterNews() uses to flash an
+// article in the site's News tab -- else the first (newest) item. Returns
+// { title, url } or null when the fighter has no news entry/items.
+function pickNewsArticle(newsData, name) {
+  const entry = fighterNewsEntry(newsData, name);
+  const items = entry && Array.isArray(entry.items) ? entry.items : [];
+  if (!items.length) return null;
+  const item = items.find((it) => it && it.injury) || items[0];
+  return item ? { title: item.title || null, url: item.url || null } : null;
+}
+// Structured detail behind the boolean `flag` below: which fighter and which of
+// the three reasons triggered it, plus (injury case only) the actual article.
+// Precedence mirrors renderScouting()'s chip logic in index.html: a ground-truth
+// short-notice marker wins outright, then a ground-truth "may change" (opponent
+// withdrew, no replacement yet), then the softer generic "has recent injury/card
+// news" signal. renderScouting ALSO tries to GUESS a short-notice replacement by
+// parsing news-headline text when neither ground-truth marker is set -- that NLP
+// heuristic (shortNoticeFighter()) lives only in the browser and is deliberately
+// not ported here; this only ever reports a reason the feed or news data itself
+// actually confirms, never a guess.
+function computeFlagDetail(fa, fb, f1Name, f2Name, newsData) {
+  if (fa.shortNotice) return { fighter: f1Name, reason: "shortNotice", newsUrl: null, newsTitle: null };
+  if (fb.shortNotice) return { fighter: f2Name, reason: "shortNotice", newsUrl: null, newsTitle: null };
+  if (fa.mayChange) return { fighter: f1Name, reason: "mayChange", newsUrl: null, newsTitle: null };
+  if (fb.mayChange) return { fighter: f2Name, reason: "mayChange", newsUrl: null, newsTitle: null };
+  if (fighterHasInjuryNews(newsData, f1Name)) {
+    const article = pickNewsArticle(newsData, f1Name);
+    return { fighter: f1Name, reason: "injury", newsUrl: (article && article.url) || null, newsTitle: (article && article.title) || null };
+  }
+  if (fighterHasInjuryNews(newsData, f2Name)) {
+    const article = pickNewsArticle(newsData, f2Name);
+    return { fighter: f2Name, reason: "injury", newsUrl: (article && article.url) || null, newsTitle: (article && article.title) || null };
+  }
+  return null;
+}
 export function eventToCard(raw, liteBySlug, isPast, oddsData, newsData) {
   const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
   const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
@@ -2776,9 +2829,17 @@ export function eventToCard(raw, liteBySlug, isPast, oddsData, newsData) {
       // card-change coverage from data/fighter-news.json. Flags the BOUT if
       // either corner has ANY of the three, same "flag the row, not just one
       // side" behavior as the site's own bout-news class.
-      flag: !!(fa.shortNotice || fa.mayChange || fb.shortNotice || fb.mayChange ||
-        fighterHasInjuryNews(newsData, f1Name) || fighterHasInjuryNews(newsData, f2Name)),
+      // flagDetail carries WHY: which fighter, which reason, and (injury case)
+      // the actual article -- see computeFlagDetail() above eventToCard for the
+      // precedence. flag stays a plain boolean derived from it (computed once,
+      // not a getter -- Object.assign()/structuredClone() call sites downstream
+      // wouldn't carry an accessor property) so existing consumers that only
+      // care "should this fight show the ⚠" don't need to change.
+      flagDetail: null,
+      flag: false,
     };
+    f.flagDetail = computeFlagDetail(fa, fb, f1Name, f2Name, newsData);
+    f.flag = !!f.flagDetail;
     const consensus = pagesConsensusOdds(oddsData, f.f1, f.f2);
     if (consensus) { f.o1 = consensus.a; f.o2 = consensus.b; }
     // Decided from the bout data itself (a winner, or a draw/NC), not gated on

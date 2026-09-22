@@ -2635,13 +2635,24 @@ export default {
         raw.data.forEach((e) => { (byDiv[e.division] = byDiv[e.division] || []).push(e); });
         const tabs = PORDER.filter((d) => byDiv[d] && byDiv[d].length);
         Object.keys(byDiv).forEach((d) => { if (!tabs.includes(d)) tabs.push(d); });
+        // The Cito rankings feed marks an interim champion with isChampion:
+        // true AND championStatus: 'interim' (top-level on the entry, or
+        // nested under .fighter) -- mirrors isInterimChamp() in index.html's
+        // rankingPanelHTML. Without this an interim and a unified champion
+        // both render identically as "C" / "Champion".
         const shapeEntry = (e) => {
           const ex = EX[e.fighterSlug] || {};
           const name = ex.name || e.fighterName || "";
+          const championStatus = e.championStatus || (e.fighter && e.fighter.championStatus) || null;
           return {
             rank: e.rank != null ? e.rank : null,
             name,
             isChampion: !!e.isChampion,
+            isInterimChamp: !!(e.isChampion && championStatus === "interim"),
+            // W-L-D, e.g. "18-2-0" -- sourced from FIGHTERS via
+            // gen-rankings-extra.cjs (the Cito feed itself doesn't carry a
+            // usable record for our checked-in rankings.json snapshots).
+            record: ex.record || null,
             photo: ex.photo || e.fighterSlug || null,
             imageUrl: e.imageUrl && e.imageUrl.length > 10 ? e.imageUrl : null,
             flag: e.flag || ex.flag || null,
@@ -2683,6 +2694,10 @@ export default {
           source,
           generatedAt: raw.meta && raw.meta.generatedAt,
           date: raw.meta && raw.meta.latestSnapshotDate,
+          // Compared-against snapshot date -- the "Sep 14 → Sep 21" range on
+          // the website's own Ranking Changes widget (renderRankingChangesSummary
+          // in index.html). Same field the site reads off this same JSON file.
+          comparedDate: raw.meta && raw.meta.comparedSnapshotDate,
           tabs,
           divisions,
           movers,

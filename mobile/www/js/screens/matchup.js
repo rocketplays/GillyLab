@@ -426,6 +426,36 @@ function mountMatchup(container){
   function noBreakdownHTML(){
     return '<p class="gl-muted" style="padding:.5rem 0">Not enough data yet for a full breakdown of this fight.</p>';
   }
+  // Explains the ⚠ on the "Fight Info" button (.mf-info-flag, from f.flag) --
+  // mirrors index.html's renderScouting() chip exactly: same label wording per
+  // reason, same fighter-first phrasing, same "View news ›" affordance for the
+  // injury case only (shortNotice/mayChange never carry a real article -- see
+  // worker/pages.js's computeFlagDetail() -- so those two just state the fact,
+  // nothing to tap). Site's flagsWrap sits at the very top of the panel, above
+  // Tale of the Tape; this does the same in fightHTML below. Uses f.flagDetail
+  // directly rather than re-deriving anything, so it can never disagree with
+  // the button's own ⚠.
+  function flagChipHTML(f){
+    var d = f && f.flagDetail;
+    if (!d) return '';
+    var who = surname(d.fighter);
+    var label, value, note;
+    if (d.reason === 'shortNotice') {
+      label = 'Short notice'; value = who; note = who + ' stepped in on short notice';
+    } else if (d.reason === 'mayChange') {
+      label = 'Bout status'; value = 'May change'; note = who + '’s opponent withdrew — matchup may change';
+    } else {
+      label = 'Bout status'; value = 'May change'; note = who + ' has recent injury / card news';
+    }
+    var linkable = d.reason === 'injury' && d.newsUrl;
+    return '<div class="mf-flag-chip' + (linkable ? ' mf-flag-chip--link' : '') + '"' +
+      (linkable ? ' data-flag-news="' + esc(d.newsUrl) + '" role="button" tabindex="0"' : '') + '>' +
+      '<div class="mf-flag-top"><span class="mf-flag-ico">⚠</span><span class="mf-flag-lab">' + esc(label) + '</span>' +
+      (linkable ? '<span class="mf-flag-go">View news ›</span>' : '') + '</div>' +
+      '<div class="mf-flag-val">' + esc(value) + '</div>' +
+      '<div class="mf-flag-note">' + esc(note) + (linkable && d.newsTitle ? ' — ' + esc(d.newsTitle) : '') + '</div>' +
+    '</div>';
+  }
   // Deep Dive button for a NON-main fight, premium users only -- mirrors
   // index.html's own glDeepDiveAvailable(f1,f2) gate, which is a per-fighter-
   // pair check with no main-event restriction at all (the free /matchup page
@@ -460,14 +490,19 @@ function mountMatchup(container){
   function fightHTML(f, isMain, deepDive, breakdown, eventSlug, special){
     var res = f.result || null;
     var panelBody;
+    // Flag chip goes first, above Tale of the Tape, matching renderScouting()'s
+    // flagsWrap on the site -- shown regardless of subscription/completed state,
+    // same as the ⚠ on the button itself, since it's explanatory context, not
+    // premium analytics.
+    var flagChip = flagChipHTML(f);
     if (res) {
-      panelBody = completedPanelHTML(f, res);
+      panelBody = flagChip + completedPanelHTML(f, res);
     } else if (isMain) {
-      panelBody = tapeHTML(f.tape) + breakdownHTML(f, breakdown, deepDive, eventSlug);
+      panelBody = flagChip + tapeHTML(f.tape) + breakdownHTML(f, breakdown, deepDive, eventSlug);
     } else if (subscribed) {
-      panelBody = tapeHTML(f.tape) + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML()) + (f.dd ? ddButtonHTML(f) : '');
+      panelBody = flagChip + tapeHTML(f.tape) + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML()) + (f.dd ? ddButtonHTML(f) : '');
     } else {
-      panelBody = tapeHTML(f.tape) + lockedTeaserHTML();
+      panelBody = flagChip + tapeHTML(f.tape) + lockedTeaserHTML();
     }
     return (
       '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + (canSim(f, special) ? ' mf-card--sim' : '') + '">' +
@@ -1074,6 +1109,21 @@ function mountMatchup(container){
       btn.addEventListener('click', function(){
         hubOpen(btn.getAttribute('data-deepdive'));
       });
+    });
+
+    // Flag chip's "View news" row (injury case only, real article URL) --
+    // same system-browser convention as fighter.js's [data-watch] / the Go
+    // Premium screen's [data-goto="premium"] link-outs (window.GL_NATIVE.
+    // openExternal, falling back to window.open when the native Browser
+    // plugin isn't present -- see js/native.js).
+    container.querySelectorAll('[data-flag-news]').forEach(function(el){
+      var open = function(e){
+        if (e) e.stopPropagation();   // the panel's own open/close toggle listens on an ancestor
+        window.GL_NATIVE.tap();
+        window.GL_NATIVE.openExternal(el.getAttribute('data-flag-news'));
+      };
+      el.addEventListener('click', open);
+      el.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); } });
     });
 
     // Per-fight Deep Dive buttons (ddButtonHTML above) -- fetch-on-demand,

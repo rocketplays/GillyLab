@@ -52,16 +52,29 @@ let html = fs.readFileSync(SRC, "utf8");
 const CLIMB_H1 = '<h1>The <span class="g">Climb</span></h1>';
 const CLIMB_TAG = '<p class="tag">Can you become a UFC champion?</p>';
 
-for (const needle of ["/gl-sheet.js", "fetch('/data/climb.json')", "fetch('/api/activity/climb-run'", CLIMB_H1, CLIMB_TAG]) {
+// gl-sheet.js's own cache-busting query string changes independently of
+// this generator (bumped whenever that shared script itself is edited) — a
+// hardcoded ?v=... here is exactly the kind of "silently stops matching"
+// trap CLAUDE.md warns about: .replace() on a stale literal just returns
+// the string unchanged, no error, and ships a root-relative <script> tag
+// that 404s inside the app's cross-origin iframe. Matched by regex instead,
+// on the src prefix only, so a version bump can never desync this rewrite.
+const GL_SHEET_RE = /<script src="\/gl-sheet\.js(\?v=[^"]*)?" defer><\/script>/;
+
+for (const needle of ["fetch('/data/climb.json')", "fetch('/api/activity/climb-run'", CLIMB_H1, CLIMB_TAG]) {
   if (!html.includes(needle)) {
     console.error("gen-climb-app-page: expected to find " + JSON.stringify(needle) + " in the prototype — refusing to generate (the source file changed shape; update this script's rewrites to match)");
     process.exit(1);
   }
 }
+if (!GL_SHEET_RE.test(html)) {
+  console.error("gen-climb-app-page: expected to find a <script src=\"/gl-sheet.js...\" defer> tag in the prototype — refusing to generate (the source file changed shape; update this script's rewrites to match)");
+  process.exit(1);
+}
 
 const SITE = "https://gillylab.com";
 html = html
-  .replace('<script src="/gl-sheet.js?v=06bcf16b" defer></script>', '<script src="' + SITE + '/gl-sheet.js?v=06bcf16b" defer></script>')
+  .replace(GL_SHEET_RE, (m, qs) => '<script src="' + SITE + '/gl-sheet.js' + (qs || '') + '" defer></script>')
   .replace("fetch('/data/climb.json')", "fetch('" + SITE + "/api/app/climb')")
   .replace("fetch('/api/activity/climb-run', { method:'POST', keepalive:true })", "fetch('" + SITE + "/api/activity/climb-run', { method:'POST', keepalive:true })")
   // The prototype's load-failure message tells a developer to run a local

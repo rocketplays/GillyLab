@@ -38,6 +38,29 @@ function mountRankings(container){
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
   function divLabel(d){ return DIV_LABELS[d] || d; }
+  function isP4PDiv(d){ return /Pound-for-Pound/.test(d || ''); }
+
+  // Mirrors the website's rankingRecordShort() in index.html: "18-2-0" ->
+  // "18–2" (draws dropped when zero), "18-2-1" -> "18–2–1".
+  function recordShort(record){
+    var m = String(record || '').match(/(\d+)-(\d+)-(\d+)/);
+    if (!m) return record || '';
+    return m[3] !== '0' ? (m[1] + '–' + m[2] + '–' + m[3]) : (m[1] + '–' + m[2]);
+  }
+
+  // Mirrors index.html's rankingPanelHTML: a P4P panel tags a champion with
+  // "Champion"/"Interim Champion" and everyone else with their home
+  // division's abbreviation -- except our checked-in rankings.json/
+  // rankings-meta.json snapshots never carry a P4P entry's home division
+  // (confirmed: 0 of 30 P4P rows have it), so the website's own /rankings
+  // page renders an empty tag for non-champion P4P rows today too. This
+  // mirrors that actual behavior rather than inventing a lookup the site
+  // itself doesn't have data for.
+  function tagFor(e, isP4P){
+    if (isP4P) return e.isChampion ? (e.isInterimChamp ? 'Interim Champion' : 'Champion') : '';
+    if (e.isChampion) return e.isInterimChamp ? 'Interim Champion' : 'Champion';
+    return '';
+  }
 
   function movBadge(e){
     if (e.isNewEntry) return '<span class="rk-mov new">NEW</span>';
@@ -46,33 +69,124 @@ function mountRankings(container){
     return '<span class="rk-mov"></span>';
   }
 
-  function rowHTML(e){
+  function rowHTML(e, isP4P){
     var ini = window.GL_FIGHTER.initials(e.name);
     var localThumb = e.photo ? (window.GL_FIGHTER.PHOTO_BASE + esc(e.photo) + '.png') : null;
     var primary = e.imageUrl || localThumb;
     var img = primary
       ? '<span class="rk-av"><span class="rk-av-initials">' + esc(ini) + '</span><img class="rk-av-photo" src="' + esc(primary) + '" alt="" loading="lazy" onerror="' + (e.imageUrl && localThumb ? "this.dataset.tried?this.style.display='none':(this.dataset.tried=1,this.src='" + esc(localThumb) + "')" : "this.style.display='none'") + '"></span>'
       : '<span class="rk-av"><span class="rk-av-initials">' + esc(ini) + '</span></span>';
-    var num = e.isChampion ? 'C' : ('#' + (e.rank != null ? e.rank : '?'));
+    var interim = !!e.isInterimChamp;
+    var num = e.isChampion ? (interim ? 'IC' : 'C') : ('#' + (e.rank != null ? e.rank : '?'));
     var nameHTML = e.slug
       ? '<button type="button" class="rk-name" data-slug="' + esc(e.slug) + '">' + esc(e.name) + '</button>'
       : '<span class="rk-name rk-name-plain">' + esc(e.name) + '</span>';
+    var record = e.record ? '<span class="rk-record">' + esc(recordShort(e.record)) + '</span>' : '';
+    var tag = tagFor(e, isP4P);
+    var tagHTML = tag ? '<span class="rk-div-tag' + (interim ? ' interim' : '') + '">' + esc(tag) + '</span>' : '';
     return (
-      '<div class="rk-row' + (e.isChampion ? ' rk-champ' : '') + '">' +
+      '<div class="rk-row' + (e.isChampion ? ' rk-champ' : '') + (interim ? ' rk-interim' : '') + '">' +
         '<span class="rk-num">' + num + '</span>' +
         img +
         nameHTML +
         (e.flag ? '<span class="rk-flag">' + esc(e.flag) + '</span>' : '') +
         movBadge(e) +
+        record +
+        tagHTML +
       '</div>'
     );
   }
 
   function panelHTML(){
     var entries = (data && data.divisions && data.divisions[activeDiv]) || [];
+    var isP4P = isP4PDiv(activeDiv);
     return (
       '<div class="rk-panel-title">' + esc(divLabel(activeDiv)) + '</div>' +
-      (entries.length ? entries.map(rowHTML).join('') : '<p class="gl-muted" style="text-align:center;padding:1.5rem 0">No entries.</p>')
+      (entries.length ? entries.map(function(e){ return rowHTML(e, isP4P); }).join('') : '<p class="gl-muted" style="text-align:center;padding:1.5rem 0">No entries.</p>')
+    );
+  }
+
+  // ── Cross-division "Ranking Changes" widget ────────────────────────────
+  // Mirrors index.html's renderRankingChangesSummary()/getMovFromHistory():
+  // the website computes this purely from fields already on each entry in
+  // rankings.json/rankings-meta.json (rankChange / isNewEntry / rank), not
+  // from a separate history file or a live diff against a stored previous
+  // fetch -- there's no movementHistory array in our checked-in snapshots
+  // (that field only appears in a live Cito API pull), so the site's own
+  // "recent changes" already runs on the manual rankChange/isNewEntry path.
+  // Same data the API's shapeEntry() already serves per row, so this is
+  // pure client-side math over the existing /api/app/rankings payload --
+  // no new endpoint or generator needed.
+  function fmtChgDate(s){
+    if (!s) return '';
+    var d = new Date(s + 'T00:00:00Z');
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleDateString(undefined, { timeZone: 'UTC', month: 'short', day: 'numeric' });
+  }
+
+  function movFromEntry(e){
+    if (e.isChampion) return null;
+    if (e.isNewEntry) return { direction: 'new', amount: 0, prevRank: null, currRank: e.rank };
+    if (typeof e.rankChange === 'number' && e.rankChange !== 0){
+      var delta = e.rankChange, currRank = e.rank;
+      return { direction: delta > 0 ? 'up' : 'down', amount: Math.abs(delta), prevRank: currRank != null ? currRank + delta : null, currRank: currRank };
+    }
+    return null;
+  }
+
+  function rankingChangesHTML(){
+    if (!data || !data.divisions) return '';
+    var groups = [];
+    var total = 0;
+    (data.tabs || []).forEach(function(d){
+      if (isP4PDiv(d)) return; // site's widget skips P4P too
+      var movers = [];
+      (data.divisions[d] || []).forEach(function(e){
+        var m = movFromEntry(e);
+        if (!m) return;
+        movers.push({ name: e.name, slug: e.slug, direction: m.direction, amount: m.amount, prevRank: m.prevRank, currRank: m.currRank });
+      });
+      if (!movers.length) return;
+      movers.sort(function(a, b){ return (a.currRank != null ? a.currRank : 999) - (b.currRank != null ? b.currRank : 999); });
+      groups.push({ div: d, movers: movers });
+      total += movers.length;
+    });
+    if (!total) return '';
+
+    var dateLabel = (data.comparedDate && data.date)
+      ? (fmtChgDate(data.comparedDate) + ' → ' + fmtChgDate(data.date))
+      : (data.date ? fmtChgDate(data.date) : '');
+
+    var groupsHTML = groups.map(function(g){
+      var rowsHTML = g.movers.map(function(m){
+        var isNew = m.direction === 'new';
+        var isUp = m.direction === 'up';
+        var cls = isNew ? 'new' : (isUp ? 'up' : 'down');
+        var badge = isNew ? 'NEW' : ((isUp ? '▲' : '▼') + m.amount);
+        var ranks = isNew ? ('NR→#' + m.currRank) : ('#' + m.prevRank + '→#' + m.currRank);
+        var nameHTML = m.slug
+          ? '<button type="button" class="rk-chg-name" data-chg-slug="' + esc(m.slug) + '">' + esc(m.name) + '</button>'
+          : '<span class="rk-chg-name rk-chg-name-plain">' + esc(m.name) + '</span>';
+        return (
+          '<div class="rk-chg-row">' +
+            '<span class="rk-chg-arrow ' + cls + '">' + badge + '</span>' +
+            nameHTML +
+            '<span class="rk-chg-ranks">' + ranks + '</span>' +
+          '</div>'
+        );
+      }).join('');
+      return '<div class="rk-chg-group"><div class="rk-chg-div-label">' + esc(divLabel(g.div)) + '</div>' + rowsHTML + '</div>';
+    }).join('');
+
+    return (
+      '<div class="rk-chg" id="rkChanges">' +
+        '<div class="rk-chg-hdr">' +
+          '<span class="rk-chg-title">' + total + ' Changes</span>' +
+          '<span class="rk-chg-date">' + esc(dateLabel) + '</span>' +
+          '<span class="rk-chg-chevron">▾</span>' +
+        '</div>' +
+        '<div class="rk-chg-body"><div class="rk-chg-groups">' + groupsHTML + '</div></div>' +
+      '</div>'
     );
   }
 
@@ -93,6 +207,8 @@ function mountRankings(container){
         '<button type="button" class="' + (source === 'media' ? 'sel' : '') + '" data-src="media">Media Panel</button>' +
         '<button type="button" class="' + (source === 'meta' ? 'sel' : '') + '" data-src="meta">Meta AI</button>' +
       '</div>' +
+      '<p class="rk-src-sub gl-muted">' + (source === 'meta' ? 'Generated by Meta AI statistical model' : 'Generated by UFC media voting panel') + '</p>' +
+      rankingChangesHTML() +
       '<div class="rk-tabs">' + tabsHTML() + '</div>' +
       '<div id="rkPanel">' + panelHTML() + '</div>' +
       (subscribed ? '' : '<div class="gl-cta">Rankings are free. <button type="button" class="gl-link-btn" data-goto="premium">Go Premium</button> for every fighter’s full analytics, the simulator and more.</div>');
@@ -140,6 +256,23 @@ function mountRankings(container){
     wireTabsAndPanel();
     var goPrem = container.querySelector('[data-goto="premium"]');
     if (goPrem) goPrem.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
+    // Ranking Changes widget -- wired here (not wireTabsAndPanel) because,
+    // like .rk-toggle and Go Premium above, it isn't rebuilt on a division
+    // tab switch. Re-wiring it from wireTabsAndPanel would stack a fresh
+    // click listener on the same still-present nodes every time a tab is
+    // tapped (the exact bug the wireTabsAndPanel split above was written to
+    // avoid for .rk-toggle/.gl-cta).
+    var chg = container.querySelector('#rkChanges');
+    if (chg){
+      var hdr = chg.querySelector('.rk-chg-hdr');
+      if (hdr) hdr.addEventListener('click', function(){ window.GL_NATIVE.tap(); chg.classList.toggle('open'); });
+      chg.querySelectorAll('[data-chg-slug]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          window.GL_ROUTER.go('fighter', { slug: btn.getAttribute('data-chg-slug') });
+        });
+      });
+    }
   }
 
   function load(){

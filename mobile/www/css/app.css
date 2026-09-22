@@ -417,6 +417,97 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .pk-submitbar .gl-btn{ width:auto; padding:.7rem 1.2rem; flex-shrink:0; }
 #pkBouts{ padding-bottom:4.5rem; }
 
+/* ---- Pick'em: leaderboard scope tabs / live board / player profile ----
+   Mirrors index.html's .pk-tabs/.pk-board-*/.pk-hist-* (site ~L4018-4118),
+   translated to this app's CSS variables instead of the site's literal
+   greens/reds. */
+.pk-tabs{ display:flex; gap:.4rem; margin-bottom:.7rem; }
+.pk-tab{
+  flex:1; background:var(--surface2); border:1px solid var(--border); color:var(--muted);
+  border-radius:8px; padding:.45rem .4rem; font-size:.76rem; font-weight:700; cursor:pointer;
+  font-family:inherit;
+}
+.pk-tab.sel{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); color:var(--text); }
+.pk-board-list{ border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.pk-board-row{
+  display:flex; align-items:center; gap:.7rem; padding:.55rem .8rem; width:100%;
+  background:none; border:none; border-bottom:1px solid var(--border); color:var(--text);
+  font-family:inherit; text-align:left; cursor:pointer;
+}
+.pk-board-row:last-child{ border-bottom:none; }
+.pk-board-row.me{ background:color-mix(in srgb, var(--accent) 8%, transparent); }
+.pk-board-rank{ flex:0 0 auto; width:1.6rem; color:var(--muted); font-weight:700; font-size:.82rem; }
+.pk-board-name{ flex:1; min-width:0; font-size:.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pk-board-pts{ flex:0 0 auto; font-weight:800; font-size:.95rem; }
+.pk-board-chev{ flex:0 0 auto; color:var(--muted); font-size:1.05rem; margin-left:.1rem; }
+.pk-board-empty{ padding:2rem 1rem; text-align:center; color:var(--muted); font-size:.85rem; }
+.pk-board-sep{ text-align:center; color:var(--muted); padding:.15rem; letter-spacing:.2em; }
+.pk-board-status-row{ display:flex; align-items:center; gap:.55rem; flex-wrap:wrap; margin:0 0 .6rem; }
+.pk-board-event{ font-weight:600; font-size:.82rem; color:var(--text); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pk-board-prog{ font-size:.72rem; color:var(--muted); margin-left:auto; }
+.pk-you{
+  font-size:.6rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--on-accent); background:var(--accent); border-radius:4px; padding:.05rem .3rem; margin-left:.35rem;
+}
+.pk-live-badge{
+  font-size:.64rem; font-weight:800; letter-spacing:.05em; color:var(--on-accent); background:var(--accent);
+  border-radius:5px; padding:.12rem .4rem; display:inline-flex; align-items:center; gap:.25rem;
+}
+.pk-final-badge{
+  font-size:.64rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--muted);
+  background:var(--surface2); border:1px solid var(--border); border-radius:5px; padding:.12rem .4rem;
+}
+.pk-rank-badge{
+  font-size:.68rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--accent);
+  background:color-mix(in srgb, var(--accent) 12%, transparent); border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius:6px; padding:.15rem .45rem;
+}
+.pk-hist-ranks{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.1rem 0 .2rem; }
+.pk-hist-head{ display:flex; flex-direction:column; gap:.15rem; margin-bottom:1.1rem; }
+.pk-hist-name{ font-weight:700; font-size:1rem; color:var(--text); }
+.pk-hist-total{ display:flex; align-items:baseline; gap:.5rem; }
+.pk-hist-total-num{ font-weight:900; font-size:2rem; color:var(--accent); line-height:1; }
+.pk-hist-total-lbl{ color:var(--muted); font-size:.82rem; }
+.pk-hist-stats{ display:flex; gap:.6rem; margin-top:.8rem; }
+.pk-hist-stat{ flex:1; background:var(--card); border:1px solid var(--border); border-radius:11px; padding:.7rem .8rem; }
+.pk-hist-stat-num{ display:block; font-weight:800; font-size:1.3rem; color:var(--text); line-height:1.1; }
+.pk-hist-stat-lbl{ display:block; color:var(--muted); font-size:.72rem; margin-top:.15rem; }
+.pk-hist-list{ display:flex; flex-direction:column; gap:.5rem; }
+.pk-hist-row{
+  display:flex; align-items:center; gap:.7rem; width:100%; text-align:left; background:var(--card);
+  border:1px solid var(--border); border-radius:11px; padding:.7rem .85rem; cursor:pointer; font-family:inherit; color:var(--text);
+}
+.pk-hist-row-static{ cursor:default; }
+.pk-hist-row-main{ flex:1; min-width:0; }
+.pk-hist-ev{ font-weight:600; font-size:.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pk-hist-meta{ color:var(--muted); font-size:.72rem; margin-top:.15rem; }
+.pk-hist-pts{ font-weight:800; font-size:1.1rem; flex:0 0 auto; }
+.pk-hist-pts.pos, .pk-hist-bout-pts.pos, .pk-hist-ev-total.pos{ color:var(--accent); }
+.pk-hist-pts.neg, .pk-hist-bout-pts.neg, .pk-hist-ev-total.neg{ color:var(--bad); }
+.pk-hist-pts.zero, .pk-hist-bout-pts.zero, .pk-hist-ev-total.zero{ color:var(--muted); }
+.pk-hist-arrow{ color:var(--muted); font-size:1.2rem; flex:0 0 auto; }
+.pk-hist-empty{ padding:2rem 1.2rem; text-align:center; color:var(--muted); font-size:.85rem; line-height:1.5; }
+.pk-hist-ev-head{ display:flex; align-items:baseline; justify-content:space-between; gap:.7rem; margin-bottom:.7rem; }
+.pk-hist-ev-name{ font-weight:800; font-size:1.2rem; color:var(--text); }
+.pk-hist-ev-total{ font-weight:800; font-size:1.2rem; }
+.pk-hist-bouts{ display:flex; flex-direction:column; gap:.4rem; }
+.pk-hist-bout{
+  display:flex; align-items:center; gap:.7rem; padding:.6rem .8rem; border-radius:9px;
+  border:1px solid var(--border); background:var(--card); border-left:3px solid var(--border);
+}
+/* The site leaves these tag classes unstyled beyond the points color above --
+   a left accent border is a small, mobile-appropriate addition that reuses
+   the same hit/miss/void semantics without inventing new states. */
+.pk-hist-bout.hit{ border-left-color:var(--accent); }
+.pk-hist-bout.miss{ border-left-color:var(--bad); }
+.pk-hist-bout.void{ border-left-color:var(--muted); }
+.pk-hist-bout-main{ flex:1; min-width:0; }
+.pk-hist-bout-pick{ font-weight:600; font-size:.88rem; }
+.pk-hist-bout-detail{ color:var(--muted); font-size:.72rem; margin-top:.12rem; }
+.pk-hist-bout-pts{ font-weight:800; font-size:1.05rem; flex:0 0 auto; }
+.pk-note{ border-radius:9px; padding:.6rem .8rem; font-size:.8rem; line-height:1.4; }
+.pk-note.pk-locked{ background:color-mix(in srgb, #ffcf7a 12%, transparent); border:1px solid color-mix(in srgb, #ffcf7a 40%, transparent); color:#ffdca0; }
+
 /* ---- Active Roster ---- */
 .ar-bar{ display:flex; flex-wrap:wrap; gap:.3rem; margin-bottom:.9rem; }
 .ar-letter{
@@ -535,16 +626,36 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   transition:border-color .15s, color .15s; margin-top:.15rem; white-space:nowrap;
 }
 .mf-info:hover, .mf-info.open{ border-color:var(--accent); color:var(--accent); }
-/* Bout has a confirmed short-notice replacement or an opponent who withdrew
-   with no replacement set yet (f.flag, from worker/pages.js's eventToCard()/
-   scripts/gen-landing-data.cjs's buildCard(), both reading the ESPN feed's own
-   shortNotice/mayChange markers per fighter) -- mirrors the site's own
-   .fight-info-toggle.bout-news (index.html), same colors, same ::before so it
-   survives the button's own "Fight Info ⌄"/"⌃" textContent toggling. This app
-   doesn't have the site's separate fighter-news feed (the other half of that
-   class, hasInjuryNews), so this covers the short-notice/may-change case only. */
+/* Bout has a confirmed short-notice replacement, an opponent who withdrew
+   with no replacement set yet, or (as of flagDetail) a fighter with recent
+   injury/card news from data/fighter-news.json (f.flag, derived from
+   f.flagDetail -- worker/pages.js's eventToCard()/scripts/gen-landing-data.cjs's
+   buildCard(), both mirroring index.html's applyInjuryFlags()) -- mirrors the
+   site's own .fight-info-toggle.bout-news (index.html), same colors, same
+   ::before so it survives the button's own "Fight Info ⌄"/"⌃" textContent
+   toggling. The WHY (which fighter, which reason, and for injury news the
+   actual article) is spelled out by .mf-flag-chip below, inside the panel. */
 .mf-info.mf-info-flag{ border-color:rgba(255,176,32,.5); color:#ffcf7a; }
 .mf-info.mf-info-flag::before{ content:'⚠ '; color:#ffb020; }
+/* Explains the ⚠ above -- ported from index.html's .sr-chip.sr-warn (the
+   renderScouting() flagsWrap chip), same amber palette as .mf-info-flag.
+   Sits at the very top of the Fight Info panel (see matchup.js's fightHTML),
+   same position as the site's flagsWrap ahead of Tale of the Tape. Only the
+   injury-news reason is tappable (a real article URL exists); shortNotice/
+   mayChange are plain, non-interactive text, same as the site when no link
+   target is available. */
+.mf-flag-chip{
+  background:rgba(255,176,32,.1); border:1px solid rgba(255,176,32,.35); border-radius:10px;
+  padding:.6rem .75rem; margin-bottom:.75rem;
+}
+.mf-flag-chip--link{ cursor:pointer; transition:background .15s, border-color .15s; }
+.mf-flag-chip--link:hover, .mf-flag-chip--link:focus-visible{ background:rgba(255,176,32,.18); border-color:rgba(255,176,32,.6); outline:none; }
+.mf-flag-top{ display:flex; align-items:center; gap:.4rem; }
+.mf-flag-ico{ font-size:.95rem; }
+.mf-flag-lab{ font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:700; }
+.mf-flag-go{ margin-left:auto; flex-shrink:0; color:#ffb020; font-weight:800; font-size:.66rem; }
+.mf-flag-val{ font-size:1.05rem; font-weight:800; margin:.2rem 0 .05rem; color:#ffcf7a; }
+.mf-flag-note{ font-size:.72rem; color:var(--muted); line-height:1.3; }
 /* Slides open rather than popping instantly. Animates max-height (set
    inline by the toggle handler in matchup.js, measured from the panel's
    actual scrollHeight) instead of the CSS grid-template-rows 0fr->1fr
@@ -1330,6 +1441,9 @@ body #mh-box{
 .rk-toggle{ display:flex; gap:4px; max-width:min(100%, 320px); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:.9rem; }
 .rk-toggle button{ flex:1; text-align:center; background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.78rem; padding:.5rem .6rem; border-radius:7px; cursor:pointer; white-space:nowrap; }
 .rk-toggle button.sel{ background:var(--accent); color:var(--on-accent); }
+/* Subtitle under the Media Panel/Meta AI toggle -- mirrors index.html's
+   #rankingsSourceLabel text under the same toggle on the website. */
+.rk-src-sub{ font-size:.72rem; margin:0 0 .9rem; }
 /* Wrapped grid, same as the website's own division tabs -- stacked onto as
    many rows as it takes, fully inside the page's normal side padding (no
    edge-to-edge bleed, no horizontal scroll). A prior pass made this a
@@ -1367,3 +1481,46 @@ body #mh-box{
 .rk-mov.up{ color:var(--accent); }
 .rk-mov.down{ color:var(--bad); }
 .rk-mov.new{ color:#ffcf7a; }
+
+/* Fighter W-L-D record + Champion/Interim Champion/division status tag --
+   mirrors index.html's .rank-record/.rank-div-tag. .rk-row has no flex-wrap
+   of its own, so these two additions can squeeze .rk-name further on a
+   narrow phone -- .rk-name already has min-width:0 + ellipsis above, so it
+   truncates instead of overflowing/wrapping the row. */
+.rk-record{ flex:0 0 auto; font-size:.74rem; color:var(--muted); letter-spacing:.03em; white-space:nowrap; }
+.rk-div-tag{
+  flex:0 0 auto; font-size:.62rem; color:var(--accent); letter-spacing:.08em; text-transform:uppercase;
+  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent); padding:.15rem .45rem; border-radius:3px;
+  white-space:nowrap;
+}
+/* Champion rows (true and interim) both use the same gold accent as
+   .rk-champ above -- distinguished by the C/IC label and tag text, not by
+   a different color, same choice the website made. */
+.rk-champ .rk-div-tag{ color:#ffcf7a; border-color:rgba(255,207,122,0.35); }
+
+/* ── Cross-division Ranking Changes widget ── */
+.rk-chg{ background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:.9rem; overflow:hidden; }
+.rk-chg-hdr{ display:flex; align-items:center; gap:.6rem; padding:.65rem .85rem; cursor:pointer; user-select:none; }
+.rk-chg-title{ font-weight:800; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--text); }
+.rk-chg-date{ flex:1; font-size:.7rem; color:var(--muted); letter-spacing:.02em; }
+.rk-chg-chevron{ font-size:.85rem; color:var(--muted); transition:transform .2s; }
+.rk-chg.open .rk-chg-chevron{ transform:rotate(180deg); }
+.rk-chg-body{ display:none; padding:0 .85rem .75rem; border-top:1px solid var(--border); }
+.rk-chg.open .rk-chg-body{ display:block; }
+.rk-chg-groups{ display:flex; flex-direction:column; gap:.75rem; padding-top:.65rem; }
+.rk-chg-div-label{
+  display:inline-block; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent);
+  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent); padding:.1rem .4rem; border-radius:3px; margin-bottom:.3rem;
+}
+.rk-chg-row{ display:flex; align-items:center; gap:.4rem; padding:.15rem 0; font-size:.76rem; }
+.rk-chg-arrow{ flex:0 0 auto; font-weight:800; font-size:.66rem; padding:.08rem .28rem; border-radius:3px; }
+.rk-chg-arrow.up{ color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); }
+.rk-chg-arrow.down{ color:var(--bad); background:color-mix(in srgb, var(--bad) 10%, transparent); }
+.rk-chg-arrow.new{ color:var(--on-accent); background:var(--accent); }
+.rk-chg-name{
+  flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left;
+  background:none; border:none; padding:0; cursor:pointer; font:inherit; font-weight:600; color:var(--text);
+}
+.rk-chg-name:active{ color:var(--accent); }
+.rk-chg-name-plain{ color:var(--muted); cursor:default; }
+.rk-chg-ranks{ flex:0 0 auto; font-size:.68rem; color:var(--muted); white-space:nowrap; }

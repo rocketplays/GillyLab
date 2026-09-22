@@ -74,6 +74,55 @@ function fighterHasInjuryNews(name) {
   }
   return hits === 1 && !!(hit && hit.hasInjuryNews);
 }
+// Sibling to fighterHasInjuryNews() above: same normalized-name / unambiguous
+// token-subset matching, but returns the fighter's WHOLE news entry (with
+// .items[]) instead of just the boolean -- ports index.html's
+// fighterNewsEntry(). Duplicated locally rather than shared with
+// worker/pages.js's own copy, same "generated, never forked" convention as
+// fighterHasInjuryNews() above.
+function fighterNewsEntry(name) {
+  if (!FIGHTER_NEWS || !FIGHTER_NEWS.fighters || !name) return null;
+  const nn = _newsNorm(name);
+  if (FIGHTER_NEWS.fighters[nn]) return FIGHTER_NEWS.fighters[nn];
+  const t = nn.split(' ').filter(Boolean);
+  if (!t.length) return null;
+  let hit = null, hits = 0;
+  for (const k of Object.keys(FIGHTER_NEWS.fighters)) {
+    const kt = k.split(' ').filter(Boolean);
+    if (t.every((x) => kt.includes(x)) || kt.every((x) => t.includes(x))) { hit = FIGHTER_NEWS.fighters[k]; if (++hits > 1) break; }
+  }
+  return hits === 1 ? hit : null;
+}
+// Which article to surface for a flagged-injury fighter: the item flagged as
+// injury/card news first (same preference openFighterNews() uses to flash an
+// article in the site's News tab), else the first (newest) item.
+function pickNewsArticle(name) {
+  const entry = fighterNewsEntry(name);
+  const items = entry && Array.isArray(entry.items) ? entry.items : [];
+  if (!items.length) return null;
+  const item = items.find((it) => it && it.injury) || items[0];
+  return item ? { title: item.title || null, url: item.url || null } : null;
+}
+// Structured detail behind the boolean flag below -- see worker/pages.js's
+// computeFlagDetail() for the full precedence rationale (ground-truth
+// short-notice wins, then ground-truth may-change, then generic injury news;
+// renderScouting's browser-only news-headline GUESSING heuristic is not
+// ported here, same reasoning as the worker copy).
+function computeFlagDetail(fa, fb, f1Name, f2Name) {
+  if (fa.shortNotice) return { fighter: f1Name, reason: 'shortNotice', newsUrl: null, newsTitle: null };
+  if (fb.shortNotice) return { fighter: f2Name, reason: 'shortNotice', newsUrl: null, newsTitle: null };
+  if (fa.mayChange) return { fighter: f1Name, reason: 'mayChange', newsUrl: null, newsTitle: null };
+  if (fb.mayChange) return { fighter: f2Name, reason: 'mayChange', newsUrl: null, newsTitle: null };
+  if (fighterHasInjuryNews(f1Name)) {
+    const article = pickNewsArticle(f1Name);
+    return { fighter: f1Name, reason: 'injury', newsUrl: (article && article.url) || null, newsTitle: (article && article.title) || null };
+  }
+  if (fighterHasInjuryNews(f2Name)) {
+    const article = pickNewsArticle(f2Name);
+    return { fighter: f2Name, reason: 'injury', newsUrl: (article && article.url) || null, newsTitle: (article && article.title) || null };
+  }
+  return null;
+}
 
 function heldBoutSettled(b) {
   return !!(b && (b.isCancelled || b.winnerFighterSlug || b.method ||
@@ -1042,7 +1091,7 @@ function buildCard(recMap, evOverride) {
     // wired into this fight-building step before.
     const f1 = canonStatName(b.fighters[0].fighterName), f2 = canonStatName(b.fighters[1].fighterName);
     const s1 = nameToSlug(f1), s2 = nameToSlug(f2), od = consensusOdds(f1, f2);
-    return {
+    const fObj = {
       f1, f2, s1: photoExists(s1) ? s1 : "", s2: photoExists(s2) ? s2 : "",
       rec1: ciLookup(recMap, f1) || "", rec2: ciLookup(recMap, f2) || "",
       rank1: ciLookup(ranks, f1) || "", rank2: ciLookup(ranks, f2) || "",
@@ -1056,10 +1105,14 @@ function buildCard(recMap, evOverride) {
       // news-derived third trigger, data/fighter-news.json) -- this generator
       // builds the app's FEATURED card, eventToCard() builds carousel/
       // override picks, so both need every trigger for the flag to show up
-      // regardless of which card a visitor is looking at.
-      flag: !!(b.fighters[0].shortNotice || b.fighters[0].mayChange || b.fighters[1].shortNotice || b.fighters[1].mayChange ||
-        fighterHasInjuryNews(f1) || fighterHasInjuryNews(f2)),
+      // regardless of which card a visitor is looking at. flagDetail carries
+      // WHY (fighter/reason/article) -- see computeFlagDetail() above for the
+      // precedence, same as the worker's copy.
+      flagDetail: computeFlagDetail(b.fighters[0], b.fighters[1], f1, f2),
+      flag: false,
     };
+    fObj.flag = !!fObj.flagDetail;
+    return fObj;
   });
   const main = fights[0] ? buildMainTape(fights[0]) : null;
   if (main) { main.pA = fighterProfileCard(fights[0].f1, recMap, ranks); main.pB = fighterProfileCard(fights[0].f2, recMap, ranks); }
