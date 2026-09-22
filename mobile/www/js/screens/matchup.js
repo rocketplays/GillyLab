@@ -500,7 +500,12 @@ function mountMatchup(container){
     } else if (isMain) {
       panelBody = flagChip + tapeHTML(f.tape) + breakdownHTML(f, breakdown, deepDive, eventSlug);
     } else if (subscribed) {
-      panelBody = flagChip + tapeHTML(f.tape) + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML()) + (f.dd ? ddButtonHTML(f) : '');
+      // Deep Dive button sits right below Tale of the Tape, same spot as the
+      // main event's own button (breakdownHTML prepends its ddBtn before the
+      // Style/Pace/Path/etc. parts) -- this used to run AFTER the whole
+      // breakdown instead, which put it in a different place on every other
+      // bout than on the main event.
+      panelBody = flagChip + tapeHTML(f.tape) + (f.dd ? ddButtonHTML(f) : '') + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML());
     } else {
       panelBody = flagChip + tapeHTML(f.tape) + lockedTeaserHTML();
     }
