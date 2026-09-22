@@ -426,6 +426,37 @@ function mountMatchup(container){
   function noBreakdownHTML(){
     return '<p class="gl-muted" style="padding:.5rem 0">Not enough data yet for a full breakdown of this fight.</p>';
   }
+  // Deep Dive button for a NON-main fight, premium users only -- mirrors
+  // index.html's own glDeepDiveAvailable(f1,f2) gate, which is a per-fighter-
+  // pair check with no main-event restriction at all (the free /matchup page
+  // and this app used to be the only two surfaces that restricted the button
+  // to main events, purely because gen-matchup-free.cjs only pre-renders a
+  // finite set of pairings at build time -- see that script's header). `f.dd`
+  // comes from /api/app/matchup (worker/index.js), computed cheaply via the
+  // same deepDiveAvailable() worker/deep-dive-data.js exports, so this button
+  // never appears for a pairing with no real analytics behind it.
+  //
+  // Unlike the main event's button (data-deepdive="<eventSlug>", opening an
+  // ALREADY-loaded hubData[eventSlug] entry -- see load()), this fight's
+  // analysis was never fetched: matchup() only ever bakes the pairing gate
+  // (`dd`), not the panel itself, since baking every fight's full rendered
+  // HTML into the response would balloon the payload the way pre-rendering
+  // it at build time would balloon worker/matchup-free.js (see
+  // scripts/gen-deep-dive.cjs's header). So this carries the fight's own
+  // f1/f2 (+ already-known s1/s2/rec1/rec2/weight/rounds, so the modal header
+  // never needs a second lookup) as data attributes, and the click handler
+  // below fetches the panel on demand, exactly once per pairing per screen
+  // visit (cached in hubData under a fighter-pair key -- see wire()).
+  function ddButtonHTML(f){
+    return '<button type="button" class="mf-dd-bar" data-dd-f1="' + esc(f.f1) + '" data-dd-f2="' + esc(f.f2) + '"' +
+      ' data-dd-s1="' + esc(f.s1 || '') + '" data-dd-s2="' + esc(f.s2 || '') + '"' +
+      ' data-dd-rec1="' + esc(f.rec1 || '') + '" data-dd-rec2="' + esc(f.rec2 || '') + '"' +
+      ' data-dd-weight="' + esc(f.weight || '') + '" data-dd-rounds="' + (f.rounds === 5 ? 5 : 3) + '">' +
+      'Matchup Analytics Deep Dive <span class="mf-dd-go">›</span></button>';
+  }
+  // hubData keys for these on-demand entries are namespaced ('ff:' prefix) so
+  // they can never collide with the main event's own eventSlug keys.
+  function ffKey(f1, f2){ return 'ff:' + f1 + '::' + f2; }
   function fightHTML(f, isMain, deepDive, breakdown, eventSlug, special){
     var res = f.result || null;
     var panelBody;
@@ -434,7 +465,7 @@ function mountMatchup(container){
     } else if (isMain) {
       panelBody = tapeHTML(f.tape) + breakdownHTML(f, breakdown, deepDive, eventSlug);
     } else if (subscribed) {
-      panelBody = tapeHTML(f.tape) + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML());
+      panelBody = tapeHTML(f.tape) + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML()) + (f.dd ? ddButtonHTML(f) : '');
     } else {
       panelBody = tapeHTML(f.tape) + lockedTeaserHTML();
     }
@@ -1018,6 +1049,49 @@ function mountMatchup(container){
     container.querySelectorAll('[data-deepdive]').forEach(function(btn){
       btn.addEventListener('click', function(){
         hubOpen(btn.getAttribute('data-deepdive'));
+      });
+    });
+
+    // Per-fight Deep Dive buttons (ddButtonHTML above) -- fetch-on-demand,
+    // cached in hubData so re-opening the same fight's panel later in this
+    // screen visit (e.g. after closing and reopening) is instant.
+    container.querySelectorAll('[data-dd-f1]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        var f1 = btn.getAttribute('data-dd-f1'), f2 = btn.getAttribute('data-dd-f2');
+        var key = ffKey(f1, f2);
+        if (hubData[key]) { hubOpen(key); return; }
+        if (btn.disabled) return; // already fetching
+        var origText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Loading…';
+        window.GL_API.deepDiveFight(f1, f2).then(function(res){
+          btn.disabled = false;
+          btn.textContent = origText;
+          if (!res || res.error || !res.striking || !res.grappling) {
+            // Data disappeared between the card load and the tap (a rare
+            // race, not the common case -- /api/app/matchup's own `dd` flag
+            // already screened for this). Fail quietly, same as a fight with
+            // no breakdown shows "not enough data" rather than an error.
+            btn.classList.add('gl-btn-notready');
+            return;
+          }
+          hubData[key] = {
+            n1: res.n1, n2: res.n2,
+            s1: btn.getAttribute('data-dd-s1') || null,
+            s2: btn.getAttribute('data-dd-s2') || null,
+            rec1: btn.getAttribute('data-dd-rec1') || '',
+            rec2: btn.getAttribute('data-dd-rec2') || '',
+            weight: btn.getAttribute('data-dd-weight') || '',
+            rounds: parseInt(btn.getAttribute('data-dd-rounds'), 10) || null,
+            striking: res.striking,
+            grappling: res.grappling,
+          };
+          hubOpen(key);
+        }).catch(function(){
+          btn.disabled = false;
+          btn.textContent = origText;
+        });
       });
     });
 

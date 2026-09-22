@@ -21,6 +21,12 @@ import { loginPage, signupPage, subscribePage, accountPage, notePage, changePass
 import matchupFree from "./matchup-free.js";
 import fighterExtras from "./fighter-extras.js";
 import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown, customSimBase, customSimMethodBaseline } from "./fight-sim.js";
+// Matchup Analytics Deep Dive for an ARBITRARY fighter pair, computed live --
+// see scripts/gen-deep-dive.cjs for why this is a separate module from
+// matchup-free.js (that one pre-renders a FINITE set of pairings at build
+// time; this bakes the data + pure functions so any pairing can be rendered
+// per request, same "compute cheap, ship small" tradeoff as fight-sim.js).
+import { deepDiveAvailable, computeDeepDive } from "./deep-dive-data.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -2937,6 +2943,14 @@ export default {
             fights: withRankBadges((card.fights || []).map((f) => Object.assign({}, f, {
               s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
               s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
+              // Per-fighter-pair Deep Dive availability (deepDiveAvailable() is
+              // two Set lookups, not a render -- see worker/deep-dive-data.js).
+              // Only the app's own subscribed-gating decides whether the button
+              // actually SHOWS for this flag (see matchup.js); computed here for
+              // every fight regardless, same as rank badges above, rather than
+              // only for the main event the way the free/matchup-free.js data is
+              // still scoped.
+              dd: deepDiveAvailable(f.f1, f.f2),
             }))),
           });
         }
@@ -3027,6 +3041,7 @@ export default {
           const patchedFights = withRankBadges(attachFightBreakdowns((c.fights || []).map((f) => Object.assign({}, f, {
             s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
             s2: profileSlugFor(f.f2, profileSlugs, f.s2) || null,
+            dd: deepDiveAvailable(f.f1, f.f2),
           })), c.slug));
           return Object.assign({}, c, {
             fights: patchedFights,
@@ -3324,6 +3339,31 @@ export default {
           if (slugA && slugB) break;
         }
         return json({ base, methodBaseline, slugA, slugB, recA, recB }, 200, cors);
+      }
+      // Matchup Analytics Deep Dive for an ARBITRARY fighter pair -- Premium-
+      // only, same gate shape as fight-sim above. /api/app/matchup already
+      // tells the app which fights have data (the `dd` flag on each fight,
+      // computed via the same deepDiveAvailable() this imports), so the app
+      // only ever calls this for a pairing it already knows has a real panel
+      // -- this endpoint's own null/404 is a defensive backstop, not the
+      // primary gate. `a`/`b` are fighter NAMES (matching the app's own card
+      // data, i.e. exactly what the tapped fight tile already displays), not
+      // slugs -- the caller already has slug/record/weight/rounds from its
+      // own fight object and merges those in client-side (see matchup.js),
+      // so this only ever needs to return the two rendered analysis panels.
+      if (path === "/api/app/deep-dive-fight" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
+        const nameA = (url.searchParams.get("a") || "").trim();
+        const nameB = (url.searchParams.get("b") || "").trim();
+        if (!nameA || !nameB) return json({ error: "missing a/b fighter name" }, 400, cors);
+        if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
+        const dd = computeDeepDive(nameA, nameB);
+        if (!dd) return json({ error: "no analytics available for this pairing" }, 404, cors);
+        return json(dd, 200, cors);
       }
       // Home dashboard's Bet Tracker teaser: top of the real units
       // leaderboard, same underlying data handleBetsLeaderboard uses (see

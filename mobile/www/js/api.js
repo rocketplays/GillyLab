@@ -75,6 +75,13 @@ window.GL_API = (function(){
     customSimBase: function(nameA, nameB, rounds){
       return request('/api/app/custom-sim-base?a=' + encodeURIComponent(nameA) + '&b=' + encodeURIComponent(nameB) + '&rounds=' + (rounds === 5 ? 5 : 3));
     },
+    // Matchup Analytics Deep Dive for an arbitrary fighter pair -- Premium-only
+    // (see worker/index.js's /api/app/deep-dive-fight). Only called for a
+    // fight matchup.js already knows has data (the `dd` flag on each fight
+    // from matchup()/fighterSearch above), never speculatively.
+    deepDiveFight: function(nameA, nameB){
+      return request('/api/app/deep-dive-fight?a=' + encodeURIComponent(nameA) + '&b=' + encodeURIComponent(nameB));
+    },
     fighterSearch: function(q){ return request('/api/fighter-search?q=' + encodeURIComponent(q)); },
     // The site's own /subscribe feature-tile carousel (CSS/markup/script,
     // already premium-only), reused as-is for Go Premium -- see
