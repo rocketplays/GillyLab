@@ -2746,6 +2746,15 @@ export function eventToCard(raw, liteBySlug, isPast, oddsData) {
       main: i === 0,
       section: b.cardSection || "Main Card",
       tape: (physA && physB) ? { a: physA, b: physB } : null,
+      // Mirrors index.html's applyInjuryFlags()/SHORT_NOTICE_SET/MAY_CHANGE_SET:
+      // the ESPN feed already marks a fighter shortNotice (confirmed late
+      // replacement) or mayChange (opponent withdrew, no replacement yet) --
+      // no separate news feed needed for this part of the site's logic (the
+      // hasInjuryNews half of that function is a different data source and
+      // NOT replicated here). Flags the BOUT if either corner has either
+      // marker, same "flag the row, not just one side" behavior as the site's
+      // own bout-news class.
+      flag: !!(fa.shortNotice || fa.mayChange || fb.shortNotice || fb.mayChange),
     };
     const consensus = pagesConsensusOdds(oddsData, f.f1, f.f2);
     if (consensus) { f.o1 = consensus.a; f.o2 = consensus.b; }

@@ -490,10 +490,21 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .mf-av-photo{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; background:var(--bg); border:1px solid var(--border); }
 .mf-meta{ min-width:0; }
 .mf-rank{ font-size:.66rem; font-weight:600; color:var(--accent); letter-spacing:.08em; }
+/* overflow-wrap:break-word -- confirmed missing by rendering an actual
+   repro: white-space:normal lets a two-word name wrap at the space between
+   words, but a single long surname ("Piwowarczyk") has no space to wrap at,
+   so with no way to break WITHIN the word it just ran past the column's
+   width and got silently clipped mid-word by .mf-side's overflow:hidden --
+   "PIWOWAR", missing "CZYK", sitting flush against .mf-center's divider
+   line (which read as the name "overlapping" it). break-word lets a name
+   like that wrap onto its own line instead, same as any other unbreakable
+   long token would need to, so the full name always renders and never
+   touches the divider. */
 .mf-name{
   font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.86rem;
   letter-spacing:.02em; text-transform:uppercase; line-height:1.18;
   white-space:normal; overflow:visible; text-overflow:clip;
+  overflow-wrap:break-word; word-wrap:break-word;
 }
 .mf-namebtn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:700; color:var(--text); cursor:pointer; text-align:inherit; }
 .mf-namebtn:active{ color:var(--accent); }
@@ -524,6 +535,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   transition:border-color .15s, color .15s; margin-top:.15rem; white-space:nowrap;
 }
 .mf-info:hover, .mf-info.open{ border-color:var(--accent); color:var(--accent); }
+/* Bout has a confirmed short-notice replacement or an opponent who withdrew
+   with no replacement set yet (f.flag, from worker/pages.js's eventToCard()/
+   scripts/gen-landing-data.cjs's buildCard(), both reading the ESPN feed's own
+   shortNotice/mayChange markers per fighter) -- mirrors the site's own
+   .fight-info-toggle.bout-news (index.html), same colors, same ::before so it
+   survives the button's own "Fight Info ⌄"/"⌃" textContent toggling. This app
+   doesn't have the site's separate fighter-news feed (the other half of that
+   class, hasInjuryNews), so this covers the short-notice/may-change case only. */
+.mf-info.mf-info-flag{ border-color:rgba(255,176,32,.5); color:#ffcf7a; }
+.mf-info.mf-info-flag::before{ content:'⚠ '; color:#ffb020; }
 /* Slides open rather than popping instantly. Animates max-height (set
    inline by the toggle handler in matchup.js, measured from the panel's
    actual scrollHeight) instead of the CSS grid-template-rows 0fr->1fr
@@ -642,6 +663,13 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .mf-cd-label{ font-size:.56rem; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
 .mf-cd-time{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1rem; color:var(--accent); letter-spacing:.04em; }
 .mf-cd-unit{ font-size:.6em; letter-spacing:.04em; margin-left:.15em; opacity:.75; text-transform:lowercase; }
+/* Mirrors the site's own .events-helper tip under its event header (index.html)
+   -- order:4 puts it after the name/details/countdown but still inside the
+   same flex row, flex-basis:100% drops it to its own line, same technique
+   used for .mf-event-details above. */
+.mf-event-tip{ order:4; flex-basis:100%; padding-top:.4rem; font-size:.72rem; color:var(--muted); letter-spacing:.02em; line-height:1.45; }
+.mf-tip-arrow{ color:var(--accent); margin-right:.35rem; font-weight:700; }
+.mf-event-tip b{ color:rgba(255,255,255,.62); font-weight:600; }
 
 /* ---- Matchup: numbered-PPV (gold) / DWCS (blue) event styling, mirroring
    the site's own .numbered-card/.dwcs-card treatment (index.html) --
@@ -662,6 +690,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
   filter:drop-shadow(0 0 10px rgba(212,175,55,.45));
 }
+.mf-ev-slide-hdr.mf-numbered .mf-cd-time{ color:#fff8dc; text-shadow:0 0 10px rgba(212,175,55,.85); }
 .mf-card.main.mf-numbered{ border-color:rgba(212,175,55,.45); }
 .mf-card.main.mf-numbered .mf-vs{ color:#fff8dc; }
 .mf-card.main.mf-numbered .mf-av-initials, .mf-card.main.mf-numbered .mf-av-photo{ border-color:#d4af37; }
@@ -682,6 +711,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
   filter:drop-shadow(0 0 10px rgba(59,130,246,.45));
 }
+.mf-ev-slide-hdr.mf-dwcs .mf-cd-time{ color:#dbeafe; text-shadow:0 0 10px rgba(59,130,246,.85); }
 .mf-card.main.mf-dwcs{ border-color:rgba(59,130,246,.45); }
 .mf-card.main.mf-dwcs .mf-vs{ color:#dbeafe; }
 .mf-card.main.mf-dwcs .mf-av-initials, .mf-card.main.mf-dwcs .mf-av-photo{ border-color:#3b82f6; }
@@ -760,8 +790,17 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    inflating the whole slide -- this is what was opening the Fight Info
    panel "very wide, off the screen" on upcoming/carousel events. */
 .mf-ev-slide{ flex:0 0 100%; min-width:0; scroll-snap-align:start; padding:0 1.1rem; box-sizing:border-box; overflow-wrap:break-word; }
-.mf-ev-slide-hdr{ margin-bottom:.7rem; }
-.mf-ev-slide-name{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.05rem; text-transform:uppercase; letter-spacing:.01em; }
+/* Flex layout so the slide's own countdown sits inline after the name, same
+   arrangement as .mf-event-header above -- this used to be a plain stack
+   with no countdown element at all (see matchup.js's carouselHTML()), so
+   carousel slides never showed "Time Until Event" the way the featured card
+   and the site's own carousel both do. */
+.mf-ev-slide-hdr{
+  display:flex; flex-wrap:wrap; align-items:baseline; column-gap:.4rem; row-gap:.1rem; margin-bottom:.7rem;
+}
+.mf-ev-slide-name{ order:1; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.05rem; text-transform:uppercase; letter-spacing:.01em; }
+.mf-ev-slide-hdr .mf-event-countdown{ order:2; }
+.mf-ev-slide-hdr .mf-ev-slide-sub{ order:3; flex-basis:100%; }
 .mf-ev-slide-sub{ color:var(--muted); font-size:.78rem; margin-top:.1rem; }
 
 /* ---- shared "common" sub-blocks (tale of the tape / breakdown), used by
@@ -1175,7 +1214,18 @@ body #mh-box{
 .cs-hd-f.r{ flex-direction:row-reverse; text-align:right; }
 .cs-hd-f:active .cs-hd-nm{ color:var(--accent); }
 .cs-hd-tx{ min-width:0; }
-.cs-hd-nm{ font-weight:700; font-size:1.1rem; letter-spacing:.02em; line-height:1.1; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* line-height 1.34 (not the 1.1 this used to be) + padding-top -- at 1.1rem
+   this is the largest font-size any font-weight:700 Barlow text in this
+   stylesheet uses, and the only one paired with a sub-1.2 line-height AND
+   overflow:hidden (for the ellipsis) on the same element; a long name (e.g.
+   "Damian Piwowarczyk") pushed the glyphs' actual rendered box tight enough
+   against that line box for ascenders/diacritics to clip against the top
+   edge on real devices. font-weight:600 (not 700) because the Barlow face
+   this app loads only ships 400/500/600 (see index.html's font <link>) --
+   700 was never an available weight here, so the browser was synthesizing a
+   fake bold, which is exactly the kind of thing that pushes a glyph's inked
+   area outside its normal metrics. */
+.cs-hd-nm{ font-weight:600; font-size:1.1rem; letter-spacing:.02em; line-height:1.34; padding-top:.1em; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .cs-hd-rc{ font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums; margin-top:.1rem; }
 .cs-hd-mid{ text-align:center; flex-shrink:0; }
 .cs-hd-vs{ font-weight:700; font-size:.85rem; letter-spacing:.14em; color:var(--muted); }

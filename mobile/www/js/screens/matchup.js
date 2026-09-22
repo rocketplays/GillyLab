@@ -473,7 +473,7 @@ function mountMatchup(container){
       '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + (canSim(f, special) ? ' mf-card--sim' : '') + '">' +
         '<div class="mf-row">' +
           '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + resTagHTML(f, 1) + '</div><div class="mf-rec">' + mlRecHTML(f, 1, f.rec1, res) + '</div></div></div>' +
-          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + centerResultHTML(res) + '<button type="button" class="mf-info" data-toggle="1">Fight Info ⌄</button></div>' +
+          '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + centerResultHTML(res) + '<button type="button" class="mf-info' + (f.flag ? ' mf-info-flag' : '') + '" data-toggle="1">Fight Info ⌄</button></div>' +
           '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + resTagHTML(f, 2) + '</div><div class="mf-rec">' + mlRecHTML(f, 2, f.rec2, res) + '</div></div></div>' +
         '</div>' +
         simBarHTML(f, special, eventSlug) +
@@ -531,6 +531,7 @@ function mountMatchup(container){
         '<div class="mf-ev-slide" data-slug="' + esc(c.slug) + '">' +
           '<div class="mf-ev-slide-hdr' + (special ? ' ' + special : '') + '">' +
             '<div class="mf-ev-slide-name">' + (special ? esc(c.event) : regularEventNameHTML(c.event)) + '</div>' +
+            '<div class="mf-event-countdown"><div class="mf-cd-label">Time Until Event</div><div class="mf-cd-time" data-cd-slug="' + esc(c.slug) + '">—</div></div>' +
             '<div class="mf-ev-slide-sub">' + esc([when, c.location || c.city].filter(Boolean).join(' · ')) + '</div>' +
           '</div>' +
           cardBodyHTML(c, c.deepDive || { available: false }, c.breakdown || null) +
@@ -556,8 +557,8 @@ function mountMatchup(container){
   // instead of a static button sitting next to the title. FINAL once the
   // event is over, LIVE once any bout has a posted result, otherwise
   // days/hours/minutes until the walkout, biggest unit only.
-  function countdownParts(card){
-    if (data.isPast) return { text: 'FINAL' };
+  function countdownParts(card, isPast){
+    if (isPast) return { text: 'FINAL' };
     if (!card) return { text: '—' };
     var live = (card.fights || []).some(function(f){ return f.result; });
     if (live) return { text: 'LIVE' };
@@ -573,11 +574,25 @@ function mountMatchup(container){
     if (hours >= 1) return { num: hours, unit: 'h' };
     return { num: Math.max(1, mins), unit: 'm' };
   }
+  function countdownHTML(v){
+    return v.text != null ? esc(v.text) : (v.num + '<span class="mf-cd-unit">' + esc(v.unit) + '</span>');
+  }
+  // Updates the featured card's own #mfCountdown AND every carousel slide's
+  // countdown -- the carousel used to render a static date/city line with no
+  // live "Time Until Event" at all (the site's own carousel shows one per
+  // slide; this screen's carouselHTML() just never built the element). Each
+  // slide is always an upcoming event (never the isPast view, which only
+  // ever applies to the featured card/a manually-picked past result), so
+  // isPast is hardcoded false here rather than threaded from `data`.
   function renderCountdown(){
     var el = container.querySelector('#mfCountdown');
-    if (!el) return;
-    var v = countdownParts(data && data.card);
-    el.innerHTML = v.text != null ? esc(v.text) : (v.num + '<span class="mf-cd-unit">' + esc(v.unit) + '</span>');
+    if (el) el.innerHTML = countdownHTML(countdownParts(data && data.card, data && data.isPast));
+    var bySlug = {};
+    (data.carousel || []).forEach(function(c){ if (c && c.slug) bySlug[c.slug] = c; });
+    container.querySelectorAll('[data-cd-slug]').forEach(function(slideEl){
+      var c = bySlug[slideEl.getAttribute('data-cd-slug')];
+      if (c) slideEl.innerHTML = countdownHTML(countdownParts(c, false));
+    });
   }
 
   // ---- Matchup Analytics Deep Dive modal -----------------------------
@@ -887,6 +902,14 @@ function mountMatchup(container){
     if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); closeBoxScoreModal(); });
   }
 
+  // Same helper tip the site shows under its own event header (index.html's
+  // .events-helper, "Click/Tap a fighter for their full profile · expand
+  // Fight Info on any bout..."), missing from this screen entirely -- the
+  // app is always touch, so this always says "Tap" rather than switching on
+  // a CSS breakpoint the way the site's eh-click/eh-tap toggle does.
+  function eventTipHTML(){
+    return '<div class="mf-event-tip"><span class="mf-tip-arrow">|</span>Tap a fighter for their full profile · expand <b>Fight Info</b> on any bout for the tale of the tape and analytics · search any fighter up top</div>';
+  }
   function eventHeaderHTML(card){
     var special = card ? specialClassFor(card.event) : '';
     return (
@@ -896,6 +919,7 @@ function mountMatchup(container){
           (card ? '<div class="mf-event-details">' + esc(fmtDate(card.prelimsAt || card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</div>' : '') +
         '</div>' +
         (card ? '<div class="mf-event-countdown"><div class="mf-cd-label">Time Until Event</div><div class="mf-cd-time" id="mfCountdown">—</div></div>' : '') +
+        (card ? eventTipHTML() : '') +
       '</div>'
     );
   }
@@ -935,7 +959,7 @@ function mountMatchup(container){
   // out from under them.
   function isLiveWindow(){
     if (data.isPast || !data.card) return false;
-    var v = countdownParts(data.card);
+    var v = countdownParts(data.card, data.isPast);
     return v.text === 'LIVE' || v.text === 'TONIGHT';
   }
   // A cheap fingerprint of what's actually visible per fight -- result/

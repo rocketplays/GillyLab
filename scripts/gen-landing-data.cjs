@@ -1017,6 +1017,13 @@ function buildCard(recMap, evOverride) {
       o1: od ? od.a : null, o2: od ? od.b : null, books: od ? od.books : 0,
       title: !!b.titleBout, section: b.cardSection || "", pos: b.cardPosition || "", main: i === 0,
       tape: { a: _physOf(f1), b: _physOf(f2) },
+      // Same flag worker/pages.js's eventToCard() now sets, mirroring
+      // index.html's applyInjuryFlags() shortNotice/mayChange half (the ESPN
+      // feed marks these directly on each fighter) -- this generator builds
+      // the app's FEATURED card, eventToCard() builds carousel/override
+      // picks, so both need it for the flag to show up regardless of which
+      // card a visitor is looking at.
+      flag: !!(b.fighters[0].shortNotice || b.fighters[0].mayChange || b.fighters[1].shortNotice || b.fighters[1].mayChange),
     };
   });
   const main = fights[0] ? buildMainTape(fights[0]) : null;
