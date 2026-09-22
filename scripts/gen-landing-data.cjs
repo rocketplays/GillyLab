@@ -42,6 +42,39 @@ const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 // upstream feed DELETES it from event.json rather than marking it completed (measured
 // 2026-07-19 — the Jul 18 card was gone while every remaining entry read "scheduled").
 
+// data/fighter-news.json is refreshed by a separate scheduled workflow (see
+// scripts/fetch-fighter-news.cjs) -- genuinely optional (ENOENT tolerated
+// per CLAUDE.md #2), same treatment gen-app-fighter-extras.cjs already gives
+// it. An offloaded/corrupt file still throws rather than silently degrading.
+function loadFighterNews() {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'fighter-news.json'), 'utf8'));
+  } catch (e) {
+    if (e.code === 'ENOENT') return null;
+    throw e;
+  }
+}
+const FIGHTER_NEWS = loadFighterNews();
+// Ports index.html's _newsNorm()/fighterNewsEntry(), restricted to the
+// hasInjuryNews boolean this generator needs. Duplicated rather than shared
+// with worker/pages.js's own copy per this repo's "generated, never forked"
+// convention -- these are two separate build/runtime contexts, not one
+// module split in two.
+const _newsNorm = (s) => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+function fighterHasInjuryNews(name) {
+  if (!FIGHTER_NEWS || !FIGHTER_NEWS.fighters || !name) return false;
+  const nn = _newsNorm(name);
+  if (FIGHTER_NEWS.fighters[nn]) return !!FIGHTER_NEWS.fighters[nn].hasInjuryNews;
+  const t = nn.split(' ').filter(Boolean);
+  if (!t.length) return false;
+  let hit = null, hits = 0;
+  for (const k of Object.keys(FIGHTER_NEWS.fighters)) {
+    const kt = k.split(' ').filter(Boolean);
+    if (t.every((x) => kt.includes(x)) || kt.every((x) => t.includes(x))) { hit = FIGHTER_NEWS.fighters[k]; if (++hits > 1) break; }
+  }
+  return hits === 1 && !!(hit && hit.hasInjuryNews);
+}
+
 function heldBoutSettled(b) {
   return !!(b && (b.isCancelled || b.winnerFighterSlug || b.method ||
     String(b.status || '').toLowerCase() === 'completed'));
@@ -1018,12 +1051,14 @@ function buildCard(recMap, evOverride) {
       title: !!b.titleBout, section: b.cardSection || "", pos: b.cardPosition || "", main: i === 0,
       tape: { a: _physOf(f1), b: _physOf(f2) },
       // Same flag worker/pages.js's eventToCard() now sets, mirroring
-      // index.html's applyInjuryFlags() shortNotice/mayChange half (the ESPN
-      // feed marks these directly on each fighter) -- this generator builds
-      // the app's FEATURED card, eventToCard() builds carousel/override
-      // picks, so both need it for the flag to show up regardless of which
-      // card a visitor is looking at.
-      flag: !!(b.fighters[0].shortNotice || b.fighters[0].mayChange || b.fighters[1].shortNotice || b.fighters[1].mayChange),
+      // index.html's applyInjuryFlags() in full: the ESPN feed's shortNotice/
+      // mayChange booleans, PLUS fighterHasInjuryNews() above (the Wikipedia/
+      // news-derived third trigger, data/fighter-news.json) -- this generator
+      // builds the app's FEATURED card, eventToCard() builds carousel/
+      // override picks, so both need every trigger for the flag to show up
+      // regardless of which card a visitor is looking at.
+      flag: !!(b.fighters[0].shortNotice || b.fighters[0].mayChange || b.fighters[1].shortNotice || b.fighters[1].mayChange ||
+        fighterHasInjuryNews(f1) || fighterHasInjuryNews(f2)),
     };
   });
   const main = fights[0] ? buildMainTape(fights[0]) : null;

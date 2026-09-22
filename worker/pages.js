@@ -2710,7 +2710,30 @@ function resolveLiteSlug(rawSlug, liteBySlug) {
   if (stripped !== rawSlug && liteBySlug && liteBySlug[stripped]) return stripped;
   return rawSlug;
 }
-export function eventToCard(raw, liteBySlug, isPast, oddsData) {
+// Ports index.html's _newsNorm()/fighterNewsEntry() so the Worker can apply
+// the SAME "hasInjuryNews" half of applyInjuryFlags() the site uses -- this
+// is the Wikipedia/news-derived trigger, distinct from (and additional to)
+// the ESPN-feed shortNotice/mayChange booleans handled below. newsData is
+// the raw parsed data/fighter-news.json ({ fighters: { <normalizedName>:
+// { hasInjuryNews, items } } }), fetched live via loadAssetJson the same
+// way oddsData already is -- no separate build-time bake needed for the
+// carousel/override path (only currentLanding()'s featured card, built by
+// gen-landing-data.cjs, needs its own copy of this lookup at generation time).
+const _newsNorm = (s) => String(s == null ? "" : s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+function fighterHasInjuryNews(newsData, name) {
+  if (!newsData || !newsData.fighters || !name) return false;
+  const nn = _newsNorm(name);
+  if (newsData.fighters[nn]) return !!newsData.fighters[nn].hasInjuryNews;
+  const t = nn.split(" ").filter(Boolean);
+  if (!t.length) return false;
+  let hit = null, hits = 0;
+  for (const k of Object.keys(newsData.fighters)) {
+    const kt = k.split(" ").filter(Boolean);
+    if (t.every((x) => kt.includes(x)) || kt.every((x) => t.includes(x))) { hit = newsData.fighters[k]; if (++hits > 1) break; }
+  }
+  return hits === 1 && !!(hit && hit.hasInjuryNews);
+}
+export function eventToCard(raw, liteBySlug, isPast, oddsData, newsData) {
   const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
   const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
   const bouts = (raw.bouts || [])
@@ -2746,15 +2769,15 @@ export function eventToCard(raw, liteBySlug, isPast, oddsData) {
       main: i === 0,
       section: b.cardSection || "Main Card",
       tape: (physA && physB) ? { a: physA, b: physB } : null,
-      // Mirrors index.html's applyInjuryFlags()/SHORT_NOTICE_SET/MAY_CHANGE_SET:
-      // the ESPN feed already marks a fighter shortNotice (confirmed late
-      // replacement) or mayChange (opponent withdrew, no replacement yet) --
-      // no separate news feed needed for this part of the site's logic (the
-      // hasInjuryNews half of that function is a different data source and
-      // NOT replicated here). Flags the BOUT if either corner has either
-      // marker, same "flag the row, not just one side" behavior as the site's
-      // own bout-news class.
-      flag: !!(fa.shortNotice || fa.mayChange || fb.shortNotice || fb.mayChange),
+      // Mirrors index.html's applyInjuryFlags() in full: the ESPN feed already
+      // marks a fighter shortNotice (confirmed late replacement) or mayChange
+      // (opponent withdrew, no replacement yet), and fighterHasInjuryNews()
+      // above covers the third trigger -- Wikipedia/news-derived injury or
+      // card-change coverage from data/fighter-news.json. Flags the BOUT if
+      // either corner has ANY of the three, same "flag the row, not just one
+      // side" behavior as the site's own bout-news class.
+      flag: !!(fa.shortNotice || fa.mayChange || fb.shortNotice || fb.mayChange ||
+        fighterHasInjuryNews(newsData, f1Name) || fighterHasInjuryNews(newsData, f2Name)),
     };
     const consensus = pagesConsensusOdds(oddsData, f.f1, f.f2);
     if (consensus) { f.o1 = consensus.a; f.o2 = consensus.b; }
@@ -2821,14 +2844,14 @@ const hasBouts = (raw) => !!(raw && raw.bouts && raw.bouts.length);
 const hasResults = (raw) => !!(raw && (raw.bouts || []).some((b) => b.winnerFighterSlug || (b.fighters || []).some((f) => String(f.outcome || "").toLowerCase() === "win")));
 
 // ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
-export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents = [], pastEvents = [], overrideRaw = null, overrideIsPast = false, fighterLiteBySlug = {}, oddsData = [] }) => {
+export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents = [], pastEvents = [], overrideRaw = null, overrideIsPast = false, fighterLiteBySlug = {}, oddsData = [], newsData = null }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const currentCard = (currentLanding() || {}).card || null;   // held card wins for 34h
   // A carousel/past-dropdown pick that turns out to BE the site's actual current card
   // (same slug) falls through to currentCard as-is, so it keeps its precomputed deep
   // dive instead of losing it to a rebuilt-from-raw copy that only has the free tape.
   const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
-  let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData) : currentCard;
+  let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData, newsData) : currentCard;
   // eventToCard() always sets `main: null` — the site's own build-time generator
   // (gen-landing-data.cjs) is what actually computes a main-event breakdown, and
   // it now does so for landingData.mains (keyed by slug) for MANY upcoming
@@ -3259,7 +3282,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     .filter((raw) => !currentCard || !isFinite(featuredTime) || Date.parse(raw.startsAt || 0) > featuredTime)
     .slice(0, 12);
   const carouselSlide = (raw) => {
-    let evCard = eventToCard(raw, fighterLiteBySlug, false, oddsData);
+    let evCard = eventToCard(raw, fighterLiteBySlug, false, oddsData, newsData);
     // Same landingData.mains lookup as the ?event= override path above — this is
     // what actually turns a carousel slide's main event from the locked teaser
     // into the full free breakdown. eventToCard() itself never sets `.main`,

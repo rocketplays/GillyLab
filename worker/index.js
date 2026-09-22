@@ -2769,7 +2769,7 @@ export default {
       if (path === "/api/app/matchup" && request.method === "GET") {
         const cors = appCorsHeaders(request);
         const wantSlug = (url.searchParams.get("event") || "").trim().toLowerCase();
-        const [profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw, rankingsRaw, rankingsMetaRaw] = await Promise.all([
+        const [profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw, rankingsRaw, rankingsMetaRaw, newsData] = await Promise.all([
           loadProfileSlugs(env, url),
           loadAssetJson(env, url, "/data/event.json"),
           loadAssetJson(env, url, "/data/event-recent.json"),
@@ -2777,6 +2777,7 @@ export default {
           loadAssetJson(env, url, "/data/odds.json"),
           loadAssetJson(env, url, "/data/rankings.json"),
           loadAssetJson(env, url, "/data/rankings-meta.json"),
+          loadAssetJson(env, url, "/data/fighter-news.json"),
         ]);
         // Fighter rank badges for the Card page's tiles -- ported from index.html's
         // own normalizeFighterNameForMatch/buildRankLookupFromPayload/
@@ -2866,7 +2867,7 @@ export default {
           if (!overrideRaw) { overrideRaw = pastEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null; overrideIsPast = !!overrideRaw; }
         }
         const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
-        let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData) : currentCard;
+        let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData, newsData) : currentCard;
         const isPastView = isOtherEvent && overrideIsPast;
         // landingData.mains is keyed by slug and covers the current card AND
         // every upcoming carousel event (scripts/gen-landing-data.cjs) -- so an
@@ -3036,7 +3037,7 @@ export default {
         // free analysis once scripts/gen-landing-data.cjs and
         // gen-matchup-free.cjs have actually computed it for that slug.
         const carousel = carouselRaws.map((raw) => {
-          const c = eventToCard(raw, fighterLiteBySlug, false, oddsData);
+          const c = eventToCard(raw, fighterLiteBySlug, false, oddsData, newsData);
           const cDD = !isDwcsEvent(c.event) ? ddDataFor(c.slug) : null;
           const patchedFights = withRankBadges(attachFightBreakdowns((c.fights || []).map((f) => Object.assign({}, f, {
             s1: profileSlugFor(f.f1, profileSlugs, f.s1) || null,
@@ -3633,13 +3634,14 @@ export default {
         // fighter-lite.json is loaded on EVERY /matchup request now, not just when
         // ?event= is present — the full-card carousel builds each upcoming event's
         // free tale-of-tape (from `.phys`) too, not only the one being featured.
-        const [u, profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw] = await Promise.all([
+        const [u, profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw, newsData] = await Promise.all([
           s ? getUser(env, s.email) : null,
           loadProfileSlugs(env, url),
           loadAssetJson(env, url, "/data/event.json"),
           loadAssetJson(env, url, "/data/event-recent.json"),
           loadAssetJson(env, url, "/data/fighter-lite.json"),
           loadAssetJson(env, url, "/data/odds.json"),
+          loadAssetJson(env, url, "/data/fighter-news.json"),
         ]);
         const upcomingEvents = ((upcomingRaw && upcomingRaw.data) || []).slice().sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
         const pastEvents = ((pastRaw && pastRaw.data) || []).slice().sort((a, b) => Date.parse(b.startsAt || 0) - Date.parse(a.startsAt || 0));
@@ -3650,7 +3652,7 @@ export default {
           overrideRaw = upcomingEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null;
           if (!overrideRaw) { overrideRaw = pastEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null; overrideIsPast = !!overrideRaw; }
         }
-        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s, profileSlugs, upcomingEvents, pastEvents, overrideRaw, overrideIsPast, fighterLiteBySlug, oddsData }), 200, pubHeaders(s));
+        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s, profileSlugs, upcomingEvents, pastEvents, overrideRaw, overrideIsPast, fighterLiteBySlug, oddsData, newsData }), 200, pubHeaders(s));
       }
       // Fighter search for /matchup's search bar — server-filtered so the client
       // never has to download fighter-lite.json's 3,100+ entries just to type a name.
