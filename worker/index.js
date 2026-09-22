@@ -19,7 +19,7 @@
 
 import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
-import fighterExtras from "./fighter-extras.js";
+import { getFighterExtras } from "./fighter-extras.js";
 import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown, customSimBase, customSimMethodBaseline } from "./fight-sim.js";
 // Matchup Analytics Deep Dive for an ARBITRARY fighter pair, computed live --
 // see scripts/gen-deep-dive.cjs for why this is a separate module from
@@ -3179,6 +3179,7 @@ export default {
         if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
         const slug = (url.searchParams.get("slug") || "").trim().toLowerCase();
         if (!slug) return json({ error: "missing slug" }, 400, cors);
+        const fighterExtras = await getFighterExtras(env);
         const baseExtras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || {};
         const extras = Object.assign({}, baseExtras);
         const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
@@ -3281,7 +3282,7 @@ export default {
         if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
         const rounds = url.searchParams.get("rounds") === "5" ? 5 : 3;
         const n = Math.min(10000, Math.max(500, parseInt(url.searchParams.get("n"), 10) || 5000));
-        const result = runFightSim(nameA, nameB, rounds, n);
+        const result = await runFightSim(env, nameA, nameB, rounds, n);
         // Slugs (for the app's own avatar photo convention, PHOTO_BASE +
         // slug + '.png') and a tale-of-the-tape stat line per fighter -- the
         // same data /api/fighter-search and the site's own Simulate Matchup
@@ -3311,7 +3312,7 @@ export default {
           // result shows. Same shape matchup.js's breakdownHTML() already
           // renders for scheduled fights (see that file), just computed live
           // here for an arbitrary pair instead of precomputed at build time.
-          breakdown: matchupBreakdown(nameA, nameB),
+          breakdown: await matchupBreakdown(env, nameA, nameB),
         }, 200, cors);
       }
       // "Build Your Own Simulation" -- the custom-weighting simulator modal's
@@ -3340,8 +3341,8 @@ export default {
         if (!nameB) return json({ error: "unknown fighter: " + rawB }, 404, cors);
         if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
         const rounds = url.searchParams.get("rounds") === "5" ? 5 : 3;
-        const base = customSimBase(nameA, nameB, rounds);
-        const methodBaseline = customSimMethodBaseline(nameA, nameB, rounds);
+        const base = await customSimBase(env, nameA, nameB, rounds);
+        const methodBaseline = await customSimMethodBaseline(env, nameA, nameB, rounds);
         // Same slug lookup as /api/app/fight-sim, for the modal's clickable
         // header avatars/names.
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
@@ -3377,7 +3378,7 @@ export default {
         const nameB = (url.searchParams.get("b") || "").trim();
         if (!nameA || !nameB) return json({ error: "missing a/b fighter name" }, 400, cors);
         if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
-        const dd = computeDeepDive(nameA, nameB);
+        const dd = await computeDeepDive(env, nameA, nameB);
         if (!dd) return json({ error: "no analytics available for this pairing" }, 404, cors);
         return json(dd, 200, cors);
       }
