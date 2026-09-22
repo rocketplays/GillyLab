@@ -570,8 +570,15 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    avatar/name/rank/record, wider center column) since matching them
    exactly still read as too small in this app's own chrome. */
 .mf-row{ display:grid; grid-template-columns:1fr 78px 1fr; align-items:center; }
-.mf-side{ display:flex; align-items:center; gap:.4rem; min-width:0; overflow:hidden; }
-.mf-side.right{ flex-direction:row-reverse; text-align:right; }
+/* padding-right (left side) / padding-left (right side) mirrors the site's
+   own .fighter-cell padding (index.html, 0.5rem/0.4rem at its mobile
+   breakpoints) -- .mf-center's divider border sits flush against the grid
+   column edge, so without this the fighter name/rank/record content had
+   nothing keeping it off the line. Long single-word surnames (e.g. "Damian
+   Piwowarczyk") were the case that made it visible: they run the full width
+   of the column and land directly against the border with zero gap. */
+.mf-side{ display:flex; align-items:center; gap:.4rem; min-width:0; overflow:hidden; padding-right:.4rem; }
+.mf-side.right{ flex-direction:row-reverse; text-align:right; padding-right:0; padding-left:.4rem; }
 .mf-av{ position:relative; display:block; width:38px; height:38px; flex-shrink:0; }
 .mf-av-initials{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
