@@ -7955,6 +7955,7 @@
  { name: "Loai Abushaar", division: "LW", rank: "NR", record: "7-1-0", initials: "LOA", country: "USA" },
  { name: "George Staines", division: "LW", rank: "NR", record: "8-0-0", initials: "GSTA", country: "England" },
  { name: "Adama Diop", division: "HW", rank: "NR", record: "6-1-0", initials: "ADI", country: "Senegal" },
+ { name: "Zaurbek Sabanov", division: "HW", rank: "NR", record: "5-0-0", initials: "ZSA", country: "Russia" },
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9174,6 +9175,7 @@
 "Loai Abushaar": { ht:"6'4\"", dob:"1996-08-10", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"MMA Lab" },
 "George Staines": { ht:"6'1\"", dob:"2000-09-20", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"38%", streak:8, gym:"Next Generation MMA Liverpool" },
 "Adama Diop": { ht:"6'1\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:5, gym:"Mantis MMA Dakar" },
+"Zaurbek Sabanov": { ht:"6'4\"", dob:"1998-06-14", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"80%", streak:5, gym:"Valhalla Fight Club" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44877,6 +44879,10 @@
     { opponent: "Christophe Walravens", odds: -275 },
     { opponent: "Nico Yamdjie", odds: 155 }
   ],
+  "Zaurbek Sabanov": [
+    { opponent: "Giovanni Olakunori", odds: -200 },
+    { opponent: "Rony Bouzy", odds: -140 }
+  ],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -62999,6 +63005,13 @@ const FIGHT_HISTORY = {
     { date: "Jun 7, 2024", opponent: "Liam Brugere", result: "W", method: "TKO (Punches)", round: 1, time: "1:29", event: "Hexagone MMA 18", org: "Hexagone MMA" },
     { date: "Jul 27, 2023", opponent: "Anthony Morel", result: "L", method: "KO (Spinning Back Elbow)", round: 1, time: "1:43", event: "Hexagone MMA 10", org: "Hexagone MMA" },
     { date: "Nov 3, 2022", opponent: "Nico Yamdjie", result: "W", method: "TKO (Punches)", round: 1, time: "0:24", event: "EFC Worldwide 99", org: "EFC Worldwide" }
+  ],
+  "Zaurbek Sabanov": [
+    { date: "Jun 5, 2026", opponent: "Ivan Romanov", result: "W", method: "TKO (Front Kick to the Body and Punches)", round: 1, time: "1:18", event: "Ares FC 41: Dasuyev vs. Soumah", org: "ARES FC" },
+    { date: "May 15, 2025", opponent: "Giovanni Olakunori", result: "W", method: "TKO (Punches)", round: 2, time: "4:55", event: "Ares FC 30: Chamsoudinov vs. Lima", org: "ARES FC" },
+    { date: "Oct 6, 2024", opponent: "Shamil Magomedsaidov", result: "W", method: "TKO (Punches)", round: 1, time: "0:15", event: "UMMA: Valeri Kokov Memorial 2024", org: "UMMA" },
+    { date: "Jun 7, 2024", opponent: "Mamadou Lamine Sene", result: "W", method: "KO/TKO", round: 1, time: "2:54", event: "Kingdom Fighting 2: Ruart vs. del Guerra", org: "Kingdom Fighting" },
+    { date: "Feb 17, 2023", opponent: "Rony Bouzy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ares FC 12: Pena vs. Boudegzdame", org: "ARES FC" }
   ],
   "Matthew Adams": [
     { date: "Aug 11, 2026", opponent: "Anthony Wint", result: "L", method: "KO/TKO (Punches)", round: 1, time: "0:34", event: "Dana White's Contender Series: Season 10, Week 1", org: "UFC" },
@@ -121575,6 +121588,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "Reigning EFC Worldwide heavyweight champion — won the title via 2nd-round TKO of Matunga Djikasa (Apr 2026); set to make his UFC debut on Dana White's Contender Series vs. Zaurbek Sabanov (Sep 29, 2026)", detail: null },
     { icon: "🥊", title: "6-1 as a pro, 6 of 6 wins by knockout — the only man to beat him (Anthony Morel) finished him with a spinning back elbow", detail: null },
     { icon: "🌍", title: "\"Blindé\" Diop, a former Senegalese wrestler out of Mantis MMA Dakar, fighting primarily on the French Hexagone MMA and South African EFC circuits", detail: null }
+  ],
+  "Zaurbek Sabanov": [
+    { icon: "🥊", title: "Undefeated (5-0) as a pro, 4 of 5 wins by knockout — set to make his UFC debut on Dana White's Contender Series vs. Adama Diop (Sep 29, 2026)", detail: null },
+    { icon: "🌍", title: "Russian heavyweight out of North Ossetia–Alania, training out of Valhalla Fight Club, built his record on the French ARES FC circuit", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
