@@ -1106,7 +1106,7 @@ function mountMatchup(container){
           b: btn.getAttribute('data-sim-b'),
           rounds: parseInt(btn.getAttribute('data-sim-rounds'), 10),
           dd: ddSlug || undefined,
-        });
+        }, { showBack: true });
       });
     });
 

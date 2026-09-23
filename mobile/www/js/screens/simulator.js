@@ -1,7 +1,12 @@
 // Fight Simulator -- Premium's flagship tool: pick any two fighters, run a
-// Monte Carlo projection. A full route (not a modal), reached from the
-// fighter profile's "Fight simulator" item (which prefills Fighter A) or
-// directly via window.GL_ROUTER.go('simulator').
+// Monte Carlo projection. A full route (not a modal), reached two different
+// ways that want two different back-button behaviors: a direct tap on the
+// Simulator tab (no back button -- it's a tab-bar destination, same as
+// Odds or Events) or the Events page's "Simulate Matchup" button, which
+// prefills both fighters and should get a back button since it was pushed
+// from there. No static `showBack` here for that reason -- see
+// matchup.js's own go('simulator', ..., { showBack: true }) call and
+// router.js's go()/opts.showBack for how the two are told apart.
 //
 // Unlike the Deep Dive modal or the Go Premium carousel (both the site's own
 // generated HTML/CSS/JS injected as-is), this screen is rendered NATIVELY,
@@ -18,7 +23,6 @@
 window.GL_ROUTER.register('simulator', {
   title: 'Fight Simulator',
   tab: 'simulator',
-  showBack: true,
   render: function(container, params){
     window.GL_SIMULATOR.load(container, params);
   }
@@ -941,8 +945,8 @@ window.GL_SIMULATOR = (function(){
     var is5 = prefillRounds === 5;
     return (
       '<div class="gl-sec gl-sec--first">' +
-        '<h1 class="gl-heading" style="font-size:1.3rem;margin:0 0 .3rem">Fight Simulator</h1>' +
-        '<p class="gl-muted" style="margin:0">Pick any two fighters and run a projection.</p>' +
+        '<h1 class="gl-heading" style="margin:.1rem 0 .2rem">Fight <span style="color:var(--accent)">Simulator</span></h1>' +
+        '<p class="gl-muted" style="margin:0 0 1rem">Pick any two fighters and run a projection.</p>' +
       '</div>' +
       pickerHTML('a', 'Fighter A', prefillA) +
       pickerHTML('b', 'Fighter B', prefillB) +

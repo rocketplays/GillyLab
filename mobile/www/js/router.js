@@ -20,6 +20,11 @@ window.GL_ROUTER = (function(){
   // this unboundedly.
   var stack = [];
   var STACK_CAP = 40;
+  // Mirrors what backBtn.hidden currently reflects -- stashed onto a pushed
+  // stack frame so back() can restore the exact back-button state a screen
+  // had rather than falling back to its route's own static default (see
+  // go()'s opts.showBack override, used by Simulator's dual entry points).
+  var currentShowBack = false;
   var appEl, appScrollEl, backBtn, tabbarEl;
   // go() writes location.hash itself (so the URL reflects the current
   // screen), but a hash write fires the browser's own 'hashchange' event --
@@ -204,7 +209,7 @@ window.GL_ROUTER = (function(){
     // already showing (e.g. tapping the tab you're already on), which would
     // otherwise pile up a pointless duplicate frame.
     if (!opts.isBack && current && !(current === name && paramsEqual(params, currentParams))){
-      stack.push({ name: current, params: currentParams, scroll: appScrollEl ? appScrollEl.scrollTop : 0 });
+      stack.push({ name: current, params: currentParams, scroll: appScrollEl ? appScrollEl.scrollTop : 0, showBack: currentShowBack });
       if (stack.length > STACK_CAP) stack.shift();
     }
     current = name;
@@ -222,7 +227,16 @@ window.GL_ROUTER = (function(){
     // No fixed top bar -- the back button is plain scrolling content at the
     // top of the page (see .gl-back-inline / index.html), same as it works
     // on the premium in-app SPA.
-    backBtn.hidden = !screen.showBack;
+    //
+    // opts.showBack overrides the screen's own static showBack when a
+    // route has TWO different entry points that should behave differently
+    // (Simulator: a direct tab-bar destination with no back button, but
+    // also pushed from the Events page's "Simulate Matchup" button, which
+    // should get one). A screen with only one kind of entry point (fighter,
+    // account, settings, premium) just sets showBack on itself as before
+    // and never needs a caller to pass opts.showBack.
+    currentShowBack = opts.showBack !== undefined ? !!opts.showBack : !!screen.showBack;
+    backBtn.hidden = !currentShowBack;
     // A screen with no `tab` of its own (e.g. a fighter profile pushed from
     // Roster/Matchup/Rankings) leaves the tab bar exactly as it was --
     // otherwise every tab would go dark the moment you tapped into a
@@ -257,7 +271,7 @@ window.GL_ROUTER = (function(){
   function back(){
     var frame = stack.pop();
     if (!frame){ go('home'); return; }
-    go(frame.name, frame.params, { isBack: true, scroll: frame.scroll });
+    go(frame.name, frame.params, { isBack: true, scroll: frame.scroll, showBack: frame.showBack });
   }
 
   function fromHash(){
