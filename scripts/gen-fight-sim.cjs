@@ -393,24 +393,47 @@ const dataJS =
   "  const c = _methodCat(m); if (c === 'ko') return 'KO/TKO'; if (c === 'sub') return 'SUB'; if (c === 'dec') return 'DEC'; if (c === 'dq') return 'DQ';\n" +
   "  return String(m || '').split(' ')[0] || '';\n" +
   '}\n' +
+  'function normalizeFighterNameForMatch(name) {\n' +
+  "  return String(name == null ? '' : name).trim().toLowerCase()\n" +
+  "    .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')\n" +
+  "    .replace(/ł/g, 'l').replace(/ø/g, 'o').replace(/đ/g, 'd').replace(/ð/g, 'd')\n" +
+  "    .replace(/ß/g, 'ss').replace(/æ/g, 'ae').replace(/œ/g, 'oe').replace(/þ/g, 'th');\n" +
+  '}\n' +
+  // 32 canonical FIGHTER_STATS keys carry a real diacritic (Natália Silva, Jan
+  // Błachowicz, José Aldo, ...). Built once, lazily (FIGHTER_STATS is ~800KB,
+  // no reason to walk it on every resolveSimName call) so a plain-ASCII
+  // spelling -- the only kind anyone can actually type into the search bar,
+  // and the only kind some feeds hand the Card page's Simulate Matchup button
+  // -- still finds the accented DB key.
+  '  let _fsNormIndex = null;\n' +
+  '  function _fsNormLookup(name) {\n' +
+  '    if (!_fsNormIndex) {\n' +
+  '      _fsNormIndex = {};\n' +
+  '      for (const k in FIGHTER_STATS) {\n' +
+  '        const n = normalizeFighterNameForMatch(k);\n' +
+  '        if (n && !(n in _fsNormIndex)) _fsNormIndex[n] = k;\n' +
+  '      }\n' +
+  '    }\n' +
+  "    const n = normalizeFighterNameForMatch(name);\n" +
+  '    return n ? (_fsNormIndex[n] || null) : null;\n' +
+  '  }\n' +
   '// A name arrives here already-canonical for the search-picker flow (the\n' +
   "// app's own /api/fighter-search is keyed off the same roster this alias\n" +
   '// map ultimately resolves into), but the Card page\'s Simulate Matchup\n' +
   '// button passes whatever name the matchup/event data itself carries --\n' +
   '// not always run through this map first. Mirrors the site\'s own reason\n' +
   '// for NAME_ALIASES existing (see index.html): resolve a known alternate\n' +
-  '// spelling to the FIGHTER_STATS key before giving up on it.\n' +
+  '// spelling to the FIGHTER_STATS key before giving up on it. The\n' +
+  '// accent-normalized fallback below is a SEPARATE need from NAME_ALIASES:\n' +
+  '// aliases are hand-entered one-offs for names a feed spells differently,\n' +
+  '// but "the plain-ASCII spelling of an accented DB name" recurs across 32\n' +
+  '// fighters and would otherwise need 32 individual alias entries kept in\n' +
+  '// sync forever -- solved structurally once instead.\n' +
   'function resolveSimName(name) {\n' +
   '  if (FIGHTER_STATS[name]) return name;\n' +
   "  const alias = NAME_ALIASES[String(name || '').trim().toLowerCase()];\n" +
   '  if (alias && FIGHTER_STATS[alias]) return alias;\n' +
-  '  return null;\n' +
-  '}\n' +
-  'function normalizeFighterNameForMatch(name) {\n' +
-  "  return String(name == null ? '' : name).trim().toLowerCase()\n" +
-  "    .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')\n" +
-  "    .replace(/ł/g, 'l').replace(/ø/g, 'o').replace(/đ/g, 'd').replace(/ð/g, 'd')\n" +
-  "    .replace(/ß/g, 'ss').replace(/æ/g, 'ae').replace(/œ/g, 'oe').replace(/þ/g, 'th');\n" +
+  '  return _fsNormLookup(name);\n' +
   '}\n' +
   'function fighterDivisionRankBadge(name) {\n' +
   '  const key = normalizeFighterNameForMatch(name);\n' +

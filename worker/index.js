@@ -3677,14 +3677,27 @@ export default {
         // search bar) so the app's Matchup screen can reuse this exact
         // endpoint instead of a second, drifting copy of the same lookup.
         const cors = appCorsHeaders(request);
-        const q = (url.searchParams.get("q") || "").trim().toLowerCase();
+        // Accent-insensitive, mirroring index.html's own searchNorm() (used by
+        // the site's in-page roster search) -- 32 canonical DB names carry a
+        // real diacritic (Natália Silva, Jan Błachowicz, José Aldo, etc.), and
+        // this endpoint used to compare with a bare .toLowerCase().includes(),
+        // so typing the plain-ASCII spelling anyone would actually type
+        // ("natalia silva") never matched the accented DB name. ł/ø/đ/ß/æ/œ/þ
+        // don't decompose under NFD (they're their own code points, not a
+        // base letter + combining mark), so they need an explicit map on top
+        // of the accent strip, same as searchNorm().
+        const searchNorm = (s) => String(s == null ? "" : s).toLowerCase()
+          .normalize("NFD").replace(/[̀-ͯ]/g, "")
+          .replace(/ł/g, "l").replace(/ø/g, "o").replace(/đ/g, "d")
+          .replace(/ß/g, "ss").replace(/æ/g, "ae").replace(/œ/g, "oe").replace(/þ/g, "th");
+        const q = searchNorm((url.searchParams.get("q") || "").trim());
         if (q.length < 2) return json({ results: [] }, 200, cors);
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
         const bySlug = (lite && lite.bySlug) || {};
         const results = [];
         for (const slug in bySlug) {
           const f = bySlug[slug];
-          if (f && f.name && f.name.toLowerCase().includes(q)) {
+          if (f && f.name && searchNorm(f.name).includes(q)) {
             results.push({ name: f.name, slug: f.slug || slug, record: f.record || "", division: f.division || "" });
             if (results.length >= 12) break;
           }
