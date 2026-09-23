@@ -3164,6 +3164,41 @@ export default {
           }
         }
 
+        // Closing-line fallback for an already-decided fight whose o1/o2 came
+        // back null -- eventToCard only ever sources odds from data/odds.json
+        // (the live consensus feed via pagesConsensusOdds), which drops a
+        // market once the book takes it down post-fight, and never carried
+        // one at all for a card like DWCS that few books price up front. The
+        // premium site's own fighter-profile "Closing-line history" gets
+        // around this with a client-side merge of data/odds-closing.json
+        // (captured ~10 min before each card section starts by
+        // scripts/capture-closing-odds.cjs -- see glMergeClosingOdds in
+        // index.html); this is that same source, applied here so the app's
+        // Fight Info dropdown shows the real closing line too instead of
+        // hiding the section outright for a fight that in fact had one.
+        // Never overwrites a real o1/o2 eventToCard already found.
+        const cardsNeedingClosingOdds = [card, ...carousel].filter((c) => c && (c.fights || []).some((f) => f.result && !f.result.voided && f.o1 == null && f.o2 == null));
+        if (cardsNeedingClosingOdds.length) {
+          const closingOddsRaw = await loadAssetJson(env, url, "/data/odds-closing.json");
+          const closingFights = Array.isArray(closingOddsRaw && closingOddsRaw.fights) ? closingOddsRaw.fights : [];
+          if (closingFights.length) {
+            const attachClosingOdds = (c) => {
+              c.fights = (c.fights || []).map((f) => {
+                if (!f.result || f.result.voided || f.o1 != null || f.o2 != null) return f;
+                const cf = closingFights.find((x) => x && (
+                  (canonicalSimName(x.f1) === f.f1 && canonicalSimName(x.f2) === f.f2) ||
+                  (canonicalSimName(x.f1) === f.f2 && canonicalSimName(x.f2) === f.f1)
+                ));
+                if (!cf) return f;
+                const flipped = canonicalSimName(cf.f1) === f.f2;
+                return Object.assign({}, f, { o1: flipped ? cf.o2 : cf.o1, o2: flipped ? cf.o1 : cf.o2 });
+              });
+            };
+            attachClosingOdds(card);
+            carousel.forEach(attachClosingOdds);
+          }
+        }
+
         return json({
           card,
           isPast: isPastView,
@@ -3285,6 +3320,40 @@ export default {
             const rec = arr ? fightStatsFor(arr, row.date) : null;
             const oppSlug = profileSlugFor(row.opponent, profileSlugs) || null;
             return Object.assign({}, row, { oppSlug: oppSlug }, rec ? { stats: { f: rec.f, o: rec.o } } : null);
+          });
+        }
+        // Overlay the auto-captured closing lines (data/odds-closing.json,
+        // written ~10 min before each card section starts by
+        // scripts/capture-closing-odds.cjs) onto oddsHistory -- mirrors the
+        // site's own glMergeClosingOdds() (index.html), which runs this same
+        // merge client-side on every page load so a fight's closing line
+        // shows up in "Closing-line history" within minutes of being
+        // captured. gen-app-fighter-extras.cjs's buildOddsHistory only bakes
+        // whatever was already in ODDS_HISTORY at the last twice-daily
+        // generation, so a fight that closed and finished tonight is simply
+        // missing from the app's baked bundle until the next bake -- exactly
+        // the reported bug (closing odds on the site, not on the app) for a
+        // fight that "just happened." Done here, live, instead of waiting on
+        // the bake, same reasoning as the live-card fightHistory merge above.
+        if (fighterName) {
+          const closingOdds = await loadAssetJson(env, url, "/data/odds-closing.json");
+          const closingFights = Array.isArray(closingOdds && closingOdds.fights) ? closingOdds.fights : [];
+          const lastTok = (s) => String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/\s+/).pop().toLowerCase();
+          closingFights.forEach((cf) => {
+            if (!cf) return;
+            const c1 = canonicalSimName(cf.f1) || cf.f1, c2 = canonicalSimName(cf.f2) || cf.f2;
+            let opponent, odds;
+            if (c1 === fighterName) { opponent = c2; odds = cf.o1; }
+            else if (c2 === fighterName) { opponent = c1; odds = cf.o2; }
+            else return;
+            if (typeof odds !== "number") return;
+            extras.oddsHistory = extras.oddsHistory ? extras.oddsHistory.slice() : [];
+            const dup = extras.oddsHistory.findIndex((e) => e && e.date === cf.date && lastTok(e.opponent) === lastTok(opponent));
+            const matched = (extras.fightHistory || []).find((f) => f && lastTok(f.opponent) === lastTok(opponent) && f.date === cf.date)
+              || (extras.fightHistory || []).find((f) => f && lastTok(f.opponent) === lastTok(opponent));
+            const row = { opponent, odds, date: (matched && matched.date) || cf.date || null, result: (matched && matched.result) || null };
+            if (dup >= 0) { extras.oddsHistory[dup] = row; return; }
+            extras.oddsHistory.unshift(row);
           });
         }
         // Fight History "Upcoming" row -- mirrors the site's
