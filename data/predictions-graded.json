@@ -4206,7 +4206,152 @@
         "pts": 0.0326,
         "leaned": true
       }
+    },
+    {
+      "fightId": "damian piwowarczyk|emilio quissua",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-23T02:01:24.522Z",
+      "a": {
+        "feed": "Emilio Quissua",
+        "db": "Emilio Quissua"
+      },
+      "b": {
+        "feed": "Damian Piwowarczyk",
+        "db": "Damian Piwowarczyk"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5342,
+      "modelClose": 0.5342,
+      "marketOpen": 0.5156,
+      "marketClose": 0.4532,
+      "leanA": 0.0186,
+      "nSnapshots": 4,
+      "clv": {
+        "toward": false,
+        "pts": -0.0624,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "norbert novenyi jr|theo haig",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-23T02:01:24.522Z",
+      "a": {
+        "feed": "Norbert Novenyi Jr.",
+        "db": "Norbert Növényi Jr."
+      },
+      "b": {
+        "feed": "Theo Haig",
+        "db": "Theo Haig"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.6741,
+      "modelClose": 0.6741,
+      "marketOpen": 0.7879,
+      "marketClose": 0.7864,
+      "leanA": -0.1138,
+      "nSnapshots": 4,
+      "clv": {
+        "toward": true,
+        "pts": 0.0015,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "callum connor|piero guaylupo",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-23T02:01:24.522Z",
+      "a": {
+        "feed": "Piero Guaylupo",
+        "db": "Piero Guaylupo"
+      },
+      "b": {
+        "feed": "Callum Connor",
+        "db": "Callum Connor"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5155,
+      "modelClose": 0.5155,
+      "marketOpen": 0.5089,
+      "marketClose": 0.5089,
+      "leanA": 0.0066,
+      "nSnapshots": 1,
+      "clv": {
+        "toward": false,
+        "pts": 0,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "marcos degli|paris moran",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-23T02:01:24.522Z",
+      "a": {
+        "feed": "Paris Moran",
+        "db": "Paris Moran"
+      },
+      "b": {
+        "feed": "Marcos Degli",
+        "db": "Marcos Degli"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4453,
+      "modelClose": 0.4453,
+      "marketOpen": 0.2195,
+      "marketClose": 0.2195,
+      "leanA": 0.2258,
+      "nSnapshots": 1,
+      "clv": {
+        "toward": false,
+        "pts": 0,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "alvi dasuyev|jaden ortega",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-23T02:01:24.522Z",
+      "a": {
+        "feed": "Alvi Dasuyev",
+        "db": "Alvi Dasuyev"
+      },
+      "b": {
+        "feed": "Jaden Ortega",
+        "db": "Jaden Ortega"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5105,
+      "modelClose": 0.5105,
+      "marketOpen": 0.6778,
+      "marketClose": 0.6778,
+      "leanA": -0.1673,
+      "nSnapshots": 1,
+      "clv": {
+        "toward": false,
+        "pts": 0,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-22T16:09:43.618Z"
+  "generatedAt": "2026-09-23T02:01:24.527Z"
 }
