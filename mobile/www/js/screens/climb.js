@@ -18,16 +18,60 @@
 // pinned the brand header in a flex row above the iframe with the
 // container's own overflow:hidden, which kept the header on screen
 // permanently instead of scrolling away the way it does on every other
-// page. Rendering as a normal (scrolling) screen instead, with the iframe
-// itself sized to fill the visible viewport below the header via
-// .gl-embed-frame's own calc'd height (app.css) -- looks identical to the
-// old fullbleed layout when the page hasn't been scrolled, but the header
-// is real scrolling content above it now, same mechanism as any other
-// screen, rather than a second, independent thing.
+// page.
+//
+// A fixed-height iframe (app.css's old .gl-embed-frame calc) LOOKED right
+// in a desktop preview but was broken on a real device: climb-game.html's
+// own content is taller than that calc'd estimate (picking a division,
+// playing a round, seeing results all grow it), so the iframe got its OWN
+// internal scrollbar. A touch-drag anywhere over the game then scrolls
+// THAT inner document, not .gl-app -- and since the iframe covers nearly
+// the whole screen, virtually every real swipe lands on it. The outer
+// page technically still scrolls (a drag starting on the thin header
+// strip above the iframe works), but from the user's thumb it reads as
+// "the header is stuck", because the one place people actually swipe --
+// the game itself -- never reaches the parent. Every other screen is
+// plain DOM content with no nested scroll container, so this never comes
+// up there.
+//
+// Fix: don't give the iframe a fixed height at all. Measure the embedded
+// document's real content height (same-origin -- climb-game.html is
+// served from the app's own local origin, so contentDocument is readable)
+// and set the iframe's own height to match, so it never has scroll room
+// of its own. .gl-app then becomes the only scrolling container on this
+// screen too, exactly like every other tab, and a swipe over the game
+// scrolls the header away like anywhere else. Re-measured via
+// ResizeObserver because the game's content height changes as you play
+// (division picker -> ladder -> results panel).
 window.GL_ROUTER.register('climb', {
   title: 'The Climb',
   tab: 'climb',
   render: function(container){
-    container.innerHTML = '<iframe class="gl-embed-frame" src="climb-game.html" title="The Climb"></iframe>';
+    var frame = document.createElement('iframe');
+    frame.className = 'gl-embed-frame';
+    frame.title = 'The Climb';
+    frame.src = 'climb-game.html';
+    container.innerHTML = '';
+    container.appendChild(frame);
+
+    var ro = null;
+    function fit(){
+      try {
+        var doc = frame.contentDocument;
+        var h = doc && doc.documentElement && doc.documentElement.scrollHeight;
+        if (h) frame.style.height = h + 'px';
+      } catch (e) { /* cross-origin fallback: keep app.css's calc'd height */ }
+    }
+    frame.addEventListener('load', function(){
+      fit();
+      try {
+        if (window.ResizeObserver && frame.contentDocument) {
+          if (ro) ro.disconnect();
+          ro = new ResizeObserver(fit);
+          ro.observe(frame.contentDocument.documentElement);
+        }
+      } catch (e) {}
+    });
+    window.addEventListener('resize', fit);
   }
 });

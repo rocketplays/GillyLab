@@ -85,16 +85,20 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-app.gl-app--fullbleed{ padding:0; overflow:hidden; display:flex; flex-direction:column; }
 .gl-app.gl-app--fullbleed #app{ flex:1 1 auto; min-height:0; }
 /* Climb's iframe: NOT fullbleed (see climb.js) -- a normal scrolling child
-   of .gl-app, sized to fill the viewport below the header via calc rather
-   than height:100% (which needs a flex/fixed-height ancestor .gl-app no
-   longer gives it here). Matches the old fullbleed look exactly when the
-   page hasn't been scrolled -- .gl-app's own top/bottom padding (1.1rem/
-   2rem) plus an estimate of the brand row's rendered height (~2.8rem:
-   24px logo + this file's own .95rem/900-weight label line, plus its
-   1.2rem bottom margin) subtracted from the visible viewport -- but because
-   it's real flow content now, scrolling up past the header reveals nothing
-   AND scrolling reveals the same mechanism every other screen uses, rather
-   than a permanently pinned header. */
+   of .gl-app. This calc is only the height BEFORE climb.js's onload
+   handler measures the embedded document's real content height and
+   overrides it inline -- kept here just so there's a sane, viewport-sized
+   box during the brief window before that fires, instead of a 0-height
+   flash. Once set, the iframe's height always matches its own content
+   exactly (no calc estimate, no internal scrollbar of its own), so .gl-app
+   is the ONLY scroll container on this screen -- a swipe over the game
+   scrolls the header away same as any other tab. A fixed calc'd height
+   here was tried first and looked right on desktop, but climb-game.html's
+   real content is taller than any such estimate once you pick a division
+   or play a round, which gave the iframe its own internal scrollbar --
+   and since the iframe covers nearly the whole screen, that meant almost
+   every real touch-drag scrolled the GAME, not the app shell, so the
+   header never appeared to scroll away on a real device. See climb.js. */
 .gl-embed-frame{
   display:block; width:100%; border:none; background:var(--bg);
   height:calc(100vh - var(--tabbar-h) - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 1.1rem - 2rem - 2.8rem);
