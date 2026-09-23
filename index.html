@@ -7960,6 +7960,7 @@
  { name: "Luca Borando", division: "FW", rank: "NR", record: "9-1-0", initials: "LBO", country: "Italy" },
  { name: "Aieza Bertolso", division: "WSW", rank: "NR", record: "7-0-0", initials: "ARB", country: "Brazil" },
  { name: "Camila Reynoso", division: "WSW", rank: "NR", record: "9-1-0", initials: "CRE", country: "Argentina" },
+ { name: "Ilias Bulaid", division: "FW", rank: "NR", record: "9-0-0", initials: "IBU", country: "Morocco" }, // 1 NC
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9184,6 +9185,7 @@
 "Luca Borando": { ht:"5'10\"", dob:"2000-09-24", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"89%", streak:5, gym:"Aurora MMA" },
 "Aieza Bertolso": { ht:"5'6\"", dob:"2001-08-29", reach:'68"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:7, gym:"MSP" },
 "Camila Reynoso": { ht:"5'2\"", dob:"2003-08-28", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:3, gym:"ADM Sports Center" },
+"Ilias Bulaid": { ht:"5'8\"", dob:"1995-05-01", reach:'70.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:9, gym:"SBG Ireland" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44911,6 +44913,10 @@
     { opponent: "Irlaine Ribeiro Lima", odds: -2000 }
   ],
   "Camila Reynoso": [],
+  "Ilias Bulaid": [
+    { opponent: "Omar Khaled", odds: -649 },
+    { opponent: "Georges Sasu", odds: -200 }
+  ],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -63082,6 +63088,18 @@ const FIGHT_HISTORY = {
     { date: "Apr 19, 2024", opponent: "Tifani Gerez", result: "W", method: "TKO (Strikes)", round: 3, time: "2:32", event: "Samurai Fight House 16: Arteaga vs. Olmedo", org: "Samurai Fight House" },
     { date: "Apr 19, 2024", opponent: "Katherine Mansilla", result: "W", method: "TKO (Doctor Stoppage)", round: 1, time: "5:00", event: "Samurai Fight House 16: Arteaga vs. Olmedo", org: "Samurai Fight House" },
     { date: "Mar 1, 2024", opponent: "Daniela Carrizo", result: "W", method: "Submission (Armbar)", round: 2, time: "3:16", event: "Samurai Fight House 15: El Chino vs. La Pantera", org: "Samurai Fight House" }
+  ],
+  "Ilias Bulaid": [
+    { date: "Apr 10, 2026", opponent: "Wellyton Junior da Silva", result: "W", method: "TKO (Knee to the Body and Punches)", round: 1, time: "3:09", event: "Levels Fight League 22", org: "LFL" },
+    { date: "Jul 22, 2025", opponent: "Eduard Demenko", result: "W", method: "Technical Submission (Anaconda Choke)", round: 1, time: "3:09", event: "UAE Warriors 61: AlQaisi vs. Chipfumbu", org: "UAE Warriors" },
+    { date: "Jun 11, 2025", opponent: "Rebin Fazil", result: "NC", method: "No Contest (Punches to Back of Head)", round: 1, time: "0:42", event: "UAE Warriors 59: Arabia vs. Africa 4", org: "UAE Warriors" },
+    { date: "Feb 7, 2025", opponent: "Kewin Jacques Rangel", result: "W", method: "TKO (Retirement)", round: 3, time: "0:52", event: "Fight 2 One 8", org: "Fight 2 One" },
+    { date: "Oct 18, 2024", opponent: "Anthony Riggio", result: "W", method: "TKO (Leg Kick)", round: 1, time: "4:01", event: "Brave CF 89", org: "Brave CF" },
+    { date: "Mar 15, 2024", opponent: "Saba Sozashvili", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight 2 One 5", org: "Fight 2 One" },
+    { date: "May 18, 2023", opponent: "Omar Khaled", result: "W", method: "TKO (Knees)", round: 1, time: "3:28", event: "UAE Warriors 41: Arabia 11", org: "UAE Warriors" },
+    { date: "Nov 5, 2021", opponent: "Georges Sasu", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Bellator 270: Queally vs. Pitbull 2", org: "Bellator" },
+    { date: "Feb 22, 2020", opponent: "Diego Freitas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 240: McCourt vs. Ruis", org: "Bellator" },
+    { date: "Sep 27, 2019", opponent: "Vitalic Maiboroda", result: "W", method: "KO (Knee)", round: 1, time: "4:59", event: "Bellator 227: Gallagher vs. Salazar", org: "Bellator" }
   ],
   "Matthew Adams": [
     { date: "Aug 11, 2026", opponent: "Anthony Wint", result: "L", method: "KO/TKO (Punches)", round: 1, time: "0:34", event: "Dana White's Contender Series: Season 10, Week 1", org: "UFC" },
@@ -121680,6 +121698,12 @@ const ACCOLADES = {
   "Camila Reynoso": [
     { icon: "🥊", title: "9-1 as a pro, currently on a 3-fight win streak since her only loss (Jun 2025) — set to make her UFC debut on Dana White's Contender Series vs. Aieza Bertolso (Sep 29, 2026)", detail: null },
     { icon: "🌍", title: "\"Buttercup\" Reynoso, out of Buenos Aires, Argentina, training out of ADM Sports Center — built her record almost entirely on the Samurai Fight House circuit, including a same-night doubleheader (2 wins, Apr 2024)", detail: null }
+  ],
+  "Ilias Bulaid": [
+    { icon: "🏆", title: "Levels Fight League featherweight champion; set to make his UFC debut on Dana White's Contender Series vs. Erick Viscondi (Sep 29, 2026)", detail: null },
+    { icon: "🥊", title: "Former Enfusion kickboxing world champion and K-1 World Grand Prix finalist across a 31-fight pro kickboxing career before transitioning to MMA", detail: null },
+    { icon: "🥋", title: "Undefeated across 10 pro MMA fights (9-0, 1 no contest) since 2019 — has fought in Bellator, UAE Warriors and Brave CF", detail: null },
+    { icon: "🌍", title: "\"The Blade\" Bulaid, a Moroccan featherweight training out of SBG Ireland", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
