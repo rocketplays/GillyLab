@@ -3367,8 +3367,28 @@ export default {
           const closingOdds = await loadAssetJson(env, url, "/data/odds-closing.json");
           const closingFights = Array.isArray(closingOdds && closingOdds.fights) ? closingOdds.fights : [];
           const lastTok = (s) => String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/\s+/).pop().toLowerCase();
+          // Recency guard -- data/odds-closing.json is never pruned (confirmed
+          // 2026-09-23: 135 entries going back to July, all still present), so
+          // without this every closing-line snapshot ever captured gets
+          // re-checked on every profile view, forever. A snapshot for a fight
+          // that's genuinely just-closed-and-not-yet-baked is, by definition,
+          // recent -- capture-closing-odds.cjs runs ~10 min before each card
+          // section, and the twice-daily bake catches up within ~12h. A
+          // months-old snapshot reaching this "still missing" branch means the
+          // gap is a permanent one in ODDS_HISTORY itself (never hand-added),
+          // not a bake lag -- unshifting it to the front is simply wrong then:
+          // it's not the fighter's most recent price, just the oldest
+          // unresolved one. Confirmed bug: Jose Delgado's Jul 18, 2026 line vs
+          // Austin Bashi (never added to ODDS_HISTORY) was unshifting ahead of
+          // his real Sep 12, 2026 Jean Silva fight on every /api/app/fighter-
+          // extras request. 5 days comfortably covers the bake cadence plus a
+          // weekend, while excluding a permanently-unbacked older gap.
+          const CLOSING_ODDS_RECENCY_MS = 5 * 24 * 60 * 60 * 1000;
+          const now = Date.now();
           closingFights.forEach((cf) => {
             if (!cf) return;
+            const capturedAt = Date.parse(cf.capturedAt || cf.date || "");
+            if (!isFinite(capturedAt) || now - capturedAt > CLOSING_ODDS_RECENCY_MS) return;
             const c1 = canonicalSimName(cf.f1) || cf.f1, c2 = canonicalSimName(cf.f2) || cf.f2;
             let opponent, odds;
             if (c1 === fighterName) { opponent = c2; odds = cf.o1; }
