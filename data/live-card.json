@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-23T01:10:42.693Z",
+ "generatedAt": "2026-09-23T01:41:01.634Z",
  "fighters": {
   "Delphine Benouaich": {
    "history": [
@@ -9962,6 +9962,194 @@
       ]
      },
      "capturedAt": "2026-09-23T01:10:42.551Z"
+    }
+   ]
+  },
+  "Norbert Növényi Jr.": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Theo Haig",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Theo Haig",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 27,
+      "sigA": 48,
+      "totL": 37,
+      "totA": 60,
+      "tdL": 6,
+      "tdA": 9,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "5:36",
+      "head": [
+       22,
+       41
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       24,
+       43
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 39,
+      "totL": 38,
+      "totA": 68,
+      "tdL": 2,
+      "tdA": 10,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:37",
+      "head": [
+       10,
+       33
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       34
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-09-23T01:41:01.494Z"
+    }
+   ]
+  },
+  "Theo Haig": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Norbert Növényi Jr.",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Norbert Növényi Jr.",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 39,
+      "totL": 38,
+      "totA": 68,
+      "tdL": 2,
+      "tdA": 10,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:37",
+      "head": [
+       10,
+       33
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       34
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 27,
+      "sigA": 48,
+      "totL": 37,
+      "totA": 60,
+      "tdL": 6,
+      "tdA": 9,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "5:36",
+      "head": [
+       22,
+       41
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       24,
+       43
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-09-23T01:41:01.494Z"
     }
    ]
   }
