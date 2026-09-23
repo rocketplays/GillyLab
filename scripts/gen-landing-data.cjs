@@ -387,7 +387,20 @@ const toProb = (o) => o < 0 ? (-o) / ((-o) + 100) : 100 / (o + 100);
 const toAmerican = (p) => p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p);
 const round5 = (n) => Math.round(n / 5) * 5;
 const fmtOdds = (a) => (a > 0 ? '+' : '') + a;
-const lastName = (s) => String(s || '').toLowerCase().split(' ').pop();
+// Strips a generational suffix before taking the last token, mirroring
+// index.html's own lastNameOf()/NAME_SUFFIXES -- without this, "Raul Rosas
+// Jr." (our DB spelling, period included) naively last-tokenized to "jr.",
+// which never matches odds.json's "Raul Rosas Jr" (no period) tokenizing to
+// "jr" -- so consensusOdds() silently returned null and the app's Events
+// page showed no moneyline for any fighter with a Jr./Sr./II/III/IV suffix,
+// even though the site itself (using the period-stripping lastNameOf) found
+// the same odds.json row fine.
+const NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
+const lastName = (s) => {
+  const parts = String(s || '').toLowerCase().trim().split(/\s+/);
+  while (parts.length > 1 && NAME_SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ''))) parts.pop();
+  return parts.pop() || '';
+};
 
 // Extract a top-level `NAME = {...}` object literal from index.html and eval it.
 //

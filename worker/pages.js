@@ -2640,7 +2640,20 @@ export function pagesConsensusOdds(oddsData, nameA, nameB) {
   // gets no consensus price at all (reported: the Medic vs. Rodriguez main event
   // showing no odds). Same normalization index.html already applies elsewhere
   // when matching names across these two data sources.
-  const ln = (s) => String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/\s+/).pop().toLowerCase();
+  //
+  // Also strip a trailing generational suffix (Jr./Sr./II/III/IV) before taking
+  // the last token — mirrors index.html's own lastNameOf()/NAME_SUFFIXES.
+  // Without this, "Raul Rosas Jr." (our DB spelling, period included) naively
+  // last-tokenized to "jr.", which never matched odds.json's "Raul Rosas Jr"
+  // (no period) tokenizing to "jr" — so this exact bout (and any other fighter
+  // with a suffix) silently got no consensus price on the app's Events page,
+  // even though index.html's own suffix-stripping lookup found it fine.
+  const SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"]);
+  const ln = (s) => {
+    const parts = String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/\s+/);
+    while (parts.length > 1 && SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ""))) parts.pop();
+    return parts.pop() || "";
+  };
   const ev = oddsData.find((e) => e && e.home_team && e.away_team &&
     ((ln(e.home_team) === ln(nameA) && ln(e.away_team) === ln(nameB)) ||
      (ln(e.home_team) === ln(nameB) && ln(e.away_team) === ln(nameA))));
