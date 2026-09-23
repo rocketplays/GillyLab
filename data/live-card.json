@@ -1,946 +1,6 @@
 {
- "generatedAt": "2026-09-20T04:10:51.386Z",
+ "generatedAt": "2026-09-23T00:40:00.278Z",
  "fighters": {
-  "Hunter Smith": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Adam Livingston",
-     "result": "L",
-     "method": "Decision (Split)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Adam Livingston",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 76,
-      "sigA": 179,
-      "totL": 76,
-      "totA": 179,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       44,
-       134
-      ],
-      "body": [
-       20,
-       29
-      ],
-      "leg": [
-       12,
-       16
-      ],
-      "dist": [
-       76,
-       179
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 79,
-      "sigA": 218,
-      "totL": 79,
-      "totA": 218,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       64,
-       199
-      ],
-      "body": [
-       5,
-       8
-      ],
-      "leg": [
-       10,
-       11
-      ],
-      "dist": [
-       79,
-       218
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-02T00:04:00.972Z"
-    }
-   ]
-  },
-  "Adam Livingston": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Hunter Smith",
-     "result": "W",
-     "method": "Decision (Split)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Hunter Smith",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 79,
-      "sigA": 218,
-      "totL": 79,
-      "totA": 218,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       64,
-       199
-      ],
-      "body": [
-       5,
-       8
-      ],
-      "leg": [
-       10,
-       11
-      ],
-      "dist": [
-       79,
-       218
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 76,
-      "sigA": 179,
-      "totL": 76,
-      "totA": 179,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       44,
-       134
-      ],
-      "body": [
-       20,
-       29
-      ],
-      "leg": [
-       12,
-       16
-      ],
-      "dist": [
-       76,
-       179
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-02T00:04:00.972Z"
-    }
-   ]
-  },
-  "Gabriel Lourenço": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Charlie Cleveland",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "2:02",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Charlie Cleveland",
-     "result": "W",
-     "f": {
-      "kd": 2,
-      "sigL": 20,
-      "sigA": 43,
-      "totL": 22,
-      "totA": 45,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:10",
-      "head": [
-       16,
-       35
-      ],
-      "body": [
-       2,
-       4
-      ],
-      "leg": [
-       2,
-       4
-      ],
-      "dist": [
-       9,
-       30
-      ],
-      "clinch": [
-       1,
-       3
-      ],
-      "ground": [
-       10,
-       10
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 8,
-      "sigA": 15,
-      "totL": 8,
-      "totA": 15,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       6,
-       11
-      ],
-      "body": [
-       1,
-       3
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       8,
-       15
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-02T00:04:01.021Z"
-    }
-   ]
-  },
-  "Charlie Cleveland": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Gabriel Lourenço",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "2:02",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Gabriel Lourenço",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 8,
-      "sigA": 15,
-      "totL": 8,
-      "totA": 15,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       6,
-       11
-      ],
-      "body": [
-       1,
-       3
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       8,
-       15
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 2,
-      "sigL": 20,
-      "sigA": 43,
-      "totL": 22,
-      "totA": 45,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:10",
-      "head": [
-       16,
-       35
-      ],
-      "body": [
-       2,
-       4
-      ],
-      "leg": [
-       2,
-       4
-      ],
-      "dist": [
-       9,
-       30
-      ],
-      "clinch": [
-       1,
-       3
-      ],
-      "ground": [
-       10,
-       10
-      ]
-     },
-     "capturedAt": "2026-09-02T00:04:01.021Z"
-    }
-   ]
-  },
-  "Liam McCracken": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Silvestre Sanchez",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 3,
-     "time": "2:44",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Silvestre Sanchez",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 44,
-      "sigA": 90,
-      "totL": 57,
-      "totA": 107,
-      "tdL": 1,
-      "tdA": 3,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:41",
-      "head": [
-       36,
-       82
-      ],
-      "body": [
-       6,
-       6
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       41,
-       84
-      ],
-      "clinch": [
-       3,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 58,
-      "sigA": 120,
-      "totL": 83,
-      "totA": 152,
-      "tdL": 4,
-      "tdA": 13,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "5:20",
-      "head": [
-       40,
-       93
-      ],
-      "body": [
-       7,
-       9
-      ],
-      "leg": [
-       11,
-       18
-      ],
-      "dist": [
-       40,
-       90
-      ],
-      "clinch": [
-       6,
-       10
-      ],
-      "ground": [
-       12,
-       20
-      ]
-     },
-     "capturedAt": "2026-09-02T00:34:31.844Z"
-    }
-   ]
-  },
-  "Silvestre Sanchez": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Liam McCracken",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 3,
-     "time": "2:44",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Liam McCracken",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 58,
-      "sigA": 120,
-      "totL": 83,
-      "totA": 152,
-      "tdL": 4,
-      "tdA": 13,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "5:20",
-      "head": [
-       40,
-       93
-      ],
-      "body": [
-       7,
-       9
-      ],
-      "leg": [
-       11,
-       18
-      ],
-      "dist": [
-       40,
-       90
-      ],
-      "clinch": [
-       6,
-       10
-      ],
-      "ground": [
-       12,
-       20
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 44,
-      "sigA": 90,
-      "totL": 57,
-      "totA": 107,
-      "tdL": 1,
-      "tdA": 3,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:41",
-      "head": [
-       36,
-       82
-      ],
-      "body": [
-       6,
-       6
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       41,
-       84
-      ],
-      "clinch": [
-       3,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-02T00:34:31.844Z"
-    }
-   ]
-  },
-  "Brandon Holmes": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Modestino Rodrigues",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "0:15",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Modestino Rodrigues",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 0,
-      "sigA": 1,
-      "totL": 0,
-      "totA": 1,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       1
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       0,
-       1
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 8,
-      "sigA": 19,
-      "totL": 8,
-      "totA": 19,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       7,
-       18
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       7,
-       18
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "capturedAt": "2026-09-02T00:49:56.400Z"
-    }
-   ]
-  },
-  "Modestino Rodrigues": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Brandon Holmes",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "0:15",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Brandon Holmes",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 8,
-      "sigA": 19,
-      "totL": 8,
-      "totA": 19,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       7,
-       18
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       7,
-       18
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 0,
-      "sigA": 1,
-      "totL": 0,
-      "totA": 1,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       1
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       0,
-       1
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-02T00:49:56.400Z"
-    }
-   ]
-  },
-  "Patrick Rivera": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Adam Darby",
-     "result": "L",
-     "method": "TKO - Doctor's Stoppage",
-     "round": 3,
-     "time": "2:42",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Adam Darby",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 63,
-      "sigA": 115,
-      "totL": 63,
-      "totA": 116,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:16",
-      "head": [
-       11,
-       56
-      ],
-      "body": [
-       34,
-       39
-      ],
-      "leg": [
-       18,
-       20
-      ],
-      "dist": [
-       62,
-       113
-      ],
-      "clinch": [
-       1,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 181,
-      "sigA": 326,
-      "totL": 186,
-      "totA": 332,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       92,
-       222
-      ],
-      "body": [
-       18,
-       29
-      ],
-      "leg": [
-       71,
-       75
-      ],
-      "dist": [
-       178,
-       317
-      ],
-      "clinch": [
-       3,
-       9
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-02T01:20:14.417Z"
-    }
-   ]
-  },
-  "Adam Darby": {
-   "history": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Patrick Rivera",
-     "result": "W",
-     "method": "TKO - Doctor's Stoppage",
-     "round": 3,
-     "time": "2:42",
-     "event": "Dana White's Contender Series: Season 10, Week 4",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 1, 2026",
-     "opponent": "Patrick Rivera",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 181,
-      "sigA": 326,
-      "totL": 186,
-      "totA": 332,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       92,
-       222
-      ],
-      "body": [
-       18,
-       29
-      ],
-      "leg": [
-       71,
-       75
-      ],
-      "dist": [
-       178,
-       317
-      ],
-      "clinch": [
-       3,
-       9
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 63,
-      "sigA": 115,
-      "totL": 63,
-      "totA": 116,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:16",
-      "head": [
-       11,
-       56
-      ],
-      "body": [
-       34,
-       39
-      ],
-      "leg": [
-       18,
-       20
-      ],
-      "dist": [
-       62,
-       113
-      ],
-      "clinch": [
-       1,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-02T01:20:14.417Z"
-    }
-   ]
-  },
   "Delphine Benouaich": {
    "history": [
     {
@@ -10150,6 +9210,570 @@
       ]
      },
      "capturedAt": "2026-09-20T04:05:31.489Z"
+    }
+   ]
+  },
+  "Emilio Quissua": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Damian Piwowarczyk",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:55",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Damian Piwowarczyk",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 73,
+      "totL": 38,
+      "totA": 74,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:02",
+      "head": [
+       23,
+       56
+      ],
+      "body": [
+       9,
+       12
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       36,
+       71
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 35,
+      "sigA": 83,
+      "totL": 56,
+      "totA": 104,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       26,
+       70
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       23,
+       64
+      ],
+      "clinch": [
+       3,
+       9
+      ],
+      "ground": [
+       9,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-23T00:39:59.993Z"
+    }
+   ]
+  },
+  "Damian Piwowarczyk": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Emilio Quissua",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:55",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Emilio Quissua",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 35,
+      "sigA": 83,
+      "totL": 56,
+      "totA": 104,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       26,
+       70
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       23,
+       64
+      ],
+      "clinch": [
+       3,
+       9
+      ],
+      "ground": [
+       9,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 73,
+      "totL": 38,
+      "totA": 74,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:02",
+      "head": [
+       23,
+       56
+      ],
+      "body": [
+       9,
+       12
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       36,
+       71
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-23T00:39:59.993Z"
+    }
+   ]
+  },
+  "Callum Connor": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Piero Guaylupo",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Piero Guaylupo",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 265,
+      "sigA": 377,
+      "totL": 265,
+      "totA": 377,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       170,
+       266
+      ],
+      "body": [
+       81,
+       96
+      ],
+      "leg": [
+       14,
+       15
+      ],
+      "dist": [
+       261,
+       372
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 209,
+      "sigA": 314,
+      "totL": 213,
+      "totA": 319,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:32",
+      "head": [
+       163,
+       262
+      ],
+      "body": [
+       39,
+       43
+      ],
+      "leg": [
+       7,
+       9
+      ],
+      "dist": [
+       196,
+       301
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       10,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-23T00:40:00.115Z"
+    }
+   ]
+  },
+  "Piero Guaylupo": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Callum Connor",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Callum Connor",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 209,
+      "sigA": 314,
+      "totL": 213,
+      "totA": 319,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:32",
+      "head": [
+       163,
+       262
+      ],
+      "body": [
+       39,
+       43
+      ],
+      "leg": [
+       7,
+       9
+      ],
+      "dist": [
+       196,
+       301
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       10,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 265,
+      "sigA": 377,
+      "totL": 265,
+      "totA": 377,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       170,
+       266
+      ],
+      "body": [
+       81,
+       96
+      ],
+      "leg": [
+       14,
+       15
+      ],
+      "dist": [
+       261,
+       372
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-23T00:40:00.115Z"
+    }
+   ]
+  },
+  "Marcos Degli": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Paris Moran",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:46",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Paris Moran",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 19,
+      "sigA": 28,
+      "totL": 89,
+      "totA": 112,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "6:41",
+      "head": [
+       9,
+       17
+      ],
+      "body": [
+       6,
+       6
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       8,
+       16
+      ],
+      "clinch": [
+       5,
+       5
+      ],
+      "ground": [
+       6,
+       7
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 20,
+      "totL": 27,
+      "totA": 47,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:06",
+      "head": [
+       2,
+       16
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       20
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-23T00:40:00.134Z"
+    }
+   ]
+  },
+  "Paris Moran": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Marcos Degli",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:46",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Marcos Degli",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 20,
+      "totL": 27,
+      "totA": 47,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:06",
+      "head": [
+       2,
+       16
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       20
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 19,
+      "sigA": 28,
+      "totL": 89,
+      "totA": 112,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "6:41",
+      "head": [
+       9,
+       17
+      ],
+      "body": [
+       6,
+       6
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       8,
+       16
+      ],
+      "clinch": [
+       5,
+       5
+      ],
+      "ground": [
+       6,
+       7
+      ]
+     },
+     "capturedAt": "2026-09-23T00:40:00.134Z"
     }
    ]
   }
