@@ -249,9 +249,30 @@ window.GL_ROUTER = (function(){
     // full innerHTML replacement of appEl and scrolls away with the rest of
     // the page instead of sitting fixed like the top bar.
     appScrollEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '');
+    // Render into a FRESH child element every time, rather than handing
+    // screens the same shared #app node back on every navigation. This is
+    // the fix for "switching tabs fast sometimes shows the wrong page":
+    // every screen module (odds.js, bettracker.js, etc.) guards its own
+    // async .then() callbacks with a module-local mySeq/loadSeq counter,
+    // but that counter only detects a NEWER load of the SAME screen -- it
+    // has no way to know a completely DIFFERENT screen has since taken
+    // over #app. Concretely: tap Odds, then immediately tap Bet Tracker
+    // before Odds' fetch resolves; Bet Tracker renders "Loading…" into
+    // #app, then Odds' /api/app/odds response comes back late and Odds'
+    // own (unaware) success handler calls container.innerHTML = ... on
+    // the container reference it closed over -- which, because #app was
+    // reused as the same DOM node, IS the Bet Tracker screen you're now
+    // looking at. The tab bar highlight is correct; the content is stale.
+    // Giving every render() call its own throwaway <div> means a late
+    // write from an abandoned screen lands on a detached node nobody is
+    // looking at -- harmless -- instead of stomping on whatever's current.
+    // #app itself keeps its id/classes untouched (nothing else in the app
+    // selects into it by id besides this file), so no CSS/layout changes.
+    var pageEl = document.createElement('div');
     appEl.innerHTML = '';
+    appEl.appendChild(pageEl);
     appScrollEl.scrollTop = 0;
-    screen.render(appEl, params);
+    screen.render(pageEl, params);
     // Only a back() navigation ever wants to land somewhere other than the
     // top -- restore the scroll position this screen was at before the
     // visitor pushed forward off of it.
