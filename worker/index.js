@@ -3182,7 +3182,20 @@ export default {
         const fighterExtras = await getFighterExtras(env);
         const baseExtras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || {};
         const extras = Object.assign({}, baseExtras);
-        const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+        // Strips accents AND a trailing generational suffix before taking the
+        // last token -- mirrors index.html's lastNameOf()/NAME_SUFFIXES.
+        // Without the suffix strip, two different "___ Jr." fighters (e.g.
+        // Norbert Növényi Jr. and Raul Rosas Jr.) both last-tokenize to "jr."
+        // and collide in the Upcoming-row scan below, which is exactly the
+        // reported bug: Növényi's profile showed an upcoming fight against
+        // Raoni Barcelos (Raul Rosas Jr.'s real opponent, on a totally
+        // different card) because the naive version matched "jr." to "jr.".
+        const SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"]);
+        const lastName = (s) => {
+          const parts = String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/\s+/);
+          while (parts.length > 1 && SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ""))) parts.pop();
+          return parts.pop() || "";
+        };
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
         const fighterName = lite && lite.bySlug && lite.bySlug[slug] && lite.bySlug[slug].name;
         // Opponent profile slugs -- lets the app link a Fight History
@@ -3190,6 +3203,36 @@ export default {
         // instead of just showing plain text, the same profileSlugFor lookup
         // /api/app/matchup already uses to resolve f.s1/f.s2.
         const profileSlugs = await loadProfileSlugs(env, url);
+        // Fold in fights that finished DURING a live card -- mirrors the
+        // site's own glMergeLiveCard()/glMergeRows() (index.html): the twice-
+        // daily generator that bakes fighterExtras.fightHistory can't see a
+        // result from an event still in progress, but scripts/fetch-espn-live.cjs
+        // (the live-results poller) writes each finished bout into
+        // data/live-card.json within minutes. Without this, a fight that just
+        // happened tonight simply doesn't show up in the app's Fight History
+        // until the next bake -- which is exactly what was reported (today's
+        // DWCS results present on the site, missing on the app). Keyed by
+        // ESPN's raw name, so canonicalize both the fighter key and each
+        // row's opponent through canonicalSimName the same way the site's own
+        // canon() does, or a row lands on the wrong profile / displays an
+        // opponent name that doesn't match any profile.
+        if (fighterName) {
+          const liveCard = await loadAssetJson(env, url, "/data/live-card.json");
+          const liveFighters = (liveCard && liveCard.fighters) || {};
+          for (const rawName in liveFighters) {
+            if (canonicalSimName(rawName) !== fighterName) continue;
+            const rows = (liveFighters[rawName].history || []).filter((r) => r && r.opponent && r.date);
+            if (!rows.length) break;
+            extras.fightHistory = extras.fightHistory ? extras.fightHistory.slice() : [];
+            rows.slice().reverse().forEach((r) => {
+              const row = Object.assign({}, r, { opponent: canonicalSimName(r.opponent) || r.opponent });
+              const i = extras.fightHistory.findIndex((x) => x && x.opponent === row.opponent && x.date === row.date);
+              if (i >= 0) { extras.fightHistory[i] = row; return; }
+              extras.fightHistory.unshift(row);
+            });
+            break;
+          }
+        }
         if (extras.fightHistory && extras.fightHistory.length) {
           const fightStats = fighterName ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
           const arr = fightStats && fighterName ? fightStats[fighterName] : null;
@@ -3216,9 +3259,16 @@ export default {
           for (const ev of evs) {
             if (upcoming) break;
             if (ev.status === "completed") continue;
-            if ((ev.bouts || []).some((b) => b.winnerFighterSlug)) continue;
             for (const b of ev.bouts || []) {
               if (b.isCancelled) continue;
+              // Skip a bout that's already decided (not the whole event) --
+              // a live card's bouts finish one at a time, so bailing on the
+              // ENTIRE event the moment ANY bout has a winner wrongly hid the
+              // "upcoming" status of every fighter whose OWN bout hadn't gone
+              // yet, and fell through to matching them against a totally
+              // different, later event instead (see canonicalSimName note
+              // above for how that produced Növényi/Barcelos specifically).
+              if (b.winnerFighterSlug) continue;
               const fighters = (b.fighters || []).filter((f) => f && f.fighterName);
               if (fighters.length < 2) continue;
               const mine = fighters.find((f) => lastName(f.fighterName) === myLast);
