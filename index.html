@@ -140787,6 +140787,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // raw names through this same map first (see canonOddsName() above
     // isScheduledBout) so the alias fixes both the missing bout AND the link.
     'zhu rong': 'Rongzhu',
+    // UFC Fight Night Sep 26, 2026 (Castaneda vs Alatengheili): same family-
+    // name-order bug as 'su mudaerji'/'zhu rong' above. data/odds.json (The
+    // Odds API) lists him "Heili Alateng" (split into two words, reversed
+    // order); our DB (FIGHTERS/FIGHTER_STATS/TAPE_STUDY/FIGHT_HISTORY) keys
+    // him "Alatengheili" (single fused name). Unresolved, both the free
+    // /matchup page and the Odds & Projections page showed "—" for this
+    // fight's moneyline even though The Odds API has real prices for it.
+    'heili alateng': 'Alatengheili',
   };
 
   // Share-sheet only: "Dana White's Contender Series: Season 10, Week 1" is long

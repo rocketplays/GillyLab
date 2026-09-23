@@ -402,6 +402,23 @@ const lastName = (s) => {
   return parts.pop() || '';
 };
 
+// index.html's NAME_ALIASES maps odds-feed spellings its own lastNameOf()/
+// namesLikelyMatch() can't bridge on their own -- a name split or reordered
+// differently than our DB (e.g. odds.json's "Heili Alateng" vs our DB's
+// fused "Alatengheili"; "Zhu Rong" vs "Rongzhu") to the canonical DB name.
+// The site's own odds-matching (canonOddsName()/isScheduledBout(), and every
+// generator that slices those functions verbatim, like gen-odds-page.cjs)
+// runs every odds.json name through this map before comparing. This script's
+// consensusOdds()/mlConsensus() are a SEPARATE, hand-ported copy of that
+// matching logic (see the lastName() comment above for a previous instance
+// of the same drift) and never did this step -- so any fighter who NEEDS an
+// alias to match (not just a suffix or a small typo) silently got no
+// moneyline on the Events page / carousel, even though NAME_ALIASES already
+// fixes the exact same fighter everywhere else on the site. extractObject()
+// is defined further down but hoisted, so calling it here is safe.
+const NAME_ALIASES = extractObject('const NAME_ALIASES') || {};
+const canonOddsName = (n) => NAME_ALIASES[String(n || '').toLowerCase()] || n;
+
 // Extract a top-level `NAME = {...}` object literal from index.html and eval it.
 //
 // Must skip `//` line comments before tracking string state, not just
@@ -538,7 +555,14 @@ function consensusOdds(nameA, nameB) {
   try { odds = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'odds.json'), 'utf8')); } catch (e) { return null; }
   if (!Array.isArray(odds)) return null;
   const ln = lastName;
-  const namesMatch = (x, y) => ln(x) === ln(y) || namesLikelyMatch(x, y);
+  // canonOddsName() first: a suffix-stripped last name or the edit-distance
+  // fuzz below can't bridge a name odds.json splits/reorders/spells
+  // completely differently (see the NAME_ALIASES comment above) -- and
+  // without it, this is the exact fighter class NAME_ALIASES exists for.
+  const namesMatch = (x, y) => {
+    x = canonOddsName(x); y = canonOddsName(y);
+    return ln(x) === ln(y) || namesLikelyMatch(x, y);
+  };
   const ev = odds.find((e) => e && e.home_team && e.away_team &&
     ((namesMatch(e.home_team, nameA) && namesMatch(e.away_team, nameB)) ||
      (namesMatch(e.home_team, nameB) && namesMatch(e.away_team, nameA))));
@@ -584,16 +608,20 @@ const PARLAY_PICKS = [
 const METHOD_LABEL = { ko: 'by KO/TKO', sub: 'by submission', dec: 'by decision' };
 
 // Consensus moneyline for one bout, averaged across every book that prices it.
+// canonOddsName() first, same reasoning as consensusOdds() above -- this
+// function's plain lastLower() equality (no fuzzy fallback at all) is even
+// more exposed to a name odds.json spells completely differently.
 function mlConsensus(odds, nameA, nameB) {
+  const lc = (s) => lastLower(canonOddsName(s));
   const m = odds.find((o) => o && o.home_team && o.away_team &&
-    [lastLower(o.home_team), lastLower(o.away_team)].sort().join('|') === [lastLower(nameA), lastLower(nameB)].sort().join('|'));
+    [lc(o.home_team), lc(o.away_team)].sort().join('|') === [lc(nameA), lc(nameB)].sort().join('|'));
   if (!m || !Array.isArray(m.bookmakers)) return null;
   const qa = [], qb = [];
   m.bookmakers.forEach((bk) => {
     const mkt = (bk.markets || []).find((x) => x.key === 'h2h');
     if (!mkt) return;
-    const pa = (mkt.outcomes.find((o) => lastLower(o.name) === lastLower(nameA)) || {}).price;
-    const pb = (mkt.outcomes.find((o) => lastLower(o.name) === lastLower(nameB)) || {}).price;
+    const pa = (mkt.outcomes.find((o) => lc(o.name) === lc(nameA)) || {}).price;
+    const pb = (mkt.outcomes.find((o) => lc(o.name) === lc(nameB)) || {}).price;
     if (pa == null || pb == null) return;
     qa.push(toProb(pa)); qb.push(toProb(pb));
   });
