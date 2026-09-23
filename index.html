@@ -7958,6 +7958,7 @@
  { name: "Zaurbek Sabanov", division: "HW", rank: "NR", record: "5-0-0", initials: "ZSA", country: "Russia" },
  { name: "Ian Escuza", division: "FW", rank: "NR", record: "7-0-0", initials: "IE", country: "Peru" },
  { name: "Luca Borando", division: "FW", rank: "NR", record: "9-1-0", initials: "LBO", country: "Italy" },
+ { name: "Aieza Bertolso", division: "WSW", rank: "NR", record: "7-0-0", initials: "ARB", country: "Brazil" },
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9180,6 +9181,7 @@
 "Zaurbek Sabanov": { ht:"6'4\"", dob:"1998-06-14", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"80%", streak:5, gym:"Valhalla Fight Club" },
 "Ian Escuza": { ht:"5'8\"", dob:"1996-08-28", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:7, gym:"Pitbull Martial Arts Center" },
 "Luca Borando": { ht:"5'10\"", dob:"2000-09-24", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"89%", streak:5, gym:"Aurora MMA" },
+"Aieza Bertolso": { ht:"5'6\"", dob:"2001-08-29", reach:'68"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:7, gym:"MSP" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44898,6 +44900,14 @@
     { opponent: "Wesley Machado", odds: -500 },
     { opponent: "Baris Adiguzel", odds: -115 }
   ],
+  "Aieza Bertolso": [
+    { opponent: "Lany Silva", odds: 123 },
+    { opponent: "Samara Santos", odds: -1587 },
+    { opponent: "Janaina Silva", odds: -549 },
+    { opponent: "Alejandra Fernandez", odds: -1250 },
+    { opponent: "Fabrizia Ketlinn", odds: -1000 },
+    { opponent: "Irlaine Ribeiro Lima", odds: -2000 }
+  ],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -63048,6 +63058,15 @@ const FIGHT_HISTORY = {
     { date: "May 6, 2023", opponent: "Baris Adiguzel", result: "W", method: "TKO (Punches)", round: 3, time: "0:50", event: "Cage Warriors 154", org: "Cage Warriors" },
     { date: "Dec 2, 2022", opponent: "Alessandro Capone", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Lugano in the Cage 5", org: "Lugano in the Cage" },
     { date: "Jun 4, 2022", opponent: "Matteo Mengozzi", result: "W", method: "Submission (Armbar)", round: 1, time: "4:04", event: "Slam FC 13: No Man's Land", org: "Slam FC" }
+  ],
+  "Aieza Bertolso": [
+    { date: "Sep 5, 2025", opponent: "Lany Silva", result: "W", method: "Submission (Armbar)", round: 2, time: "4:14", event: "LFA 216: Silva vs. Bertolso", org: "LFA" },
+    { date: "May 23, 2025", opponent: "Samara Santos", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "4:05", event: "LFA 209: De Lara vs. Henrique", org: "LFA" },
+    { date: "Nov 22, 2024", opponent: "Janaina Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 197: Kuziutina vs. Guimarães", org: "LFA" },
+    { date: "Jul 6, 2024", opponent: "Alejandra Fernandez", result: "W", method: "TKO (Elbows and Punches)", round: 3, time: "3:19", event: "LFA 187: Brazil vs. Latin America", org: "LFA" },
+    { date: "Jan 27, 2024", opponent: "Fabrizia Ketlinn", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 175: Lopes vs. Brigagão", org: "LFA" },
+    { date: "Sep 2, 2023", opponent: "Irlaine Ribeiro Lima", result: "W", method: "Submission (Kneebar)", round: 2, time: "2:13", event: "LFA 166: Neto vs. Conrado", org: "LFA" },
+    { date: "May 27, 2023", opponent: "Rafaela Silva", result: "W", method: "Submission (Armbar)", round: 1, time: "4:02", event: "LFA 159: Bellato vs. Dos Santos", org: "LFA" }
   ],
   "Matthew Adams": [
     { date: "Aug 11, 2026", opponent: "Anthony Wint", result: "L", method: "KO/TKO (Punches)", round: 1, time: "0:34", event: "Dana White's Contender Series: Season 10, Week 1", org: "UFC" },
@@ -121638,6 +121657,10 @@ const ACCOLADES = {
   "Luca Borando": [
     { icon: "🥊", title: "9-1 as a pro, 8 of 9 wins by finish (7 KO/TKO, 1 submission) on 5-fight win streak — set to make his UFC debut on Dana White's Contender Series vs. Ian Escuza (Sep 29, 2026)", detail: null },
     { icon: "🌍", title: "Italian prospect out of Casalvolone, Novara, training out of Aurora MMA — built his record almost entirely on Cage Warriors (9 of 10 pro fights)", detail: null }
+  ],
+  "Aieza Bertolso": [
+    { icon: "🏆", title: "Won the LFA World Strawweight Championship in her home city of Cuiabá, Brazil — 2nd-round armbar of champion Lany Silva in front of a sold-out hometown crowd (Sep 2025); set to make her UFC debut on Dana White's Contender Series vs. Camila Reynoso (Sep 29, 2026)", detail: null },
+    { icon: "🥋", title: "Undefeated (7-0) as a pro, 6 of 7 wins by finish (4 submission, 1 KO/TKO) — a former IMMAF world amateur champion who has fought her entire pro career in LFA", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
