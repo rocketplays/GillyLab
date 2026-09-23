@@ -7954,6 +7954,7 @@
  { name: "Lucas Armand", division: "HW", rank: "NR", record: "6-0-0", initials: "LAR", country: "USA" },
  { name: "Loai Abushaar", division: "LW", rank: "NR", record: "7-1-0", initials: "LOA", country: "USA" },
  { name: "George Staines", division: "LW", rank: "NR", record: "8-0-0", initials: "GSTA", country: "England" },
+ { name: "Adama Diop", division: "HW", rank: "NR", record: "6-1-0", initials: "ADI", country: "Senegal" },
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9172,6 +9173,7 @@
 "Lucas Armand": { ht:"6'4\"", dob:"1995-10-26", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Murcielago MMA" },
 "Loai Abushaar": { ht:"6'4\"", dob:"1996-08-10", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"MMA Lab" },
 "George Staines": { ht:"6'1\"", dob:"2000-09-20", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"38%", streak:8, gym:"Next Generation MMA Liverpool" },
+"Adama Diop": { ht:"6'1\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:5, gym:"Mantis MMA Dakar" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44870,6 +44872,11 @@
     { opponent: "Tomas Ciganik", odds: -549 },
     { opponent: "Denis Frimpong", odds: -300 }
   ],
+  "Adama Diop": [
+    { opponent: "Matunga Djikasa", odds: -225 },
+    { opponent: "Christophe Walravens", odds: -275 },
+    { opponent: "Nico Yamdjie", odds: 155 }
+  ],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -62983,6 +62990,15 @@ const FIGHT_HISTORY = {
     { date: "Sep 21, 2024", opponent: "Jakub Tichota", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon 61: Paradeiser vs. Duque", org: "Oktagon MMA" },
     { date: "Apr 20, 2024", opponent: "Tomas Ciganik", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon 56: Aby vs. Creasey", org: "Oktagon MMA" },
     { date: "Nov 4, 2023", opponent: "Denis Frimpong", result: "W", method: "Submission (Guillotine Choke)", round: 4, time: "2:02", event: "Oktagon 48: Aby vs. Garcia", org: "Oktagon MMA" }
+  ],
+  "Adama Diop": [
+    { date: "Apr 8, 2026", opponent: "Matunga Djikasa", result: "W", method: "TKO (Punches)", round: 2, time: "3:29", event: "EFC Worldwide 132", org: "EFC Worldwide" },
+    { date: "Jan 22, 2026", opponent: "Prince Aounallah", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Hexagone MMA 38", org: "Hexagone MMA" },
+    { date: "Jul 2, 2025", opponent: "Christophe Walravens", result: "W", method: "TKO (Punches)", round: 1, time: "1:42", event: "EFC Worldwide 125", org: "EFC Worldwide" },
+    { date: "Mar 28, 2025", opponent: "Paul-Emmanuel Gnaze", result: "W", method: "TKO (Punches)", round: 1, time: "2:59", event: "Hexagone MMA 25", org: "Hexagone MMA" },
+    { date: "Jun 7, 2024", opponent: "Liam Brugere", result: "W", method: "TKO (Punches)", round: 1, time: "1:29", event: "Hexagone MMA 18", org: "Hexagone MMA" },
+    { date: "Jul 27, 2023", opponent: "Anthony Morel", result: "L", method: "KO (Spinning Back Elbow)", round: 1, time: "1:43", event: "Hexagone MMA 10", org: "Hexagone MMA" },
+    { date: "Nov 3, 2022", opponent: "Nico Yamdjie", result: "W", method: "TKO (Punches)", round: 1, time: "0:24", event: "EFC Worldwide 99", org: "EFC Worldwide" }
   ],
   "Matthew Adams": [
     { date: "Aug 11, 2026", opponent: "Anthony Wint", result: "L", method: "KO/TKO (Punches)", round: 1, time: "0:34", event: "Dana White's Contender Series: Season 10, Week 1", org: "UFC" },
@@ -121554,6 +121570,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "Undefeated (8-0) as a pro, unbeaten across Cage Warriors and Oktagon MMA — set to make his UFC debut on Dana White's Contender Series vs. Loai Abushaar (Sep 29, 2026)", detail: null },
     { icon: "🏅", title: "IMMAF European amateur champion (2022) and 3rd at the IMMAF World Championships that year — went 7-1 across both tournaments, with the only loss a Worlds rematch against the same fighter (Ivan Kurelaru) he beat for the Euro title", detail: null },
     { icon: "🌍", title: "\"Saint\" Staines, out of Hull, England, training out of Next Generation MMA Liverpool", detail: null }
+  ],
+  "Adama Diop": [
+    { icon: "🏆", title: "Reigning EFC Worldwide heavyweight champion — won the title via 2nd-round TKO of Matunga Djikasa (Apr 2026); set to make his UFC debut on Dana White's Contender Series vs. Zaurbek Sabanov (Sep 29, 2026)", detail: null },
+    { icon: "🥊", title: "6-1 as a pro, 6 of 6 wins by knockout — the only man to beat him (Anthony Morel) finished him with a spinning back elbow", detail: null },
+    { icon: "🌍", title: "\"Blindé\" Diop, a former Senegalese wrestler out of Mantis MMA Dakar, fighting primarily on the French Hexagone MMA and South African EFC circuits", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
