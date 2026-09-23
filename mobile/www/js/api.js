@@ -95,6 +95,12 @@ window.GL_API = (function(){
     account: function(){ return request('/api/app/account'); },
     changePassword: function(current, password){ return request('/api/change-password', { method:'POST', body:{ current:current, password:password } }); },
     deleteAccount: function(){ return request('/api/delete-account', { method:'POST' }); },
+    // Odds & Projections -- Premium-only (see worker/index.js's /api/app/odds).
+    // Returns the featured odds event's matched fights, each with moneyline/
+    // totals/method/doubleChance/roundProps/lineMovement + a no-vig `noVig`
+    // win-probability pair for the Projections view. No params -- same "the
+    // page always shows the current odds event" behavior as the website.
+    odds: function(){ return request('/api/app/odds'); },
     request: request,
     BASE: BASE,
   };
