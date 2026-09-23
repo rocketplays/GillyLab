@@ -235,6 +235,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   font-size:.9rem; padding:.85rem 1.2rem; border-radius:10px; border:none; cursor:pointer; width:100%;
   text-align:center; line-height:1.15;
 }
+/* Same [hidden]-vs-class-selector specificity bug already fixed one-off for
+   .gl-tab/.gl-back-inline/.gl-avatar-menu(-item)/.pk-subnav/.pk-submitbar
+   above/below -- .gl-btn's own display:inline-flex beats the UA
+   [hidden]{display:none} rule the same way theirs did. Fixed at the shared
+   .gl-btn definition instead of per-caller this time: .gl-btn is reused for
+   nearly every button in the app, so any future `someBtn.hidden = true` on
+   one silently does nothing without this -- confirmed live for account.js's
+   "Delete My Account" button (class="gl-btn acct-danger-btn"), which never
+   actually hid itself after tapping it. */
+.gl-btn[hidden]{ display:none; }
 .gl-btn-primary{ background:var(--accent); color:var(--on-accent); }
 .gl-btn-primary:active{ opacity:.85; }
 .gl-btn-outline{
@@ -369,6 +379,15 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 
 /* ---- Pick'em: bout cards, winner/method/round/confidence pickers ---- */
 .pk-subnav{ display:flex; gap:.6rem; margin-bottom:.9rem; }
+/* Same [hidden]-vs-class-selector specificity bug already fixed for
+   .gl-back-inline/.gl-avatar-menu/.gl-tab above: .pk-subnav's own
+   display:flex beats the UA [hidden]{display:none} rule (both are a single
+   selector, so it comes down to source order, and this rule comes later),
+   so showPanel()'s subnav.hidden=true silently did nothing -- the
+   Leaderboard/My History button row stayed on screen, overlapping the
+   leaderboard panel that got rendered where it used to sit. Same bug, same
+   fix, one class over. */
+.pk-subnav[hidden]{ display:none; }
 .pk-bout{ padding:.9rem 1rem; }
 .pk-bout-head{ margin-bottom:.6rem; }
 .pk-fighters{ display:flex; gap:.6rem; margin-bottom:.6rem; }
@@ -414,6 +433,15 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   padding:.8rem 1.1rem; display:flex; align-items:center; justify-content:space-between; gap:.8rem;
   z-index:5;
 }
+/* Same [hidden]-vs-class-selector specificity bug as .pk-subnav above:
+   .pk-submitbar's own display:flex wins over the UA [hidden] rule, so
+   showPanel()'s bar.hidden=true never actually hid this bar. Because it's
+   position:fixed, staying visible meant it sat permanently pinned over the
+   bottom of whatever panel was open (Leaderboard, History, a player
+   profile) -- covering the last row of content and making the page feel
+   like it wouldn't scroll all the way down, when the real content was
+   simply rendering underneath a bar that should have been gone. */
+.pk-submitbar[hidden]{ display:none; }
 .pk-submitbar .gl-btn{ width:auto; padding:.7rem 1.2rem; flex-shrink:0; }
 #pkBouts{ padding-bottom:4.5rem; }
 
@@ -425,7 +453,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    (Rankings' division tabs, task #88) -- .4rem/.45rem .4rem read as the
    three buttons sitting flush against each other with barely any breathing
    room around their own text. */
-.pk-tabs{ display:flex; gap:.5rem; margin-bottom:.7rem; }
+.pk-tabs{ display:flex; gap:.5rem; margin-bottom:1.1rem; }
 .pk-tab{
   flex:1; background:var(--surface2); border:1px solid var(--border); color:var(--muted);
   border-radius:8px; padding:.5rem .6rem; font-size:.76rem; font-weight:700; cursor:pointer;
