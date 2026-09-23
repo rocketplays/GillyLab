@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-23T00:40:00.278Z",
+ "generatedAt": "2026-09-23T01:10:42.693Z",
  "fighters": {
   "Delphine Benouaich": {
    "history": [
@@ -9774,6 +9774,194 @@
       ]
      },
      "capturedAt": "2026-09-23T00:40:00.134Z"
+    }
+   ]
+  },
+  "Jaden Ortega": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Alvi Dasuyev",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Alvi Dasuyev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 134,
+      "totL": 77,
+      "totA": 135,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:35",
+      "head": [
+       37,
+       91
+      ],
+      "body": [
+       26,
+       29
+      ],
+      "leg": [
+       13,
+       14
+      ],
+      "dist": [
+       62,
+       117
+      ],
+      "clinch": [
+       14,
+       17
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 88,
+      "sigA": 225,
+      "totL": 92,
+      "totA": 230,
+      "tdL": 2,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:23",
+      "head": [
+       76,
+       210
+      ],
+      "body": [
+       11,
+       14
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       72,
+       197
+      ],
+      "clinch": [
+       16,
+       27
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-23T01:10:42.551Z"
+    }
+   ]
+  },
+  "Alvi Dasuyev": {
+   "history": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Jaden Ortega",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 7",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 22, 2026",
+     "opponent": "Jaden Ortega",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 88,
+      "sigA": 225,
+      "totL": 92,
+      "totA": 230,
+      "tdL": 2,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:23",
+      "head": [
+       76,
+       210
+      ],
+      "body": [
+       11,
+       14
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       72,
+       197
+      ],
+      "clinch": [
+       16,
+       27
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 134,
+      "totL": 77,
+      "totA": 135,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:35",
+      "head": [
+       37,
+       91
+      ],
+      "body": [
+       26,
+       29
+      ],
+      "leg": [
+       13,
+       14
+      ],
+      "dist": [
+       62,
+       117
+      ],
+      "clinch": [
+       14,
+       17
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-23T01:10:42.551Z"
     }
    ]
   }
