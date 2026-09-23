@@ -112,6 +112,11 @@ window.GL_API = (function(){
     bets: function(){ return request('/api/app/bets'); },
     betFights: function(){ return request('/api/app/bets/fights'); },
     betAdd: function(body){ return request('/api/bets', { method: 'POST', body: body }); },
+    // Screenshot bet reader -- one image in, one draft out (see
+    // worker/index.js's handleBetsScan). Never saves anything itself; the
+    // caller reviews the draft and posts through betAdd, same as any other
+    // bet. image is a base64 string with no data: prefix.
+    betScan: function(image, mediaType){ return request('/api/bets/scan', { method: 'POST', body: { image: image, mediaType: mediaType || 'image/jpeg' } }); },
     betEdit: function(id, odds, stake, book){ return request('/api/bets/edit', { method: 'POST', body: { id: id, odds: odds, stake: stake, book: book } }); },
     betDelete: function(id){ return request('/api/bets/delete', { method: 'POST', body: { id: id } }); },
     betSettle: function(id, status){ return request('/api/bets/settle', { method: 'POST', body: { id: id, status: status } }); },

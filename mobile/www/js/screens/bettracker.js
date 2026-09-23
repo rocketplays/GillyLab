@@ -14,11 +14,16 @@
 // now CORS-attached for the app's origin (see appCorsAttach in
 // worker/index.js) -- no separate app-only write path.
 //
-// The screenshot-scan ("Scan a bet slip") lane and the canvas share-card
-// PNG export are intentionally NOT ported here -- both are pure add-ons on
-// top of the same log/history flow this screen already has, not core to
-// using the tracker, and camera/canvas plumbing on top of everything else
-// in this file was cut to ship the core feature first.
+// The screenshot bet reader ("Scan a screenshot") IS ported -- see the
+// "scan" section below. It uses a plain <input type="file" accept="image/*">
+// rather than a native Capacitor Camera plugin: that's what the site itself
+// uses (this is a browser feature, not something scan-specific to being a
+// web page), it needs no new native dependency/permission-string work in
+// this app (no @capacitor/camera is installed), and tapping it already
+// surfaces the OS's own "Photo Library / Take Photo" sheet on both
+// platforms. The canvas share-card PNG export is still NOT ported -- a
+// separate add-on (exporting your OWN bet history as an image to share),
+// not part of logging a bet.
 window.GL_ROUTER.register('bettracker', {
   title: 'Bet Tracker',
   tab: 'bettracker',
@@ -62,6 +67,9 @@ window.GL_BETTRACKER = (function(){
     return p[i] || n;
   }
   var RANGE_DAYS = { '7d': 7, '30d': 30, '6m': 182, '12m': 365, all: null };
+  var BT_SCAN_MAX_BATCH = 12;   // mirrors the site's own cap -- an accidental "select all" from a camera roll
+  var BT_SCAN_CONCURRENCY = 3;
+  var BT_SCAN_LONG_EDGE = 1568; // Claude resizes to ~this anyway server-side -- no benefit sending more
 
   // ── screen state -----------------------------------------------------
   var activeContainer = null, loadSeq = 0;
@@ -73,6 +81,7 @@ window.GL_BETTRACKER = (function(){
   var legs = [];                           // staged parlay legs
   var boardTab = 'units', boardRange = 'all', playerName = '';
   var pendingPrefill = null;               // one-shot handoff payload from odds.js
+  var scanQueue = [], scanIdx = 0;         // { name, file, status: reading|ready|error|done|skipped, draft, matches, error }
 
   function betById(id){ return (betsData && betsData.bets || []).find(function(b){ return b.id === id; }); }
   function eventBySlug(slug){ return (fightsData && fightsData.events || []).find(function(e){ return e.slug === slug; }); }
@@ -341,6 +350,238 @@ window.GL_BETTRACKER = (function(){
     return { pick: surname(s6===1?f.f1:f.f2) + ' by ' + DM.lab, p: { side: s6, methods: DM.methods }, priced: false };
   }
 
+  // ── Scan a screenshot -----------------------------------------------------
+  // One image in, one draft out (POST /api/bets/scan -- see worker/index.js's
+  // handleBetsScan). The worker does all the real work: a vision model reads
+  // the slip, and the worker independently re-matches each leg against a
+  // live, undecided bout and classifies it onto one of the app's own 10
+  // BT_MARKETS codes (never trusting the model's own market label) -- this
+  // file only ever renders that result and posts through the exact same
+  // POST /api/bets a hand-built bet uses. Nothing saves until the user
+  // reviews and confirms one screenshot at a time.
+  //
+  // scanPickText mirrors index.html's own btScanPickText exactly: the same
+  // phrasing buildPick() above produces for a hand-picked market, built here
+  // from the worker's plain market+params instead of live form fields, so a
+  // scanned tracked bet reads identically to one entered by hand.
+  function scanPickText(market, params, f1, f2, boutRounds){
+    var p = params || {};
+    var who = function(s){ return surname(s === 2 ? f2 : f1); };
+    var sameRounds = function(a, b){ return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every(function(v,i){ return v === b[i]; }); };
+    if (market === 'ML') return who(p.side) + ' ML';
+    if (market === 'METHOD') return p.side === 'any' ? ('Fight ends by ' + BT_METH[p.methodCat]) : (who(p.side) + ' by ' + BT_METH[p.methodCat]);
+    if (market === 'ENDROUND'){
+      var any = p.side === 'any';
+      var mt = p.meth === 'ANY' ? '' : (p.meth === 'KO' ? ' by KO/TKO' : ' by submission');
+      return any ? ('Fight ends' + mt + ' in round ' + p.round) : (who(p.side) + (p.meth === 'ANY' ? ' to win' : mt) + ' in round ' + p.round);
+    }
+    if (market === 'TOTAL') return (p.ou === 'O' ? 'Over ' : 'Under ') + p.line + ' rounds';
+    if (market === 'ROUNDSTART') return 'Fight ' + (p.yn === 'Y' ? 'starts' : 'does NOT start') + ' round ' + p.round;
+    if (market === 'DISTANCE') return p.yn === 'Y' ? 'Goes the distance' : 'Does NOT go the distance';
+    if (market === 'WINRDS'){
+      var g1 = winGroups(boutRounds).filter(function(g){ return sameRounds(g.rounds, p.rounds); })[0];
+      return who(p.side) + ' to win — ' + (g1 ? g1.lab.toLowerCase() : ('rounds ' + (p.rounds || []).join('-')));
+    }
+    if (market === 'METHRDS'){
+      var g2 = methGroups(boutRounds).filter(function(g){ return sameRounds(g.rounds, p.rounds); })[0];
+      return who(p.side) + ' by ' + (p.methodCat === 'KO' ? 'KO/TKO' : 'submission') + ' — ' + (g2 ? g2.lab.toLowerCase() : ('rounds ' + (p.rounds || []).join('-')));
+    }
+    if (market === 'DBLMETH'){
+      var key = (p.methods || []).join(',');
+      var lab = key === 'KO,DEC' ? 'KO/TKO or decision' : key === 'SUB,DEC' ? 'submission or decision' : 'KO/TKO or submission';
+      return who(p.side) + ' by ' + lab;
+    }
+    if (market === 'NODEC') return who(p.side) + ' by finish (void if decision)';
+    return '';
+  }
+
+  // Downscale to ~BT_SCAN_LONG_EDGE on the long edge before upload (same as
+  // the site's own btScanDownscale) -- smaller request, and no benefit
+  // sending more pixels than the model resizes to anyway.
+  function downscaleImage(file){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function(){
+        var scale = Math.min(1, BT_SCAN_LONG_EDGE / Math.max(img.width, img.height));
+        var w = Math.max(1, Math.round(img.width * scale)), h = Math.max(1, Math.round(img.height * scale));
+        var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        var dataUrl = cv.toDataURL('image/jpeg', 0.85);
+        resolve(dataUrl.slice(dataUrl.indexOf(',') + 1));
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('Could not read that image file.')); };
+      img.src = url;
+    });
+  }
+
+  function runScanOne(item){
+    return downscaleImage(item.file).then(function(b64){
+      return window.GL_API.betScan(b64, 'image/jpeg');
+    }).then(function(r){
+      if (r && r.ok){ item.status = 'ready'; item.draft = r.draft; item.matches = r.matches || null; }
+      else { item.status = 'error'; item.error = (r && r.error) || 'Could not read this screenshot.'; }
+    }).catch(function(err){
+      item.status = 'error'; item.error = (err && err.data && err.data.error) || 'Could not read this screenshot.';
+    }).then(function(){
+      if (logKind === 'scan' && scanQueue[scanIdx] === item) renderView();
+    });
+  }
+  // Concurrency-limited pool, same as the site -- BT_SCAN_CONCURRENCY items in
+  // flight at once, so a full batch doesn't serialize into a slow queue but
+  // also doesn't hammer the worker/vision API all at once.
+  function runScanQueue(){
+    var cursor = 0;
+    function next(){
+      if (cursor >= scanQueue.length) return Promise.resolve();
+      var item = scanQueue[cursor++];
+      return runScanOne(item).then(next);
+    }
+    for (var i = 0; i < BT_SCAN_CONCURRENCY; i++) next();
+  }
+  function pickScanFiles(fileList){
+    var files = Array.prototype.slice.call(fileList || []);
+    if (!files.length) return;
+    if (files.length > BT_SCAN_MAX_BATCH){
+      alert('Max ' + BT_SCAN_MAX_BATCH + ' screenshots at once — taking the first ' + BT_SCAN_MAX_BATCH + '.');
+      files = files.slice(0, BT_SCAN_MAX_BATCH);
+    }
+    scanQueue = files.map(function(f){ return { name: f.name, file: f, status: 'reading', draft: null, matches: null, error: null }; });
+    scanIdx = 0;
+    renderView();
+    runScanQueue();
+  }
+
+  function scanHTML(){
+    var n = scanQueue.length;
+    if (!n){
+      return '<input type="file" accept="image/*" multiple style="display:none" data-scan-files>' +
+        '<button type="button" class="bt-btn" data-scan-choose>Choose screenshots…</button>' +
+        '<div class="bt-note" style="margin-top:.6rem">Scan a screenshot to log your bets. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. If it matches an upcoming fight, it tracks as <b style="color:var(--accent)">verified</b>.</div>';
+    }
+    if (scanIdx >= n){
+      var done = scanQueue.filter(function(x){ return x.status === 'done'; }).length;
+      var skipped = scanQueue.filter(function(x){ return x.status === 'skipped'; }).length;
+      return '<div class="bt-note">Done — ' + done + ' logged' + (skipped ? ', ' + skipped + ' skipped' : '') + '.</div>' +
+        '<button type="button" class="bt-btn" data-view="history">Go to bet history</button> ' +
+        '<button type="button" class="bt-btn bt-btn-ghost" data-scan-more>Scan more</button>';
+    }
+    var item = scanQueue[scanIdx];
+    var h = '<div class="bt-note" style="margin-bottom:.6rem">' + (scanIdx + 1) + ' of ' + n + '</div>';
+    if (item.status === 'reading'){
+      h += '<div class="bt-empty">Reading this screenshot…</div>';
+    } else if (item.status === 'error'){
+      h += '<div class="bt-note lock">' + esc(item.error || "Couldn't read this screenshot.") + '</div>' +
+        '<button type="button" class="bt-btn" data-kind="custom">Enter this one manually</button> ' +
+        '<button type="button" class="bt-btn bt-btn-ghost" data-scan-skip>Skip</button>';
+    } else if (item.status === 'ready'){
+      var d = item.draft;
+      var scanLegs = d.kind === 'parlay' ? d.parlay.legs : [d.manual];
+      var matches = item.matches || [];
+      // Eligible for the same tracked/verified path a manually-entered bet
+      // gets, on any of the 10 markets -- every leg must have classified onto
+      // one of them from a matched, undecided bout AND (for a parlay) carry
+      // its own real odds. One leg failing any of that drops the WHOLE bet
+      // to self-reported -- no mixing tracked and self-reported legs.
+      var legTrackable = function(l, m){ return m && m.trackable && isFinite(l.odds) && l.odds !== 0; };
+      var canTrack = scanLegs.length && scanLegs.every(function(l, i){ return legTrackable(l, matches[i]); });
+      var unc = (d.uncertain_fields || []).filter(function(f){ return f && f !== 'not a bet slip'; });
+      if (unc.length) h += '<div class="bt-note">Couldn\'t read clearly: ' + esc(unc.join(', ')) + ' — check before confirming.</div>';
+      if (canTrack){
+        var allPriced = matches.every(function(m){ return m.priced; });
+        var rows = scanLegs.map(function(l, i){
+          var m = matches[i], pickTxt = scanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
+          return '<div class="bt-row2"><div>' + esc(pickTxt) + '</div><div style="text-align:right">' + esc(String(l.odds)) + '</div></div>';
+        }).join('');
+        h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (scanLegs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
+          ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>' +
+          (allPriced ? ', and CLV-eligible until that segment starts.' : '. Not CLV-scored (this market doesn\'t carry a trustworthy closing line), same as picking it manually.') + '</div>' +
+          rows +
+          '<div class="bt-row2" style="margin-top:.4rem"><div><label>Stake (units)</label><input type="number" data-scan-stake value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
+          '<div><label>Sportsbook (optional)</label><input maxlength="40" data-scan-book value="' + esc(d.book || '') + '"></div></div>' +
+          '<label style="display:flex;align-items:center;gap:.4rem;font-weight:400;text-transform:none;letter-spacing:0"><input type="checkbox" data-scan-track checked style="width:auto"> Track this bet (verified) — uncheck to log as self-reported instead</label>' +
+          '<button type="button" class="bt-btn" data-scan-confirm-tracked>Log this bet</button> ' +
+          '<button type="button" class="bt-btn bt-btn-ghost" data-scan-skip>Skip</button>';
+      } else {
+        var matchText = scanLegs.map(function(l){ return l.matchup; }).join(' + ');
+        var pickText = scanLegs.map(function(l){ return l.pick + ' (' + l.market + ')'; }).join(' | ') + (d.kind === 'parlay' ? ' — ' + scanLegs.length + '-leg parlay' : '');
+        var oddsVal = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
+        var anyMatch = matches.some(Boolean);
+        if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card, but not cleanly enough to auto-track (missing a leg\'s odds, a market this can\'t classify confidently, or an unclear winner) — logging as self-reported. You can log it again under Upcoming fights if you\'d rather have it tracked.</div>';
+        h += '<label>Matchup / event</label><input data-scan-match value="' + esc(matchText) + '">' +
+          '<label>Your pick + market</label><input data-scan-pick value="' + esc(pickText) + '">' +
+          '<div class="bt-row2"><div><label>Your odds</label><input type="number" data-scan-odds value="' + (isFinite(oddsVal) ? oddsVal : '') + '" placeholder="-150"></div>' +
+          '<div><label>Stake (units)</label><input type="number" data-scan-stake value="' + (d.stake != null ? d.stake : '') + '" placeholder="1" step="0.5" min="0.5"></div></div>' +
+          '<label>Sportsbook (optional)</label><input maxlength="40" data-scan-book value="' + esc(d.book || '') + '">' +
+          '<div class="bt-note">We don\'t track this fight from a screenshot, so it\'s tagged <b style="color:#ffcf7a">self-reported</b>: you settle it yourself, excluded from verified CLV/ROI.</div>' +
+          '<button type="button" class="bt-btn" data-scan-confirm>Log this bet</button> ' +
+          '<button type="button" class="bt-btn bt-btn-ghost" data-scan-skip>Skip</button>';
+      }
+    }
+    return h;
+  }
+
+  function scanConfirm(host){
+    var item = scanQueue[scanIdx]; if (!item || item.status !== 'ready') return;
+    var match = host.querySelector('[data-scan-match]').value.trim();
+    var pick = host.querySelector('[data-scan-pick]').value.trim();
+    var odds = parseInt(host.querySelector('[data-scan-odds]').value, 10);
+    var stake = parseFloat(host.querySelector('[data-scan-stake]').value) || 1;
+    var book = (host.querySelector('[data-scan-book]') || {}).value || '';
+    if (!match || !pick || !isFinite(odds)){ alert('Fill in the matchup, your pick and the odds.'); return; }
+    window.GL_API.betAdd({ kind: 'manual', match: match, pick: pick, odds: odds, stake: stake, book: book })
+      .then(function(){ return reloadBets(); })
+      .then(function(){ item.status = 'done'; scanIdx++; renderView(); })
+      .catch(function(err){ alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
+  }
+  // A matched, trackable, undecided leg (or set of legs, for a parlay) --
+  // posts through the exact same request shape submitCard()/submitParlay()
+  // build for a manually-picked bet, so the server's tracked-bet validation
+  // runs identically either way. Unchecking "Track this bet" rebuilds the
+  // self-reported body instead, from the same underlying draft.
+  function scanConfirmTracked(host){
+    var item = scanQueue[scanIdx]; if (!item || item.status !== 'ready') return;
+    var d = item.draft, matches = item.matches || [];
+    var scanLegs = d.kind === 'parlay' ? d.parlay.legs : [d.manual];
+    var stake = parseFloat(host.querySelector('[data-scan-stake]').value) || 1;
+    var book = (host.querySelector('[data-scan-book]') || {}).value || '';
+    var trackChecked = !!(host.querySelector('[data-scan-track]') || {}).checked;
+    var shortMatch = function(m){ return surname(m.f1) + ' vs ' + surname(m.f2); };
+    var body;
+    if (!trackChecked){
+      var match = scanLegs.map(function(l){ return l.matchup; }).join(' + ');
+      var pick = scanLegs.map(function(l){ return l.pick + ' (' + l.market + ')'; }).join(' | ') + (d.kind === 'parlay' ? ' — ' + scanLegs.length + '-leg parlay' : '');
+      var odds = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
+      if (!isFinite(odds)){ alert('Missing odds on this one — enter it manually instead.'); return; }
+      body = { kind: 'manual', match: match, pick: pick, odds: odds, stake: stake, book: book };
+    } else if (d.kind === 'parlay'){
+      body = {
+        kind: 'tracked', market: 'PARLAY', stake: stake, book: book,
+        match: scanLegs.length + '-leg parlay (scanned)', odds: d.parlay.parlayOdds,
+        legs: scanLegs.map(function(l, i){
+          var m = matches[i];
+          return { fightId: m.fightId, market: m.market, params: m.params,
+            pick: scanPickText(m.market, m.params, m.f1, m.f2, m.rounds), match: shortMatch(m), odds: l.odds };
+        }),
+      };
+    } else {
+      var m0 = matches[0];
+      body = { kind: 'tracked', fightId: m0.fightId, market: m0.market,
+        pick: scanPickText(m0.market, m0.params, m0.f1, m0.f2, m0.rounds), match: shortMatch(m0),
+        params: m0.params, priced: !!m0.priced, closeSide: (m0.params && m0.params.side === 2) ? 2 : 1,
+        odds: d.manual.odds, stake: stake, book: book };
+    }
+    window.GL_API.betAdd(body)
+      .then(function(){ return reloadBets(); })
+      .then(function(){ item.status = 'done'; scanIdx++; renderView(); })
+      .catch(function(err){ alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
+  }
+  function scanSkip(){
+    var item = scanQueue[scanIdx]; if (!item) return;
+    item.status = 'skipped'; scanIdx++; renderView();
+  }
+
   function stageHTML(){
     if (!legs.length) return '';
     var ready = legs.length > 1;
@@ -370,8 +611,11 @@ window.GL_BETTRACKER = (function(){
     if (!fightsData){ host.innerHTML = '<p class="gl-muted">Loading upcoming fights…</p>'; return; }
     var h = stageHTML() + '<div class="bt-panel"><div class="bt-seg">' +
       '<div class="' + (logKind === 'card' ? 'on' : '') + '" data-kind="card">Upcoming fights</div>' +
-      '<div class="' + (logKind === 'custom' ? 'on' : '') + '" data-kind="custom">Custom bet</div></div>';
-    if (logKind === 'card'){
+      '<div class="' + (logKind === 'custom' ? 'on' : '') + '" data-kind="custom">Custom bet</div>' +
+      '<div class="' + (logKind === 'scan' ? 'on' : '') + '" data-kind="scan">Scan a screenshot</div></div>';
+    if (logKind === 'scan'){
+      h += scanHTML();
+    } else if (logKind === 'card'){
       var evs = (fightsData.events || []).filter(function(e){ return e.fights.some(function(f){ return !segStarted(f) || true; }); });
       if (!evs.length){ h += '<div class="bt-empty">No upcoming fights are posted right now.</div>'; }
       else {
@@ -627,6 +871,11 @@ window.GL_BETTRACKER = (function(){
       if ((t = hit(e, '[data-board-range]'))){ boardRange = t.getAttribute('data-board-range'); renderView(); return; }
       if ((t = hit(e, '[data-open-player]'))){ window.GL_NATIVE.tap(); openPlayer(t.getAttribute('data-open-player')); return; }
       if (hit(e, '[data-back-board]')){ window.GL_NATIVE.tap(); setView('board'); return; }
+      if (hit(e, '[data-scan-choose]')){ var fi = activeContainer.querySelector('[data-scan-files]'); if (fi) fi.click(); return; }
+      if (hit(e, '[data-scan-more]')){ scanQueue = []; scanIdx = 0; renderView(); return; }
+      if (hit(e, '[data-scan-skip]')){ window.GL_NATIVE.tap(); scanSkip(); return; }
+      if (hit(e, '[data-scan-confirm]')){ scanConfirm(activeContainer.querySelector('#bt-body')); return; }
+      if (hit(e, '[data-scan-confirm-tracked]')){ scanConfirmTracked(activeContainer.querySelector('#bt-body')); return; }
     });
     container.addEventListener('change', function(e){
       var t = e.target;
@@ -636,6 +885,7 @@ window.GL_BETTRACKER = (function(){
       if (t.matches('[data-mkt]')){ logMarket = t.value; renderView(); return; }
       if (t.matches('[data-card-select]')){ hCard = t.value; renderView(); return; }
       if (t.matches('[data-mlwin],[data-mfr],[data-erf],[data-wrf],[data-mrf],[data-dcf],[data-ndf]')){ lastSide = (+t.value === 2) ? 2 : 1; return; }
+      if (t.matches('[data-scan-files]')){ pickScanFiles(t.files); return; }
     });
   }
 
@@ -657,7 +907,7 @@ window.GL_BETTRACKER = (function(){
       }
       view = 'history'; hScope = 'verified'; hRange = 'all'; hTab = 'active'; hCard = 'all'; editId = null;
       logKind = 'card'; logEventSlug = null; logFight = null; logMarket = 'ML'; lastSide = null; legs = [];
-      boardTab = 'units'; boardRange = 'all';
+      boardTab = 'units'; boardRange = 'all'; scanQueue = []; scanIdx = 0;
       Promise.all([reloadBets(), reloadFights()]).then(function(){
         if (mySeq !== loadSeq) return;
         applyPrefill();
