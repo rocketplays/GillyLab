@@ -375,6 +375,17 @@ window.GL_ROUTER.register('home', {
         var cardRes = results[0], rankingsData = results[1], matchupRes = results[2], rosterData = results[3], acct = results[4];
         var card = cardRes && cardRes.card;
         var matchupCard = matchupRes && matchupRes.card;
+        // /api/app/pickem-card requires a session (worker/index.js returns
+        // 401 with no session), so cardRes is always null for a logged-out
+        // visitor and the Pick'em section used to just disappear from Home
+        // entirely for them -- even though pickemSection() already has a
+        // whole "Free account required" branch built for exactly this case,
+        // it was simply never reached. The public /api/app/matchup response
+        // (matchupCard, fetched either way for the Main Event section above)
+        // carries the same event name, which is the only field that branch
+        // actually reads, so it stands in here instead of leaving the
+        // section out.
+        if (!card && !loggedIn && matchupCard) card = { name: matchupCard.event || '' };
         var subscribed = !!(acct && acct.subscribed);
         return fetchPremiumPreviews(subscribed).then(function(btPreview){
           if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData, subscribed, btPreview);
