@@ -2654,9 +2654,46 @@ export function pagesConsensusOdds(oddsData, nameA, nameB) {
     while (parts.length > 1 && SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ""))) parts.pop();
     return parts.pop() || "";
   };
+  // Fuzzy fallback for when even a suffix-stripped last name doesn't line up
+  // -- ports index.html's own namesLikelyMatch()/levenshteinDist() (used the
+  // same way there, as findFightOdds()'s fallback after its own lastNameOf()
+  // match fails). Needed for cases a generic suffix list can't safely cover:
+  // "Ilimbek Akylbek Uulu" (our DB spelling) vs odds.json's "Ilimbek Akylbek"
+  // (drops the Kyrgyz patronymic "Uulu") never share a last WORD, but they do
+  // share real name tokens. Adding "uulu" to SUFFIXES above would be the
+  // wrong fix -- unlike Jr./Sr., it's not reliably a suffix to strip, and
+  // doing so risks the same false-collision failure mode the Jr./Jr. bug
+  // just was for two unrelated fighters who both happen to carry it.
+  const levenshteinDist = (a, b) => {
+    const m = a.length, n = b.length;
+    if (!m) return n;
+    if (!n) return m;
+    let prev = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) {
+      const cur = [i];
+      for (let j = 1; j <= n; j++) cur[j] = a[i - 1] === b[j - 1] ? prev[j - 1] : 1 + Math.min(prev[j - 1], prev[j], cur[j - 1]);
+      prev = cur;
+    }
+    return prev[n];
+  };
+  const nameTokens = (name) => String(name || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z\s]/g, "").trim().split(/\s+/).filter(Boolean);
+  const namesLikelyMatch = (nameX, nameY) => {
+    const ta = nameTokens(nameX), tb = nameTokens(nameY);
+    if (!ta.length || !tb.length) return false;
+    for (const wa of ta) {
+      if (wa.length < 3) continue;
+      for (const wb of tb) {
+        if (wb.length < 3) continue;
+        if (wa === wb) return true;
+        if (levenshteinDist(wa, wb) <= (Math.max(wa.length, wb.length) >= 7 ? 2 : 1)) return true;
+      }
+    }
+    return false;
+  };
+  const namesMatch = (x, y) => ln(x) === ln(y) || namesLikelyMatch(x, y);
   const ev = oddsData.find((e) => e && e.home_team && e.away_team &&
-    ((ln(e.home_team) === ln(nameA) && ln(e.away_team) === ln(nameB)) ||
-     (ln(e.home_team) === ln(nameB) && ln(e.away_team) === ln(nameA))));
+    ((namesMatch(e.home_team, nameA) && namesMatch(e.away_team, nameB)) ||
+     (namesMatch(e.home_team, nameB) && namesMatch(e.away_team, nameA))));
   if (!ev || !Array.isArray(ev.bookmakers)) return null;
   const toProb = (o) => (o < 0 ? -o / (-o + 100) : 100 / (o + 100));
   const toAmerican = (p) => (!(p > 0) || !(p < 1)) ? null : (p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p));
@@ -2664,8 +2701,8 @@ export function pagesConsensusOdds(oddsData, nameA, nameB) {
   ev.bookmakers.forEach((bk) => {
     const mkt = (bk.markets || []).find((m) => m.key === "h2h");
     if (!mkt || !Array.isArray(mkt.outcomes)) return;
-    const pa = (mkt.outcomes.find((o) => ln(o.name) === ln(nameA)) || {}).price;
-    const pb = (mkt.outcomes.find((o) => ln(o.name) === ln(nameB)) || {}).price;
+    const pa = (mkt.outcomes.find((o) => namesMatch(o.name, nameA)) || {}).price;
+    const pb = (mkt.outcomes.find((o) => namesMatch(o.name, nameB)) || {}).price;
     if (pa == null || pb == null) return;
     qa.push(toProb(pa)); qb.push(toProb(pb));
   });
