@@ -1806,6 +1806,11 @@ body #mh-box{
 .bt-cardhdr-t{ flex:1 1 auto; min-width:0; font-size:.7rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .bt-cardsum{ flex:0 0 auto; margin-left:auto; font-size:.72rem; font-weight:800; color:var(--muted); white-space:nowrap; }
 .bt-live-tag{ display:inline-block; color:#ff6a5e; font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; vertical-align:middle; }
+/* Running "so far / still live" tally under an Active-tab live card's header
+   -- mirrors the site's own .bt-card-tally exactly (index.html ~L1256). */
+.bt-card-tally{ font-size:.72rem; color:var(--muted); margin:-.3rem 0 .6rem; }
+.bt-card-tally b{ font-weight:800; }
+.bt-card-tally .sep{ opacity:.5; margin:0 .45em; }
 .bt-editrow{ margin-top:8px; padding-top:8px; border-top:1px solid var(--border); }
 .bt-legs{ margin:8px 0 2px; border-left:2px solid var(--border); padding-left:10px; }
 .bt-leg{ display:flex; align-items:center; gap:8px; font-size:.76rem; padding:2px 0; color:#c9ccd3; }

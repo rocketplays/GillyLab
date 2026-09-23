@@ -182,6 +182,39 @@ window.GL_BETTRACKER = (function(){
     return out;
   }
 
+  // Profit if a still-pending bet lands, at the price that would actually
+  // pay -- mirrors the site's own btToWin. b.odds is already effOdds-aware
+  // (see /api/app/bets' shaping), same convention betRowHTML/legsHTML use.
+  function toWinAmt(b){
+    var o = b.odds;
+    return b.stake * (o > 0 ? o / 100 : 100 / -o);
+  }
+  // Running tally under a still-live card's header, in the Active tab: what's
+  // already graded on it (won/lost so far, net units) plus what's still on
+  // the table (total staked, and what it pays if every remaining bet hits).
+  // Mirrors the site's btCardTallyHTML exactly. Recomputed on every render
+  // off the same `shown` list the rest of the tab uses -- no polling of its
+  // own; see the live-poll section below, which re-renders this tab as new
+  // results land mid-card.
+  function cardTallyHTML(c, shown){
+    var rows = shown.filter(function(b){ return b.evSlug === c.slug; });
+    var doneRows = rows.filter(function(b){ return b.status !== 'pending'; });
+    var liveRows = rows.filter(function(b){ return b.status === 'pending'; });
+    var bits = [];
+    if (doneRows.length){
+      var st = computeStats(doneRows);
+      var cls = st.units > 0 ? 'bt-pos' : st.units < 0 ? 'bt-neg' : '';
+      bits.push(st.w + '-' + st.l + ' so far · <b class="' + cls + '">' + (st.units > 0 ? '+' : '') + u1(st.units) + 'u</b>');
+    }
+    if (liveRows.length){
+      var risked = liveRows.reduce(function(s,b){ return s + b.stake; }, 0);
+      var toWin = liveRows.reduce(function(s,b){ return s + toWinAmt(b); }, 0);
+      bits.push(u2(risked) + 'u still live · to win <b class="bt-pos">+' + u2(toWin) + 'u</b>');
+    }
+    if (!bits.length) return '';
+    return '<div class="bt-card-tally">' + bits.join('<span class="sep">·</span>') + '</div>';
+  }
+
   function legsHTML(b){
     if (b.market !== 'PARLAY' || !b.legs) return '';
     var statuses = b.legStatuses || [];
@@ -273,7 +306,7 @@ window.GL_BETTRACKER = (function(){
       showCards.forEach(function(c){
         var rows = pend.filter(function(b){ return b.evSlug === c.slug; });
         if (!rows.length) return;
-        h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + esc(c.label) + '</div></div>';
+        h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + esc(c.label) + '</div></div>' + cardTallyHTML(c, shown);
         h += rows.sort(function(a,b){ return b.createdAt - a.createdAt; }).map(betRowHTML).join('');
       });
       var loose = pend.filter(function(b){ return !b.evSlug || !liveCards.some(function(c){ return c.slug === b.evSlug; }); });
@@ -785,6 +818,54 @@ window.GL_BETTRACKER = (function(){
     return window.GL_API.betFights().then(function(r){ fightsData = r; return r; }).catch(function(){ fightsData = { events: [] }; return fightsData; });
   }
 
+  // ── live-card polling ------------------------------------------------------
+  // Site's equivalent: window.btLiveRefresh, called by the site's own global
+  // live-card poller (glStartLiveRefresh) once new results merge mid-card --
+  // it re-derives every bet's grade and repaints, but only while History is
+  // actually open. The app has no equivalent global poller (each screen owns
+  // its own), so this screen runs a self-contained one instead, same 45s
+  // cadence and container-teardown convention matchup.js's own live poller
+  // already established (see mobile/www/js/screens/matchup.js).
+  //
+  // Only fires while a pending bet's card has actually started -- no point
+  // hammering the endpoint for a bet on a card three days out. fightsData
+  // .events only lists cards with at least one still-open bout and carries
+  // each one's startsAt, so "started" is a cheap Date.now() >= startsAt check
+  // against every pending bet's own evSlug.
+  function isLiveWindow(){
+    if (!betsData) return false;
+    var events = (fightsData && fightsData.events) || [];
+    var now = Date.now();
+    return betsData.bets.some(function(b){
+      if (b.status !== 'pending' || !b.evSlug) return false;
+      var ev = events.filter(function(e){ return e.slug === b.evSlug; })[0];
+      var t = ev && Date.parse(ev.startsAt);
+      return isFinite(t) && now >= t;
+    });
+  }
+  // Cheap fingerprint of what actually changed -- status/CLV/profit per bet --
+  // so a poll that comes back with nothing new (the common case between
+  // finishes) never triggers a re-render, which would otherwise reset scroll
+  // position and collapse any open edit row every 45 seconds for no reason.
+  function betsSignature(bets){
+    return (bets || []).map(function(b){ return [b.id, b.status, b.clv, b.profit].join(':'); }).join('|');
+  }
+  function pollLive(container){
+    // Screen navigated away from -- router.js hands every render() a fresh,
+    // disposable container (see its own header comment), so once this one is
+    // no longer attached to #app the user is looking at a different screen
+    // entirely. Stop hitting the network for a view nobody's looking at.
+    if (!container.isConnected){ clearInterval(window.__btLivePollTimer); return; }
+    if (view !== 'history' || !isLiveWindow()) return;
+    var prevSig = betsSignature(betsData && betsData.bets);
+    reloadFights();
+    reloadBets().then(function(){
+      if (!container.isConnected || view !== 'history') return;
+      if (betsSignature(betsData && betsData.bets) === prevSig) return;
+      renderView();
+    });
+  }
+
   // ── one-shot handoff from odds.js's Parlay Builder "Log this bet" --------
   // btLegToBet's site-side equivalent: each PARLAY.legs[] item here already
   // carries betFightId/betEvSlug/betRounds straight off /api/app/odds (see
@@ -935,6 +1016,11 @@ window.GL_BETTRACKER = (function(){
         if (legs.length || logFight) view = 'log';
         bind(container);
         renderShell();
+        // One timer per screen instance, same convention as matchup.js's own
+        // live poller -- clear any previous instance's timer before starting
+        // this one so re-entering the screen doesn't stack intervals.
+        if (window.__btLivePollTimer) clearInterval(window.__btLivePollTimer);
+        window.__btLivePollTimer = setInterval(function(){ pollLive(container); }, 45000);
       });
     });
   }
