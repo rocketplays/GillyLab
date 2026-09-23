@@ -122,8 +122,7 @@ window.GL_BETTRACKER = (function(){
   function renderShell(){
     var host = activeContainer;
     host.innerHTML =
-      '<div class="gl-muted" style="text-transform:uppercase;font-size:.68rem;letter-spacing:.1em;margin-bottom:.1rem">Premium</div>' +
-      '<h1 class="gl-heading" style="margin:.1rem 0 .3rem">Bet <span style="color:var(--accent)">Tracker</span></h1>' +
+      '<h1 class="gl-heading" style="margin:.6rem 0 .3rem">Bet <span style="color:var(--accent)">Tracker</span></h1>' +
       (fromOdds && view === 'log' ? '<button type="button" class="bt-back-btn" data-back-odds>&larr; Back to Odds &amp; Projections</button>' : '') +
       topTabsHTML() +
       '<div id="bt-body"></div>';
@@ -692,7 +691,7 @@ window.GL_BETTRACKER = (function(){
     var rng = function(k, lbl){ return '<div class="' + (boardRange === k ? 'on' : '') + '" data-board-range="' + k + '">' + lbl + '</div>'; };
     var blurb = boardTab === 'clv' ? 'Implied win probability vs. the closing line, averaged across settled moneylines.'
       : boardTab === 'roi' ? 'Profit as a percentage of everything staked.' : 'Net profit, in units.';
-    host.innerHTML = '<div class="pk-tabs">' + tab('units','Units') + tab('roi','ROI') + tab('clv','CLV') + '</div>' +
+    host.innerHTML = '<div class="pk-tabs" style="margin-bottom:1.6rem">' + tab('units','Units') + tab('roi','ROI') + tab('clv','CLV') + '</div>' +
       '<div class="bt-ranges">' + rng('all','All time') + rng('7d','7D') + rng('30d','30D') + rng('6m','6M') + rng('12m','1Y') + '</div>' +
       '<div class="bt-foot" style="margin:.2rem 0 1rem">Verified, auto-graded bets only. ' + blurb + '</div>' +
       '<div class="pk-board-list" id="bt-board-list"><div class="pk-board-empty">Loading…</div></div>';
@@ -724,12 +723,12 @@ window.GL_BETTRACKER = (function(){
     var line = b.closeOdds != null ? 'You <b>' + fmtOdds(b.odds) + '</b> &rarr; close <b>' + fmtOdds(b.closeOdds) + '</b>' : '<b>' + fmtOdds(b.odds) + '</b>';
     var badge = b.clv != null ? '<span class="bt-badge ' + (b.clv>0?'bt-b-clv':'bt-b-neg') + '">CLV ' + (b.clv>0?'+':'') + b.clv + '</span>' : '';
     return '<div class="bt-bet"><div class="bt-bet-top"><div class="bt-bet-txt"><div class="bt-nm">' + esc(b.pick) + '</div><div class="bt-mk">' + esc(b.match) + '</div></div>' + res + '</div>' +
-      '<div class="bt-mid"><div>' + line + ' · ' + u2(b.stake) + 'u</div>' + badge + '</div></div>';
+      legsHTML(b) + '<div class="bt-mid"><div>' + line + ' · ' + u2(b.stake) + 'u</div>' + badge + '</div></div>';
   }
   function playerPendingHTML(b){
     var badge = (b.market === 'PARLAY' && b.legsLive) ? '<span class="bt-badge bt-b-none">' + (b.legsIn||0) + ' of ' + b.legsLive + ' legs in</span>' : '';
     return '<div class="bt-bet"><div class="bt-bet-top"><div class="bt-bet-txt"><div class="bt-nm">' + esc(b.pick) + '</div><div class="bt-mk">' + esc(b.match) + '</div></div>' +
-      '<span class="bt-res" style="color:#ffcf7a;font-size:0.8rem">Open</span></div><div class="bt-mid"><div><b>' + fmtOdds(b.odds) + '</b> · ' + u2(b.stake) + 'u</div>' + badge + '</div></div>';
+      '<span class="bt-res" style="color:#ffcf7a;font-size:0.8rem">Open</span></div>' + legsHTML(b) + '<div class="bt-mid"><div><b>' + fmtOdds(b.odds) + '</b> · ' + u2(b.stake) + 'u</div>' + badge + '</div></div>';
   }
   function openPlayer(name){ playerName = name; setView('player'); }
   function renderPlayer(host, name){
