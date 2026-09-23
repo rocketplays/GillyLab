@@ -7961,6 +7961,7 @@
  { name: "Aieza Bertolso", division: "WSW", rank: "NR", record: "7-0-0", initials: "ARB", country: "Brazil" },
  { name: "Camila Reynoso", division: "WSW", rank: "NR", record: "9-1-0", initials: "CRE", country: "Argentina" },
  { name: "Ilias Bulaid", division: "FW", rank: "NR", record: "9-0-0", initials: "IBU", country: "Morocco" }, // 1 NC
+ { name: "Erick Visconde", division: "FW", rank: "NR", record: "17-3-0", initials: "EVI", country: "Brazil" },
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9186,6 +9187,7 @@
 "Aieza Bertolso": { ht:"5'6\"", dob:"2001-08-29", reach:'68"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:7, gym:"MSP" },
 "Camila Reynoso": { ht:"5'2\"", dob:"2003-08-28", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:3, gym:"ADM Sports Center" },
 "Ilias Bulaid": { ht:"5'8\"", dob:"1995-05-01", reach:'70.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:9, gym:"SBG Ireland" },
+"Erick Visconde": { ht:"5'7\"", dob:"1996-11-21", reach:'65.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:4, gym:"California Mixed Martial Arts" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44917,6 +44919,10 @@
     { opponent: "Omar Khaled", odds: -649 },
     { opponent: "Georges Sasu", odds: -200 }
   ],
+  "Erick Visconde": [
+    { opponent: "Gustavo Pintos", odds: -333 },
+    { opponent: "Chris Mecate", odds: -110 }
+  ],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -63100,6 +63106,28 @@ const FIGHT_HISTORY = {
     { date: "Nov 5, 2021", opponent: "Georges Sasu", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Bellator 270: Queally vs. Pitbull 2", org: "Bellator" },
     { date: "Feb 22, 2020", opponent: "Diego Freitas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 240: McCourt vs. Ruis", org: "Bellator" },
     { date: "Sep 27, 2019", opponent: "Vitalic Maiboroda", result: "W", method: "KO (Knee)", round: 1, time: "4:59", event: "Bellator 227: Gallagher vs. Salazar", org: "Bellator" }
+  ],
+  "Erick Visconde": [
+    { date: "May 14, 2026", opponent: "Gustavo Pintos", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "LFA 232: Visconde vs. Pintos", org: "LFA" },
+    { date: "Aug 21, 2025", opponent: "Chris Mecate", result: "W", method: "TKO (Doctor Stoppage)", round: 2, time: "5:00", event: "LFA 215: Miranda vs. Barzilay", org: "LFA" },
+    { date: "Jan 9, 2025", opponent: "Ary Farias", result: "W", method: "KO (Spinning Back Fist)", round: 2, time: "1:08", event: "LFA 199: Farias vs. Visconde", org: "LFA" },
+    { date: "Oct 18, 2024", opponent: "Busurmankul Abdibait", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 194: Magomedov vs. Leyva", org: "LFA" },
+    { date: "Mar 23, 2024", opponent: "João Pedro Saldanha", result: "L", method: "Submission (Guillotine Choke)", round: 1, time: "3:08", event: "LFA 179: Neto vs. Antunes", org: "LFA" },
+    { date: "Nov 25, 2023", opponent: "Edward Walls", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage MMA Finland 60", org: "Cage MMA Finland" },
+    { date: "Mar 26, 2023", opponent: "Flavio da Silva Santos", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:25", event: "Cidade da Luta 9", org: "Cidade da Luta" },
+    { date: "Feb 24, 2023", opponent: "Diego Barroso", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:44", event: "Spartacus MMA: Spartacus Fight Event", org: "Spartacus MMA" },
+    { date: "Dec 17, 2021", opponent: "Alisson Murilo", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Nação Cyborg 11", org: "Nação Cyborg" },
+    { date: "Jul 29, 2021", opponent: "Ederson Cardoso", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:20", event: "Iron Man MMA 21", org: "Iron Man MMA" },
+    { date: "Apr 23, 2021", opponent: "Willian Santos", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:15", event: "Adventure Fighters Tournament: AFT 28", org: "Adventure Fighters Tournament" },
+    { date: "Sep 27, 2020", opponent: "Rafael Estevam", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 101: Bad Face vs. Rodrigues", org: "Shooto Brazil" },
+    { date: "Mar 14, 2020", opponent: "Tiago Souza", result: "W", method: "TKO (Retirement)", round: 2, time: "2:01", event: "TAURA MMA 9", org: "TAURA MMA" },
+    { date: "Nov 23, 2019", opponent: "Alberto Pantoja Luz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 98: Teixeira vs. Puro Osso", org: "Shooto Brazil" },
+    { date: "May 25, 2019", opponent: "Felipe Amauri", result: "W", method: "TKO (Punches)", round: 1, time: "2:01", event: "Cidade da Luta: Cidade da Luta 2", org: "Cidade da Luta" },
+    { date: "Nov 23, 2018", opponent: "Cristiano Souza", result: "W", method: "KO", round: 1, time: "1:48", event: "Sicario MMA: Sicario 03", org: "Sicario MMA" },
+    { date: "Apr 7, 2018", opponent: "Saygid Abdulaev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BYE 1: 2018 Berkut Young Eagles Grand Prix", org: "BYE" },
+    { date: "Dec 8, 2017", opponent: "Igor da Silva Berkenbrock", result: "W", method: "TKO (Punches)", round: 2, time: "1:47", event: "Knock Down Combat 3", org: "Knock Down Combat" },
+    { date: "Oct 20, 2017", opponent: "Wagner Lima", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "4:43", event: "AFGC: Arzalet Fighting Globe Championship 2", org: "AFGC" },
+    { date: "Jul 9, 2017", opponent: "Matheus Henrique", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:35", event: "Face The Danger 16", org: "Face The Danger" }
   ],
   "Matthew Adams": [
     { date: "Aug 11, 2026", opponent: "Anthony Wint", result: "L", method: "KO/TKO (Punches)", round: 1, time: "0:34", event: "Dana White's Contender Series: Season 10, Week 1", org: "UFC" },
@@ -121704,6 +121732,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "Former Enfusion kickboxing world champion and K-1 World Grand Prix finalist across a 31-fight pro kickboxing career before transitioning to MMA", detail: null },
     { icon: "🥋", title: "Undefeated across 10 pro MMA fights (9-0, 1 no contest) since 2019 — has fought in Bellator, UAE Warriors and Brave CF", detail: null },
     { icon: "🌍", title: "\"The Blade\" Bulaid, a Moroccan featherweight training out of SBG Ireland", detail: null }
+  ],
+  "Erick Visconde": [
+    { icon: "🎯", title: "17-3 across a 9-year, 20-fight pro career on the Brazilian regional scene — set to make his UFC debut on Dana White's Contender Series vs. Ilias Bulaid (Sep 29, 2026), on a 4-fight win streak since his last loss", detail: null },
+    { icon: "🥊", title: "12 of 17 wins by finish (6 KO/TKO, 6 submission) — has fought for LFA, Shooto Brazil and Cage MMA Finland among others", detail: null },
+    { icon: "🌍", title: "\"Sabugo\" Visconde, out of Curitiba, Brazil, training out of California Mixed Martial Arts", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
