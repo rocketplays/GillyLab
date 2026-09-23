@@ -604,6 +604,19 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   white-space:normal; overflow:visible; text-overflow:clip;
   overflow-wrap:break-word; word-wrap:break-word;
 }
+/* mf-name-txt is display:block so it always claims its own full row (or
+   rows, for a name that wraps) before anything after it starts -- mirrors
+   the site's own mobile-breakpoint fix (index.html's .gl-name-wrap
+   .gl-name-txt at its <=some width media query: width:100%, own line).
+   Previously the WIN/LOSS tag (.mf-res-tag) was just the next inline node
+   after the name text with no line boundary between them, so it landed
+   wherever the name's last word happened to end -- same line for a short
+   name, wrapped below (and shifted horizontally) for a long one, moving
+   every other element's spacing around depending on the fighter. Making
+   the name block-level forces the tag onto a new line every time,
+   directly under the name, in the exact same spot regardless of length. */
+.mf-name-txt{ display:block; }
+.mf-name .mf-res-tag{ display:inline-block; margin-left:0; margin-top:.2rem; }
 .mf-namebtn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:700; color:var(--text); cursor:pointer; text-align:inherit; }
 .mf-namebtn:active{ color:var(--accent); }
 /* Record + moneyline share one line, mirroring the site's own
@@ -1467,11 +1480,23 @@ body #mh-box{
 }
 .rk-tab.sel{ color:var(--accent); border-color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); }
 .rk-panel-title{ font-weight:800; font-size:1.05rem; margin:.2rem 0 .6rem; }
-.rk-row{ display:flex; align-items:center; gap:.6rem; padding:.5rem 0; border-top:1px solid var(--border); }
+/* CSS grid, not flex -- a flex .rk-name{flex:1} takes whatever space is
+   left over after its siblings' own natural widths, and those widths
+   (whether a mov badge has text, how many digits are in a record) differ
+   row to row. That made the name box a different width on every row, which
+   pushed the flag/mov/record after it to a different x position too --
+   exactly the "flags and records don't line up" complaint. Fixed-width grid
+   columns give every row's flag/mov/record the same slot regardless of what
+   its own or its neighbors' content is (rowHTML always renders all three
+   spans now, never omitting one, so a row is never short a column). */
+.rk-row{
+  display:grid; grid-template-columns:2rem 36px 1fr 1.5rem 2.2rem 3.5rem;
+  align-items:center; gap:.6rem; padding:.5rem 0; border-top:1px solid var(--border);
+}
 .rk-row:first-of-type{ border-top:none; }
-.rk-num{ flex:0 0 2rem; text-align:center; font-weight:800; color:var(--muted); font-size:.88rem; }
+.rk-num{ text-align:center; font-weight:800; color:var(--muted); font-size:.88rem; }
 .rk-champ .rk-num{ color:#ffcf7a; }
-.rk-av{ position:relative; display:block; width:36px; height:36px; flex-shrink:0; }
+.rk-av{ position:relative; display:block; width:36px; height:36px; }
 .rk-av-initials{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   border-radius:50%; background:var(--bg); border:2px solid var(--border);
@@ -1479,31 +1504,20 @@ body #mh-box{
 }
 .rk-av-photo{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; object-position:top center; background:var(--bg); border:2px solid var(--border); }
 .rk-champ .rk-av-initials, .rk-champ .rk-av-photo{ border-color:#ffcf7a; }
-.rk-name{ flex:1; min-width:0; font-weight:600; font-size:.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; background:none; border:none; color:var(--text); font-family:inherit; padding:0; cursor:pointer; }
+.rk-name{ min-width:0; font-weight:600; font-size:.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; background:none; border:none; color:var(--text); font-family:inherit; padding:0; cursor:pointer; }
 .rk-name:active{ color:var(--accent); }
 .rk-name-plain{ color:var(--muted); cursor:default; }
 .rk-champ .rk-name{ font-weight:800; }
-.rk-flag{ font-size:.9rem; flex-shrink:0; }
-.rk-mov{ flex:0 0 auto; font-size:.68rem; font-weight:800; min-width:2rem; text-align:right; }
+.rk-flag{ font-size:.9rem; text-align:center; }
+.rk-mov{ font-size:.68rem; font-weight:800; text-align:center; }
 .rk-mov.up{ color:var(--accent); }
 .rk-mov.down{ color:var(--bad); }
 .rk-mov.new{ color:#ffcf7a; }
-
-/* Fighter W-L-D record + Champion/Interim Champion/division status tag --
-   mirrors index.html's .rank-record/.rank-div-tag. .rk-row has no flex-wrap
-   of its own, so these two additions can squeeze .rk-name further on a
-   narrow phone -- .rk-name already has min-width:0 + ellipsis above, so it
-   truncates instead of overflowing/wrapping the row. */
-.rk-record{ flex:0 0 auto; font-size:.74rem; color:var(--muted); letter-spacing:.03em; white-space:nowrap; }
-.rk-div-tag{
-  flex:0 0 auto; font-size:.62rem; color:var(--accent); letter-spacing:.08em; text-transform:uppercase;
-  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent); padding:.15rem .45rem; border-radius:3px;
-  white-space:nowrap;
-}
-/* Champion rows (true and interim) both use the same gold accent as
-   .rk-champ above -- distinguished by the C/IC label and tag text, not by
-   a different color, same choice the website made. */
-.rk-champ .rk-div-tag{ color:#ffcf7a; border-color:rgba(255,207,122,0.35); }
+/* Fighter W-L-D record -- mirrors index.html's .rank-record. The
+   Champion/Interim Champion tag that used to sit after this (.rk-div-tag)
+   was dropped: rk-num already shows "C"/"IC" for every champion row, so the
+   tag was a second, redundant way of saying the same thing. */
+.rk-record{ font-size:.74rem; color:var(--muted); letter-spacing:.03em; white-space:nowrap; text-align:right; }
 
 /* ── Cross-division Ranking Changes widget ── */
 .rk-chg{ background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:.9rem; overflow:hidden; }

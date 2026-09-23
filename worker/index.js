@@ -2667,7 +2667,15 @@ export default {
             record: ex.record || null,
             photo: ex.photo || e.fighterSlug || null,
             imageUrl: e.imageUrl && e.imageUrl.length > 10 ? e.imageUrl : null,
-            flag: e.flag || ex.flag || null,
+            // The Cito feed carries the flag in TWO places per entry: a
+            // top-level e.flag (often "" for a chunk of fighters -- confirmed
+            // 7/206 in rankings.json, 5/176 in rankings-meta.json, e.g.
+            // Joshua Van) and the same value correctly populated under
+            // e.fighter.flag. Checking only the top-level field (and then
+            // rankings-extra.json's ex.flag, which usually doesn't have it
+            // either) dropped the flag for every one of those fighters even
+            // though the data was sitting right there one level down.
+            flag: e.flag || (e.fighter && e.fighter.flag) || ex.flag || null,
             slug: profileSlugFor(name, profileSlugs) || null,
             rankChange: typeof e.rankChange === "number" ? e.rankChange : null,
             isNewEntry: !!e.isNewEntry || String(e.rankChangeText || "").toUpperCase() === "NEW",

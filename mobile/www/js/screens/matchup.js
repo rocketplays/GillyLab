@@ -512,9 +512,9 @@ function mountMatchup(container){
     return (
       '<div class="mf-card' + (isMain ? ' main' : '') + (isMain && special ? ' ' + special : '') + (canSim(f, special) ? ' mf-card--sim' : '') + '">' +
         '<div class="mf-row">' +
-          '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f1, f.s1) + resTagHTML(f, 1) + '</div><div class="mf-rec">' + mlRecHTML(f, 1, f.rec1, res) + '</div></div></div>' +
+          '<div class="mf-side">' + avatar(f.s1, f.f1) + '<div class="mf-meta">' + (f.rank1 && f.rank1 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank1) + '</div>' : '') + '<div class="mf-name"><span class="mf-name-txt">' + fighterBtn(f.f1, f.s1) + '</span>' + resTagHTML(f, 1) + '</div><div class="mf-rec">' + mlRecHTML(f, 1, f.rec1, res) + '</div></div></div>' +
           '<div class="mf-center"><div class="mf-vs">' + (res ? 'FINAL' : 'VS') + '</div><div class="mf-wt">' + esc(f.weight || '') + '</div>' + centerResultHTML(res) + '<button type="button" class="mf-info' + (f.flag ? ' mf-info-flag' : '') + '" data-toggle="1">Fight Info ⌄</button></div>' +
-          '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name">' + fighterBtn(f.f2, f.s2) + resTagHTML(f, 2) + '</div><div class="mf-rec">' + mlRecHTML(f, 2, f.rec2, res) + '</div></div></div>' +
+          '<div class="mf-side right">' + avatar(f.s2, f.f2) + '<div class="mf-meta">' + (f.rank2 && f.rank2 !== 'NR' ? '<div class="mf-rank">' + esc(f.rank2) + '</div>' : '') + '<div class="mf-name"><span class="mf-name-txt">' + fighterBtn(f.f2, f.s2) + '</span>' + resTagHTML(f, 2) + '</div><div class="mf-rec">' + mlRecHTML(f, 2, f.rec2, res) + '</div></div></div>' +
         '</div>' +
         simBarHTML(f, special, eventSlug) +
         '<div class="mf-panel"><div class="mf-panel-inner">' + panelBody + '</div></div>' +

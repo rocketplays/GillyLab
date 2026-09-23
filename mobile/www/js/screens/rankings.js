@@ -48,20 +48,6 @@ function mountRankings(container){
     return m[3] !== '0' ? (m[1] + '–' + m[2] + '–' + m[3]) : (m[1] + '–' + m[2]);
   }
 
-  // Mirrors index.html's rankingPanelHTML: a P4P panel tags a champion with
-  // "Champion"/"Interim Champion" and everyone else with their home
-  // division's abbreviation -- except our checked-in rankings.json/
-  // rankings-meta.json snapshots never carry a P4P entry's home division
-  // (confirmed: 0 of 30 P4P rows have it), so the website's own /rankings
-  // page renders an empty tag for non-champion P4P rows today too. This
-  // mirrors that actual behavior rather than inventing a lookup the site
-  // itself doesn't have data for.
-  function tagFor(e, isP4P){
-    if (isP4P) return e.isChampion ? (e.isInterimChamp ? 'Interim Champion' : 'Champion') : '';
-    if (e.isChampion) return e.isInterimChamp ? 'Interim Champion' : 'Champion';
-    return '';
-  }
-
   function movBadge(e){
     if (e.isNewEntry) return '<span class="rk-mov new">NEW</span>';
     if (typeof e.rankChange === 'number' && e.rankChange > 0) return '<span class="rk-mov up">▲' + e.rankChange + '</span>';
@@ -81,18 +67,29 @@ function mountRankings(container){
     var nameHTML = e.slug
       ? '<button type="button" class="rk-name" data-slug="' + esc(e.slug) + '">' + esc(e.name) + '</button>'
       : '<span class="rk-name rk-name-plain">' + esc(e.name) + '</span>';
-    var record = e.record ? '<span class="rk-record">' + esc(recordShort(e.record)) + '</span>' : '';
-    var tag = tagFor(e, isP4P);
-    var tagHTML = tag ? '<span class="rk-div-tag' + (interim ? ' interim' : '') + '">' + esc(tag) + '</span>' : '';
+    var record = '<span class="rk-record">' + (e.record ? esc(recordShort(e.record)) : '') + '</span>';
+    // The Champion/Interim Champion tag used to render as its own pill at
+    // the end of the row, but the rk-num column already shows "C"/"IC" for
+    // every champion (see `num` above) -- the tag was just repeating that
+    // in words, so it's dropped here. tagFor()/tagFor's non-champion
+    // division-abbreviation case was never actually reachable (see the
+    // comment on tagFor itself), so removing this loses nothing else.
+    //
+    // rk-flag is now ALWAYS rendered (empty when e.flag is missing) rather
+    // than only when present -- .rk-row is a CSS grid with a fixed column
+    // per field (see app.css), so a row that skips the flag span entirely
+    // shifts every column after it left by one slot, which is exactly the
+    // "flags and records don't line up" bug: whether a row's flag/record
+    // lined up with its neighbors depended on which OTHER rows around it
+    // happened to have a flag or a mov badge, not on that row's own content.
     return (
       '<div class="rk-row' + (e.isChampion ? ' rk-champ' : '') + (interim ? ' rk-interim' : '') + '">' +
         '<span class="rk-num">' + num + '</span>' +
         img +
         nameHTML +
-        (e.flag ? '<span class="rk-flag">' + esc(e.flag) + '</span>' : '') +
+        '<span class="rk-flag">' + (e.flag ? esc(e.flag) : '') + '</span>' +
         movBadge(e) +
         record +
-        tagHTML +
       '</div>'
     );
   }
