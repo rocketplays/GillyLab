@@ -78,6 +78,19 @@ function appCorsHeaders(request) {
   if (!origin || !APP_ORIGINS.has(origin)) return {};
   return { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Credentials": "true", "Vary": "Origin" };
 }
+// Wraps an EXISTING (site-only) handler's response with the app's CORS
+// headers when the caller is the app shell, with no other change to the
+// handler itself -- see the /api/bets/* routes above. A plain site request
+// carries no APP_ORIGINS Origin, so appCorsHeaders returns {} and this is a
+// no-op passthrough for the site.
+async function appCorsAttach(request, respPromise) {
+  const resp = await respPromise;
+  const cors = appCorsHeaders(request);
+  if (!Object.keys(cors).length) return resp;
+  const headers = new Headers(resp.headers);
+  for (const k in cors) headers.set(k, cors[k]);
+  return new Response(resp.body, { status: resp.status, statusText: resp.statusText, headers });
+}
 function appCorsPreflight(request) {
   const origin = request.headers.get("Origin");
   if (!origin || !APP_ORIGINS.has(origin)) return null;
@@ -2612,16 +2625,26 @@ export default {
 
       // ---- pick'em (subscriber feature; each handler checks the session) ----
       // Bet & CLV tracker (premium). The server owns the lock + CLV eligibility.
-      if (path === "/api/bets" && request.method === "GET") return handleBetsList(request, env);
-      if (path === "/api/bets" && request.method === "POST") return handleBetsAdd(request, env, url);
-      if (path === "/api/bets/scan" && request.method === "POST") return handleBetsScan(request, env, url);
-      if (path === "/api/bets/settle" && request.method === "POST") return handleBetsSettle(request, env);
-      if (path === "/api/bets/grade" && request.method === "POST") return handleBetsGrade(request, env);
-      if (path === "/api/bets/backfill-clv" && request.method === "POST") return handleBetsBackfillClv(request, env);
-      if (path === "/api/bets/leaderboard") return handleBetsLeaderboard(request, env, url);
-      if (path === "/api/bets/player") return handleBetsPlayer(request, env, url);
-      if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env, url);
-      if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env, url);
+      // Every /api/bets/* route below is wrapped in appCorsAttach so the native
+      // app's WebView (a different origin -- see appCorsHeaders) can call these
+      // SAME paths directly instead of needing a parallel /api/app/bets/* set:
+      // appCorsAttach only ever adds headers when the request's Origin is the
+      // app shell, so the site's own same-origin calls are byte-for-byte
+      // unchanged. GET /api/app/bets (below, near the other /api/app/* routes)
+      // is the one genuinely NEW route -- it returns the app's history already
+      // graded (status/CLV/profit computed read-only, mirroring
+      // handleBetsLeaderboard/Player's own "grade on read, never write" rule),
+      // so the app never has to port index.html's client-side grading logic.
+      if (path === "/api/bets" && request.method === "GET") return appCorsAttach(request, handleBetsList(request, env));
+      if (path === "/api/bets" && request.method === "POST") return appCorsAttach(request, handleBetsAdd(request, env, url));
+      if (path === "/api/bets/scan" && request.method === "POST") return appCorsAttach(request, handleBetsScan(request, env, url));
+      if (path === "/api/bets/settle" && request.method === "POST") return appCorsAttach(request, handleBetsSettle(request, env));
+      if (path === "/api/bets/grade" && request.method === "POST") return appCorsAttach(request, handleBetsGrade(request, env));
+      if (path === "/api/bets/backfill-clv" && request.method === "POST") return appCorsAttach(request, handleBetsBackfillClv(request, env));
+      if (path === "/api/bets/leaderboard") return appCorsAttach(request, handleBetsLeaderboard(request, env, url));
+      if (path === "/api/bets/player") return appCorsAttach(request, handleBetsPlayer(request, env, url));
+      if (path === "/api/bets/edit" && request.method === "POST") return appCorsAttach(request, handleBetsEdit(request, env, url));
+      if (path === "/api/bets/delete" && request.method === "POST") return appCorsAttach(request, handleBetsDelete(request, env, url));
       if (path === "/api/admin/bets/fix-side" && request.method === "POST") return handleAdminFixBetSide(request, env);
 
       if (path === "/api/pickem/name" && request.method === "GET") return handlePickemGetName(request, env);
@@ -3479,6 +3502,28 @@ export default {
 
         const evt = eventToCard(pickedRaw, fighterLiteBySlug, false, oddsData, newsData);
         const eventLabel = evt.event || pickedRaw.espnName || pickedRaw.title || pickedRaw.shortTitle || "";
+        const eventSlug = pickedRaw.slug || null;
+        // Real event.json bout identity (see btFindBout's own id convention:
+        // "<eventSlug>|<bout id or boutOrder>") for each odds-feed fight --
+        // resolved here, once, server-side, so the Bet Tracker's "Log this
+        // bet" handoff (odds.js's Parlay Builder) never has to fuzzy-match a
+        // pairKey against event.json the way index.html's btLegToBet does.
+        function findRawBout(fight) {
+          const home = canonOddsName(fight.home_team), away = canonOddsName(fight.away_team);
+          const n1 = lastNameOf(home).toLowerCase(), n2 = lastNameOf(away).toLowerCase();
+          const bouts = (pickedRaw.bouts || []).filter((b) => b && !b.isCancelled && (b.fighters || []).length === 2);
+          let hit = bouts.find((b) => {
+            const a = lastNameOf(b.fighters[0].fighterName).toLowerCase(), c = lastNameOf(b.fighters[1].fighterName).toLowerCase();
+            return (a === n1 && c === n2) || (a === n2 && c === n1);
+          });
+          if (!hit) {
+            hit = bouts.find((b) => {
+              const fn1 = b.fighters[0].fighterName, fn2 = b.fighters[1].fighterName;
+              return (namesLikelyMatch(fn1, home) && namesLikelyMatch(fn2, away)) || (namesLikelyMatch(fn1, away) && namesLikelyMatch(fn2, home));
+            });
+          }
+          return hit || null;
+        }
 
         // Match the odds feed to THIS event's real booked bouts -- same
         // buildBoutPairings/isScheduledBout gate handleOddsPage uses, so a
@@ -3691,16 +3736,23 @@ export default {
             };
           }
 
+          const rawBout = findRawBout(fight);
+          const betFightId = rawBout && eventSlug ? (eventSlug + "|" + (rawBout.id || String(rawBout.boutOrder))) : null;
           return {
             fid, f1, f2, s1, s2,
             moneyline, totals, method, doubleChance, roundProps, lineMovement,
             // Same-source no-vig win probability for the Projections tab --
             // null when no book has a live h2h market for this fight yet.
             noVig: noVigPcts(fight),
+            // Bet Tracker "Log this bet" handoff (see findRawBout above) --
+            // null on the rare fight the odds feed can't match back to a real
+            // booked bout, in which case the Parlay Builder just can't offer
+            // to log that leg as tracked.
+            betFightId, betRounds: rawBout ? (Number(rawBout.numberOfRounds) || 3) : 3,
           };
         });
 
-        return json({ eventLabel, fights: shaped }, 200, cors);
+        return json({ eventLabel, eventSlug, fights: shaped }, 200, cors);
       }
       // Fight Simulator -- premium-only, same gate shape as fighter-extras
       // above. runFightSim/canonicalSimName/fighterTaleOfTape are real
@@ -3871,6 +3923,113 @@ export default {
         }));
         const top = rows.filter((r) => r.units != null).sort((a, b) => b.units - a.units).slice(0, 3);
         return json({ rows: top }, 200, cors);
+      }
+      // Bet Tracker & CLV -- the app's full history view, mirroring index.html's
+      // Bet Tracker page but WITHOUT porting its client-side grading (btDeriveAll
+      // and friends): this route grades every bet on read using the exact same
+      // server-side grader (btEffectiveGrade/btOutcome) handleBetsLeaderboard and
+      // handleBetsPlayer already use, and -- like those two -- NEVER writes. The
+      // permanent freeze (POST /api/bets/grade / /backfill-clv) still only ever
+      // happens from the site's own client when it derives a bet locally; this
+      // route just always recomputes, so the app never needs that write path or
+      // any of the grading rules it depends on. Mutations (add/edit/delete/
+      // settle) go straight through the real /api/bets/* routes above, now
+      // CORS-attached for the app's origin.
+      if (path === "/api/app/bets" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
+        const [bets, events, closing] = await Promise.all([
+          btGetBets(env, s.email), btLoadResultEvents(env, url), loadClosingOdds(env, url),
+        ]);
+        const shaped = bets.map((b) => {
+          const g = btEffectiveGrade(b, events, closing);
+          const o = btOutcome(b, events, closing);
+          const status = g ? g.status : "pending";
+          return {
+            id: b.id, kind: b.kind, verified: b.kind === "tracked",
+            market: b.market, pick: b.pick, match: b.match,
+            fightId: b.fightId || null, evSlug: b.evSlug || null,
+            params: b.params || null,
+            legs: b.market === "PARLAY" ? (b.legs || null) : null,
+            legStatuses: (g && g.legStatuses) || null,
+            legsIn: (g && g.legsIn) || null, legsLive: (g && g.legsLive) || null,
+            odds: (g && typeof g.effOdds === "number") ? g.effOdds : b.odds,
+            rawOdds: b.odds,
+            stake: b.stake, book: b.book || null,
+            status,
+            clv: (g && typeof g.clv === "number") ? btRound1(g.clv) : null,
+            closeOdds: (g && typeof g.closeOdds === "number") ? g.closeOdds : null,
+            profit: o ? btRound2(o.profit) : 0,
+            noClv: b.noClv || null, priced: !!b.priced,
+            editable: b.editable !== false && status === "pending",
+            ts: b.ts || b.createdAt || 0, createdAt: b.createdAt || b.ts || 0,
+          };
+        });
+        const stats = btUserStats(bets, events, closing);
+        return json({
+          bets: shaped,
+          stats: stats ? {
+            w: stats.w, l: stats.l, n: stats.n, pending: bets.length - stats.n,
+            roi: btRound1(stats.roi), units: btRound1(stats.units),
+            avgClv: btRound1(stats.avgClv), clvN: stats.clvN, beat: stats.beat,
+          } : { w: 0, l: 0, n: 0, pending: bets.length, roi: null, units: 0, avgClv: null, clvN: 0, beat: 0 },
+        }, 200, cors);
+      }
+      // Bet Tracker "Log a bet -> Upcoming fights" picker -- same event.json +
+      // event-recent.json merge index.html's own btLoadEvents does (a card
+      // rotates OUT of event.json the moment it finishes rather than being
+      // marked completed -- see btLoadEvents's own comment -- so the recent
+      // feed is what keeps a just-finished card's bouts resolvable at all),
+      // shaped into the same "<eventSlug>|<bout id or boutOrder>" fightId
+      // format /api/bets already expects (see btFindBout), just computed
+      // server-side and handed over as plain JSON instead of a client global.
+      // A bout that already has a winner, or a card whose run window (8h from
+      // its start) has fully elapsed, is left out -- nothing left to bet on.
+      if (path === "/api/app/bets/fights" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
+        const [feed, recent] = await Promise.all([
+          loadAssetJson(env, url, "/data/event.json"),
+          loadAssetJson(env, url, "/data/event-recent.json"),
+        ]);
+        const bySlug = new Map();
+        ((recent && recent.data) || []).forEach((e) => { if (e && e.slug) bySlug.set(e.slug, e); });
+        ((feed && feed.data) || []).forEach((e) => { if (e && e.slug) bySlug.set(e.slug, e); });
+        const now = Date.now();
+        const CARD_RUN_MS = 8 * 3600 * 1000;
+        const events = Array.from(bySlug.values())
+          .filter((e) => e && Array.isArray(e.bouts) && e.bouts.length)
+          .map((e) => {
+            const mainAt = e.startsAt || null, prelimsAt = e.prelimsStartsAt || e.startsAt || null;
+            const fights = (e.bouts || [])
+              .filter((b) => b && !b.isCancelled && (b.fighters || []).length === 2 && !b.winnerFighterSlug)
+              .map((b) => {
+                const sec = String(b.cardSection || "").toLowerCase();
+                const isMain = sec.indexOf("main") !== -1 && sec.indexOf("prelim") === -1;
+                return {
+                  id: e.slug + "|" + (b.id || b.boutOrder),
+                  f1: b.fighters[0].fighterName, f2: b.fighters[1].fighterName,
+                  rounds: b.numberOfRounds || 3,
+                  section: isMain ? "main" : "prelim",
+                  segAt: isMain ? mainAt : prelimsAt,
+                };
+              });
+            return {
+              slug: e.slug,
+              label: (e.espnName || e.title || "UFC") + (e.startsAt ? " · " + new Date(e.startsAt).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" }) : ""),
+              startsAt: e.startsAt || null,
+              fights,
+            };
+          })
+          .filter((e) => e.fights.length && !(isFinite(Date.parse(e.startsAt)) && (Date.parse(e.startsAt) + CARD_RUN_MS) < now))
+          .sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
+        return json({ events }, 200, cors);
       }
       // Account screen: signed-in email, subscription status and member-since
       // date -- none of which the app currently has (GL_AUTH only tracks

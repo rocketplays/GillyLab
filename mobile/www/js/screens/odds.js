@@ -11,9 +11,11 @@
 // has NO server component on the site either -- it's pure client state over
 // whatever's on screen -- so it's ported here as close to verbatim as this
 // screen's own container-scoped rendering (vs. the site's page-global ids)
-// allows. "Log this bet" is deliberately omitted: there's no real Bet
-// Tracker yet for it to preload into (mobile/www/js/screens/bettracker.js
-// is still a stub).
+// allows. "Log this bet" hands the staged legs to the real Bet Tracker
+// screen (mobile/www/js/screens/bettracker.js) via GL_ROUTER.go('bettracker',
+// { legs }) -- each leg already carries the real event.json bout id
+// (betFightId, see /api/app/odds in worker/index.js) rather than needing
+// the site's own fuzzy pairKey-to-bout matching (btLegToBet).
 window.GL_ROUTER.register('odds', {
   title: 'Odds & Projections',
   tab: 'odds',
@@ -64,7 +66,7 @@ window.GL_ODDS = (function(){
     var last1 = surname(fight.f1), last2 = surname(fight.f2);
     var fightLabel = last1 + ' vs ' + last2;
     var trs = rows.map(function(r){
-      var base = { fid: fight.fid, book: r.book, booklabel: r.label, fight: fightLabel, mkt: 'ml' };
+      var base = { fid: fight.fid, book: r.book, booklabel: r.label, fight: fightLabel, mkt: 'ml', betfightid: fight.betFightId, f1name: fight.f1, f2name: fight.f2 };
       return '<tr class="row-' + r.cls + '"><td><span class="book-name book-' + r.cls + '">' + esc(r.label) + '</span></td>' +
         plCell(Object.assign({}, base, { side: 'f1', label: last1 + ' to win' }), r.o1) +
         plCell(Object.assign({}, base, { side: 'f2', label: last2 + ' to win' }), r.o2) +
@@ -79,7 +81,7 @@ window.GL_ODDS = (function(){
     var fightLabel = surname(fight.f1) + ' vs ' + surname(fight.f2);
     var body = lines.map(function(grp){
       var rows = (grp.books || []).map(function(b){
-        var base = { fid: fight.fid, book: b.book, booklabel: b.label, fight: fightLabel, mkt: 'total', line: grp.line };
+        var base = { fid: fight.fid, book: b.book, booklabel: b.label, fight: fightLabel, mkt: 'total', line: grp.line, betfightid: fight.betFightId, f1name: fight.f1, f2name: fight.f2 };
         return '<tr class="row-' + b.cls + '"><td><span class="book-name book-' + b.cls + '">' + esc(b.label) + '</span></td>' +
           plCell(Object.assign({}, base, { ou: 'over', label: 'Over ' + grp.line + ' rds' }), b.over) +
           plCell(Object.assign({}, base, { ou: 'under', label: 'Under ' + grp.line + ' rds' }), b.under) +
@@ -98,7 +100,7 @@ window.GL_ODDS = (function(){
     function side(name, sideKey, rows){
       if (!rows || !rows.length) return '';
       var trs = rows.map(function(r){
-        var base = { fid: fight.fid, book: r.book, booklabel: r.label, fight: fightLabel, mkt: cols.mkt, side: sideKey };
+        var base = { fid: fight.fid, book: r.book, booklabel: r.label, fight: fightLabel, mkt: cols.mkt, side: sideKey, betfightid: fight.betFightId, f1name: fight.f1, f2name: fight.f2 };
         var cells = cols.keys.map(function(k){
           return plCell(Object.assign({}, base, { method: k.key, label: name + ' ' + k.label }), r[k.key]);
         }).join('');
@@ -132,7 +134,7 @@ window.GL_ODDS = (function(){
     function side(name, sideKey, rows){
       if (!rows || !rows.length) return '';
       var trs = rows.map(function(r){
-        var base = { fid: fight.fid, book: r.book, booklabel: r.label, fight: fightLabel, mkt: 'round', side: sideKey };
+        var base = { fid: fight.fid, book: r.book, booklabel: r.label, fight: fightLabel, mkt: 'round', side: sideKey, betfightid: fight.betFightId, f1name: fight.f1, f2name: fight.f2 };
         var cells = (r.rounds || []).map(function(v, i){
           return plCell(Object.assign({}, base, { round: i + 1, label: name + ' in R' + (i + 1) }), v);
         }).join('');
@@ -308,7 +310,12 @@ window.GL_ODDS = (function(){
   function plLegFromDs(ds){
     return { fid: ds.fid, book: ds.book, booklabel: ds.booklabel, fight: ds.fight,
       mkt: ds.mkt, side: ds.side, method: ds.method, round: ds.round ? Number(ds.round) : undefined,
-      ou: ds.ou, line: ds.line ? Number(ds.line) : undefined, odds: Number(ds.odds), label: ds.label };
+      ou: ds.ou, line: ds.line ? Number(ds.line) : undefined, odds: Number(ds.odds), label: ds.label,
+      // Bet Tracker "Log this bet" handoff (see legToBet in bettracker.js) --
+      // the real event.json bout id + fighter names, straight off
+      // /api/app/odds's own betFightId (see worker/index.js), so logging a
+      // leg never needs the fuzzy pairKey matching the site's btLegToBet does.
+      betFightId: ds.betfightid || null, betEvSlug: eventSlug, f1name: ds.f1name, f2name: ds.f2name };
   }
   var PL_PAIRABLE = { ml: 1, total: 1 };
   function plValidate(legs, newLeg){
@@ -324,7 +331,7 @@ window.GL_ODDS = (function(){
   }
 
   // ── Screen state -- set once per load(), read by the handlers below.
-  var activeContainer = null, eventLabel = '', plAnim = null, plBound = false;
+  var activeContainer = null, eventLabel = '', eventSlug = '', plAnim = null, plBound = false;
 
   function plBookGrid(){
     var grid = {};
@@ -429,6 +436,7 @@ window.GL_ODDS = (function(){
       '<div class="pl-card-total"><div><div class="pl-cap">' + n + '-leg parlay</div><div class="pl-total">' + (am > 0 ? '+' : '') + am + '</div></div>' +
       '<div style="text-align:right;"><div class="pl-cap">Stake ' + (share ? plMoney(stake) : '<span id="plCardStake">' + plMoney(stake) + '</span>') + '</div>' +
       '<div class="pl-pay">Returns ' + (share ? '<strong>' + plMoney(stake * dec) + '</strong>' : '<strong id="plCardReturn">' + plMoney(stake * dec) + '</strong>') + '</div></div></div>' +
+      (share ? '' : '<button type="button" id="plLogBet" class="bt-btn" style="margin-top:10px">Log this bet</button>') +
       '<div class="pl-card-foot">gillylab.com · implied ' + prob + '% · ' + esc(shotDate) + ' · odds subject to change</div></div>';
   }
 
@@ -724,6 +732,7 @@ window.GL_ODDS = (function(){
       }
       var x = hit(e, '.pl-leg-x'); if (x){ window.GL_NATIVE.tap(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
       var bo = hit(e, '.pl-book-opt'); if (bo){ window.GL_NATIVE.tap(); plSwitchBook(bo.dataset.book); return; }
+      if (hit(e, '#plLogBet')){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('bettracker', { legs: PARLAY.legs }, { showBack: true }); return; }
       if (hit(e, '#plShareOpen')){ window.GL_NATIVE.tap(); plShareOpen(); return; }
       if (hit(e, '#plSaveImg')){ plSaveImage(); return; }
       if (hit(e, '#plCopyTxt')){ plCopyText(); return; }
@@ -838,6 +847,7 @@ window.GL_ODDS = (function(){
       window.GL_API.odds().then(function(res){
         if (mySeq !== loadSeq) return;
         eventLabel = (res && res.eventLabel) || '';
+        eventSlug = (res && res.eventSlug) || '';
         PARLAY = { book: null, legs: [], stake: 100, open: false };
         container.innerHTML = renderHTML(res || { fights: [] });
         plBind(container);

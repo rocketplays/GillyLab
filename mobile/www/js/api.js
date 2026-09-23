@@ -101,6 +101,22 @@ window.GL_API = (function(){
     // win-probability pair for the Projections view. No params -- same "the
     // page always shows the current odds event" behavior as the website.
     odds: function(){ return request('/api/app/odds'); },
+    // Bet Tracker & CLV -- Premium-only. bets() is the ONE app-only route
+    // (see worker/index.js's /api/app/bets): it returns the signed-in
+    // user's bets already graded read-only (status/CLV/profit computed
+    // server-side from the same grader the leaderboard/player routes use),
+    // so the app never has to port index.html's client-side btDeriveAll.
+    // Every other call below hits the SAME /api/bets/* paths the website's
+    // own Bet Tracker uses -- now CORS-attached for the app's origin, no
+    // separate /api/app/* route needed for a plain mutation or the board.
+    bets: function(){ return request('/api/app/bets'); },
+    betFights: function(){ return request('/api/app/bets/fights'); },
+    betAdd: function(body){ return request('/api/bets', { method: 'POST', body: body }); },
+    betEdit: function(id, odds, stake, book){ return request('/api/bets/edit', { method: 'POST', body: { id: id, odds: odds, stake: stake, book: book } }); },
+    betDelete: function(id){ return request('/api/bets/delete', { method: 'POST', body: { id: id } }); },
+    betSettle: function(id, status){ return request('/api/bets/settle', { method: 'POST', body: { id: id, status: status } }); },
+    betLeaderboard: function(tab, range){ return request('/api/bets/leaderboard?tab=' + encodeURIComponent(tab || 'units') + '&range=' + encodeURIComponent(range || 'all')); },
+    betPlayer: function(name){ return request('/api/bets/player?name=' + encodeURIComponent(name)); },
     request: request,
     BASE: BASE,
   };
