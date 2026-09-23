@@ -7952,6 +7952,7 @@
  { name: "Bailey Schoenfelder", division: "HW", rank: "NR", record: "5-2-0", initials: "BS", country: "USA" },
  { name: "Anthony Wint", division: "HW", rank: "NR", record: "9-0-0", initials: "ANW", country: "USA" },
  { name: "Lucas Armand", division: "HW", rank: "NR", record: "6-0-0", initials: "LAR", country: "USA" },
+ { name: "Loai Abushaar", division: "LW", rank: "NR", record: "7-1-0", initials: "LOA", country: "USA" },
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9168,6 +9169,7 @@
 "Richie Miranda": { ht:"5'9\"", dob:"1994-08-12", reach:'74"', stance:null, slpm:3.07, strAcc:"39%", sapm:4.47, strDef:"44%", kd:0.0, tdLanded:1.0, tdAcc:"11%", tdDef:"0%", subAvg:0.0, finRate:null, streak:7, gym:"Bloodline Combat Sports" },
 "Anthony Wint": { ht:"6'0\"", dob:"1995-09-14", reach:null, stance:null, slpm:3.56, strAcc:"67%", sapm:0.2, strDef:"83%", kd:0.0, tdLanded:2.97, tdAcc:"33%", tdDef:"100%", subAvg:2.97, finRate:null, streak:6, gym:"Kill Cliff FC" },
 "Lucas Armand": { ht:"6'4\"", dob:"1995-10-26", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Murcielago MMA" },
+"Loai Abushaar": { ht:"6'4\"", dob:"1996-08-10", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"MMA Lab" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44852,6 +44854,10 @@
     { opponent: "Omar El-Sahlah", odds: -333 }
   ],
   "Lucas Armand": [],
+  "Loai Abushaar": [
+    { opponent: "Edmund Kwan", odds: 335 },
+    { opponent: "Joe Boerschig", odds: -1000 }
+  ],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -62945,6 +62951,16 @@ const FIGHT_HISTORY = {
     { date: "May 17, 2025", opponent: "Marcus Maulding", result: "W", method: "TKO (Strikes)", round: 1, time: "1:38", event: "WXC 97: Redemption", org: "WXC" },
     { date: "Feb 8, 2025", opponent: "Chris Cameron", result: "W", method: "TKO (Retirement)", round: 2, time: "5:00", event: "2 Piece Promotions: War at the Wex 2", org: "2 Piece Promotions" },
     { date: "Nov 16, 2024", opponent: "Jonathan Martin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "2 Piece Promotions: War at the Wex 1", org: "2 Piece Promotions" }
+  ],
+  "Loai Abushaar": [
+    { date: "Apr 17, 2026", opponent: "Alejandro Quero", result: "W", method: "Submission (D'Arce Choke)", round: 3, time: "1:00", event: "Fight Club PHX: Combat Under the Stars", org: "Fight Club PHX" },
+    { date: "Mar 20, 2026", opponent: "Scottie Stockman", result: "W", method: "KO/TKO (Strikes)", round: 1, time: "1:37", event: "Clinch Fight Club 14", org: "Northwest Fight Promotions" },
+    { date: "Jul 25, 2025", opponent: "Edmund Kwan", result: "W", method: "KO/TKO (Knee)", round: 1, time: "0:51", event: "LFA 213: Gonzalez vs. Rosales", org: "LFA" },
+    { date: "Sep 26, 2024", opponent: "Joe Boerschig", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:09", event: "CFFC 136: Forest vs. Richards", org: "CFFC" },
+    { date: "Aug 25, 2023", opponent: "Kelvin Bowen", result: "L", method: "KO/TKO", round: 1, time: "0:36", event: "RUF MMA 55", org: "RUF MMA" },
+    { date: "Feb 24, 2023", opponent: "James Trinidad", result: "W", method: "Submission", round: 1, time: "1:59", event: "RUF MMA 52", org: "RUF MMA" },
+    { date: "Dec 2, 2022", opponent: "Erik Teer", result: "W", method: "TKO (Punches)", round: 1, time: "2:22", event: "Fusion Fight League: Season's Beatings Billings", org: "Fusion Fight League" },
+    { date: "Oct 21, 2022", opponent: "Chris Fluke", result: "W", method: "TKO (Punches)", round: 1, time: "3:21", event: "RUF MMA 50", org: "RUF MMA" }
   ],
   "Matthew Adams": [
     { date: "Aug 11, 2026", opponent: "Anthony Wint", result: "L", method: "KO/TKO (Punches)", round: 1, time: "0:34", event: "Dana White's Contender Series: Season 10, Week 1", org: "UFC" },
@@ -121505,6 +121521,12 @@ const ACCOLADES = {
   "Lucas Armand": [
     { icon: "🥊", title: "Undefeated (6-0) as a pro, 5 of 6 wins by TKO — most recently a 16-second finish of Cameron Graham (Mar 2026)", detail: null },
     { icon: "🌍", title: "Michigan regional heavyweight out of Murcielago MMA (Big Rapids, MI), signed off the '2 Piece Promotions' circuit", detail: null }
+  ],
+  "Loai Abushaar": [
+    { icon: "🥊", title: "7-1 as a pro, all 7 wins by finish (4 KO/TKO, 3 submission) — \"Savage Bull\" has never seen a decision", detail: null },
+    { icon: "🎯", title: "Set to appear on Dana White's Contender Series (Season 10, Week 8) vs. George Staines, Sep 29, 2026 at UFC APEX", detail: null },
+    { icon: "🌍", title: "Arizona lightweight out of MMA Lab (Tempe), previously trained at Fight Ready under Henry Cejudo and Benson Henderson", detail: null },
+    { icon: "🤝", title: "Spent three months doing humanitarian relief work in the West Bank in 2024 — distributing food, clothing and school supplies — and was given the nickname 'Captain' by residents of Hebron", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
