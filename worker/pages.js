@@ -2993,7 +2993,12 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   if (card && !isOtherEvent) {
     card = Object.assign({}, card, { fights: (card.fights || []).map((f) => Object.assign({}, f)) });
     const liveRaw = (upcomingEvents || []).find((e) => e && e.slug === card.slug);
-    const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+    const LN_SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"]);
+    const lastName = (s) => {
+      const parts = String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/\s+/);
+      while (parts.length > 1 && LN_SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ""))) parts.pop();
+      return parts.pop() || "";
+    };
     if (liveRaw) (card.fights || []).forEach((f) => {
       if (f.result) return;
       const lb = (liveRaw.bouts || []).find((b) => {

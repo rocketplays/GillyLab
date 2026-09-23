@@ -1490,7 +1490,19 @@ const btRound1 = (x) => (x == null || !isFinite(x)) ? null : Math.round(x * 10) 
 // still fine at 1dp since those are sums across many bets, not one exact
 // number a person just typed in; only the per-bet profit needs the finer grain.
 const btRound2 = (x) => (x == null || !isFinite(x)) ? null : Math.round(x * 100) / 100;
-const btLastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+// Strips accents AND a trailing generational suffix before taking the last
+// token -- mirrors index.html's lastNameOf()/NAME_SUFFIXES, same fix applied
+// to the odds-consensus and Fight-History-Upcoming lookups elsewhere in this
+// file. Bet Tracker settlement/closing-line matching had the exact same
+// vulnerability: two different "___ Jr." fighters (or an accented name vs.
+// its plain-ASCII spelling in odds-closing.json) would collide or silently
+// fail to match, mis-settling or under-settling a bet.
+const BT_SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"]);
+const btLastName = (s) => {
+  const parts = String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/\s+/);
+  while (parts.length > 1 && BT_SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ""))) parts.pop();
+  return parts.pop() || "";
+};
 function btMethodCat(m) {
   m = String(m || "");
   if (/sub/i.test(m)) return "SUB";
@@ -2926,7 +2938,12 @@ export default {
         if (card && !isOtherEvent) {
           card = Object.assign({}, card, { fights: (card.fights || []).map((f) => Object.assign({}, f)) });
           const liveRaw = (upcomingEvents || []).find((e) => e && e.slug === card.slug);
-          const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+          const LN_SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"]);
+          const lastName = (s) => {
+            const parts = String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/\s+/);
+            while (parts.length > 1 && LN_SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ""))) parts.pop();
+            return parts.pop() || "";
+          };
           if (liveRaw) (card.fights || []).forEach((f) => {
             if (f.result) return;
             const lb = (liveRaw.bouts || []).find((b) => {

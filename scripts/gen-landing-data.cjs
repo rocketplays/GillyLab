@@ -566,7 +566,12 @@ function consensusOdds(nameA, nameB) {
 // The combined price multiplies DECIMAL odds. Adding or averaging American odds
 // is meaningless: +270 and -270 are 3.70 and 1.37.
 const toDecimal = (a) => (a > 0 ? 1 + a / 100 : 1 + 100 / -a);
-const lastLower = (s) => String(s || '').toLowerCase().trim().split(/\s+/).pop();
+const LASTLOWER_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
+const lastLower = (s) => {
+  const parts = String(s || '').toLowerCase().trim().normalize('NFD').replace(/[̀-ͯ]/g, '').split(/\s+/);
+  while (parts.length > 1 && LASTLOWER_SUFFIXES.has(parts[parts.length - 1].replace(/\.$/, ''))) parts.pop();
+  return parts.pop() || '';
+};
 
 // The demo slip, by name. If any of these bouts leaves the card the slip rebuilds
 // itself from whatever the current card offers, so the slide can never advertise
