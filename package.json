@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/gen-matchup-free.cjs && node scripts/gen-landing-data.cjs && node scripts/gen-odds-page.cjs && node scripts/gen-deep-dive.cjs && node scripts/gen-app-fighter-extras.cjs && node scripts/gen-fight-sim.cjs && bash scripts/build-site.sh",
+    "build": "node scripts/gen-matchup-free.cjs && node scripts/gen-landing-data.cjs && node scripts/gen-odds-page.cjs && node scripts/gen-deep-dive.cjs && node scripts/gen-app-fighter-extras.cjs && node scripts/gen-fight-sim.cjs && node scripts/gen-rankings-extra.cjs && node scripts/gen-roster.cjs && bash scripts/build-site.sh",
     "dev": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
     "test": "node scripts/test-espn-bouts.cjs"

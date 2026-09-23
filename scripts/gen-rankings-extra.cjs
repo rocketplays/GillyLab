@@ -94,6 +94,14 @@ const CC = {
   // (not "United Kingdom") — e.g. Michael Page. Without this his flag was
   // silently empty on the free /rankings page despite a resolvable country.
   "UK": "GB",
+  // Confirmed missing 2026-09-23: these 5 countries cover every ranked
+  // fighter with a real, resolvable FIGHTERS entry whose flag was still
+  // coming back empty (Joshua Van, Khamzat Chimaev, Manel Kape, David Onama,
+  // Waldo Cortes-Acosta) -- not a name-resolution bug, just gaps in this
+  // map. Same failure mode as the "UK" entry above: silently empty flag
+  // despite country being right there in FIGHTERS.
+  "Myanmar": "MM", "United Arab Emirates": "AE", "Angola": "AO", "Uganda": "UG",
+  "Dominican Republic": "DO",
 };
 const flagFor = (country) => {
   const iso = CC[String(country || "").trim()];
