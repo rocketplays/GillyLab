@@ -383,13 +383,21 @@ window.GL_ODDS = (function(){
     var key = plLegKey(leg);
     var idx = -1;
     for (var i = 0; i < PARLAY.legs.length; i++) if (plLegKey(PARLAY.legs[i]) === key){ idx = i; break; }
-    if (idx >= 0){ PARLAY.legs.splice(idx, 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
+    if (idx >= 0){ PARLAY.legs.splice(idx, 1); if (!PARLAY.legs.length){ PARLAY.book = null; PARLAY.open = false; } plRender(); return; }
     if (PARLAY.legs.length && PARLAY.book && leg.book !== PARLAY.book){
       plToast('One sportsbook per parlay — your slip is ' + PARLAY.legs[0].booklabel + ', that leg is ' + leg.booklabel + '.');
       return;
     }
     var v = plValidate(PARLAY.legs, leg);
     if (!v.ok){ plToast(v.reason); return; }
+    // The site's own PARLAY defaults `open: false`, so its FIRST leg only
+    // ever shows the collapsed bottom bar ("1 leg · DraftKings ... +150")
+    // until the visitor taps it open -- on a desktop page that bar is easy
+    // to notice; on a phone, right above the tab bar, it reads as "nothing
+    // happened." Force it open on the very first leg so adding a pick has
+    // an unmistakable visible result; later legs just append into the
+    // already-open card, same as the site.
+    if (!PARLAY.legs.length) PARLAY.open = true;
     plAnim = PARLAY.legs.length ? 'leg' : 'body';
     window.GL_NATIVE.tap();
     PARLAY.book = leg.book; PARLAY.legs.push(leg); plRender();
