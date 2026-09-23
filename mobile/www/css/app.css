@@ -970,7 +970,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    both matchup.js and (via similar naming) the fighter panel ---- */
 .sr-common{ margin-bottom:.9rem; }
 .sr-common:last-child{ margin-bottom:0; }
-.sr-common-title{ font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:.5rem; text-align:center; }
+.sr-common-title{ font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--text); margin-bottom:.5rem; text-align:center; }
 /* Grid items default to min-width:auto, so a long unbroken value (e.g. a
    methods list like "Decision, TKO, Submission") forces its 1fr column
    wider than the card, dragging the whole page into horizontal overflow --
@@ -992,7 +992,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sr-cmp-lbl{ color:var(--muted); font-size:.76rem; min-width:0; overflow-wrap:break-word; text-align:center; }
 .sr-cmp-val{ text-align:center; font-weight:700; min-width:0; overflow-wrap:break-word; }
 .sr-cmp-val.w{ color:var(--accent); }
-.sr-cmp-head{ color:var(--muted); font-weight:700; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; border-bottom:1px solid var(--border); }
+.sr-cmp-head{ color:var(--muted); font-weight:700; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; }
 /* Site's own track color is a translucent WHITE overlay (rgba(255,255,255,
    .12), index.html:2850) rather than a flat dark var(--surface2) -- against
    ANY dark card background a white-based overlay reads as a visibly
@@ -1075,13 +1075,18 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    technique as matchup.js's Fight Info toggle (see fighter.js's
    wireRecordBreakdown for why: a WKWebView doesn't reliably collapse a 0fr
    grid row to a true zero for a panel with real content). ---- */
+/* Always-on green treatment, matching the site's own #f-record-toggle
+   override (index.html) -- Record Breakdown sits next to the fighter's
+   record and reads as a faint detail toggle against the plain muted
+   border/text every other .fp-* toggle uses, so the site gives it its own
+   permanent accent styling instead of only lighting up on hover/open. */
 .fp-record-toggle{
-  display:inline-block; background:none; border:1px solid var(--border); border-radius:5px;
-  color:var(--muted); font-family:'Barlow Condensed',sans-serif; font-size:.66rem;
-  letter-spacing:.05em; text-transform:uppercase; padding:.28rem .55rem; cursor:pointer;
-  transition:border-color .15s, color .15s; margin-top:.4rem;
+  display:inline-block; background:rgba(0,230,104,.1); border:1px solid var(--accent); border-radius:5px;
+  color:var(--accent); font-family:'Barlow Condensed',sans-serif; font-size:.68rem; font-weight:600;
+  letter-spacing:.05em; text-transform:uppercase; padding:.3rem .6rem; cursor:pointer;
+  transition:background .15s; margin-top:.4rem;
 }
-.fp-record-toggle:active, .fp-record-toggle.open{ border-color:var(--accent); color:var(--accent); }
+.fp-record-toggle:active, .fp-record-toggle.open{ background:rgba(0,230,104,.2); }
 .fp-record-panel{
   max-height:0; opacity:0; overflow:hidden;
   transition:max-height .3s ease, opacity .22s ease, margin-top .3s ease;
