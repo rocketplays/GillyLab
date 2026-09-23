@@ -421,10 +421,14 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    Mirrors index.html's .pk-tabs/.pk-board-*/.pk-hist-* (site ~L4018-4118),
    translated to this app's CSS variables instead of the site's literal
    greens/reds. */
-.pk-tabs{ display:flex; gap:.4rem; margin-bottom:.7rem; }
+/* gap/padding brought in line with the same fix already applied to .rk-tabs
+   (Rankings' division tabs, task #88) -- .4rem/.45rem .4rem read as the
+   three buttons sitting flush against each other with barely any breathing
+   room around their own text. */
+.pk-tabs{ display:flex; gap:.5rem; margin-bottom:.7rem; }
 .pk-tab{
   flex:1; background:var(--surface2); border:1px solid var(--border); color:var(--muted);
-  border-radius:8px; padding:.45rem .4rem; font-size:.76rem; font-weight:700; cursor:pointer;
+  border-radius:8px; padding:.5rem .6rem; font-size:.76rem; font-weight:700; cursor:pointer;
   font-family:inherit;
 }
 .pk-tab.sel{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); color:var(--text); }

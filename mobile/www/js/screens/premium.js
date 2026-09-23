@@ -53,6 +53,10 @@ window.GL_ROUTER.register('premium', {
         '<div class="gl-sec gl-sec--first">' +
           '<h1 class="gl-heading" style="font-size:1.4rem;margin:0 0 .3rem">Go Premium</h1>' +
           '<p class="gl-muted" style="margin:0">Everything free, plus the whole database and every tool.</p>' +
+          // Same CTA as the one at the bottom of the tile carousel -- someone who
+          // already knows they want Premium shouldn't have to scroll through the
+          // whole "See everything Premium unlocks" rail just to find the button.
+          '<button type="button" class="gl-btn gl-btn-primary" id="upgradeBtnTop" style="margin-top:1rem">Continue to Upgrade</button>' +
         '</div>' +
         '<div class="sub-cx"><div class="sub-cx-head">See everything Premium unlocks</div>' + (res.markup || '') + '</div>' +
         '<button type="button" class="gl-btn gl-btn-primary" id="upgradeBtn" style="margin-top:1.2rem">Continue to Upgrade</button>' +
@@ -69,11 +73,14 @@ window.GL_ROUTER.register('premium', {
         document.body.appendChild(s);
       }
 
-      var upgradeBtn = container.querySelector('#upgradeBtn');
-      if (upgradeBtn) upgradeBtn.addEventListener('click', function(){
+      var openCheckout = function(){
         window.GL_NATIVE.tap();
         window.GL_NATIVE.openExternal(window.GL_API.BASE + '/subscribe');
-      });
+      };
+      var upgradeBtn = container.querySelector('#upgradeBtn');
+      if (upgradeBtn) upgradeBtn.addEventListener('click', openCheckout);
+      var upgradeBtnTop = container.querySelector('#upgradeBtnTop');
+      if (upgradeBtnTop) upgradeBtnTop.addEventListener('click', openCheckout);
     }).catch(function(){
       container.innerHTML =
         '<h3 style="margin:0 0 .4rem">Couldn’t load Premium features</h3>' +
