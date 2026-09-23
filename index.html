@@ -7956,6 +7956,7 @@
  { name: "George Staines", division: "LW", rank: "NR", record: "8-0-0", initials: "GSTA", country: "England" },
  { name: "Adama Diop", division: "HW", rank: "NR", record: "6-1-0", initials: "ADI", country: "Senegal" },
  { name: "Zaurbek Sabanov", division: "HW", rank: "NR", record: "5-0-0", initials: "ZSA", country: "Russia" },
+ { name: "Ian Escuza", division: "FW", rank: "NR", record: "7-0-0", initials: "IE", country: "Peru" },
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9176,6 +9177,7 @@
 "George Staines": { ht:"6'1\"", dob:"2000-09-20", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"38%", streak:8, gym:"Next Generation MMA Liverpool" },
 "Adama Diop": { ht:"6'1\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:5, gym:"Mantis MMA Dakar" },
 "Zaurbek Sabanov": { ht:"6'4\"", dob:"1998-06-14", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"80%", streak:5, gym:"Valhalla Fight Club" },
+"Ian Escuza": { ht:"5'8\"", dob:"1996-08-28", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:7, gym:"Pitbull Martial Arts Center" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44883,6 +44885,7 @@
     { opponent: "Giovanni Olakunori", odds: -200 },
     { opponent: "Rony Bouzy", odds: -140 }
   ],
+  "Ian Escuza": [],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -63012,6 +63015,15 @@ const FIGHT_HISTORY = {
     { date: "Oct 6, 2024", opponent: "Shamil Magomedsaidov", result: "W", method: "TKO (Punches)", round: 1, time: "0:15", event: "UMMA: Valeri Kokov Memorial 2024", org: "UMMA" },
     { date: "Jun 7, 2024", opponent: "Mamadou Lamine Sene", result: "W", method: "KO/TKO", round: 1, time: "2:54", event: "Kingdom Fighting 2: Ruart vs. del Guerra", org: "Kingdom Fighting" },
     { date: "Feb 17, 2023", opponent: "Rony Bouzy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ares FC 12: Pena vs. Boudegzdame", org: "ARES FC" }
+  ],
+  "Ian Escuza": [
+    { date: "Jun 23, 2026", opponent: "Octavio Lopez", result: "W", method: "TKO (Body Kick)", round: 1, time: "0:28", event: "Inka FC 58: Escuza vs. Lopez", org: "Inka FC" },
+    { date: "Dec 10, 2024", opponent: "Nonato Junior", result: "W", method: "TKO (Knee and Punches)", round: 1, time: "3:33", event: "Inka FC 47: Escuza vs. Shaolin", org: "Inka FC" },
+    { date: "Jun 19, 2024", opponent: "Joackim Pedro Neto Ferreira", result: "W", method: "TKO (Punches)", round: 1, time: "0:40", event: "Inka FC 43: Escuza vs. Neto", org: "Inka FC" },
+    { date: "Feb 28, 2024", opponent: "Wemerson Vitor", result: "W", method: "KO (Punches)", round: 1, time: "1:53", event: "Inka FC 40: Ramses vs. Pereira", org: "Inka FC" },
+    { date: "Dec 20, 2023", opponent: "Francisco da Silva", result: "W", method: "KO (Punches)", round: 1, time: "0:27", event: "Inka FC 39: Homenaje al Campeon Mundial", org: "Inka FC" },
+    { date: "Jun 21, 2023", opponent: "Eyner Tarrillo", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "0:27", event: "FFC 62: Navarrete vs. Galindo", org: "FFC" },
+    { date: "Nov 12, 2021", opponent: "Armando Vazquez", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:43", event: "Dragon House: Zhong Luo CFS 2", org: "Dragon House MMA" }
   ],
   "Matthew Adams": [
     { date: "Aug 11, 2026", opponent: "Anthony Wint", result: "L", method: "KO/TKO (Punches)", round: 1, time: "0:34", event: "Dana White's Contender Series: Season 10, Week 1", org: "UFC" },
@@ -121592,6 +121604,12 @@ const ACCOLADES = {
   "Zaurbek Sabanov": [
     { icon: "🥊", title: "Undefeated (5-0) as a pro, 4 of 5 wins by knockout — set to make his UFC debut on Dana White's Contender Series vs. Adama Diop (Sep 29, 2026)", detail: null },
     { icon: "🌍", title: "Russian heavyweight out of North Ossetia–Alania, training out of Valhalla Fight Club, built his record on the French ARES FC circuit", detail: null }
+  ],
+  "Ian Escuza": [
+    { icon: "🥊", title: "Undefeated (7-0) as a pro, all 7 wins by finish (5 KO/TKO, 2 submission) — set to make his UFC debut on Dana White's Contender Series vs. Luca Borando (Sep 29, 2026)", detail: null },
+    { icon: "🏆", title: "Inka FC's 66kg (featherweight) champion — the promotion has billed its last three cards around him ('Escuza vs. Neto', 'Escuza vs. Shaolin', 'Escuza vs. Lopez')", detail: null },
+    { icon: "🥋", title: "IFMA Muay Thai World Champion prior to his MMA career", detail: null },
+    { icon: "🌍", title: "\"El Especimen\" Escuza, out of Lima, Peru, training out of Pitbull Martial Arts Center", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
