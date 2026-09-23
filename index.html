@@ -7962,6 +7962,7 @@
  { name: "Camila Reynoso", division: "WSW", rank: "NR", record: "9-1-0", initials: "CRE", country: "Argentina" },
  { name: "Ilias Bulaid", division: "FW", rank: "NR", record: "9-0-0", initials: "IBU", country: "Morocco" }, // 1 NC
  { name: "Erick Visconde", division: "FW", rank: "NR", record: "17-3-0", initials: "EVI", country: "Brazil" },
+ { name: "Roberto Soldic", division: "WW", rank: "NR", record: "21-4-0", initials: "RSO", country: "Croatia" }, // 1 NC
  { name: "Matthew Adams", division: "HW", rank: "NR", record: "6-3-0", initials: "MAA", country: "USA" },
  { name: "Bella Mir", division: "WBW", rank: "NR", record: "4-1-0", initials: "BMI", country: "USA" },
  { name: "Alex Apodaca", division: "WBW", rank: "NR", record: "4-1-0", initials: "AAP", country: "USA" },
@@ -9188,6 +9189,7 @@
 "Camila Reynoso": { ht:"5'2\"", dob:"2003-08-28", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:3, gym:"ADM Sports Center" },
 "Ilias Bulaid": { ht:"5'8\"", dob:"1995-05-01", reach:'70.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:9, gym:"SBG Ireland" },
 "Erick Visconde": { ht:"5'7\"", dob:"1996-11-21", reach:'65.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:4, gym:"California Mixed Martial Arts" },
+"Roberto Soldic": { ht:"5'11\"", dob:"1995-01-25", reach:'73"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"90%", streak:1, gym:"UFD Gym" },
 "Matthew Adams": { ht:"5'10\"", dob:"1997-09-07", reach:null, stance:null, slpm:0.0, strAcc:"0%", sapm:22.94, strDef:"28%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:null, streak:1, gym:"Raw MMA" },
 "Bella Mir": { ht:"5'7\"", dob:"2003-01-01", reach:'67"', stance:null, slpm:2.0, strAcc:"39%", sapm:3.2, strDef:"61%", kd:0.0, tdLanded:1.0, tdAcc:"17%", tdDef:null, subAvg:0.0, finRate:"75%", streak:4, gym:"Syndicate MMA" },
 "Alex Apodaca": { ht:"5'7\"", dob:null, reach:'71.5"', stance:null, slpm:3.2, strAcc:"39%", sapm:2.0, strDef:"61%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"83%", subAvg:0.0, finRate:"0%", streak:3, gym:"FactoryX Muay Thai" },
@@ -44923,6 +44925,20 @@
     { opponent: "Gustavo Pintos", odds: -333 },
     { opponent: "Chris Mecate", odds: -110 }
   ],
+  "Roberto Soldic": [
+    { opponent: "Saygid Guseyn Arslanaliev", odds: -460 },
+    { opponent: "Zebaztian Kadestam", odds: -500 },
+    { opponent: "Murad Ramazanov", odds: -200 },
+    { opponent: "Mamed Khalidov", odds: -200 },
+    { opponent: "Patrik Kincl", odds: -385 },
+    { opponent: "Michal Materla", odds: -355 },
+    { opponent: "Krystian Kaszubowski", odds: -750 },
+    { opponent: "Vinicius Bohrer", odds: -700 },
+    { opponent: "Dricus Du Plessis", odds: -185 },
+    { opponent: "Dricus Du Plessis", odds: -300 },
+    { opponent: "Borys Mankowski", odds: 255 },
+    { opponent: "Lewis Long", odds: 120 }
+  ],
   "Abe Alsaghir": [
     { opponent: "Jerome Featherstone", odds: -350 }
   ],
@@ -63106,6 +63122,34 @@ const FIGHT_HISTORY = {
     { date: "Nov 5, 2021", opponent: "Georges Sasu", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Bellator 270: Queally vs. Pitbull 2", org: "Bellator" },
     { date: "Feb 22, 2020", opponent: "Diego Freitas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 240: McCourt vs. Ruis", org: "Bellator" },
     { date: "Sep 27, 2019", opponent: "Vitalic Maiboroda", result: "W", method: "KO (Knee)", round: 1, time: "4:59", event: "Bellator 227: Gallagher vs. Salazar", org: "Bellator" }
+  ],
+  "Roberto Soldic": [
+    { date: "Feb 20, 2025", opponent: "Saygid Guseyn Arslanaliev", result: "W", method: "KO (Punch)", round: 1, time: "1:55", event: "ONE 171: Qatar", org: "ONE Championship" },
+    { date: "May 5, 2023", opponent: "Zebaztian Kadestam", result: "L", method: "TKO (Punches)", round: 2, time: "0:45", event: "ONE on Prime Video 10: Johnson vs. Moraes 3", org: "ONE Championship" },
+    { date: "Dec 2, 2022", opponent: "Murad Ramazanov", result: "NC", method: "No Contest (Accidental Knee to Groin)", round: 1, time: "2:01", event: "ONE on Prime Video 5: De Ridder vs. Malykhin", org: "ONE Championship" },
+    { date: "Dec 18, 2021", opponent: "Mamed Khalidov", result: "W", method: "KO (Punch)", round: 2, time: "3:40", event: "KSW 65: Khalidov vs. Soldic", org: "KSW" },
+    { date: "Sep 4, 2021", opponent: "Patrik Kincl", result: "W", method: "TKO (Punches)", round: 3, time: "2:55", event: "KSW 63: Crime of the Century", org: "KSW" },
+    { date: "Nov 14, 2020", opponent: "Michal Materla", result: "W", method: "TKO (Punches)", round: 1, time: "4:40", event: "KSW 56: Materla vs. Soldic", org: "KSW" },
+    { date: "Sep 14, 2019", opponent: "Michal Pietrzak", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KSW 50: London", org: "KSW" },
+    { date: "May 18, 2019", opponent: "Krystian Kaszubowski", result: "W", method: "KO (Punch)", round: 1, time: "1:25", event: "KSW 49: Materla vs. Askham 2", org: "KSW" },
+    { date: "Dec 1, 2018", opponent: "Vinicius Bohrer", result: "W", method: "KO (Punch)", round: 1, time: "4:35", event: "KSW 46: Narkun vs. Khalidov 2", org: "KSW" },
+    { date: "Oct 6, 2018", opponent: "Dricus Du Plessis", result: "W", method: "KO (Punches)", round: 3, time: "2:33", event: "KSW 45: The Return to Wembley", org: "KSW" },
+    { date: "Apr 14, 2018", opponent: "Dricus Du Plessis", result: "L", method: "TKO (Punches)", round: 2, time: "1:37", event: "KSW 43: Soldic vs. Du Plessis", org: "KSW" },
+    { date: "Dec 23, 2017", opponent: "Borys Mankowski", result: "W", method: "TKO (Corner Stoppage)", round: 3, time: "5:00", event: "KSW 41: Mankowski vs. Soldic", org: "KSW" },
+    { date: "Oct 14, 2017", opponent: "Lewis Long", result: "W", method: "KO (Head Kick)", round: 1, time: "0:40", event: "CWFC 87: Long vs. Soldic", org: "Cage Warriors" },
+    { date: "Sep 16, 2017", opponent: "Dez Parker", result: "W", method: "TKO (Punches)", round: 1, time: "3:29", event: "Superior FC 18", org: "Superior FC" },
+    { date: "Jul 8, 2017", opponent: "Slobodan Vukic", result: "W", method: "KO (Punch)", round: 1, time: "1:04", event: "SBC 14: Serbian Battle Championship 14", org: "SBC" },
+    { date: "Mar 11, 2017", opponent: "Rafal Lewon", result: "W", method: "TKO (Punches)", round: 3, time: "1:56", event: "Superior FC 16", org: "Superior FC" },
+    { date: "Dec 17, 2016", opponent: "Ivica Truscek", result: "W", method: "TKO (Punches)", round: 1, time: "1:47", event: "FFC 27: Night of Champions", org: "FFC" },
+    { date: "Oct 1, 2016", opponent: "Pascal Kloser", result: "W", method: "TKO (Punches)", round: 1, time: "1:34", event: "SMMAC: Swiss MMA Championship 4", org: "SMMAC" },
+    { date: "Jun 18, 2016", opponent: "Yaroslav Amosov", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Tech-Krep FC: Prime Selection 8", org: "Tech-Krep FC" },
+    { date: "Mar 5, 2016", opponent: "Vaso Bakocevic", result: "W", method: "TKO (Punches)", round: 3, time: "1:51", event: "SBC 8: Serbian Battle Championship 8", org: "SBC" },
+    { date: "Oct 23, 2015", opponent: "Sasa Drobac", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FFC 20: Final Fight Championship 20", org: "FFC" },
+    { date: "Jul 27, 2015", opponent: "Marko Radakovic", result: "L", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "MFC 3: Montenegro Fighting Championship 3", org: "MFC" },
+    { date: "May 9, 2015", opponent: "Vladimir Prodanovic", result: "W", method: "TKO (Punches)", round: 2, time: "1:30", event: "SBC 5: Serbian Battle Championship 5", org: "SBC" },
+    { date: "Mar 15, 2015", opponent: "Savo Lazic", result: "W", method: "KO (Kick)", round: 1, time: "2:05", event: "AFC 4: Arti Fighting Championship 4", org: "AFC" },
+    { date: "Dec 21, 2014", opponent: "Mladen Ponjevic", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "0:35", event: "Thunderman: Fight Night Metkovic 1", org: "Thunderman" },
+    { date: "Oct 19, 2014", opponent: "Ante Alilovic", result: "W", method: "TKO (Punches)", round: 2, time: "2:50", event: "AFC 3: Arti Fighting Championship 3", org: "AFC" }
   ],
   "Erick Visconde": [
     { date: "May 14, 2026", opponent: "Gustavo Pintos", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "LFA 232: Visconde vs. Pintos", org: "LFA" },
@@ -121737,6 +121781,11 @@ const ACCOLADES = {
     { icon: "🎯", title: "17-3 across a 9-year, 20-fight pro career on the Brazilian regional scene — set to make his UFC debut on Dana White's Contender Series vs. Ilias Bulaid (Sep 29, 2026), on a 4-fight win streak since his last loss", detail: null },
     { icon: "🥊", title: "12 of 17 wins by finish (6 KO/TKO, 6 submission) — has fought for LFA, Shooto Brazil and Cage MMA Finland among others", detail: null },
     { icon: "🌍", title: "\"Sabugo\" Visconde, out of Curitiba, Brazil, training out of California Mixed Martial Arts", detail: null }
+  ],
+  "Roberto Soldic": [
+    { icon: "🏆", title: "Two-time KSW Welterweight Champion and one-time KSW Middleweight Champion — one of the promotion's most dominant titleholders before leaving for ONE Championship in 2022", detail: null },
+    { icon: "💥", title: "21-4-0 (1 NC) with 18 KO/TKOs and a 90% career finish rate, including a highlight-reel head-kick KO of eventual UFC middleweight champion Dricus Du Plessis (KSW 45, 2018) after Du Plessis had beaten him by TKO earlier that year", detail: null },
+    { icon: "🇭🇷", title: "\"Robocop\" Soldić, out of Croatia and training at UFD Gym — signed to the UFC's active welterweight roster in September 2026 and set to make his promotional debut vs. Khaos Williams at UFC 332 (Oct 3, 2026, Salt Lake City)", detail: null }
   ],
   "Abe Alsaghir": [
     { icon: "🎯", title: "Earned a UFC contract on Dana White's Contender Series — split decision over Fabrizio Escarrega (Aug 11, 2026)", detail: null },
