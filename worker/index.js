@@ -4029,7 +4029,30 @@ export default {
           })
           .filter((e) => e.fights.length && !(isFinite(Date.parse(e.startsAt)) && (Date.parse(e.startsAt) + CARD_RUN_MS) < now))
           .sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
-        return json({ events }, 200, cors);
+        // `events` above only ever holds cards with at least one still-open bout --
+        // it's built for the "Log a bet -> Upcoming fights" picker, which has
+        // nothing to offer once every bout on a card is decided. But the History
+        // tab groups PAST bets by event too (see bettracker.js's betCards/
+        // eventLabelBySlug), and needs a label for a card that's long since
+        // finished -- which `events` can never supply once its last bout grades.
+        // `eventLabels` is the same billed-name+date label for EVERY event this
+        // merge saw (event.json + the 60-or-so-day event-recent.json), regardless
+        // of whether any bout on it is still open, so a settled bet's card always
+        // resolves to its real name instead of bettracker.js falling back to
+        // chopping up the bet's own free-text `match` field (which is how a
+        // scanned parlay's match, "2-leg parlay (scanned)", ended up standing in
+        // as the group label -- it has no " · " to split on -- and how a normal
+        // tracked bet's match collapsed to just its trailing date instead of the
+        // event's name, since `match` there is "<fighters> · <event label>" and
+        // splitting on " · " and taking the last piece grabs the date off the
+        // END of the event label, not the label itself).
+        const eventLabels = Array.from(bySlug.values())
+          .filter((e) => e && e.slug)
+          .map((e) => ({
+            slug: e.slug,
+            label: (e.espnName || e.title || "UFC") + (e.startsAt ? " · " + new Date(e.startsAt).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" }) : ""),
+          }));
+        return json({ events, eventLabels }, 200, cors);
       }
       // Account screen: signed-in email, subscription status and member-since
       // date -- none of which the app currently has (GL_AUTH only tracks

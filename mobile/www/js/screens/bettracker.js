@@ -85,6 +85,21 @@ window.GL_BETTRACKER = (function(){
 
   function betById(id){ return (betsData && betsData.bets || []).find(function(b){ return b.id === id; }); }
   function eventBySlug(slug){ return (fightsData && fightsData.events || []).find(function(e){ return e.slug === slug; }); }
+  // Label lookup for History's card grouping -- eventBySlug() above only ever
+  // covers cards with a still-open bout (it's really "which cards can I log a
+  // NEW bet against"), so it can never resolve a PAST bet's card once that
+  // card's last bout is graded. /api/app/bets/fights also hands back
+  // eventLabels: the same billed-name+date label for every event it saw,
+  // finished or not, specifically so a settled bet's card group always shows
+  // its real name instead of falling back to slicing up the bet's own
+  // free-text match field.
+  function eventLabelBySlug(slug){
+    var ev = eventBySlug(slug);
+    if (ev) return ev.label;
+    var all = (fightsData && fightsData.eventLabels) || [];
+    var hit = all.find(function(e){ return e.slug === slug; });
+    return hit ? hit.label : null;
+  }
   function allFights(){
     var out = [];
     (fightsData && fightsData.events || []).forEach(function(e){ e.fights.forEach(function(f){ out.push(Object.assign({ evSlug: e.slug, evLabel: e.label }, f)); }); });
@@ -150,8 +165,15 @@ window.GL_BETTRACKER = (function(){
     var seen = {}, out = [];
     list.filter(function(b){ return b.verified && b.evSlug; }).forEach(function(b){
       if (!seen[b.evSlug]){
-        var ev = eventBySlug(b.evSlug);
-        seen[b.evSlug] = { slug: b.evSlug, label: ev ? ev.label : (b.match.split(' · ').pop() || 'Card'), ts: b.ts, n: 0, pending: 0 };
+        // Only a bet whose card has aged out of both event.json AND
+        // event-recent.json (very old) ever falls through to the match-text
+        // guess below -- and even then, take the FIRST " · " segment (the
+        // fighters/billed-name half of "Fighters · Event Label", or the whole
+        // string when there's no separator at all, e.g. a scanned parlay's
+        // "N-leg parlay (scanned)") rather than the last, which is always
+        // just a trailing date once an event label is involved.
+        var label = eventLabelBySlug(b.evSlug) || b.match.split(' · ')[0] || 'Card';
+        seen[b.evSlug] = { slug: b.evSlug, label: label, ts: b.ts, n: 0, pending: 0 };
         out.push(seen[b.evSlug]);
       }
       seen[b.evSlug].n++;
