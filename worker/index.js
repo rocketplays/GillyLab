@@ -788,6 +788,15 @@ async function loadUpcomingCard(env, url) {
   // card is over the upstream feed removes it from event.json outright rather than
   // marking it completed, so there is nothing left for a window to keep.
   const held = await loadHeldCard(env, url, now);
+  // ESPN's own fighterSlug carries generational suffixes verbatim
+  // ("norbert-novenyi-jr"), but the actual photo file on disk (and every
+  // other profile slug in the app) drops them ("norbert-novenyi.png") --
+  // same Jr./Sr./II/III/IV class of bug already fixed for name matching
+  // elsewhere, just showing up here as a missing Pick'em avatar instead.
+  // /api/app/matchup resolves this via profileSlugFor(name, profileSlugs,
+  // rawSlug); this function built s1/s2 straight from the raw ESPN slug
+  // with no such resolution at all.
+  const profileSlugs = await loadProfileSlugs(env, url);
   // Select the SAME card the app's pickFeaturedRawEvent keeps featured, so /pickem never
   // jumps to the next event before the rest of the app does. Drop finished (completed)
   // cards, and keep a card current for 10h after its main-card start (CARD_RUNTIME_MS —
@@ -811,7 +820,8 @@ async function loadUpcomingCard(env, url) {
       return {
         id: b.id || (ev.slug + "-" + i),
         f1: f[0].fighterName, f2: f[1].fighterName,
-        s1: f[0].fighterSlug || null, s2: f[1].fighterSlug || null,
+        s1: profileSlugFor(f[0].fighterName, profileSlugs, f[0].fighterSlug) || f[0].fighterSlug || null,
+        s2: profileSlugFor(f[1].fighterName, profileSlugs, f[1].fighterSlug) || f[1].fighterSlug || null,
         section: b.cardSection || "", pos: b.cardPosition || "",
         wc: String(b.weightClass || "").replace(/\s*bout\s*$/i, "").trim(),
         rounds: b.numberOfRounds || 3, title: !!b.titleBout, res,
