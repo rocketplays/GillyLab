@@ -2992,7 +2992,14 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   // the next request. Clone before touching anything.
   if (card && !isOtherEvent) {
     card = Object.assign({}, card, { fights: (card.fights || []).map((f) => Object.assign({}, f)) });
-    const liveRaw = (upcomingEvents || []).find((e) => e && e.slug === card.slug);
+    // A card that just concluded moves from data/event.json (upcomingEvents)
+    // to data/event-recent.json (pastEvents) as soon as the finalize step
+    // runs -- often well before the twice-daily gen-landing-data.cjs regen
+    // bakes the real result into currentCard. Between those two moments,
+    // checking only upcomingEvents for a live match meant this merge found
+    // nothing and stopped showing ANY result for the featured card, for
+    // every visitor. Falling back to pastEvents covers that window.
+    const liveRaw = (upcomingEvents || []).find((e) => e && e.slug === card.slug) || (pastEvents || []).find((e) => e && e.slug === card.slug);
     const LN_SUFFIXES = new Set(["jr", "sr", "ii", "iii", "iv", "v"]);
     const lastName = (s) => {
       const parts = String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().split(/\s+/);
