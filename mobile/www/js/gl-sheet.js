@@ -35,7 +35,7 @@
 (function () {
   'use strict';
   var W = 1080, H = 1920;
-  var BG = '#0e1014', LINE = 'rgba(255,255,255,0.10)';
+  var BG = '#0e1014', CARD = '#14161b', LINE = 'rgba(255,255,255,0.10)';
   var TXT = '#f0f0f0', MUT = '#8a8d94', ACC = '#00e668', AMB = '#ffcf7a', FOOT = '#6f727a';
   var SANS = "'Barlow', sans-serif", COND = "'Barlow Condensed', sans-serif";
   var SITE = 'https://gillylab.com';
@@ -1189,6 +1189,154 @@
     });
   }
 
+  // ── BET TRACKER CARD (pending slip while live, results card once settled) ──
+  // Mirrors the site's drawBetCard exactly. data: {name, results, eventName,
+  // eventDate, bets:[{pick,match,odds,stake,status,profit,book,names,slugs,
+  // legs}], record, roi, units} -- bettracker.js builds `bets` straight off
+  // its own already-loaded rows (no extra fetch needed), same as the site's
+  // btShareCard. names/slugs are optional per bet -- omitted entirely here
+  // (the app doesn't resolve a bet's fighter names to slugs the way the
+  // site's nameToSlug() does), so every row just skips its avatar and starts
+  // its text flush left, same as the site's own "0 pics" case already
+  // handles.
+  var BT_RED = '#ff6a5e';
+  var uFmt = function (n) { return (Math.round(n * 100) / 100).toFixed(2).replace(/\.?0+$/, ''); };
+  function drawBetCard(data) {
+    return fontsReady().then(function () {
+      return loadBrandLogo();
+    }).then(function (logo) {
+      var bets = (data.bets || []).slice(0, 10);
+      var rowH = 132, listTop = 318;
+      var risked = bets.reduce(function (s, b) { return s + (Number(b.stake) || 0); }, 0);
+      var toWin = bets.reduce(function (s, b) {
+        var o = Number(b.odds) || 0;
+        return s + (Number(b.stake) || 0) * (o > 0 ? o / 100 : 100 / -o);
+      }, 0);
+      return Promise.all(bets.map(function (b) {
+        return Promise.all((b.slugs || []).slice(0, 2).map(function (s) { return loadImg(s); }));
+      })).then(function (imgs) {
+        return Promise.all(bets.map(function (b) {
+          return Promise.all((b.legs || []).map(function (l) { return loadImg(l.slug); }));
+        })).then(function (legImgs) {
+          var PLEG_ROW = 40, PHEAD_H = 84;
+          var cardH = bets.map(function (b) {
+            return (b.legs && b.legs.length) ? (PHEAD_H + b.legs.length * PLEG_ROW + 14) : (rowH - 12);
+          });
+          var CH = Math.max(1080, listTop + cardH.reduce(function (s, h) { return s + h + 12; }, 0) + 130);
+          var cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
+          var ctx = cv.getContext('2d');
+          ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
+          brand(ctx, 78, 'Bet & CLV Tracker', logo);
+          ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+          ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
+          ctx.fillText(clip(ctx, pkPossessive(data.name) + (data.results ? ' results' : ' card'), W - 128), 64, 158);
+          ctx.font = '400 32px ' + SANS; ctx.fillStyle = MUT;
+          ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 208);
+
+          var rx = 64;
+          var seg = function (t, font, col) { ctx.font = font; ctx.fillStyle = col; ctx.fillText(t, rx, 258); rx += ctx.measureText(t).width; };
+          var SEG_L = '400 29px ' + SANS, SEG_N = '800 34px ' + COND;
+          if (data.results) {
+            var up = (data.units || 0) > 0, dn = (data.units || 0) < 0;
+            seg(data.record || '0-0', SEG_N, TXT);
+            seg('   ·   ', SEG_L, MUT);
+            seg((up ? '+' : '') + uFmt(data.units || 0) + 'u', SEG_N, up ? ACC : (dn ? BT_RED : TXT));
+            if (data.roi != null) {
+              seg('   ·   ', SEG_L, MUT);
+              seg((data.roi > 0 ? '+' : '') + data.roi.toFixed(1) + '% ROI', SEG_N, data.roi > 0 ? ACC : (data.roi < 0 ? BT_RED : TXT));
+            }
+          } else {
+            seg('Risking ', SEG_L, MUT);
+            seg(uFmt(risked) + 'u', SEG_N, TXT);
+            seg(' to win ', SEG_L, MUT);
+            seg(uFmt(toWin) + 'u', SEG_N, ACC);
+          }
+          ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 286); ctx.lineTo(W - 64, 286); ctx.stroke();
+
+          var y = listTop;
+          bets.forEach(function (b, i) {
+            var isParlay = !!(b.legs && b.legs.length);
+            var h = cardH[i];
+            roundRect(ctx, 64, y, W - 128, h, 12); ctx.fillStyle = CARD; ctx.fill();
+            var pics = imgs[i] || [], names = (b.names || []);
+            var cy = isParlay ? (y + 44) : (y + h / 2);
+            var tx = 96;
+            if (!isParlay && pics.length > 1) {
+              var r2 = 28, c1 = 96 + r2, c2 = 96 + r2 * 2 + 14;
+              avatar(ctx, pics[0], c1, cy - 10, r2, initialsOf(names[0]), LINE);
+              avatar(ctx, pics[1], c2, cy - 10, r2, initialsOf(names[1]), LINE);
+              ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+              ctx.font = '700 20px ' + COND; ctx.fillStyle = MUT;
+              ctx.fillText('VS', (c1 + c2) / 2, cy + r2 + 12);
+              tx = c2 + r2 + 22;
+            } else if (!isParlay && pics.length === 1) {
+              var r1 = 38;
+              avatar(ctx, pics[0], 96 + r1, cy, r1, initialsOf(names[0]), LINE);
+              tx = 96 + r1 * 2 + 22;
+            }
+            var right = W - 96;
+            var oStr = b.odds > 0 ? '+' + b.odds : String(b.odds);
+            ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+            var oW;
+            if (data.results) {
+              var won = b.status === 'won', lost = b.status === 'lost';
+              var rStr = won ? '+' + uFmt(b.profit) + 'u' : lost ? uFmt(b.profit) + 'u' : (b.status === 'void' ? 'Void' : '—');
+              ctx.font = '800 46px ' + COND; ctx.fillStyle = won ? ACC : lost ? BT_RED : MUT;
+              ctx.fillText(rStr, right, cy - 16);
+              oW = ctx.measureText(rStr).width;
+              ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+              ctx.fillText(oStr + ' · ' + b.stake + 'u', right, cy + 26);
+              oW = Math.max(oW, ctx.measureText(oStr + ' · ' + b.stake + 'u').width);
+            } else {
+              ctx.font = '800 46px ' + COND; ctx.fillStyle = ACC;
+              ctx.fillText(oStr, right, cy - 16);
+              oW = ctx.measureText(oStr).width;
+              ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+              ctx.fillText(b.stake + 'u', right, cy + 26);
+            }
+            var maxW = right - tx - Math.max(oW, 60) - 28;
+            ctx.textAlign = 'left';
+            ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
+            ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
+            if (!isParlay) {
+              ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+              ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
+            } else {
+              var lg = legImgs[i] || [], legsTop = y + PHEAD_H;
+              var tx2 = 96 + 15 + 15 + 14;
+              var legsEndX = tx2;
+              ctx.font = '700 27px ' + COND;
+              b.legs.forEach(function (l, j) {
+                var lcy = legsTop + j * PLEG_ROW + PLEG_ROW / 2 - 2;
+                var r = 15, ax = 96 + r;
+                avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
+                ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#c9ccd3';
+                var legTxt = (l.match ? l.match + ': ' : '') + (l.pick || '');
+                var txt = clip(ctx, legTxt, (W - 96) - tx2);
+                ctx.fillText(txt, tx2, lcy);
+                legsEndX = Math.max(legsEndX, tx2 + ctx.measureText(txt).width);
+              });
+              if (b.book) {
+                var legsCenterY = legsTop + (b.legs.length * PLEG_ROW) / 2 - 2;
+                var bx = legsEndX + 18;
+                ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+                ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+                ctx.fillText(clip(ctx, '· ' + b.book, (W - 96) - bx), bx, legsCenterY);
+              }
+            }
+            ctx.textBaseline = 'alphabetic';
+            y += h + 12;
+          });
+          ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
+          ctx.fillText('Tracked on gillylab.com', W / 2, CH - 60);
+          ctx.textAlign = 'left';
+          return cv;
+        });
+      });
+    });
+  }
+
   // ── the share overlay (mirrors odds.js's parlay slip / the site's own) ──
   var asset = null;
   function toFile(cv) {
@@ -1320,6 +1468,16 @@
     // Pick'em picks/results — Pick'em screen and My History.
     pickem: function (data) {
       return open(function () { return drawPickem(data || {}); }, 'gillylab-picks.png', null);
+    },
+    // Bet Tracker: a pending slip while an event's bets are still live, or a
+    // results card once every bet on it has settled -- same sheet, same
+    // caller (see bettracker.js's shareCard()), just switched by data.results.
+    // Unlike every sheet above, this one keeps a real shareText: the site's
+    // own comment on betHistory/betCard is explicit that these two are the
+    // exception to "paywalled sheets don't get a link" -- Save-photo-first
+    // UX, but a Share button stays available.
+    betCard: function (data) {
+      return open(function () { return drawBetCard(data || {}); }, 'gillylab-my-card.png', 'My card on gillylab.com');
     },
     close: close
   };

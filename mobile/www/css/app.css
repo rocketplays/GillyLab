@@ -1759,6 +1759,13 @@ body #mh-box{
 }
 .gl-sheet-btn:disabled{ opacity:.5; }
 .gl-sheet-btn.busy{ animation:plBusyPulse .9s ease-in-out infinite; }
+/* Compact variant for a card header's own row (.bt-cardhdr is a flex row
+   already carrying the card label + tally, not a full-width block like the
+   Fight Info panel's own gl-sheet-btn). */
+.bt-share-btn{
+  flex:0 0 auto; background:transparent; border:1px solid var(--accent); color:var(--accent); font:inherit;
+  font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; padding:.32rem .6rem; border-radius:6px;
+}
 @keyframes plFadeIn{ from{ opacity:0; } to{ opacity:1; } }
 @keyframes plBusyPulse{ 0%,100%{ opacity:.45; } 50%{ opacity:.8; } }
 

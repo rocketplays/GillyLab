@@ -125,6 +125,56 @@ window.GL_BETTRACKER = (function(){
   }
   function inRange(range){ return function(b){ var d = RANGE_DAYS[range]; return !d || (Date.now() - b.ts) <= d * 864e5; }; }
 
+  // ── Share Bets/Results (GL_SHEET.betCard) --------------------------------
+  // One display name across the app -- same pf:<email> record Pick'em uses
+  // (see pickem.js's `name`), fetched lazily since a share is the first time
+  // this screen needs one. Mirrors the site's btWithName/btFetchName, minus
+  // the "no name yet -> show the name modal" branch: unlike the site's
+  // always-logged-in index.html, this screen only renders for a subscribed
+  // account, and pickemSetName() is one tap away on the Pick'em tab if they
+  // truly have never set one -- a missing name just falls back to "My" below
+  // (pkPossessive's own fallback), same as an unnamed Pick'em share would.
+  var BT_NAME;
+  function btDisplayName(){
+    if (BT_NAME !== undefined) return Promise.resolve(BT_NAME);
+    return window.GL_API.pickemName().then(function(r){ BT_NAME = (r && r.name) || null; return BT_NAME; })
+      .catch(function(){ BT_NAME = null; return BT_NAME; });
+  }
+  // Share one card's bets -- a slip of what's still pending while the event
+  // is live, or a results card once every bet on it has settled. Same sheet,
+  // same trigger either way (see the "Share bets"/"Share results" button
+  // labels above), matching the site's btShareCard exactly.
+  function shareBetCard(slug){
+    if (!window.GL_SHEET || !betsData) return;
+    window.GL_NATIVE.tap();
+    var all = betsData.bets.filter(function(b){ return b.evSlug === slug; });
+    if (!all.length) return;
+    var pend = all.filter(function(b){ return b.status === 'pending'; });
+    var results = !pend.length;
+    var src = results ? all : pend;
+    var bets = src.map(function(b){
+      var o = {
+        pick: b.pick, match: (b.match || '').split(' · ')[0], odds: b.odds, stake: b.stake,
+        status: b.status, profit: b.profit, book: b.book || '',
+      };
+      // No fighter-name/slug resolution here (unlike the site's nameToSlug) --
+      // the sheet already handles a bet with zero avatars gracefully, same as
+      // a missing photo anywhere else in the app.
+      if (b.market === 'PARLAY' && Array.isArray(b.legs)){
+        o.legs = b.legs.map(function(l){ return { pick: l.pick || '', match: l.match || '', odds: l.odds }; });
+      }
+      return o;
+    });
+    var st = computeStats(all);
+    var label = eventLabelBySlug(slug) || (all[0].match || '').split(' · ')[0] || 'Card';
+    btDisplayName().then(function(name){
+      window.GL_SHEET.betCard({
+        name: name, results: results, eventName: label, eventDate: '',
+        bets: bets, record: st.w + '-' + st.l, roi: st.roi, units: st.units,
+      }).catch(function(){});
+    });
+  }
+
   // ── shell --------------------------------------------------------------
   function topTabsHTML(){
     return '<div class="bt-tabs">' +
@@ -306,7 +356,8 @@ window.GL_BETTRACKER = (function(){
       showCards.forEach(function(c){
         var rows = pend.filter(function(b){ return b.evSlug === c.slug; });
         if (!rows.length) return;
-        h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + esc(c.label) + '</div></div>' + cardTallyHTML(c, shown);
+        h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + esc(c.label) + '</div>' +
+          (window.GL_SHEET ? '<button type="button" class="bt-share-btn" data-share-card="' + esc(c.slug) + '">Share bets</button>' : '') + '</div>' + cardTallyHTML(c, shown);
         h += rows.sort(function(a,b){ return b.createdAt - a.createdAt; }).map(betRowHTML).join('');
       });
       var loose = pend.filter(function(b){ return !b.evSlug || !liveCards.some(function(c){ return c.slug === b.evSlug; }); });
@@ -326,7 +377,8 @@ window.GL_BETTRACKER = (function(){
         if (!rows.length) return;
         var st = computeStats(rows);
         h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + esc(c.label) + (c.pending>0?' <span class="bt-live-tag">live</span>':'') + '</div>' +
-          '<div class="bt-cardsum ' + (st.units>0?'bt-pos':st.units<0?'bt-neg':'') + '">' + st.w + '-' + st.l + ' · ' + (st.units>0?'+':'') + u1(st.units) + 'u</div></div>';
+          '<div class="bt-cardsum ' + (st.units>0?'bt-pos':st.units<0?'bt-neg':'') + '">' + st.w + '-' + st.l + ' · ' + (st.units>0?'+':'') + u1(st.units) + 'u</div>' +
+          (window.GL_SHEET ? '<button type="button" class="bt-share-btn" data-share-card="' + esc(c.slug) + '">Share results</button>' : '') + '</div>';
         h += rows.sort(function(a,b){ return b.ts - a.ts; }).map(betRowHTML).join('');
       });
       var looseDone = settled.filter(function(b){ return !b.evSlug || !doneCards.some(function(c){ return c.slug === b.evSlug; }); });
@@ -936,6 +988,7 @@ window.GL_BETTRACKER = (function(){
       if ((t = hit(e, '[data-range]'))){ hRange = t.getAttribute('data-range'); renderView(); return; }
       if ((t = hit(e, '[data-tab]'))){ hTab = t.getAttribute('data-tab'); hCard = 'all'; renderView(); return; }
       if ((t = hit(e, '[data-card]'))){ hCard = t.getAttribute('data-card'); renderView(); return; }
+      if ((t = hit(e, '[data-share-card]'))){ shareBetCard(t.getAttribute('data-share-card')); return; }
       if ((t = hit(e, '[data-settle]'))){ var id = t.getAttribute('data-settle'), st = t.getAttribute('data-status');
         window.GL_API.betSettle(id, st).then(function(){ return reloadBets(); }).then(renderView).catch(function(err){ alert((err && err.data && err.data.error) || 'Could not settle that bet.'); }); return; }
       if ((t = hit(e, '[data-edit-open]'))){ editId = t.getAttribute('data-edit-open'); renderView(); return; }
