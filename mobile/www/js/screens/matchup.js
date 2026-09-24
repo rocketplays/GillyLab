@@ -1004,16 +1004,19 @@ function mountMatchup(container){
         '</div>' +
         (card ? '<div class="mf-event-countdown"><div class="mf-cd-label">Time Until Event</div><div class="mf-cd-time" id="mfCountdown">—</div></div>' : '') +
         (card ? eventTipHTML() : '') +
-        // Mirrors the site's "Share this card" button on the home page's
-        // featured event -- a poster of the whole card, not any one user's
-        // picks (see gl-sheet.js's eventCard()). Premium-only, same gate as
-        // every other GL_SHEET button on this screen -- window.GL_SHEET
-        // itself only ships in the premium bundle path this file already
-        // assumes for `subscribed`.
-        (card && subscribed && window.GL_SHEET && (card.fights || []).length
-          ? '<button type="button" class="gl-sheet-btn" data-share-card="' + esc(card.slug) + '">Share this card</button>' : '') +
       '</div>'
     );
+  }
+  // Mirrors the site's "Share this card" button -- a poster of the whole
+  // card, not any one user's picks (see gl-sheet.js's eventCard()).
+  // Premium-only, same gate as every other GL_SHEET button on this screen.
+  // Lives below the fight list itself (not up in eventHeaderHTML, next to
+  // the title/countdown) so it reads as "share the card you just looked
+  // at" rather than a header action -- same placement the carousel's own
+  // per-slide copy of this button already uses.
+  function shareCardBtnHTML(card){
+    return (card && subscribed && window.GL_SHEET && (card.fights || []).length)
+      ? '<button type="button" class="gl-sheet-btn" data-share-card="' + esc(card.slug) + '">Share this card</button>' : '';
   }
   function shareEventCard(card){
     if (!window.GL_SHEET || !card) return;
@@ -1045,6 +1048,7 @@ function mountMatchup(container){
       pastSelectHTML() +
       eventHeaderHTML(card) +
       '<div id="mfBody">' + cardBodyHTML(card, data.deepDive, data.breakdown) + '</div>' +
+      shareCardBtnHTML(card) +
       carouselHTML() +
       hubModalHTML() +
       boxModalHTML();

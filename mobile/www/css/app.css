@@ -1309,6 +1309,22 @@ body #mh-box{
   top:calc(50% + (env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 2);
   max-height:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
 }
+/* The site's own #mh-box never has anything after .mh-body -- this app
+   bolts on one more sibling, #mhShareBtn ("Generate sheet"), that the
+   shipped hubCss knows nothing about. .mh-body{flex:1;min-height:0} is
+   supposed to shrink and leave room for it, but #mh-box's height comes
+   only from max-height (never a definite height), and some WebKit builds
+   don't reliably reserve space for a flex sibling added after a
+   flex:1;min-height:0 item in that setup -- the practical result users hit
+   is the button rendering far enough down to be clipped by #mh-box's own
+   overflow:hidden, "cut off at the bottom" or invisible entirely. Pin
+   mh-body's own max-height explicitly instead of trusting flex-shrink to
+   find the room on its own -- 230px covers mh-hd + mh-tabs + mh-filter +
+   mhShareBtn's own height plus margin, comfortably more than any of them
+   actually need. */
+body #mh-box #mh-body{
+  max-height:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem - 230px);
+}
 .fp-stat-hd{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding-right:1.6rem; }
 .fp-stat-hd-side{ display:flex; align-items:center; gap:.5rem; min-width:0; flex:1; }
 .fp-stat-hd-side.r{ justify-content:flex-end; }
