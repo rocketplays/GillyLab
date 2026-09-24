@@ -46,11 +46,36 @@ window.GL_ROUTER.register('account', {
       );
     }
 
-    function settingsHTML(){
+    // The site's single display-name record (pf:<email> in KV, via
+    // /api/pickem/name) is what Pick'em, the Bet & CLV Tracker leaderboard,
+    // and any share-sheet identity all read -- one name everywhere, same as
+    // on gillylab.com's own pkShowNameModal. hasName drives whether this
+    // shows "Set a Username" (never set one) or "Change" (already has one).
+    function usernameHTML(name){
+      var hasName = !!name;
+      return (
+        '<div class="acct-uname-row">' +
+          '<div>' +
+            '<div class="gl-label" style="margin:0">Username</div>' +
+            '<div class="acct-uname-val">' + (hasName ? esc(name) : 'Not set') + '</div>' +
+          '</div>' +
+          '<button type="button" class="gl-btn gl-btn-outline" id="toggleNameBtn">' + (hasName ? 'Change' : 'Set Username') + '</button>' +
+        '</div>' +
+        '<div id="nameForm" hidden style="margin-top:.8rem">' +
+          '<p class="gl-muted" style="margin:0 0 .5rem">This is how you appear on the Pick’em and Bet Tracker leaderboards — your email is never shown. 2–20 characters.</p>' +
+          '<input type="text" class="gl-field" id="nameInput" maxlength="20" placeholder="e.g. ChokeArtist" value="' + esc(name || '') + '">' +
+          '<div class="gl-muted" id="nameMsg" style="margin:.5rem 0"></div>' +
+          '<button type="button" class="gl-btn gl-btn-primary" id="nameSaveBtn">Save Username</button>' +
+        '</div>'
+      );
+    }
+
+    function settingsHTML(name){
       return (
         '<div class="gl-sec">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Account Settings</h2></div>' +
-          '<button type="button" class="gl-btn gl-btn-outline" id="togglePwBtn" style="margin-top:.6rem">Change Password</button>' +
+          usernameHTML(name) +
+          '<button type="button" class="gl-btn gl-btn-outline" id="togglePwBtn" style="margin-top:1rem">Change Password</button>' +
           '<div id="pwForm" hidden style="margin-top:.8rem">' +
             '<label class="gl-label">Current Password</label>' +
             '<input type="password" class="gl-field" id="pwCurrent" autocomplete="current-password">' +
@@ -105,7 +130,7 @@ window.GL_ROUTER.register('account', {
       );
     }
 
-    function renderAccount(acct, player){
+    function renderAccount(acct, player, name){
       var email = (acct && acct.email) || window.GL_AUTH.email();
       var subscribed = !!(acct && acct.subscribed);
       var memberSince = fmtDate(acct && acct.memberSince);
@@ -122,14 +147,49 @@ window.GL_ROUTER.register('account', {
         '</div>' +
         premiumBoxHTML(subscribed) +
         statsHTML(player) +
-        settingsHTML() +
+        settingsHTML(name) +
         dangerHTML() +
         '<button type="button" class="gl-btn gl-btn-outline" id="logoutBtn" style="margin-top:1.4rem">Log Out</button>';
 
-      wireAccount(subscribed);
+      wireAccount(subscribed, name);
     }
 
-    function wireAccount(subscribed){
+    function wireAccount(subscribed, currentName){
+      var toggleNameBtn = container.querySelector('#toggleNameBtn');
+      var nameForm = container.querySelector('#nameForm');
+      if (toggleNameBtn && nameForm) toggleNameBtn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        nameForm.hidden = !nameForm.hidden;
+        toggleNameBtn.textContent = nameForm.hidden ? (currentName ? 'Change' : 'Set Username') : 'Cancel';
+        if (!nameForm.hidden) {
+          var input = container.querySelector('#nameInput');
+          if (input) { input.focus(); input.select(); }
+        }
+      });
+      var nameSaveBtn = container.querySelector('#nameSaveBtn');
+      if (nameSaveBtn) nameSaveBtn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        var input = container.querySelector('#nameInput');
+        var msg = container.querySelector('#nameMsg');
+        var val = (input.value || '').trim();
+        if (val.length < 2 || val.length > 20) { msg.className = 'gl-error'; msg.textContent = 'Pick a name 2–20 characters long (letters, numbers, spaces, _ . -).'; return; }
+        msg.className = 'gl-muted'; msg.textContent = 'Saving…';
+        nameSaveBtn.disabled = true;
+        window.GL_API.pickemSetName(val).then(function(res){
+          nameSaveBtn.disabled = false;
+          currentName = res && res.name;
+          nameForm.hidden = true;
+          toggleNameBtn.textContent = 'Change';
+          var valEl = container.querySelector('.acct-uname-val');
+          if (valEl) valEl.textContent = currentName;
+        }).catch(function(err){
+          msg.className = 'gl-error';
+          msg.textContent = (err && err.data && err.data.error) || 'Couldn’t save that name — try again.';
+          nameSaveBtn.disabled = false;
+        });
+      });
+      var nameInput = container.querySelector('#nameInput');
+      if (nameInput) nameInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') container.querySelector('#nameSaveBtn').click(); });
       var goBtn = container.querySelector('#goPremiumBtn');
       if (goBtn) goBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
 
@@ -217,7 +277,7 @@ window.GL_ROUTER.register('account', {
         var acct = results[0], nameRes = results[1];
         var playerName = nameRes && nameRes.name;
         return (playerName ? window.GL_API.pickemPlayer(playerName).catch(function(){ return null; }) : Promise.resolve(null))
-          .then(function(player){ renderAccount(acct, player); });
+          .then(function(player){ renderAccount(acct, player, playerName); });
       });
     }
 
