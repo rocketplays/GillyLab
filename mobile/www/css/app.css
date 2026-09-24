@@ -734,7 +734,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   margin-top:0;
 }
 .mf-panel.open{ opacity:1; margin-top:.65rem; }
-.mf-panel-inner{ padding-top:.65rem; border-top:1px solid var(--border); }
+.mf-panel-inner{ padding-top:.65rem; padding-bottom:.65rem; border-top:1px solid var(--border); }
 .mf-lock{ padding:.2rem 0; }
 .mf-lock-t{ font-size:.8rem; font-weight:700; line-height:1.4; }
 /* WIN/LOSS/DRAW/NC tag next to a decided fighter's name on the tile --
