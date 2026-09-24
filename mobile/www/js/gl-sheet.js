@@ -1052,14 +1052,24 @@
   // eventLabel/espnName format) is always too long to fit the centered
   // title column even at the smallest readable size -- abbreviate it to
   // "DWCS: S10 E7" (season/week as S/E) instead of shrinking or wrapping
-  // it into something unreadable. Any other event name (numbered PPV or
-  // Fight Night) passes through unchanged; evDrawTitle's own shrink-to-fit
-  // handles those.
+  // it into something unreadable.
+  // A regular/numbered event's full name is "UFC Fight Night: Hernandez vs
+  // Rodrigues" or "UFC 332: Prochazka vs Ankalaev" -- the billing line
+  // (before the colon) is the actual event title; everything after it is
+  // just the main event's fighters, which have their own hero row right
+  // below this and don't need to be crammed into the title too. Keeping
+  // them in made evDrawTitle's shrink-to-fit run every regular event's
+  // title down to a tiny size to fit both fighters' names on 2 lines.
+  // Dropping them lets it draw "UFC Fight Night"/"UFC 332"/"UFC Noche" at
+  // its old, full size again. A name with no colon (already just the
+  // billing, e.g. "UFC Noche") passes through unchanged.
   function evTitleText(name) {
     var s = String(name || '');
-    if (!/contender\s+series|dana\s+white/i.test(s)) return s;
-    var sm = /season\s*(\d+)/i.exec(s), wm = /(?:week|episode)\s*(\d+)/i.exec(s);
-    return (sm && wm) ? ('DWCS: S' + sm[1] + ' E' + wm[1]) : 'DWCS';
+    if (/contender\s+series|dana\s+white/i.test(s)) {
+      var sm = /season\s*(\d+)/i.exec(s), wm = /(?:week|episode)\s*(\d+)/i.exec(s);
+      return (sm && wm) ? ('DWCS: S' + sm[1] + ' E' + wm[1]) : 'DWCS';
+    }
+    return s.split(':')[0].trim() || s;
   }
   function evDrawTitle(ctx, text, cx, y0, maxW, weight, maxFontPx, lineH0) {
     var words = String(text || '').toUpperCase().split(/\s+/).filter(Boolean);
