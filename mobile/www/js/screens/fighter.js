@@ -103,8 +103,21 @@ window.GL_FIGHTER = (function(){
     );
   }
 
+  // Filters out any falsy entry (a `null` array hole from a malformed
+  // ACCOLADES literal in index.html -- see gen-app-fighter-extras.cjs's own
+  // matching .filter(Boolean), added 2026-09-23 after a stray lone-comma
+  // line in index.html silently produced a `null` accolade for every DWCS
+  // Week 7 fighter: JSON.stringify turns an array hole into `null`, and
+  // `a.icon` on that null threw synchronously inside this file's own
+  // load()->renderHTML() promise chain -- a chain with no per-field try/catch,
+  // so the exception surfaced as the generic "check your connection" error,
+  // and ONLY for a subscribed viewer (a free/logged-out viewer never reaches
+  // this branch at all -- see lockedHTML above). This filter is the
+  // belt-and-suspenders half of that fix; the real fix is not shipping a
+  // hole in the first place.
   function accoladesHTML(list){
-    if (!list || !list.length) return '<p class="gl-muted" style="margin:.4rem 0 0">No accolades recorded yet.</p>';
+    list = (list || []).filter(Boolean);
+    if (!list.length) return '<p class="gl-muted" style="margin:.4rem 0 0">No accolades recorded yet.</p>';
     return '<div class="fp-acc-list">' + list.map(function(a){
       return (
         '<div class="fp-acc-row">' +

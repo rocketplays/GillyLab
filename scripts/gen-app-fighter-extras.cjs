@@ -192,7 +192,21 @@ function buildTapeStudy(name) {
 function buildAccolades(name) {
   const raw = ACCOLADES[name];
   if (!raw || !raw.length) return [];
-  return raw.map((a) => ({ icon: a.icon || null, title: a.title || null, detail: a.detail || null }));
+  // .filter(Boolean) guards against a hand-edited ACCOLADES array literal in
+  // index.html with a stray lone-comma line between two entries (e.g.
+  // "},\n  ,\n  {" instead of "},\n  {") -- that's a genuine array hole, and
+  // Array.prototype.map skips holes rather than erroring, so it silently
+  // survives as a `null` in this output. JSON.stringify then serializes that
+  // hole as a literal `null`, and the app's fighter.js reads `a.icon` on it
+  // with no guard of its own, throwing inside its render chain -- which
+  // (since that chain has no per-field try/catch) surfaces as a generic
+  // "check your connection" error for a subscribed viewer only (a free
+  // viewer never reaches the accolades render at all). Confirmed 2026-09-23:
+  // exactly this happened for all 10 DWCS Season 10 Week 7 fighters. Fixed
+  // the 10 stray lines in index.html directly, but filtering here means a
+  // future instance of the same hand-edit mistake degrades to "one fewer
+  // accolade shown" instead of crashing the whole profile page.
+  return raw.filter(Boolean).map((a) => ({ icon: a.icon || null, title: a.title || null, detail: a.detail || null }));
 }
 
 // ── promotion strength, ported verbatim from index.html's inferPromotion()/
