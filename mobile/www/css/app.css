@@ -341,6 +341,32 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .acct-danger-btn:active{ background:color-mix(in srgb, var(--bad) 20%, transparent); }
 .gl-locked svg{ width:40px; height:40px; opacity:.6; }
 
+/* ---- Settings screen: toggle rows (notifications) + plain link rows
+   (support/socials/app info) -- a native-feel iOS/Android switch built from
+   a checkbox + two absolutely-positioned spans rather than a plugin, since
+   nothing here needs actual native chrome, just the familiar look. ---- */
+.gl-switch-row{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; padding:.55rem 0; border-top:1px solid var(--border); cursor:pointer; }
+.gl-switch-row:first-of-type{ border-top:none; }
+.gl-switch-tx{ min-width:0; }
+.gl-switch-label{ font-weight:700; font-size:.88rem; }
+.gl-switch-sub{ font-size:.72rem; color:var(--muted); margin-top:.1rem; }
+.gl-switch{ position:relative; flex-shrink:0; display:inline-block; width:46px; height:27px; }
+.gl-switch input{ position:absolute; opacity:0; width:100%; height:100%; margin:0; cursor:pointer; z-index:1; }
+.gl-switch-track{ position:absolute; inset:0; background:var(--surface2); border:1px solid var(--border); border-radius:999px; transition:background .15s ease, border-color .15s ease; }
+.gl-switch-track::before{ content:''; position:absolute; top:2px; left:2px; width:21px; height:21px; border-radius:50%; background:#fff; transition:transform .15s ease; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+.gl-switch input:checked + .gl-switch-track{ background:var(--accent); border-color:var(--accent); }
+.gl-switch input:checked + .gl-switch-track::before{ transform:translateX(19px); }
+/* Support/Socials/App Info -- plain label rows, a subset with a value on the
+   right (support email, app version) and a subset that are full-width
+   tappable buttons with a chevron (contact/social links, privacy/terms). */
+.gl-list-row{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; padding:.7rem 0; border-top:1px solid var(--border); width:100%; background:none; border-left:none; border-right:none; border-bottom:none; text-align:left; font:inherit; color:var(--text); }
+.gl-list-row:first-of-type{ border-top:none; }
+.gl-list-row--btn{ cursor:pointer; }
+.gl-list-row--btn:active{ opacity:.7; }
+.gl-list-label{ font-weight:700; font-size:.88rem; }
+.gl-list-value{ font-size:.85rem; color:var(--muted); }
+.gl-list-go{ color:var(--muted); font-size:1.1rem; flex-shrink:0; }
+
 /* ---- Home: free-flowing dashboard sections (this week's card, movers,
    Climb teaser, roster) -- plain content separated by divider lines with a
    label per section, same treatment as Roster/Rankings/Fighter/Matchup got

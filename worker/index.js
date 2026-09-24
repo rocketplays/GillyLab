@@ -2342,6 +2342,24 @@ async function listAllUsers(env) {
 }
 const isOptedOut = async (env, email) => { const u = await getUser(env, email); return !!(u && u.emailOptOut); };
 
+/* ── Notification preferences (app Settings screen) ─────────────────────────
+ * One record per user (u.notifPrefs, alongside the legacy global u.emailOptOut
+ * above) with a category per email/push type. emailOptOut stays authoritative
+ * as a hard "no mail at all" switch (still set by the one-click unsubscribe
+ * link, which has no concept of categories) -- these per-category flags only
+ * narrow further which of the still-subscribed mail actually goes out. Push
+ * has no send pipeline behind it yet (see the /api/app/notification-prefs
+ * route's own comment) so pushPickemReminders/pushPickemResults/pushBetResults
+ * exist only to be read back by the Settings screen for now. */
+const DEFAULT_NOTIF_PREFS = {
+  emailPickemReminders: true,
+  emailPickemResults: true,
+  pushPickemReminders: true,
+  pushPickemResults: true,
+  pushBetResults: true,
+};
+function getNotifPrefs(u) { return Object.assign({}, DEFAULT_NOTIF_PREFS, (u && u.notifPrefs) || {}); }
+
 /* ── Internal usage activity (founder-only /admin/activity) ────────────────────
  * First-party, no third-party service, no ad/cross-site tracking — logs which
  * of our OWN features a logged-in account touches, so /admin/activity can show
@@ -2447,7 +2465,8 @@ async function runLockReminders(env, base, opts = {}) {
     if (await env.PICKS.get("em:l:" + card.slug + ":" + email)) continue;   // already emailed
     if (await pkGet(env, "pk:" + card.slug + ":" + email)) continue;        // already picked
     const u = await getUser(env, email);
-    if (u && u.emailOptOut) continue;                                      // unsubscribed
+    if (u && u.emailOptOut) continue;                                      // unsubscribed (global)
+    if (u && getNotifPrefs(u).emailPickemReminders === false) continue;    // opted out of this category in Settings
     targeted++;
     if (dry) continue;
     try {
@@ -2480,7 +2499,8 @@ async function runResultRecaps(env, base, opts = {}) {
       const email = key.slice(prefix.length);
       if (await env.PICKS.get("em:r:" + ev.slug + ":" + email)) continue;
       const u = await getUser(env, email);
-      if (u && u.emailOptOut) continue;
+      if (u && u.emailOptOut) continue;                                    // unsubscribed (global)
+      if (u && getNotifPrefs(u).emailPickemResults === false) continue;    // opted out of this category in Settings
       const ag = await pkGet(env, "ag:" + email);
       const score = ag && ag.byEvent && ag.byEvent[ev.slug];
       if (!score) continue;   // not graded for this user yet
@@ -2530,7 +2550,8 @@ async function runMissedNudges(env, base, opts = {}) {
       if (await env.PICKS.get("em:m:" + ev.slug + ":" + email)) continue;   // already emailed
       if (await pkGet(env, "pk:" + ev.slug + ":" + email)) continue;        // they played → recap covers them
       const u = await getUser(env, email);
-      if (u && u.emailOptOut) continue;                                    // unsubscribed
+      if (u && u.emailOptOut) continue;                                    // unsubscribed (global)
+      if (u && getNotifPrefs(u).emailPickemReminders === false) continue;  // opted out of this category in Settings
       targeted++;
       if (dry) continue;
       try {
@@ -4155,6 +4176,34 @@ export default {
           subscribed: !!(u && u.subscribed),
           memberSince: (u && u.createdAt) || null,
         }, 200, cors);
+      }
+      // App Settings screen: notification preferences. Push has no delivery
+      // pipeline yet (no Capacitor push plugin, no device-token registration,
+      // no APNs/FCM config on this Worker) -- these toggles just persist the
+      // user's choice on their KV record now, ready for whenever that native
+      // infra gets built, same shape as the email flags below which ARE live
+      // (see getNotifPrefs/DEFAULT_NOTIF_PREFS and the pk*Email send sites).
+      if (path === "/api/app/notification-prefs" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Not signed in" }, 401, cors);
+        const u = await getUser(env, s.email);
+        return json(getNotifPrefs(u), 200, cors);
+      }
+      if (path === "/api/app/notification-prefs" && request.method === "POST") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Not signed in" }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u) return json({ error: "Not signed in" }, 401, cors);
+        const body = await readBody(request);
+        const next = getNotifPrefs(u);
+        for (const k of Object.keys(DEFAULT_NOTIF_PREFS)) {
+          if (typeof body[k] === "boolean") next[k] = body[k];
+        }
+        u.notifPrefs = next;
+        await putUser(env, s.email, u);
+        return json(next, 200, cors);
       }
       // The exact CSS/markup/script the website's own /subscribe page drops
       // in for its feature-tile carousel (mockup graphics, colors, the

@@ -95,6 +95,13 @@ window.GL_API = (function(){
     account: function(){ return request('/api/app/account'); },
     changePassword: function(current, password){ return request('/api/change-password', { method:'POST', body:{ current:current, password:password } }); },
     deleteAccount: function(){ return request('/api/delete-account', { method:'POST' }); },
+    // Settings screen notification preferences -- see worker/index.js's
+    // /api/app/notification-prefs. Push categories persist now with no send
+    // pipeline behind them yet (no native push plugin/device-token
+    // registration in this app); email categories are live, read by the
+    // Pick'em reminder/recap/missed-nudge cron jobs.
+    notificationPrefs: function(){ return request('/api/app/notification-prefs'); },
+    setNotificationPrefs: function(prefs){ return request('/api/app/notification-prefs', { method:'POST', body:prefs }); },
     // Odds & Projections -- Premium-only (see worker/index.js's /api/app/odds).
     // Returns the featured odds event's matched fights, each with moneyline/
     // totals/method/doubleChance/roundProps/lineMovement + a no-vig `noVig`
