@@ -25,7 +25,7 @@ window.GL_ROUTER = (function(){
   // had rather than falling back to its route's own static default (see
   // go()'s opts.showBack override, used by Simulator's dual entry points).
   var currentShowBack = false;
-  var appEl, appScrollEl, backBtn, tabbarEl;
+  var appEl, appScrollEl, backBtn, tabbarEl, pageTitleEl;
   // go() writes location.hash itself (so the URL reflects the current
   // screen), but a hash write fires the browser's own 'hashchange' event --
   // which the router also listens for, to handle back/forward and direct
@@ -242,13 +242,24 @@ window.GL_ROUTER = (function(){
     // otherwise every tab would go dark the moment you tapped into a
     // profile, since no tab button matches a route name like "fighter".
     if (screen.tab) setActiveTab(screen.tab);
+    // Settings/Account (`hideTabbar: true` on their register() calls) are
+    // genuine sub-pages, not one of the app's main sections -- the bottom
+    // tab bar and the centered brand row both disappear on these, replaced
+    // by a plain page title using the screen's own `title`. Every other
+    // screen leaves both exactly as they were; go() re-evaluates this on
+    // every navigation (including back()), so the tab bar reappears on its
+    // own the moment you leave one of these, with no separate restore step
+    // needed.
+    tabbarEl.hidden = !!screen.hideTabbar;
+    pageTitleEl.hidden = !screen.hideTabbar;
+    if (screen.hideTabbar) pageTitleEl.textContent = screen.title || '';
     // Reset per-screen modifier classes (e.g. fullbleed) before the next
     // screen renders, so nothing leaks from whichever screen was up before.
     // The centered brand mark (see .gl-page-brand / index.html) lives on
     // appScrollEl, a sibling of appEl -- so it's untouched by a screen's own
     // full innerHTML replacement of appEl and scrolls away with the rest of
     // the page instead of sitting fixed like the top bar.
-    appScrollEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '');
+    appScrollEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '') + (screen.hideTabbar ? ' gl-app--subpage' : '');
     // Render into a FRESH child element every time, rather than handing
     // screens the same shared #app node back on every navigation. This is
     // the fix for "switching tabs fast sometimes shows the wrong page":
@@ -307,6 +318,7 @@ window.GL_ROUTER = (function(){
     appEl = document.getElementById('app');
     backBtn = document.getElementById('pageBackBtn');
     tabbarEl = document.getElementById('tabbar');
+    pageTitleEl = document.getElementById('pageTitle');
 
     // Render the free layout immediately (matches isPremium's default), then
     // wire clicks via delegation on the bar itself rather than per-button --

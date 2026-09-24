@@ -37,6 +37,13 @@
        the top of the page, gone once you scroll past it. -->
   <main class="gl-app" id="appScroll">
     <button class="gl-back-inline" id="pageBackBtn" hidden aria-label="Back">&larr; Back</button>
+    <!-- Settings/Account's own header -- see router.js's `hideTabbar` screen
+         flag: those two screens hide the tab bar and the brand row (there's
+         nowhere to tab back TO from a genuine settings-style page) and show
+         this plain page title instead, set from the screen's own `title`.
+         Everything else on the app leaves this hidden and keeps the normal
+         brand row below. -->
+    <h1 class="gl-page-title" id="pageTitle" hidden></h1>
     <div class="gl-page-brand">
       <img class="gl-page-brand-logo" src="https://gillylab.com/gl-logo.png?v=8" alt="">
       <span>GILLY<span class="a">LAB</span></span>

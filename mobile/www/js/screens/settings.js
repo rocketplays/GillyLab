@@ -9,6 +9,12 @@
 window.GL_ROUTER.register('settings', {
   title: 'Settings',
   showBack: true,
+  // A genuine sub-page, not one of the app's main sections -- router.js
+  // hides the bottom tab bar and the brand row while this is open, showing
+  // this screen's own `title` ("Settings") as a plain page title instead.
+  // Reappears automatically on back() since go() re-evaluates this flag on
+  // every navigation.
+  hideTabbar: true,
   render: function(container){
     var SUPPORT_EMAIL = 'support@gillylab.com';
     var SOCIALS = [
@@ -78,6 +84,7 @@ window.GL_ROUTER.register('settings', {
       return (
         '<div class="gl-sec">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">App Info</h2></div>' +
+          '<button type="button" class="gl-list-row gl-list-row--btn" id="aboutBtn"><div class="gl-list-label">About</div><span class="gl-list-go">›</span></button>' +
           '<button type="button" class="gl-list-row gl-list-row--btn" id="privacyBtn"><div class="gl-list-label">Privacy Policy</div><span class="gl-list-go">›</span></button>' +
           '<button type="button" class="gl-list-row gl-list-row--btn" id="termsBtn"><div class="gl-list-label">Terms of Service</div><span class="gl-list-go">›</span></button>' +
           '<div class="gl-list-row"><div class="gl-list-label">App Version</div><div class="gl-list-value">' + esc(APP_VERSION) + '</div></div>' +
@@ -129,6 +136,8 @@ window.GL_ROUTER.register('settings', {
         });
       });
 
+      var aboutBtn = container.querySelector('#aboutBtn');
+      if (aboutBtn) aboutBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_NATIVE.openExternal('https://gillylab.com/about'); });
       var privacyBtn = container.querySelector('#privacyBtn');
       if (privacyBtn) privacyBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_NATIVE.openExternal('https://gillylab.com/privacy'); });
       var termsBtn = container.querySelector('#termsBtn');

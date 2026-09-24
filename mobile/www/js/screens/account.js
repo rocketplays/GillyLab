@@ -5,6 +5,12 @@ window.GL_ROUTER.register('account', {
   // router.js to highlight. showBack gives it the plain inline back arrow
   // like any other pushed screen (fighter profile, settings, etc).
   showBack: true,
+  // A genuine sub-page, not one of the app's main sections -- router.js
+  // hides the bottom tab bar and the brand row while this is open, showing
+  // this screen's own `title` ("Account") as a plain page title instead.
+  // Reappears automatically on back() since go() re-evaluates this flag on
+  // every navigation.
+  hideTabbar: true,
   render: function(container){
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
     function fmtDate(ms){

@@ -91,6 +91,23 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    out. */
 .gl-app.gl-app--fullbleed{ padding:0; overflow:hidden; display:flex; flex-direction:column; }
 .gl-app.gl-app--fullbleed #app{ flex:1 1 auto; min-height:0; }
+/* Settings/Account (`hideTabbar: true` in router.js) -- a genuine sub-page,
+   not one of the app's main sections. The centered brand row (below) hides
+   in favor of #pageTitle, which router.js fills with the screen's own
+   `title`; the bottom tab bar hides via tabbarEl.hidden there too. */
+.gl-app--subpage .gl-page-brand{ display:none; }
+/* No tab bar showing on these screens, so reclaim the bottom inset .gl-app
+   normally reserves for it (var(--tabbar-h) + safe-area-inset-bottom) --
+   otherwise there'd be a dead strip of empty space at the bottom equal to
+   the tab bar's own height. */
+.gl-app--subpage{ bottom:0; padding-bottom:calc(env(safe-area-inset-bottom) + 2rem); }
+.gl-page-title{
+  font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.5rem;
+  margin:0 0 1.2rem; color:var(--text);
+}
+/* Same [hidden]-vs-class-selector specificity issue as .gl-back-inline/
+   .gl-tab/.gl-avatar-menu-item elsewhere in this file. */
+.gl-page-title[hidden]{ display:none; }
 /* Climb's iframe: NOT fullbleed (see climb.js) -- a normal scrolling child
    of .gl-app. This calc is only the height BEFORE climb.js's onload
    handler measures the embedded document's real content height and
@@ -190,6 +207,11 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 .gl-tab-icon{ width:23px; height:23px; }
 .gl-tab.active{ color:var(--accent); }
+/* Same [hidden]-vs-class-selector specificity issue as .gl-tab/.gl-back-inline
+   above -- .gl-tabbar's own display:flex/position:fixed beats the UA
+   [hidden] rule, so router.js's tabbarEl.hidden (Settings/Account) would
+   otherwise do nothing. */
+.gl-tabbar[hidden]{ display:none; }
 /* Same [hidden]-vs-class-selector specificity issue as .gl-back-inline
    above -- .gl-tab's own display:flex beats the UA [hidden] rule, so
    router.js's setPremiumMode() toggling .hidden on the account/more
