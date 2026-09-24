@@ -975,6 +975,54 @@ async function btFindBout(env, url, fightId, evSlug) {
   }
   return null;
 }
+// Same event.json + event-recent.json merge /api/app/bets/fights builds,
+// factored out so a single load can be reused across every bet on a
+// request instead of re-fetching per bet. Unlike that endpoint (and
+// unlike btFindBout, which only reads event.json and skips "completed"
+// events -- it's built for the "Log a bet" picker, which only cares about
+// bouts still open to bet on), this keeps every bout regardless of
+// status, because resolving a SETTLED bet's fighter names for a share
+// sheet is exactly the case that needs a decided bout to still be found.
+async function loadAllEventsMerged(env, url) {
+  const [feed, recent] = await Promise.all([
+    loadAssetJson(env, url, "/data/event.json"),
+    loadAssetJson(env, url, "/data/event-recent.json"),
+  ]);
+  const bySlug = new Map();
+  ((recent && recent.data) || []).forEach((e) => { if (e && e.slug) bySlug.set(e.slug, e); });
+  ((feed && feed.data) || []).forEach((e) => { if (e && e.slug) bySlug.set(e.slug, e); });
+  return bySlug;
+}
+// Same "<eventSlug>|<bout id or boutOrder>" fightId format as btFindBout.
+// Falls through cleanly (null) once a card ages out of event-recent.json's
+// own window -- that bet's share sheet just gets no avatar, same as any
+// other unresolvable photo.
+function findBoutInMerged(bySlug, fightId) {
+  for (const e of bySlug.values()) {
+    if (!e || !Array.isArray(e.bouts)) continue;
+    for (const b of e.bouts) {
+      if (!b || b.isCancelled || (b.fighters || []).length !== 2) continue;
+      if ((e.slug + "|" + (b.id || b.boutOrder)) !== fightId) continue;
+      return { f1: b.fighters[0].fighterName, f2: b.fighters[1].fighterName };
+    }
+  }
+  return null;
+}
+// Mirrors the site's btBetNames(): which fighter(s) a bet concerns, so a
+// share sheet can show avatar(s). A side-specific bet (ML/METHOD/ROUND/…)
+// names just that fighter; a fight-level prop (TOTAL/ROUNDSTART/DISTANCE)
+// names both, since it isn't about either one specifically. Resolves the
+// fight itself by fightId rather than parsing the bet's own free-text
+// `match` (which stores surnames only, e.g. "Plessis vs Imavov" -- fine
+// for display, but the wrong string for nameToSlug/profileSlugFor, which
+// need the fighter's full name to find the right photo).
+function btBetNames(bySlug, b) {
+  if (!b || !b.fightId || b.market === "PARLAY") return [];
+  const f = findBoutInMerged(bySlug, b.fightId);
+  if (!f) return [];
+  const side = b.params && b.params.side;
+  return (side === 1 || side === 2) ? [side === 1 ? f.f1 : f.f2] : [f.f1, f.f2];
+}
 // Has this bout already been decided? Checks the live card first (a card in
 // progress) then the finalized results. Names are safe to match on here because
 // we're scoped to ONE event, so a rematch on another card can't collide.
@@ -3961,19 +4009,37 @@ export default {
         if (!s) return json({ error: "Please log in to see this." }, 401, cors);
         const u = await getUser(env, s.email);
         if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
-        const [bets, events, closing] = await Promise.all([
+        const [bets, events, closing, profileSlugs, eventsBySlug] = await Promise.all([
           btGetBets(env, s.email), btLoadResultEvents(env, url), loadClosingOdds(env, url),
+          loadProfileSlugs(env, url), loadAllEventsMerged(env, url),
         ]);
+        // names/slugs (and per-leg names/slug) let the app's Bet Tracker share
+        // sheet (gl-sheet.js's drawBetCard) show real fighter avatars instead
+        // of every row falling back to no photo at all -- this app never had
+        // the site's client-side nameToSlug/BOUTS to resolve them itself, so
+        // it always skipped avatars entirely (see bettracker.js's own
+        // shareBetCard comment). Resolved here, once, off the same fightId
+        // every bet already carries.
         const shaped = bets.map((b) => {
           const g = btEffectiveGrade(b, events, closing);
           const o = btOutcome(b, events, closing);
           const status = g ? g.status : "pending";
+          const names = btBetNames(eventsBySlug, b);
+          const slugs = names.map((n) => profileSlugFor(n, profileSlugs) || null).filter(Boolean);
+          const legs = b.market === "PARLAY" && b.legs
+            ? b.legs.map((l) => {
+                const ln = btBetNames(eventsBySlug, { market: l.market, fightId: l.fightId, params: l.params });
+                const nm = ln[0] || null;
+                return Object.assign({}, l, { name: nm, slug: nm ? (profileSlugFor(nm, profileSlugs) || null) : null });
+              })
+            : null;
           return {
             id: b.id, kind: b.kind, verified: b.kind === "tracked",
             market: b.market, pick: b.pick, match: b.match,
             fightId: b.fightId || null, evSlug: b.evSlug || null,
             params: b.params || null,
-            legs: b.market === "PARLAY" ? (b.legs || null) : null,
+            names, slugs,
+            legs,
             legStatuses: (g && g.legStatuses) || null,
             legsIn: (g && g.legsIn) || null, legsLive: (g && g.legsLive) || null,
             odds: (g && typeof g.effOdds === "number") ? g.effOdds : b.odds,

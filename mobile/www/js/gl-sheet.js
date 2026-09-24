@@ -1048,17 +1048,44 @@
     ctx.fillText(label, W / 2, y + h / 2 + 10);
     ctx.textAlign = 'left';
   }
-  function evDrawTitle(ctx, text, cx, y0, maxW, font, lineH) {
-    ctx.font = font;
+  // "Dana White's Contender Series: Season 10, Week 7" (the app's own
+  // eventLabel/espnName format) is always too long to fit the centered
+  // title column even at the smallest readable size -- abbreviate it to
+  // "DWCS: S10 E7" (season/week as S/E) instead of shrinking or wrapping
+  // it into something unreadable. Any other event name (numbered PPV or
+  // Fight Night) passes through unchanged; evDrawTitle's own shrink-to-fit
+  // handles those.
+  function evTitleText(name) {
+    var s = String(name || '');
+    if (!/contender\s+series|dana\s+white/i.test(s)) return s;
+    var sm = /season\s*(\d+)/i.exec(s), wm = /(?:week|episode)\s*(\d+)/i.exec(s);
+    return (sm && wm) ? ('DWCS: S' + sm[1] + ' E' + wm[1]) : 'DWCS';
+  }
+  function evDrawTitle(ctx, text, cx, y0, maxW, weight, maxFontPx, lineH0) {
     var words = String(text || '').toUpperCase().split(/\s+/).filter(Boolean);
-    var lines = [];
-    var cur = [], curW = 0;
-    words.forEach(function (w, i) {
-      var wSpaceW = ctx.measureText(w + ' ').width;
-      if (cur.length && curW + ctx.measureText(w).width > maxW) { lines.push(cur); cur = []; curW = 0; }
-      cur.push(i); curW += wSpaceW;
-    });
-    if (cur.length) lines.push(cur);
+    function wrapAt(fontPx) {
+      ctx.font = weight + ' ' + fontPx + 'px ' + COND;
+      var lines = [], cur = [], curW = 0;
+      words.forEach(function (w, i) {
+        var wSpaceW = ctx.measureText(w + ' ').width;
+        if (cur.length && curW + ctx.measureText(w).width > maxW) { lines.push(cur); cur = []; curW = 0; }
+        cur.push(i); curW += wSpaceW;
+      });
+      if (cur.length) lines.push(cur);
+      return lines;
+    }
+    // Shrink the font (never truncate) until the whole title fits on 2
+    // lines. The old version drew at one fixed size and silently dropped
+    // any line past the 2nd -- fine for a short PPV title, but a longer
+    // regular Fight Night name wraps to 3+ lines at that size and lost its
+    // tail entirely instead of just running smaller.
+    var fontPx = maxFontPx, minFontPx = 22, lines = wrapAt(fontPx);
+    while (lines.length > 2 && fontPx > minFontPx) { fontPx -= 2; lines = wrapAt(fontPx); }
+    var lineH = Math.round(lineH0 * (fontPx / maxFontPx));
+    // A one-line result (most non-DWCS titles, once shrink-to-fit kicks
+    // in) would otherwise sit high with an empty second line's worth of
+    // gap below it -- recenter the block for however many lines it is.
+    var startY = y0 - (lines.length < 2 ? lineH / 2 : 0);
     lines.slice(0, 2).forEach(function (idxs, li) {
       var lineText = idxs.map(function (i) { return words[i]; }).join(' ');
       var x = cx - ctx.measureText(lineText).width / 2;
@@ -1066,7 +1093,7 @@
       idxs.forEach(function (wi) {
         var word = words[wi];
         ctx.fillStyle = wi === 0 ? TXT : ACC;
-        ctx.fillText(word, x, y0 + li * lineH);
+        ctx.fillText(word, x, startY + li * lineH);
         x += ctx.measureText(word + ' ').width;
       });
     });
@@ -1161,7 +1188,7 @@
             my += lh;
           }
           my += 44;
-          evDrawTitle(ctx, data.name || 'UFC', centerX, my + 40, centerW - 16, '800 46px ' + COND, 50);
+          evDrawTitle(ctx, evTitleText(data.name) || 'UFC', centerX, my + 40, centerW - 16, '800', 46, 50);
           ctx.textAlign = 'left';
           cy += Math.max(heroR * 2 + 92, EV_HERO_CENTER_H);
         }

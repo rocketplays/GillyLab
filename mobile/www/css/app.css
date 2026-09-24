@@ -46,7 +46,14 @@ body{ background:transparent; }
 /* No text selection / long-press callout on the chrome -- one of the
    details that makes a webview read as "a website" if left default. */
 .gl-tabbar, button{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
-button{ font-family:inherit; }
+/* This WebView keeps a plain <button>'s native-control sizing hint even
+   after `width:100%`/`display:flex` -- already worked around once with an
+   explicit calc() width on .mf-sim-bar alone (see its own comment). That
+   was a one-off patch; resetting the native appearance here fixes the
+   whole class of bug everywhere at once, including the "Matchup Analytics
+   Deep Dive" button rendering at its own (wider-than-the-card) intrinsic
+   content width and overflowing off the right edge of the screen. */
+button{ font-family:inherit; -webkit-appearance:none; appearance:none; }
 
 h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:800; text-transform:uppercase; letter-spacing:.01em; }
 

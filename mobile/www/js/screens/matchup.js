@@ -712,10 +712,10 @@ function mountMatchup(container){
   }
   function hubShowPane(){
     var key = hubState.tab + '-' + hubState.filter;
-    container.querySelectorAll('[data-mh-pane]').forEach(function(p){ p.style.display = (p.getAttribute('data-mh-pane') === key) ? '' : 'none'; });
-    var b = container.querySelector('#mh-body');
+    document.querySelectorAll('[data-mh-pane]').forEach(function(p){ p.style.display = (p.getAttribute('data-mh-pane') === key) ? '' : 'none'; });
+    var b = document.querySelector('#mh-body');
     if (b) b.scrollTop = 0;
-    var shareBtn = container.querySelector('#mhShareBtn');
+    var shareBtn = document.querySelector('#mhShareBtn');
     if (shareBtn) shareBtn.textContent = 'Generate ' + hubState.tab + ' sheet';
   }
   function hubRenderEntry(){
@@ -723,7 +723,7 @@ function mountMatchup(container){
     if (!e) return;
     var subBits = [e.weight, e.rounds ? (e.rounds + ' RDS') : ''].filter(Boolean);
     var mid = '<div class="mh-hd-vs">VS</div>' + (subBits.length ? '<div class="mh-hd-sub">' + esc(subBits.join(' · ')) + '</div>' : '');
-    var hd = container.querySelector('#mh-hd');
+    var hd = document.querySelector('#mh-hd');
     if (hd) {
       hd.innerHTML = hubSide(e.n1, e.s1, e.rec1, false) + '<div class="mh-hd-mid">' + mid + '</div>' + hubSide(e.n2, e.s2, e.rec2, true);
       // Tapping either fighter's name/photo in the modal header opens their
@@ -740,7 +740,7 @@ function mountMatchup(container){
         });
       });
     }
-    var body = container.querySelector('#mh-body');
+    var body = document.querySelector('#mh-body');
     if (body) body.innerHTML =
       '<div data-mh-pane="striking-all">' + e.striking.all + '</div>' +
       '<div data-mh-pane="striking-win" style="display:none">' + e.striking.win + '</div>' +
@@ -769,13 +769,13 @@ function mountMatchup(container){
   }
   function hubOpen(slug){
     if (!hubData[slug]) return;
-    var ov = container.querySelector('#mh-overlay'), bx = container.querySelector('#mh-box');
+    var ov = document.querySelector('#mh-overlay'), bx = document.querySelector('#mh-box');
     if (!ov || !bx) return;
     window.GL_NATIVE.tap();
     hubState = { slug: slug, tab: 'striking', filter: 'all' };
     hubRenderEntry();
-    container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-tab') === 'striking'); });
-    container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-filter') === 'all'); });
+    document.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-tab') === 'striking'); });
+    document.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-mh-filter') === 'all'); });
     ov.style.display = 'block';
     // Clears hubModalHTML()'s defensive inline `display:none` -- an inline
     // style outranks the injected hubCss's `#mh-box.mh-on{display:flex}`
@@ -794,7 +794,7 @@ function mountMatchup(container){
     hubLockScroll();
   }
   function hubClose(){
-    var ov = container.querySelector('#mh-overlay'), bx = container.querySelector('#mh-box');
+    var ov = document.querySelector('#mh-overlay'), bx = document.querySelector('#mh-box');
     if (!ov || !bx) return;
     ov.style.opacity = '0';
     bx.style.opacity = '0';
@@ -803,27 +803,27 @@ function mountMatchup(container){
     hubUnlockScroll();
   }
   function wireHub(){
-    var overlay = container.querySelector('#mh-overlay');
+    var overlay = document.querySelector('#mh-overlay');
     if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) hubClose(); });
-    var closeBtn = container.querySelector('#mhCloseBtn');
+    var closeBtn = document.querySelector('#mhCloseBtn');
     if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); hubClose(); });
-    container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(btn){
+    document.querySelectorAll('#mh-tabs .mh-tab').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
         hubState.tab = btn.getAttribute('data-mh-tab');
-        container.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        document.querySelectorAll('#mh-tabs .mh-tab').forEach(function(b){ b.classList.toggle('on', b === btn); });
         hubShowPane();
       });
     });
-    container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(btn){
+    document.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
         hubState.filter = btn.getAttribute('data-mh-filter');
-        container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        document.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b === btn); });
         hubShowPane();
       });
     });
-    var mhShareBtn = container.querySelector('#mhShareBtn');
+    var mhShareBtn = document.querySelector('#mhShareBtn');
     if (mhShareBtn) mhShareBtn.addEventListener('click', function(){
       window.GL_NATIVE.tap();
       var entry = hubData[hubState.slug];
@@ -956,9 +956,9 @@ function mountMatchup(container){
   function openBoxScoreModal(i){
     var f = statsFights[i];
     if (!f || !f.stats) return;
-    var overlay = container.querySelector('#mfBoxOverlay');
-    var box = container.querySelector('#mfBoxBox');
-    var body = container.querySelector('#mfBoxBody');
+    var overlay = document.querySelector('#mfBoxOverlay');
+    var box = document.querySelector('#mfBoxBox');
+    var body = document.querySelector('#mfBoxBody');
     if (!overlay || !box || !body) return;
     body.innerHTML = boxScoreBodyHTML(f);
     overlay.hidden = false;
@@ -966,8 +966,8 @@ function mountMatchup(container){
     boxLockScroll();
   }
   function closeBoxScoreModal(){
-    var overlay = container.querySelector('#mfBoxOverlay');
-    var box = container.querySelector('#mfBoxBox');
+    var overlay = document.querySelector('#mfBoxOverlay');
+    var box = document.querySelector('#mfBoxBox');
     if (overlay) overlay.hidden = true;
     if (box) box.hidden = true;
     boxUnlockScroll();
@@ -980,9 +980,9 @@ function mountMatchup(container){
         openBoxScoreModal(parseInt(btn.getAttribute('data-box-i'), 10));
       });
     });
-    var overlay = container.querySelector('#mfBoxOverlay');
+    var overlay = document.querySelector('#mfBoxOverlay');
     if (overlay) overlay.addEventListener('click', closeBoxScoreModal);
-    var closeBtn = container.querySelector('#mfBoxClose');
+    var closeBtn = document.querySelector('#mfBoxClose');
     if (closeBtn) closeBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); closeBoxScoreModal(); });
   }
 
@@ -1040,6 +1040,33 @@ function mountMatchup(container){
     return (data.carousel || []).filter(function(c){ return c.slug === slug; })[0] || null;
   }
 
+  // .gl-app (the app's scrolling content column) sets
+  // -webkit-overflow-scrolling:touch, and WKWebView can treat a
+  // `position:fixed` descendant of a touch-scrolling container as fixed
+  // relative to THAT container instead of the real viewport -- so a
+  // centered dialog built as part of this screen's own innerHTML (like
+  // #mh-box, the Deep Dive modal, or the box-score modal) gets clipped to
+  // .gl-app's own box, which stops short of the tab bar on purpose,
+  // instead of floating above everything. That's the "cut off at the
+  // bottom, the tab bar covers it" bug, and it isn't limited to this one
+  // modal -- anything rendered position:fixed inside .gl-app is at risk of
+  // it. gl-sheet.js's own share-sheet overlay never had this problem
+  // because open() already appends it straight to <body>; this does the
+  // same for the modals this screen builds inline, re-parenting them out
+  // of .gl-app right after each render() so they're always real children
+  // of <body> instead. Removes any copy left over from a previous render
+  // first (ids are unique, so a stale one must be this same modal, just
+  // orphaned by the last render's fresh innerHTML replacing the original).
+  function remountFixedOverlays(){
+    ['mh-overlay', 'mh-box', 'mfBoxOverlay', 'mfBoxBox'].forEach(function(id){
+      var el = container.querySelector('#' + id);
+      if (!el) return;
+      var stale = document.body.querySelector('#' + id);
+      if (stale && stale !== el) stale.remove();
+      document.body.appendChild(el);
+    });
+  }
+
   function render(){
     statsFights = [];
     var card = data.card;
@@ -1052,6 +1079,7 @@ function mountMatchup(container){
       carouselHTML() +
       hubModalHTML() +
       boxModalHTML();
+    remountFixedOverlays();
     wire();
     renderCountdown();
     if (window.__mfCountdownTimer) clearInterval(window.__mfCountdownTimer);

@@ -156,12 +156,13 @@ window.GL_BETTRACKER = (function(){
       var o = {
         pick: b.pick, match: (b.match || '').split(' · ')[0], odds: b.odds, stake: b.stake,
         status: b.status, profit: b.profit, book: b.book || '',
+        // Resolved server-side (see worker/index.js's /api/app/bets: btBetNames
+        // + profileSlugFor off the bet's own fightId) -- this screen has no
+        // client-side nameToSlug/BOUTS of its own to do it, unlike the site.
+        names: b.names || [], slugs: b.slugs || [],
       };
-      // No fighter-name/slug resolution here (unlike the site's nameToSlug) --
-      // the sheet already handles a bet with zero avatars gracefully, same as
-      // a missing photo anywhere else in the app.
       if (b.market === 'PARLAY' && Array.isArray(b.legs)){
-        o.legs = b.legs.map(function(l){ return { pick: l.pick || '', match: l.match || '', odds: l.odds }; });
+        o.legs = b.legs.map(function(l){ return { pick: l.pick || '', match: l.match || '', odds: l.odds, name: l.name || '', slug: l.slug || '' }; });
       }
       return o;
     });
