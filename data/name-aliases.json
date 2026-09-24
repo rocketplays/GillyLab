@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T01:52:47.576Z",
+  "generatedAt": "2026-09-24T16:22:51.513Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
