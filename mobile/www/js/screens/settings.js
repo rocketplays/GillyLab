@@ -50,7 +50,7 @@ window.GL_ROUTER.register('settings', {
         '<div class="gl-sec">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Email Notifications</h2></div>' +
           '<p class="gl-muted" style="margin:0 0 .5rem">We’ll only email you about the things you leave on here.</p>' +
-          switchHTML('emailPickemReminders', 'Pick’em Reminders', 'Picks-locking-soon and missed-card nudges') +
+          switchHTML('emailPickemReminders', 'Pick’em Reminders') +
           switchHTML('emailPickemResults', 'Pick’em Results', 'Your recap after a card grades') +
         '</div>'
       );
