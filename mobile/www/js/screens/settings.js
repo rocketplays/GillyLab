@@ -29,14 +29,18 @@ window.GL_ROUTER.register('settings', {
       );
     }
 
-    function notificationsHTML(){
+    function notificationsHTML(subscribed){
+      // Bet Results only makes sense for Premium -- the Bet & CLV Tracker
+      // itself (bettracker.js) is a subscribed-only feature, so a free user
+      // has no tracked bets to ever get graded and shouldn't see a toggle
+      // for a notification that can never fire for them.
       return (
         '<div class="gl-sec gl-sec--first">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Push Notifications</h2></div>' +
           '<p class="gl-muted" style="margin:0 0 .5rem">Choose what you want a push alert for. We’ll start sending these once push is live on your device.</p>' +
           switchHTML('pushPickemReminders', 'Pick’em Reminders', 'A nudge before picks lock for the next card') +
           switchHTML('pushPickemResults', 'Pick’em Results', 'When your picks are graded after a card') +
-          switchHTML('pushBetResults', 'Bet Results', 'When a tracked bet is graded win or loss') +
+          (subscribed ? switchHTML('pushBetResults', 'Bet Results', 'When a tracked bet is graded win or loss') : '') +
         '</div>' +
         '<div class="gl-sec">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Email Notifications</h2></div>' +
@@ -81,9 +85,9 @@ window.GL_ROUTER.register('settings', {
       );
     }
 
-    function render(prefs){
+    function render(prefs, subscribed){
       container.innerHTML =
-        notificationsHTML() +
+        notificationsHTML(subscribed) +
         supportHTML() +
         socialsHTML() +
         appInfoHTML();
@@ -139,9 +143,14 @@ window.GL_ROUTER.register('settings', {
     // the same gate account.js waits on before trusting isLoggedIn().
     window.GL_AUTH.ready.then(function(){
       if (window.GL_AUTH.isLoggedIn()){
-        window.GL_API.notificationPrefs().catch(function(){ return {}; }).then(render);
+        Promise.all([
+          window.GL_API.notificationPrefs().catch(function(){ return {}; }),
+          window.GL_API.account().catch(function(){ return null; }),
+        ]).then(function(results){
+          render(results[0], !!(results[1] && results[1].subscribed));
+        });
       } else {
-        render({});
+        render({}, false);
       }
     });
   }
