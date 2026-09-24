@@ -170,8 +170,14 @@ function mountMatchup(container){
     );
   }
 
+  // Keyed by 'f1::f2', populated by breakdownHTML below -- lets the "Share
+  // matchup sheet" button's click handler (see wire()) recover the full
+  // fight-tile + breakdown objects from a plain data attribute instead of
+  // serializing all of t.stats/lean/path into the DOM.
+  var shareMatchupCache = {};
   function breakdownHTML(f, t, deepDive, eventSlug){
     if (!t) return lockedTeaserHTML();
+    shareMatchupCache[f.f1 + '::' + f.f2] = { f: f, breakdown: t };
     var sA = surname(f.f1), sB = surname(f.f2);
     var parts = [];
     var lean = t.lean || {};
@@ -249,7 +255,13 @@ function mountMatchup(container){
     var ddBtn = (deepDive && deepDive.available && eventSlug)
       ? '<button type="button" class="mf-dd-bar" data-deepdive="' + esc(eventSlug) + '">Matchup Analytics Deep Dive <span class="mf-dd-go">›</span></button>'
       : '';
-    return ddBtn + parts.join('');
+    // Mirrors the site's Fight Info "Generate matchup sheet" button
+    // (index.html's ~133400-133436) -- a tale-of-the-tape/head-to-head/
+    // style/path share sheet built from this exact panel's own data.
+    var shareBtn = window.GL_SHEET
+      ? '<button type="button" class="gl-sheet-btn" data-share-mm="' + esc(f.f1 + '::' + f.f2) + '">Generate matchup sheet</button>'
+      : '';
+    return ddBtn + parts.join('') + shareBtn;
   }
 
   // Ported from index.html's glAbbrMethod() (~132434) -- same abbreviations
@@ -664,6 +676,7 @@ function mountMatchup(container){
           '<button type="button" class="mh-filter-btn" data-mh-filter="loss">Losses</button>' +
         '</div>' +
         '<div class="mh-body" id="mh-body"></div>' +
+        (window.GL_SHEET ? '<button type="button" class="gl-sheet-btn" id="mhShareBtn" style="margin:0 1rem .9rem">Generate sheet</button>' : '') +
       '</div>'
     );
   }
@@ -700,6 +713,8 @@ function mountMatchup(container){
     container.querySelectorAll('[data-mh-pane]').forEach(function(p){ p.style.display = (p.getAttribute('data-mh-pane') === key) ? '' : 'none'; });
     var b = container.querySelector('#mh-body');
     if (b) b.scrollTop = 0;
+    var shareBtn = container.querySelector('#mhShareBtn');
+    if (shareBtn) shareBtn.textContent = 'Generate ' + hubState.tab + ' sheet';
   }
   function hubRenderEntry(){
     var e = hubData[hubState.slug];
@@ -804,6 +819,33 @@ function mountMatchup(container){
         hubState.filter = btn.getAttribute('data-mh-filter');
         container.querySelectorAll('#mh-filter .mh-filter-btn').forEach(function(b){ b.classList.toggle('on', b === btn); });
         hubShowPane();
+      });
+    });
+    var mhShareBtn = container.querySelector('#mhShareBtn');
+    if (mhShareBtn) mhShareBtn.addEventListener('click', function(){
+      window.GL_NATIVE.tap();
+      var entry = hubData[hubState.slug];
+      if (!entry || !window.GL_SHEET) return;
+      var tab = hubState.tab;   // 'striking' or 'grappling' -- captured before any await
+      var info = { weightClass: entry.weight || null, event: null, date: null };
+      var run = function(sheet){
+        if (!sheet) { mhShareBtn.textContent = 'No ' + tab + ' data for this bout'; return; }
+        var fn = tab === 'grappling' ? window.GL_SHEET.grappling : window.GL_SHEET.striking;
+        fn(entry.n1, entry.n2, entry.s1, entry.s2, sheet, info).catch(function(){});
+      };
+      // The baked-in main-event hub entry (see load()'s hubData[card.slug] =
+      // res.hub) never carried the raw sheet field -- only the on-demand
+      // per-fight fetch (data-dd-f1 handler above) attaches it. Fetch it here
+      // the same way, once, and cache it on the entry for next time.
+      if (entry.sheet) { run(entry.sheet); return; }
+      var prevText = mhShareBtn.textContent;
+      mhShareBtn.textContent = 'Loading…'; mhShareBtn.disabled = true;
+      window.GL_API.deepDiveFight(entry.n1, entry.n2).then(function(res){
+        mhShareBtn.disabled = false; mhShareBtn.textContent = prevText;
+        entry.sheet = (res && res.sheet) || null;
+        run(entry.sheet);
+      }).catch(function(){
+        mhShareBtn.disabled = false; mhShareBtn.textContent = prevText;
       });
     });
   }
@@ -960,8 +1002,24 @@ function mountMatchup(container){
         '</div>' +
         (card ? '<div class="mf-event-countdown"><div class="mf-cd-label">Time Until Event</div><div class="mf-cd-time" id="mfCountdown">—</div></div>' : '') +
         (card ? eventTipHTML() : '') +
+        // Mirrors the site's "Share this card" button on the home page's
+        // featured event -- a poster of the whole card, not any one user's
+        // picks (see gl-sheet.js's eventCard()). Premium-only, same gate as
+        // every other GL_SHEET button on this screen -- window.GL_SHEET
+        // itself only ships in the premium bundle path this file already
+        // assumes for `subscribed`.
+        (card && subscribed && window.GL_SHEET && (card.fights || []).length
+          ? '<button type="button" class="gl-sheet-btn" id="mfShareCard">Share this card</button>' : '') +
       '</div>'
     );
+  }
+  function shareEventCard(card){
+    if (!window.GL_SHEET || !card) return;
+    window.GL_NATIVE.tap();
+    var fights = (card.fights || []).map(function(f){
+      return { f1: f.f1, f2: f.f2, s1: f.s1, s2: f.s2, isMain: !!f.isMain, isMainCard: !!f.isMainCard };
+    });
+    window.GL_SHEET.eventCard({ name: card.event, fights: fights }).catch(function(){});
   }
 
   function render(){
@@ -1089,6 +1147,24 @@ function mountMatchup(container){
       btn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
     });
 
+    var shareCardBtn = container.querySelector('#mfShareCard');
+    if (shareCardBtn) shareCardBtn.addEventListener('click', function(){ shareEventCard(data.card); });
+
+    container.querySelectorAll('[data-share-mm]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        window.GL_NATIVE.tap();
+        var entry = shareMatchupCache[btn.getAttribute('data-share-mm')];
+        if (!entry || !window.GL_SHEET) return;
+        var card = data.card;
+        window.GL_SHEET.matchup(entry.f, entry.breakdown, {
+          event: card && card.event,
+          date: card && fmtDate(card.prelimsAt || card.date),
+          weightClass: entry.f.weight || null,
+        }).catch(function(){});
+      });
+    });
+
     container.querySelectorAll('.mf-namebtn[data-slug]').forEach(function(btn){
       btn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
@@ -1165,6 +1241,11 @@ function mountMatchup(container){
             rounds: parseInt(btn.getAttribute('data-dd-rounds'), 10) || null,
             striking: res.striking,
             grappling: res.grappling,
+            // The raw cross-tab (cells/shadeCells/gradeAllow) worker/deep-dive-
+            // data.js's computeDeepDive now attaches alongside the pre-rendered
+            // striking/grappling HTML -- GL_SHEET.striking()/grappling() draw
+            // straight from this instead of re-parsing the HTML panes.
+            sheet: res.sheet || null,
           };
           hubOpen(key);
         }).catch(function(){

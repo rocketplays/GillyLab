@@ -115,10 +115,43 @@ function mountPickem(container){
         '<div class="gl-muted" id="pkBarInfo">0/' + card.bouts.length + ' picks · +0 possible</div>' +
         '<button type="button" class="gl-btn gl-btn-primary" id="pkSubmit" disabled>Submit picks</button>' +
       '</div>' +
+      (window.GL_SHEET ? '<button type="button" class="gl-sheet-btn" id="pkShareBtn" hidden>Share picks</button>' : '') +
       '<div id="pkPanel" hidden></div>';
 
     renderBouts();
     wireShell();
+    updateShareBtn();
+  }
+  // Mirrors the site's data-pk-share button on the live event page -- shown
+  // once picks are actually submitted, since a share sheet of half-finished
+  // picks isn't useful. Unlike the site (whose one button flips between
+  // "Share picks"/"Share results" depending on whether BOUTS.every(isDone)),
+  // this screen never shows graded results itself -- that's My History's job
+  // (see the separate share button in showHistoryEvent below) -- so here it's
+  // always "Share picks", ungraded.
+  function updateShareBtn(){
+    var btn = container.querySelector('#pkShareBtn');
+    if (!btn) return;
+    btn.hidden = !submitted;
+  }
+  function sharePicks(){
+    if (!window.GL_SHEET) return;
+    window.GL_NATIVE.tap();
+    var picksOut = card.bouts.map(function(b){
+      var p = picks[b.id];
+      if (!p || !p.winner) return null;
+      var winnerIsF1 = p.winner === b.f1;
+      return {
+        winner: p.winner, loser: winnerIsF1 ? b.f2 : b.f1,
+        winnerSlug: winnerIsF1 ? b.s1 : b.s2, loserSlug: winnerIsF1 ? b.s2 : b.s1,
+        method: p.method || null, round: p.round || null, confidence: p.confidence || 'Med',
+      };
+    }).filter(Boolean);
+    if (!picksOut.length) return;
+    window.GL_SHEET.pickem({
+      name: name, eventName: card.name, eventDate: card.date,
+      graded: false, picks: picksOut,
+    }).catch(function(){});
   }
 
   function renderBouts(){
@@ -245,6 +278,8 @@ function mountPickem(container){
 
   function wireShell(){
     updateBar();
+    var shareBtn = container.querySelector('#pkShareBtn');
+    if (shareBtn) shareBtn.addEventListener('click', sharePicks);
     var nameSave = container.querySelector('#pkNameSave');
     if (nameSave){
       nameSave.addEventListener('click', function(){
@@ -295,6 +330,7 @@ function mountPickem(container){
           inFlight = false;
           if (res && res.ok){ submitted = true; dirty = false; }
           updateBar();
+          updateShareBtn();
         }).catch(function(err){
           inFlight = false;
           if (err && err.data && err.data.error === 'needs-name'){ name = null; renderShell(); return; }
@@ -514,8 +550,34 @@ function mountPickem(container){
       var body = '<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">' + esc(res.event || slug) + '</div>' +
         '<div class="pk-hist-ev-total ' + (total >= 0 ? 'pos' : 'neg') + '">' + (total > 0 ? '+' : '') + total + ' pts</div></div>' +
         (res.graded ? '' : '<div class="pk-note pk-locked" style="margin:0 0 .6rem">Not fully graded yet — results still coming in.</div>') +
-        '<div class="pk-hist-bouts">' + rows + '</div>';
+        '<div class="pk-hist-bouts">' + rows + '</div>' +
+        // Mirrors the site's My History "Share results" button
+        // (sharePickemHistory()) -- only offered once the card is fully
+        // graded, same gate as the site's own version. No winner/loser slugs
+        // in this history payload (gradeCard's bouts carry names only, not
+        // s1/s2) so the sheet's avatars fall back to initials here -- same
+        // graceful-degradation the sheet already does for any missing photo.
+        (window.GL_SHEET && res.graded && bouts.length
+          ? '<button type="button" class="gl-sheet-btn" id="pkHistShareBtn">Share results</button>' : '');
       showPanel(body, { backLabel: '← All cards', onBack: backToList });
+      var histShareBtn = container.querySelector('#pkHistShareBtn');
+      if (histShareBtn) histShareBtn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        var picksOut = bouts.map(function(b){
+          return {
+            winner: b.winner, loser: b.winner === b.f1 ? b.f2 : b.f1,
+            winnerSlug: null, loserSlug: null,
+            method: b.method || null, round: b.round || null, confidence: b.confidence || 'Med',
+            voided: !!b.voided, winnerHit: !!b.winnerHit, methodHit: !!b.methodHit, roundHit: !!b.roundHit,
+            actualWinner: b.winnerHit ? b.winner : null,
+            points: b.points || 0,
+          };
+        });
+        window.GL_SHEET.pickem({
+          name: name, eventName: res.event || slug, eventDate: res.date || '',
+          graded: true, totalPoints: total, picks: picksOut,
+        }).catch(function(){});
+      });
     }).catch(function(){
       showPanel('<p class="gl-error">Couldn’t load that card.</p>', { backLabel: '← All cards', onBack: backToList });
     });
@@ -540,7 +602,7 @@ function mountPickem(container){
     }
     if (mine && mine.locked) locked = true;
     renderShell();
-    if (mine && mine.record) { submitted = true; updateBar(); }
+    if (mine && mine.record) { submitted = true; updateBar(); updateShareBtn(); }
   }).catch(function(){
     container.innerHTML = '<p class="gl-error">Couldn’t load this week’s card -- check your connection and try again.</p>';
   });

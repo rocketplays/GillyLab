@@ -1742,6 +1742,23 @@ body #mh-box{
   text-align:center; opacity:0; pointer-events:none; transition:opacity .2s;
 }
 .pl-toast.show{ opacity:1; }
+
+/* GL_SHEET overlay (mobile/www/js/gl-sheet.js) -- reuses .pl-share/.pl-act
+   from the parlay slip above (same overlay chrome, same buttons), adding
+   only the scrollable canvas-preview frame the parlay slip doesn't need
+   (its card renders inline; a share sheet is a tall 1080x1920 image that
+   has to scroll inside a fixed-height preview) and the in-panel "Generate
+   sheet" trigger buttons themselves. */
+.gl-sheet-inner{ max-width:460px; }
+.gl-sheet-preview{ max-height:62vh; overflow-y:auto; border-radius:12px; border:1px solid var(--border); background:#0e1014; }
+.gl-sheet-preview img{ display:block; width:100%; height:auto; }
+.gl-sheet-btn{
+  display:block; width:100%; margin-top:.7rem; background:color-mix(in srgb, var(--accent) 10%, transparent);
+  border:1px solid var(--accent); color:var(--accent); font:inherit; font-size:.72rem; font-weight:800;
+  text-transform:uppercase; letter-spacing:.05em; padding:.65rem 1rem; border-radius:8px; text-align:center;
+}
+.gl-sheet-btn:disabled{ opacity:.5; }
+.gl-sheet-btn.busy{ animation:plBusyPulse .9s ease-in-out infinite; }
 @keyframes plFadeIn{ from{ opacity:0; } to{ opacity:1; } }
 @keyframes plBusyPulse{ 0%,100%{ opacity:.45; } 50%{ opacity:.8; } }
 

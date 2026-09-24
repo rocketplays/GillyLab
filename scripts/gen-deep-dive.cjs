@@ -195,6 +195,48 @@ const entryJS =
   '  }\n' +
   '  return { striking: note + mhStriking(A, B, nameA, nameB), grappling: note + mhGrappling(A, B, nameA, nameB) };\n' +
   '}\n' +
+  '\n' +
+  '// ── raw grid + shading for the app\'s share-sheet canvas ──────────────────\n' +
+  '// mhStriking/mhGrappling above return HTML with the shading already baked in\n' +
+  '// as inline style attributes (mhGrid()\'s own green/red backgrounds) -- fine\n' +
+  '// for a DOM the client renders, useless for a <canvas> the client draws\n' +
+  '// itself (see mobile/www/js/gl-sheet.js\'s drawStriking/drawGrappling, ported\n' +
+  '// from GL_SHEET in index.html but fed real numbers over the wire instead of\n' +
+  '// reading FIGHT_GRID/FIGHT_STATS globals the app never loads). Recomputes\n' +
+  '// the SAME verdicts mhGrid()/_mhGrade() already compute for the HTML path,\n' +
+  '// just returned as plain numbers/strings instead of baked into a style\n' +
+  '// attribute or a coloured <div> -- same floor (_MH_FLOOR), same median/\n' +
+  '// spread lookup (mhNorm), same two-bar grade test (_mhGrade), so a share\n' +
+  '// sheet can never show a shade the modal itself would disagree with.\n' +
+  "const SHEET_LANES = [['dist','head'],['dist','body'],['dist','leg'],['ground','head']];\n" +
+  'function sheetSide(name) {\n' +
+  '  const G = _ddGrid(name, undefined);\n' +
+  '  if (!G) return null;\n' +
+  '  const shadeCells = [], shadeCellsD = [];\n' +
+  '  for (let i = 0; i < 9; i++) {\n' +
+  '    const acc = G.cells[i], def = G.cellsD[i];\n' +
+  '    const an = acc[1], dn = def[1];\n' +
+  '    const ar = an ? acc[0]/an : 0, dr = dn ? def[0]/dn : 0;\n' +
+  "    const ab = an >= _MH_FLOOR ? mhNorm(name, 'acc', i) : null;\n" +
+  "    const db = dn >= _MH_FLOOR ? mhNorm(name, 'allow', i) : null;\n" +
+  '    shadeCells.push(ab ? Math.max(-1, Math.min(1, ((ar - ab.med) / ab.spread) / 2)) : null);\n' +
+  '    // Inverted, same as mhGrid()\'s own `if (invert) z = -z` for cellsD --\n' +
+  '    // getting hit less than your peers is the good end, so the sign flips.\n' +
+  '    shadeCellsD.push(db ? -Math.max(-1, Math.min(1, ((dr - db.med) / db.spread) / 2)) : null);\n' +
+  '  }\n' +
+  '  const gradeAllow = SHEET_LANES.map(([p, t]) => {\n' +
+  '    const i = _MH_GI(p, t), cell = G.cellsD[i], n = cell[1];\n' +
+  '    if (n < _MH_FLOOR) return null;\n' +
+  '    const r = cell[0] / n;\n' +
+  "    return _mhGrade(r, n, mhNorm(name, 'allow', i), true);\n" +
+  '  });\n' +
+  '  return Object.assign({}, G, { shadeCells, shadeCellsD, gradeAllow });\n' +
+  '}\n' +
+  'function sheetGrid(nameA, nameB) {\n' +
+  '  const A = sheetSide(nameA), B = sheetSide(nameB);\n' +
+  '  return (A && B) ? { A, B } : null;\n' +
+  '}\n' +
+  '\n' +
   '// Cheap per-fighter-pair check — two Set lookups through the same\n' +
   '// alias-normalizing glHasGrid() the hub itself gates on (see index.html\'s\n' +
   '// own comment: raw-string joins on this have broken three times already).\n' +
@@ -218,7 +260,7 @@ const entryJS =
   '    striking[filter] = r.striking;\n' +
   '    grappling[filter] = r.grappling;\n' +
   '  }\n' +
-  '  return { n1: nameA, n2: nameB, striking, grappling };\n' +
+  '  return { n1: nameA, n2: nameB, striking, grappling, sheet: sheetGrid(nameA, nameB) };\n' +
   '}\n';
 
 const mod =

@@ -925,6 +925,7 @@ window.GL_SIMULATOR = (function(){
         ddBarHTML(nameA, nameB) +
         breakdownHTML(nameA, nameB, breakdown) +
         '<p class="gl-muted" style="margin-top:1rem;font-size:.72rem">Based on ' + result.n.toLocaleString() + ' simulated fights. A projection, not a prediction — anyone can win on the night.</p>' +
+        (window.GL_SHEET ? '<button type="button" class="gl-sheet-btn" id="simShareBtn">Share this simulation</button>' : '') +
       '</div>'
     );
   }
@@ -1046,6 +1047,11 @@ window.GL_SIMULATOR = (function(){
         });
         var ddBtn = output.querySelector('#simDDBtn');
         if (ddBtn) ddBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); hubOpen(); });
+        var shareBtn = output.querySelector('#simShareBtn');
+        if (shareBtn) shareBtn.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          window.GL_SHEET.sim(res.a, res.b, res.slugA, res.slugB, res.result, rounds).catch(function(){});
+        });
         runBtn.disabled = false;
         runBtn.textContent = 'Run It Again';
       }).catch(function(err){
