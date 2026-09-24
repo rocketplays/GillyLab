@@ -318,12 +318,21 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   border:1px solid var(--border); border-radius:999px; padding:.3rem .7rem;
 }
 .acct-badge--premium{ color:var(--on-accent); background:var(--accent); border-color:var(--accent); }
-/* One display name across Pick'em + Bet Tracker leaderboards (the pf:<email>
-   record behind /api/pickem/name) -- this row sits at the top of Account
-   Settings, above Change Password, since it's the setting people are most
-   likely to be missing entirely (no default name is ever assigned). */
-.acct-uname-row{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; margin-top:.6rem; }
-.acct-uname-val{ font-weight:700; font-size:.95rem; margin-top:.15rem; }
+/* Account Settings' Username + Password rows -- a shared divider-list row
+   shape (label/value on the left, a small action button on the right),
+   same pattern as Settings' own .gl-switch-row/.gl-list-row, so the two
+   settings read as one consistent list instead of Username's inline-button
+   row sitting above a visually unrelated full-width Change Password
+   button. .gl-btn's app-wide width:100% is overridden here since these
+   buttons sit beside text in a row, not stacked full-width like most of
+   the app's other buttons. */
+.acct-setting-row{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; padding:.85rem 0; border-top:1px solid var(--border); }
+.acct-setting-row:first-of-type{ border-top:none; }
+.acct-setting-tx{ min-width:0; }
+.acct-setting-val{ font-weight:700; font-size:.92rem; margin-top:.15rem; }
+.acct-setting-btn{ width:auto; flex-shrink:0; padding:.55rem 1rem; font-size:.76rem; }
+.acct-setting-form{ padding-bottom:1rem; }
+.acct-setting-form .gl-field:last-of-type{ margin-bottom:0; }
 .acct-stat{
   display:flex; align-items:baseline; justify-content:space-between; gap:.6rem;
   padding:.55rem 0; border-top:1px solid var(--border);

@@ -52,37 +52,44 @@ window.GL_ROUTER.register('account', {
       );
     }
 
-    // The site's single display-name record (pf:<email> in KV, via
-    // /api/pickem/name) is what Pick'em, the Bet & CLV Tracker leaderboard,
-    // and any share-sheet identity all read -- one name everywhere, same as
-    // on gillylab.com's own pkShowNameModal. hasName drives whether this
-    // shows "Set a Username" (never set one) or "Change" (already has one).
-    function usernameHTML(name){
-      var hasName = !!name;
+    // A single "label/value on the left, small action button on the right"
+    // row shape, shared by Username and Password below so the two read as
+    // one consistent list instead of two different button styles (a row
+    // with an inline button, then a separate full-width block button)
+    // stacked on top of each other with no visual relationship between
+    // them. Matches the divider-list pattern Settings' own rows use
+    // (.gl-switch-row/.gl-list-row in app.css).
+    function settingRowHTML(id, label, value, btnLabel){
       return (
-        '<div class="acct-uname-row">' +
-          '<div>' +
-            '<div class="gl-label" style="margin:0">Username</div>' +
-            '<div class="acct-uname-val">' + (hasName ? esc(name) : 'Not set') + '</div>' +
+        '<div class="acct-setting-row">' +
+          '<div class="acct-setting-tx">' +
+            '<div class="gl-label" style="margin:0">' + esc(label) + '</div>' +
+            '<div class="acct-setting-val">' + esc(value) + '</div>' +
           '</div>' +
-          '<button type="button" class="gl-btn gl-btn-outline" id="toggleNameBtn">' + (hasName ? 'Change' : 'Set Username') + '</button>' +
-        '</div>' +
-        '<div id="nameForm" hidden style="margin-top:.8rem">' +
-          '<p class="gl-muted" style="margin:0 0 .5rem">This is how you appear on the Pick’em and Bet Tracker leaderboards — your email is never shown. 2–20 characters.</p>' +
-          '<input type="text" class="gl-field" id="nameInput" maxlength="20" placeholder="e.g. ChokeArtist" value="' + esc(name || '') + '">' +
-          '<div class="gl-muted" id="nameMsg" style="margin:.5rem 0"></div>' +
-          '<button type="button" class="gl-btn gl-btn-primary" id="nameSaveBtn">Save Username</button>' +
+          '<button type="button" class="gl-btn gl-btn-outline acct-setting-btn" id="' + esc(id) + '">' + esc(btnLabel) + '</button>' +
         '</div>'
       );
     }
 
+    // The site's single display-name record (pf:<email> in KV, via
+    // /api/pickem/name) is what Pick'em, the Bet & CLV Tracker leaderboard,
+    // and any share-sheet identity all read -- one name everywhere, same as
+    // on gillylab.com's own pkShowNameModal. hasName drives whether the row
+    // shows "Set a Username" (never set one) or "Change" (already has one).
     function settingsHTML(name){
+      var hasName = !!name;
       return (
         '<div class="gl-sec">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Account Settings</h2></div>' +
-          usernameHTML(name) +
-          '<button type="button" class="gl-btn gl-btn-outline" id="togglePwBtn" style="margin-top:1rem">Change Password</button>' +
-          '<div id="pwForm" hidden style="margin-top:.8rem">' +
+          settingRowHTML('toggleNameBtn', 'Username', hasName ? name : 'Not set', hasName ? 'Change' : 'Set Username') +
+          '<div id="nameForm" class="acct-setting-form" hidden>' +
+            '<p class="gl-muted" style="margin:0 0 .5rem">This is how you appear on the Pick’em and Bet Tracker leaderboards — your email is never shown. 2–20 characters.</p>' +
+            '<input type="text" class="gl-field" id="nameInput" maxlength="20" placeholder="e.g. ChokeArtist" value="' + esc(name || '') + '">' +
+            '<div class="gl-muted" id="nameMsg" style="margin:.5rem 0"></div>' +
+            '<button type="button" class="gl-btn gl-btn-primary" id="nameSaveBtn">Save Username</button>' +
+          '</div>' +
+          settingRowHTML('togglePwBtn', 'Password', '••••••••', 'Change') +
+          '<div id="pwForm" class="acct-setting-form" hidden>' +
             '<label class="gl-label">Current Password</label>' +
             '<input type="password" class="gl-field" id="pwCurrent" autocomplete="current-password">' +
             '<label class="gl-label">New Password</label>' +
@@ -186,7 +193,7 @@ window.GL_ROUTER.register('account', {
           currentName = res && res.name;
           nameForm.hidden = true;
           toggleNameBtn.textContent = 'Change';
-          var valEl = container.querySelector('.acct-uname-val');
+          var valEl = toggleNameBtn.closest('.acct-setting-row').querySelector('.acct-setting-val');
           if (valEl) valEl.textContent = currentName;
         }).catch(function(err){
           msg.className = 'gl-error';
@@ -210,7 +217,7 @@ window.GL_ROUTER.register('account', {
       if (toggleBtn && pwForm) toggleBtn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
         pwForm.hidden = !pwForm.hidden;
-        toggleBtn.textContent = pwForm.hidden ? 'Change Password' : 'Cancel';
+        toggleBtn.textContent = pwForm.hidden ? 'Change' : 'Cancel';
       });
       var pwSaveBtn = container.querySelector('#pwSaveBtn');
       if (pwSaveBtn) pwSaveBtn.addEventListener('click', function(){
