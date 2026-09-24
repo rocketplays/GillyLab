@@ -12,9 +12,9 @@ window.GL_ROUTER.register('settings', {
   render: function(container){
     var SUPPORT_EMAIL = 'support@gillylab.com';
     var SOCIALS = [
-      { label: 'X / Twitter', url: 'https://x.com/thegillylab' },
-      { label: 'Instagram', url: 'https://instagram.com/thegillylab' },
-      { label: 'Website', url: 'https://gillylab.com' },
+      { label: 'X / Twitter', handle: '@thegillylab', url: 'https://x.com/thegillylab' },
+      { label: 'Instagram', handle: '@thegillylab', url: 'https://instagram.com/thegillylab' },
+      { label: 'gillylab.com', handle: null, url: 'https://gillylab.com' },
     ];
     var APP_VERSION = '0.1.0';   // mirrors mobile/package.json's "version" -- bump both together
 
@@ -37,7 +37,6 @@ window.GL_ROUTER.register('settings', {
       return (
         '<div class="gl-sec gl-sec--first">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Push Notifications</h2></div>' +
-          '<p class="gl-muted" style="margin:0 0 .5rem">Choose what you want a push alert for. We’ll start sending these once push is live on your device.</p>' +
           switchHTML('pushPickemReminders', 'Pick’em Reminders', 'A nudge before picks lock for the next card') +
           switchHTML('pushPickemResults', 'Pick’em Results', 'When your picks are graded after a card') +
           (subscribed ? switchHTML('pushBetResults', 'Bet Results', 'When a tracked bet is graded win or loss') : '') +
@@ -64,7 +63,8 @@ window.GL_ROUTER.register('settings', {
 
     function socialsHTML(){
       var rows = SOCIALS.map(function(s, i){
-        return '<button type="button" class="gl-list-row gl-list-row--btn" data-social="' + i + '"><div class="gl-list-label">' + esc(s.label) + '</div><span class="gl-list-go">›</span></button>';
+        var label = s.handle ? (s.label + ' - ' + s.handle) : s.label;
+        return '<button type="button" class="gl-list-row gl-list-row--btn" data-social="' + i + '"><div class="gl-list-label">' + esc(label) + '</div><span class="gl-list-go">›</span></button>';
       }).join('');
       return (
         '<div class="gl-sec">' +
