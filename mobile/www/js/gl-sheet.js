@@ -1472,12 +1472,13 @@
     // Bet Tracker: a pending slip while an event's bets are still live, or a
     // results card once every bet on it has settled -- same sheet, same
     // caller (see bettracker.js's shareCard()), just switched by data.results.
-    // Unlike every sheet above, this one keeps a real shareText: the site's
-    // own comment on betHistory/betCard is explicit that these two are the
-    // exception to "paywalled sheets don't get a link" -- Save-photo-first
-    // UX, but a Share button stays available.
+    // Save-photo only (null shareText), same as every other sheet in this
+    // app -- the site keeps a real shareText here, but every one of this
+    // app's sheets is paywalled premium content the recipient of a link
+    // couldn't open anyway, so there's no reason for this one alone to
+    // behave differently from matchup/sim/striking/grappling/pickem/eventCard.
     betCard: function (data) {
-      return open(function () { return drawBetCard(data || {}); }, 'gillylab-my-card.png', 'My card on gillylab.com');
+      return open(function () { return drawBetCard(data || {}); }, 'gillylab-my-card.png', null);
     },
     close: close
   };
