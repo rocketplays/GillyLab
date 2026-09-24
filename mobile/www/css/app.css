@@ -1316,22 +1316,14 @@ body #mh-box{
   top:calc(50% + (env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 2);
   max-height:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
 }
-/* The site's own #mh-box never has anything after .mh-body -- this app
-   bolts on one more sibling, #mhShareBtn ("Generate sheet"), that the
-   shipped hubCss knows nothing about. .mh-body{flex:1;min-height:0} is
-   supposed to shrink and leave room for it, but #mh-box's height comes
-   only from max-height (never a definite height), and some WebKit builds
-   don't reliably reserve space for a flex sibling added after a
-   flex:1;min-height:0 item in that setup -- the practical result users hit
-   is the button rendering far enough down to be clipped by #mh-box's own
-   overflow:hidden, "cut off at the bottom" or invisible entirely. Pin
-   mh-body's own max-height explicitly instead of trusting flex-shrink to
-   find the room on its own -- 230px covers mh-hd + mh-tabs + mh-filter +
-   mhShareBtn's own height plus margin, comfortably more than any of them
-   actually need. */
-body #mh-box #mh-body{
-  max-height:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem - 230px);
-}
+/* #mhShareBtn ("Generate sheet") used to be bolted on as a sibling AFTER
+   .mh-body, which needed artificial height reserved for it here. It now
+   renders as the last thing INSIDE #mh-body's own scrollable content (see
+   matchup.js's hubRenderEntry()) -- on purpose, so it only appears once the
+   user scrolls to the bottom of the striking/grappling data instead of
+   sitting permanently visible. .mh-body{flex:1;min-height:0} from the
+   shipped hubCss already gives it the right height with nothing extra
+   needed here. */
 .fp-stat-hd{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding-right:1.6rem; }
 .fp-stat-hd-side{ display:flex; align-items:center; gap:.5rem; min-width:0; flex:1; }
 .fp-stat-hd-side.r{ justify-content:flex-end; }
@@ -1379,14 +1371,15 @@ body #mh-box #mh-body{
 .sim-res-top{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.9rem; }
 .sim-res-fighter{ display:flex; align-items:center; gap:.6rem; min-width:0; }
 .sim-res-fighter.right{ flex-direction:row-reverse; text-align:right; }
-/* .sim-res-name's own overflow:hidden/ellipsis does nothing unless ITS
-   flex-item ancestor is also allowed to shrink below its content's natural
-   width -- a plain flex child defaults to min-width:auto (content-based),
-   not 0, so this wrapper refused to shrink and just pushed past its side
-   of .sim-res-top instead, overlapping the other fighter's name/avatar for
-   any two longer names. Same fix as .sim-res-fighter's own min-width:0. */
+/* A plain flex child defaults to min-width:auto (content-based), not 0, so
+   without this the wrapper refused to shrink below a long name's natural
+   width and pushed past its side of .sim-res-top, overlapping the other
+   fighter's name/avatar. .sim-res-name itself wraps (white-space:normal)
+   rather than truncating, so full names always show -- this min-width:0
+   is what lets that wrapping actually happen inside the flex layout instead
+   of the name just forcing the row wider. */
 .sim-res-tx{ min-width:0; }
-.sim-res-name{ font-weight:800; font-size:.92rem; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sim-res-name{ font-weight:800; font-size:.92rem; line-height:1.15; white-space:normal; word-break:break-word; }
 .sim-res-fighter.fav .sim-res-name{ color:var(--accent); }
 .sim-res-count{ font-size:.68rem; color:var(--muted); margin-top:.1rem; }
 .sim-result-cols{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.2rem; }

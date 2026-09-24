@@ -678,7 +678,6 @@ function mountMatchup(container){
           '<button type="button" class="mh-filter-btn" data-mh-filter="loss">Losses</button>' +
         '</div>' +
         '<div class="mh-body" id="mh-body"></div>' +
-        (window.GL_SHEET ? '<button type="button" class="gl-sheet-btn" id="mhShareBtn" style="margin:0 1rem .9rem">Generate sheet</button>' : '') +
       '</div>'
     );
   }
@@ -741,13 +740,27 @@ function mountMatchup(container){
       });
     }
     var body = document.querySelector('#mh-body');
+    // #mhShareBtn lives INSIDE #mh-body now, as the last thing in the
+    // scrollable content, not as a fixed sibling below it -- the user
+    // explicitly didn't want it sitting permanently visible at the bottom
+    // of the modal ("not sticky... I don't want them there until you get
+    // to the bottom"). It also fixes a separate, real width bug: this
+    // button previously carried its own `margin:0 1rem .9rem` on top of
+    // .gl-sheet-btn's `width:100%` -- a non-auto width doesn't shrink to
+    // make room for margins, so the two together made its margin box
+    // overflow #mh-box by 2rem (the left+right margins added on top of a
+    // literal 100%), which is what actually ran it off the right edge of
+    // the screen. Inside #mh-body it just needs margin-top; #mh-body's own
+    // horizontal padding (from the site's shipped hubCss) already insets
+    // it from the modal's edges.
     if (body) body.innerHTML =
       '<div data-mh-pane="striking-all">' + e.striking.all + '</div>' +
       '<div data-mh-pane="striking-win" style="display:none">' + e.striking.win + '</div>' +
       '<div data-mh-pane="striking-loss" style="display:none">' + e.striking.loss + '</div>' +
       '<div data-mh-pane="grappling-all" style="display:none">' + e.grappling.all + '</div>' +
       '<div data-mh-pane="grappling-win" style="display:none">' + e.grappling.win + '</div>' +
-      '<div data-mh-pane="grappling-loss" style="display:none">' + e.grappling.loss + '</div>';
+      '<div data-mh-pane="grappling-loss" style="display:none">' + e.grappling.loss + '</div>' +
+      (window.GL_SHEET ? '<button type="button" class="gl-sheet-btn" id="mhShareBtn" style="margin-top:.9rem">Generate sheet</button>' : '');
     hubShowPane();
   }
   // iOS Safari ignores body{overflow:hidden} for touch scrolling -- pin the
@@ -823,8 +836,15 @@ function mountMatchup(container){
         hubShowPane();
       });
     });
-    var mhShareBtn = document.querySelector('#mhShareBtn');
-    if (mhShareBtn) mhShareBtn.addEventListener('click', function(){
+    // #mhShareBtn now lives inside #mh-body's own innerHTML (see
+    // hubRenderEntry()), which gets fully replaced on every hubOpen() --
+    // a listener attached directly to the button here, once per screen
+    // render(), would go stale the very first time the modal opens. #mh-body
+    // itself is never replaced, only its contents, so delegate from there.
+    var mhBody = document.querySelector('#mh-body');
+    if (mhBody) mhBody.addEventListener('click', function(e){
+      var mhShareBtn = e.target.closest ? e.target.closest('#mhShareBtn') : null;
+      if (!mhShareBtn) return;
       window.GL_NATIVE.tap();
       var entry = hubData[hubState.slug];
       if (!entry || !window.GL_SHEET) return;
