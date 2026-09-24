@@ -1749,6 +1749,15 @@ body #mh-box{
    (its card renders inline; a share sheet is a tall 1080x1920 image that
    has to scroll inside a fixed-height preview) and the in-panel "Generate
    sheet" trigger buttons themselves. */
+/* Deep Dive's #mh-box modal (site-generated hubCss, injected via
+   ensureHubCss()) sits above ordinary page content at a z-index this file
+   doesn't define, so it isn't visible here to compare against. When a share
+   sheet is opened from inside that modal, .pl-share's base z-index:80 loses
+   that stacking fight and renders mostly hidden behind it -- reported as
+   "cut off at the bottom, you can only see a tiny part of them". Give the
+   GL_SHEET overlay a z-index high enough to beat any in-app modal, full
+   stop, rather than matching whatever hubCss happens to use today. */
+.gl-sheet{ z-index:999999; }
 .gl-sheet-inner{ max-width:460px; }
 .gl-sheet-preview{ max-height:62vh; overflow-y:auto; border-radius:12px; border:1px solid var(--border); background:#0e1014; }
 .gl-sheet-preview img{ display:block; width:100%; height:auto; }

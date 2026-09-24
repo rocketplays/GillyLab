@@ -4481,11 +4481,24 @@ export default {
       // ---- public marketing assets ----
       // Serve just the landing page's thumbnails/share-image/favicons publicly;
       // everything else under ./public stays gated below.
+      //
+      // Access-Control-Allow-Origin: * on both blocks below (this one and
+      // /photos/thumb/) — the app's GL_SHEET share-sheet canvases draw these
+      // (the gl-logo.png wordmark, every fighter's thumbnail) via
+      // `<img crossOrigin="anonymous">` so the finished canvas can be
+      // exported with toBlob()/toDataURL(). Without a CORS header the
+      // crossOrigin fetch fails outright (onerror, not a slow load) — the
+      // sheet still rendered, just with no logo and every avatar falling
+      // back to initials, which is exactly what shipped before this header
+      // existed. `*` is safe here: both blocks already serve unauthenticated
+      // (this app's requests carry no cookies/credentials to leak), and nothing
+      // gated is reachable through either one.
       if (PUBLIC_LANDING_ASSETS.has(path)) {
         const a = await env.ASSETS.fetch(request);
         if (a.status === 200) {
           const r = new Response(a.body, a);
           r.headers.set("Cache-Control", "public, max-age=86400");
+          r.headers.set("Access-Control-Allow-Origin", "*");
           return r;
         }
         return a;
@@ -4496,7 +4509,12 @@ export default {
       // Full-size /photos/*.png (non-thumb) remains gated below.
       if (path.startsWith("/photos/thumb/") && path.endsWith(".png")) {
         const a = await env.ASSETS.fetch(request);
-        if (a.status === 200) { const r = new Response(a.body, a); r.headers.set("Cache-Control", "public, max-age=86400"); return r; }
+        if (a.status === 200) {
+          const r = new Response(a.body, a);
+          r.headers.set("Cache-Control", "public, max-age=86400");
+          r.headers.set("Access-Control-Allow-Origin", "*");
+          return r;
+        }
         return a;
       }
 

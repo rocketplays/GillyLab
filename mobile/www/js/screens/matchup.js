@@ -587,6 +587,8 @@ function mountMatchup(container){
             '<div class="mf-ev-slide-sub">' + esc([when, c.location || c.city].filter(Boolean).join(' · ')) + '</div>' +
           '</div>' +
           cardBodyHTML(c, c.deepDive || { available: false }, c.breakdown || null) +
+          (subscribed && window.GL_SHEET && (c.fights || []).length
+            ? '<button type="button" class="gl-sheet-btn" data-share-card="' + esc(c.slug) + '">Share this card</button>' : '') +
         '</div>'
       );
     }).join('');
@@ -1009,17 +1011,30 @@ function mountMatchup(container){
         // itself only ships in the premium bundle path this file already
         // assumes for `subscribed`.
         (card && subscribed && window.GL_SHEET && (card.fights || []).length
-          ? '<button type="button" class="gl-sheet-btn" id="mfShareCard">Share this card</button>' : '') +
+          ? '<button type="button" class="gl-sheet-btn" data-share-card="' + esc(card.slug) + '">Share this card</button>' : '') +
       '</div>'
     );
   }
   function shareEventCard(card){
     if (!window.GL_SHEET || !card) return;
     window.GL_NATIVE.tap();
+    // f.isMain/f.isMainCard don't exist on real fight-tile objects -- this
+    // screen's own cardBodyHTML() groups by f.section (a string: 'Main
+    // Card' | 'Prelims' | 'Early Prelims' | 'Preliminary Card') and passes
+    // f.main (a bool) as fightHTML()'s isMain flag. Mapping to the wrong,
+    // always-undefined field names meant evGroups() in gl-sheet.js never
+    // found a main event, so drawEventCard() always fell back to the flat
+    // prelims-style grid instead of the intended main/co-main hero row.
     var fights = (card.fights || []).map(function(f){
-      return { f1: f.f1, f2: f.f2, s1: f.s1, s2: f.s2, isMain: !!f.isMain, isMainCard: !!f.isMainCard };
+      return { f1: f.f1, f2: f.f2, s1: f.s1, s2: f.s2, isMain: !!f.main, isMainCard: (f.section || 'Main Card') === 'Main Card' };
     });
     window.GL_SHEET.eventCard({ name: card.event, fights: fights }).catch(function(){});
+  }
+  // Resolves a carousel-slide slug (or the featured card's own slug) back
+  // to its full card object, since data-share-card only carries the slug.
+  function findCardBySlug(slug){
+    if (data.card && data.card.slug === slug) return data.card;
+    return (data.carousel || []).filter(function(c){ return c.slug === slug; })[0] || null;
   }
 
   function render(){
@@ -1147,8 +1162,13 @@ function mountMatchup(container){
       btn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('premium'); });
     });
 
-    var shareCardBtn = container.querySelector('#mfShareCard');
-    if (shareCardBtn) shareCardBtn.addEventListener('click', function(){ shareEventCard(data.card); });
+    // Delegated, not a single id lookup -- one lives in eventHeaderHTML()
+    // (the featured event) and one lives in each carousel slide, all
+    // coexisting in the DOM at once, so each button carries its own card's
+    // slug and resolves the matching card object at click time.
+    container.querySelectorAll('[data-share-card]').forEach(function(btn){
+      btn.addEventListener('click', function(){ shareEventCard(findCardBySlug(btn.getAttribute('data-share-card'))); });
+    });
 
     container.querySelectorAll('[data-share-mm]').forEach(function(btn){
       btn.addEventListener('click', function(e){

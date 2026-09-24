@@ -89,13 +89,15 @@
     });
   };
   // Absolute, unlike the site's relative './photos/...' — the app has no
-  // page path to resolve against. Same fallback order: full-res jpg, then
-  // the small thumb png.
+  // page path to resolve against. Thumb only, unlike the site (which also
+  // tries full-res '/photos/{slug}.jpg' first): that route is gated behind
+  // the site's session cookie, and this app authenticates with a Bearer
+  // token instead of cookies, so a credential-less <img crossOrigin> request
+  // to it always fails. Only '/photos/thumb/{slug}.png' is served publicly
+  // (see worker/index.js), so it's the only path worth attempting here.
   function loadImg(slug) {
     if (!slug) return Promise.resolve(null);
-    return loadOne(SITE + '/photos/' + slug + '.jpg').then(function (im) {
-      return im || loadOne(SITE + '/photos/thumb/' + slug + '.png');
-    });
+    return loadOne(SITE + '/photos/thumb/' + slug + '.png');
   }
   var _brandLogoP = null;
   function loadBrandLogo() { return (_brandLogoP = _brandLogoP || loadOne(SITE + '/gl-logo.png?v=8')); }
