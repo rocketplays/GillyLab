@@ -148,7 +148,7 @@ window.GL_SIMULATOR = (function(){
       return (
         '<div class="sim-res-fighter' + (fav ? ' fav' : '') + (right ? ' right' : '') + '"' + (slug ? ' data-sim-slug="' + esc(slug) + '" style="cursor:pointer"' : '') + '>' +
           window.GL_FIGHTER.avatarHtml({ name: name, photo: slug || null }) +
-          '<div>' +
+          '<div class="sim-res-tx">' +
             '<div class="sim-res-name">' + esc(name) + '</div>' +
             '<div class="sim-res-count">' + wins.toLocaleString() + ' / ' + result.n.toLocaleString() + ' wins</div>' +
           '</div>' +

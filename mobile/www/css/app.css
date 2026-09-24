@@ -1379,6 +1379,13 @@ body #mh-box #mh-body{
 .sim-res-top{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.9rem; }
 .sim-res-fighter{ display:flex; align-items:center; gap:.6rem; min-width:0; }
 .sim-res-fighter.right{ flex-direction:row-reverse; text-align:right; }
+/* .sim-res-name's own overflow:hidden/ellipsis does nothing unless ITS
+   flex-item ancestor is also allowed to shrink below its content's natural
+   width -- a plain flex child defaults to min-width:auto (content-based),
+   not 0, so this wrapper refused to shrink and just pushed past its side
+   of .sim-res-top instead, overlapping the other fighter's name/avatar for
+   any two longer names. Same fix as .sim-res-fighter's own min-width:0. */
+.sim-res-tx{ min-width:0; }
 .sim-res-name{ font-weight:800; font-size:.92rem; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .sim-res-fighter.fav .sim-res-name{ color:var(--accent); }
 .sim-res-count{ font-size:.68rem; color:var(--muted); margin-top:.1rem; }
