@@ -126,6 +126,22 @@
       },
       "reason": "Kody Steele withdrew (injury) from his lightweight bout with Gauge Young at UFC Sacramento; Stan Dorsainvil signed with the UFC and steps in on short notice (six days before an LFA date he'd already signed for) for his UFC debut. The ESPN feed already lists Dorsainvil, and card-changes.json's Wikipedia-diff heuristic flagged this bout as 'mayChange' (naming Young, the fighter who stayed booked, rather than the fighter who withdrew) — this entry marks Dorsainvil as the confirmed short-notice replacement, which takes priority over that mis-fired 'may change' flag. Confirmed via AgentMMA and the Sedalia Democrat (Aug 2026).",
       "addedOn": "2026-08-18"
+    },
+    {
+      "eventSlug": "ufc-fight-night-september-26-2026",
+      "eventStartsAt": "2026-09-27T00:00:00.000Z",
+      "matchFighterName": "Mickey Gall",
+      "replacement": {
+        "fighterSlug": "luis-hernandez",
+        "fighterName": "Luis Hernandez",
+        "country": "USA",
+        "flag": "🇺🇸",
+        "nickname": "The Stache",
+        "recordText": "8-0-0 (W-L-D)",
+        "shortNotice": true
+      },
+      "reason": "Mickey Gall was pulled from his bout with Sedriques Dumas at UFC Vegas 121 due to a medical issue (UFC announced Sep 24, 2026). Luis Hernandez — who won a UFC contract via Dana White's Contender Series Season 10, Episode 6 (2nd-round submission of Hugo Guillon) earlier that same month — steps in on short notice for his UFC debut. The bout also moves out of middleweight to light heavyweight per UFC.com's official update; the bout-level weightClass field and both fighters' profile.division were corrected by hand in the same pass since apply-fighter-overrides.cjs only swaps the fighter record, not the weight class. Confirmed via UFC.com (\"Updates To UFC Fight Night: Rosas Jr. vs Barcelos\"), MMA News, and MiddleEasy (Sep 24, 2026). ESPN's feed still listed Gall as of this writing.",
+      "addedOn": "2026-09-24"
     }
   ]
 }
