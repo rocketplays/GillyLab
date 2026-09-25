@@ -134958,9 +134958,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function findFightOdds(f1Name, f2Name, oddsData) {
     const n1 = lastNameOf(f1Name).toLowerCase();
     const n2 = lastNameOf(f2Name).toLowerCase();
+    // Canonicalize the raw feed names first — see canonOddsName() above
+    // isScheduledBout(): a name the odds feed SPLITS that our DB keeps FUSED
+    // (e.g. odds.json's "Heili Alateng" -> our "Alatengheili") fails both the
+    // exact lastNameOf() check AND the namesLikelyMatch fuzzy fallback below,
+    // since one token can't equal two and the length gap is too big for the
+    // edit-distance fuzz. Without this, John Castaneda vs. Alatengheili
+    // (UFC Fight Night Sep 26, 2026) showed "N/A" moneylines on the events
+    // page even though data/odds.json has real prices for it.
     let match = (oddsData || []).find(o => {
-      const h = lastNameOf(o.home_team || '').toLowerCase();
-      const a = lastNameOf(o.away_team || '').toLowerCase();
+      const h = lastNameOf(canonOddsName(o.home_team || '')).toLowerCase();
+      const a = lastNameOf(canonOddsName(o.away_team || '')).toLowerCase();
       return (h === n1 && a === n2) || (h === n2 && a === n1);
     });
     if (!match) {
@@ -134968,8 +134976,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // cases like odds.json's "Asu Almabaev" vs our "Asu Almabayev", or
       // odds.json's "Javier Reyes Rugeles" vs our "Javier Reyes".
       match = (oddsData || []).find(o =>
-        (namesLikelyMatch(o.home_team || '', f1Name) && namesLikelyMatch(o.away_team || '', f2Name)) ||
-        (namesLikelyMatch(o.home_team || '', f2Name) && namesLikelyMatch(o.away_team || '', f1Name))
+        (namesLikelyMatch(canonOddsName(o.home_team || ''), f1Name) && namesLikelyMatch(canonOddsName(o.away_team || ''), f2Name)) ||
+        (namesLikelyMatch(canonOddsName(o.home_team || ''), f2Name) && namesLikelyMatch(canonOddsName(o.away_team || ''), f1Name))
       );
     }
     if (!match) return null;
@@ -135000,8 +135008,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return probToAmerican(avgProb);
     }
     const homeAvg = avg(homePrices), awayAvg = avg(awayPrices);
-    const homeIsF1 = lastNameOf(match.home_team || '').toLowerCase() === n1 ||
-      (lastNameOf(match.home_team || '').toLowerCase() !== n2 && namesLikelyMatch(match.home_team || '', f1Name));
+    const homeCanon = canonOddsName(match.home_team || '');
+    const homeIsF1 = lastNameOf(homeCanon).toLowerCase() === n1 ||
+      (lastNameOf(homeCanon).toLowerCase() !== n2 && namesLikelyMatch(homeCanon, f1Name));
     return homeIsF1 ? { o1: homeAvg, o2: awayAvg } : { o1: awayAvg, o2: homeAvg };
   }
 
@@ -141243,6 +141252,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // /matchup page and the Odds & Projections page showed "—" for this
     // fight's moneyline even though The Odds API has real prices for it.
     'heili alateng': 'Alatengheili',
+    // UFC Fight Night Sep 26, 2026 (Osmanli vs Akylbek Uulu / Brener vs
+    // Harrell): the odds feed drops "Uulu" (a patronymic suffix, not part of
+    // the surname), and spells Brener with a doubled second "n". Both fuzzy-
+    // match well enough via namesLikelyMatch() to keep their moneylines
+    // showing on the events page, but unresolved they left the Odds &
+    // Projections page displaying the feed's raw spelling (unlinked, no
+    // photo) instead of the DB's canonical name.
+    'ilimbek akylbek': 'Ilimbek Akylbek Uulu',
+    'elves brenner': 'Elves Brener',
   };
 
   // Share-sheet only: "Dana White's Contender Series: Season 10, Week 1" is long
