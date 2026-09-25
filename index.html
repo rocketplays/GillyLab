@@ -138969,33 +138969,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '2.5': { betonlineag: { over: -520, under: 401 }, bovada: { over: -600, under: 375 }, draftkings: { over: -540, under: 360 }, fanduel: { over: -500, under: 370 } },
       },
     },
-    // Mickey Gall vs. Sedriques Dumas -- f1 = Dumas, f2 = Gall.
-    'dumas|gall': {
-      rounds: 3,
-      ml: {
-        fanduel: { f1: 130, f2: -166 },
-      },
-      method: {
-        betonlineag: { f1: { ko: 250, sub: 1600, dec: 500 }, f2: { ko: 825, sub: 150, dec: 350 } },
-        draftkings:  { f1: { ko: 250, sub: 1600, dec: 550 }, f2: { ko: 800, sub: 150, dec: 400 } },
-        fanduel:     { f1: { ko: 260, sub: 1400, dec: 600 }, f2: { ko: 950, sub: 165, dec: 420 } },
-      },
-      roundProps: {
-        betonlineag: { f1: { r1: 475, r2: 700, r3: 1400 }, f2: { r1: 335, r2: 465, r3: 700 } },
-        draftkings:  { f1: { r1: 400, r2: 750, r3: 1400 }, f2: { r1: 255, r2: 500, r3: 950 } },
-        fanduel:     { f1: { r1: 500, r2: 850, r3: 1400 }, f2: { r1: 320, r2: 550, r3: 1000 } },
-      },
-      doubleChance: {
-        betonlineag: { f1: { koDec: 155, subDec: 450 }, f2: { koDec: 225, subDec: -135 } },
-        draftkings:  { f1: { koDec: 135, koSub: 215, subDec: 380 }, f2: { koDec: 230, koSub: 120, subDec: -140 } },
-        fanduel:     { f1: { koDec: 150, koSub: 200, subDec: 450 }, f2: { koDec: 270, koSub: 115, subDec: -135 } },
-      },
-      totals: {
-        '0.5': { draftkings: { over: -750, under: 400 } },
-        '1.5': { betonlineag: { over: -120, under: 103 }, bovada: { over: -130, under: 100 }, draftkings: { over: -130, under: 100 }, fanduel: { over: -126, under: 104 } },
-        '2.5': { bovada: { over: 155, under: -205 } },
-      },
-    },
+    // NOTE: Sedriques Dumas's Sep 27, 2026 opponent changed -- Mickey Gall was
+    // pulled from the card and Luis Hernandez stepped in on short notice
+    // (confirmed via data/event.json's live ESPN feed). The 'dumas|gall'
+    // manual-odds entry that used to sit here was priced specifically for
+    // Gall and would misattribute his numbers to Hernandez, so it's been
+    // removed rather than relabeled. Re-enter fresh dumas|hernandez odds
+    // here per ODDS-ENTRY-PROCEDURE.txt once fightodds.io has real lines
+    // for the new matchup (data/odds.json is also still stale on this fight
+    // as of this edit -- it still lists "Sedriques Dumas vs Mickey Gall").
     // Yasmine Jauregui vs. Vanessa Demopoulos -- f1 = Demopoulos, f2 = Jauregui.
     'demopoulos|jauregui': {
       rounds: 3,
