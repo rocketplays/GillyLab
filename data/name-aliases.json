@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T16:22:51.513Z",
+  "generatedAt": "2026-09-25T02:06:17.743Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
@@ -1990,26 +1990,6 @@
     "Viacheslav Borshchev|Mar 26, 2022|Marc Diakiese": {
       "real": "Marc Diakiese",
       "theyCallHim": "Viacheslav Borschev",
-      "note": "alias"
-    },
-    "Bernardo Sopaj|May 16, 2026|Timmy Cuamba": {
-      "real": "Timmy Cuamba",
-      "theyCallHim": "Benardo Sopaj",
-      "note": "alias"
-    },
-    "Bernardo Sopaj|Jan 18, 2025|Ricky Turcios": {
-      "real": "Ricky Turcios",
-      "theyCallHim": "Benardo Sopaj",
-      "note": "alias"
-    },
-    "Bernardo Sopaj|Mar 2, 2024|Vinicius Oliveira": {
-      "real": "Vinicius Oliveira",
-      "theyCallHim": "Benardo Sopaj",
-      "note": "alias"
-    },
-    "Bernardo Sopaj|Mar 25, 2021|Francesco Nuzzi": {
-      "real": "Francesco Nuzzi",
-      "theyCallHim": "Bernardo Sopai",
       "note": "alias"
     },
     "Jingnan Xiong|May 30, 2026|Angela Hill": {
