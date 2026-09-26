@@ -4668,23 +4668,16 @@ export default {
         // leaderboard + lifetime belt only mean something tied to a real
         // account.
         //
-        // Two different arrivals, two different chromes -- same distinction
-        // /theclimb already draws with subscribed (climbCta's Open-app vs
-        // Go-Premium branch), just carried one step further here:
-        //   - A PREMIUM account only ever reaches /bracket by leaving the
-        //     SPA (index.html's nav-dropdown does `location.href='/bracket'`
-        //     for exactly this page -- see that file's "Legends Bracket is
-        //     its own standalone server-rendered page" comment). They came
-        //     from inside the app, so the page should read like the rest of
-        //     it: the plain climbNav bar (brand left, "Open app" to get back
-        //     + Account) and nothing else -- no free-game cross-links, no
-        //     browse tabs, since a subscriber isn't browsing the free site.
-        //   - A FREE (logged-in, not subscribed) account reaches /bracket
-        //     from /matchup, /rankings, /roster, /pickem or /theclimb's own
-        //     freeTabs() row, i.e. mid-browse -- so it gets the exact same
-        //     nav + freeTabs() row every other free page opens with,
-        //     "Legends Bracket" active, same as /theclimb passes
-        //     climbTabs()==freeTabs("/theclimb") today.
+        // Standalone fallback surface -- a subscribed account's real entry
+        // point is now the embedded SPA view (index.html's nav-dropdown
+        // calls navigate('bracket'), not a page-leave; see that file's
+        // #page-bracket). This route stays for the FREE (logged-in,
+        // non-subscribed) browsing path -- reached from /matchup,
+        // /rankings, /roster, /pickem or /theclimb's own freeTabs() row --
+        // and as a plain-URL fallback for anyone else, so it always gets
+        // the SAME nav + freeTabs() row every other free page opens with,
+        // unconditionally, exactly like /theclimb's climbTabs()==
+        // freeTabs("/theclimb") (no subscribed-only branch there either).
         const s = await readSession(request, env);
         if (!s) return redirect(env.SITE_URL + "/signup?next=/bracket");
         const u = await getUser(env, s.email);
@@ -4697,7 +4690,7 @@ export default {
         return html(bracketPage({
           head,
           nav: climbNav(true, !!u?.subscribed),
-          back: u?.subscribed ? "" : freeTabs("/bracket"),
+          back: freeTabs("/bracket"),
           cta: "",
           footer: climbFooter(),
         }), 200, { "Cache-Control": "private, no-store" });

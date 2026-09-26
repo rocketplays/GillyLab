@@ -243,16 +243,23 @@ function mountBracket(container){
     );
   }
   function renderResults(score){
+    // real.qf/sf/final are already resolved FIGHTER OBJECTS (see resolveReal
+    // below), not seed numbers -- bySeed[] is keyed by seed, so wrapping any
+    // of these in another bySeed[] lookup returns undefined and crashes
+    // modelCallHTML's winner.name a few lines down. That silent throw was
+    // caught by the outer bracketCurrent().catch() and shown as "Couldn't
+    // load this week's bracket" for anyone who'd already submitted -- the
+    // actual bug behind that report, not a network issue.
     var qfMatches = QF_PAIRS.map(function(pair, i){
-      return realMatchHTML(bySeed[pair[0]], bySeed[pair[1]], bySeed[real.qf[i]], picks.qf[i], consensus[i]);
+      return realMatchHTML(bySeed[pair[0]], bySeed[pair[1]], real.qf[i], picks.qf[i], consensus[i]);
     });
     var qfPairsHTML = '<div class="br-pair">' + qfMatches[0] + qfMatches[1] + '</div><div class="br-pair">' + qfMatches[2] + qfMatches[3] + '</div>';
     var sfMatches = [0, 1].map(function(i){
-      return realMatchHTML(bySeed[real.qf[i * 2]], bySeed[real.qf[i * 2 + 1]], bySeed[real.sf[i]], picks.sf[i], null);
+      return realMatchHTML(real.qf[i * 2], real.qf[i * 2 + 1], real.sf[i], picks.sf[i], null);
     });
     var sfPairHTML = '<div class="br-pair">' + sfMatches[0] + sfMatches[1] + '</div>';
-    var finalWinner = bySeed[real.final];
-    var finalMatchHTML = realMatchHTML(bySeed[real.sf[0]], bySeed[real.sf[1]], finalWinner, picks.final, null);
+    var finalWinner = real.final;
+    var finalMatchHTML = realMatchHTML(real.sf[0], real.sf[1], finalWinner, picks.final, null);
 
     document.getElementById('brBracket').innerHTML =
       '<div class="br-col"><div class="br-collabel">Quarterfinals</div><div class="br-pairgroup">' + qfPairsHTML + '</div></div>' +

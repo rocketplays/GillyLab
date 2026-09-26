@@ -4184,12 +4184,14 @@
         <li role="menuitem" id="tab-active-roster"           onclick="navigate('active-roster'); closeNavDropdown()">Active Roster</li>
         <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em</li>
         <li role="menuitem" id="tab-theclimb"                onclick="navigate('theclimb');    closeNavDropdown()">The Climb</li>
-        <!-- Legends Bracket is its own standalone server-rendered page (see
-             worker/index.js's /bracket route), not a view inside this SPA's
-             own navigate() router -- a real navigation out, same as any
-             external link, rather than adding a whole new client-side render
-             path to this file for one free game. -->
-        <li role="menuitem" id="tab-bracket"                 onclick="window.location.href='/bracket'">Legends Bracket</li>
+        <!-- A real page inside this SPA now (#page-bracket, generated from
+             prototypes/legends-bracket.html by scripts/gen-bracket-embed.cjs),
+             same as Pick'em/The Climb above -- navigate() needs no special
+             case for it (see that function's generic 'page-'+page mapping).
+             worker/index.js's /bracket route is a SEPARATE standalone page,
+             kept for logged-in-but-not-subscribed visitors browsing in from
+             the free pages, who never reach this dropdown at all. -->
+        <li role="menuitem" id="tab-bracket"                 onclick="navigate('bracket')">Legends Bracket</li>
       </ul>
     </div>
 
@@ -4702,6 +4704,861 @@
     ⚠ "Watch" links go to an outside source and are not affiliated with GillyLab.
   </div>
 </div>
+
+<!-- ══════════════════════════════════════
+     PAGE: LEGENDS BRACKET
+     Everything between the BRACKET-EMBED markers below is GENERATED from
+     prototypes/legends-bracket.html by scripts/gen-bracket-embed.cjs -- do
+     not hand-edit it, edit the prototype and re-run that script. The
+     surrounding page-header/divider/lb-wrap scaffold (this page's own
+     "look like every other page" chrome) is NOT generated and is safe to
+     hand-edit same as any other page here.
+     Same weekly game as the standalone /bracket page (worker/bracket-page.js)
+     and the mobile app's bracket.js -- this is a THIRD, SPA-embedded shell
+     around the identical /api/bracket/* endpoints, for a subscribed account
+     reached via the nav-dropdown's "Legends Bracket" item (navigate('bracket'),
+     not a page-leave -- see that item below). -->
+<div class="page" id="page-bracket">
+  <div class="page-header">
+    <div class="page-header-title">Legends <span class="accent">Bracket</span></div>
+    <div class="page-header-sub">Weekly 8-fighter tournament, any era &mdash; the GillyLab Model decides every winner</div>
+  </div>
+  <div class="divider"></div>
+  <div class="lb-wrap">
+<!-- BRACKET-EMBED:HTML:START -->
+<p class="subtitle">This Week: <span id="weekDivision">&mdash;</span></p>
+  <p class="sub">Eight recognizable names from one division, any era &mdash; the division rotates every week. Fill it out like a March Madness bracket, earn points for every correct call, and see how you stack up. The GillyLab Model decides every winner.</p>
+
+  <div class="belt-panel" id="beltPanel"></div>
+
+  <div class="rules">
+    <div class="rules-row">Fill out every round, then submit once</div>
+    <div class="rules-row rules-points">
+      <span><strong>1&nbsp;pt</strong> per quarterfinal</span>
+      <span><strong>2&nbsp;pts</strong> per semifinal</span>
+      <span><strong>4&nbsp;pts</strong> for the final</span>
+    </div>
+    <div class="rules-row"><strong>12&nbsp;pts</strong> possible</div>
+  </div>
+
+  <div class="bracket-scroll">
+    <div class="bracket" id="bracket">
+      <div class="round-col">
+        <div class="round-label">Quarterfinals</div>
+        <div class="slot-group" id="col-qf"></div>
+      </div>
+      <div class="round-col">
+        <div class="round-label">Semifinals</div>
+        <div class="slot-group" id="col-sf"></div>
+      </div>
+      <div class="round-col">
+        <div class="round-label">Final</div>
+        <div class="slot-group" id="col-f"></div>
+      </div>
+      <div class="round-col champion-col">
+        <div class="round-label" id="champ-label">Champion</div>
+        <div class="champ-card" id="col-champ">
+          <div class="cap">Your Pick</div>
+          <img class="fphoto" id="champ-photo" src="" alt="" style="display:none" onerror="this.style.display='none'">
+          <div class="fname" id="champ-name">&mdash;</div>
+        </div>
+        <button type="button" class="view-lb-btn" id="viewLbBtn" style="display:none">View Leaderboard &darr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-row" id="submit-row">
+    <button class="primary" id="submitBtn" disabled>Submit Bracket</button>
+    <span class="progress" id="progress"><strong>0</strong> of 7 picks made</span>
+  </div>
+
+  <div id="results">
+    <div class="score-banner">
+      <span class="big" id="scoreBig">0</span><span class="of">/ 12</span>
+      <span class="label" id="scoreLabel">Every correct pick locked in above &mdash; here's the real bracket.</span>
+    </div>
+
+    <h2 class="section">Leaderboard</h2>
+    <div class="lb-tabs" id="lbTabs">
+      <button type="button" class="lbtab active" data-tab="week">This Week</button>
+      <button type="button" class="lbtab" data-tab="season">Season</button>
+    </div>
+    <table class="leaderboard">
+      <thead><tr><th>Rank</th><th>Player</th><th>Pts</th></tr></thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+
+<!-- BRACKET-EMBED:HTML:END -->
+  </div>
+</div>
+
+<style>
+#page-bracket .lb-wrap{ max-width:1180px; margin:0 auto; padding:2rem; }
+/* BRACKET-EMBED:CSS:START */
+#page-bracket{
+  --line: var(--border);
+  --paper: var(--text);
+  --surface-2: var(--surface2);
+  --good: var(--accent);
+  --bad: var(--accent2);
+  --accent-2: #ffb340;
+  --on-accent: #04140a;
+  --shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+  /* GillyLab house palette — dark-only sportsbook/analytics look, no light
+     variant (the real site doesn't have one either). Green = correct/positive,
+     red-orange = incorrect/eliminated, gold = neutral model/data layer. */
+  
+
+  
+  
+  /* THE RULE THAT MAKES EVERY OTHER PAGE'S NAV WORK -- copied verbatim from
+     worker/climb-page.js, which already hit and documented this exact bug.
+     The browser ships its own a:link/a:visited colours, which are
+     declarations ON THE ELEMENT and beat an INHERITED value however specific
+     the ancestor -- so climbNav()'s .pk-navlinks{color:var(--muted)} never
+     reaches the <a> inside it, and the UA's visited purple wins instead.
+     Every other free page has  at the top of its <style>;
+     this page, being a standalone prototype with no plain-text links of its
+     own (only buttons), never needed one until worker/index.js started
+     rendering climbNav()/freeTabs() around it for logged-in visitors. */
+  #page-bracket a { color:inherit; }
+  #page-bracket .wrap { max-width:1180px; margin:0 auto; padding:2.25rem 1.5rem 5rem; }
+
+  /* ---- header ---- */
+  #page-bracket h1 {
+    font-family:'Barlow Condensed', sans-serif; font-weight:900; text-transform:uppercase;
+    font-size:clamp(2.3rem, 5.2vw, 4rem); line-height:0.92; letter-spacing:0.01em;
+    margin:0 0 0.5rem; text-wrap:balance;
+  }
+  #page-bracket h1 span { color:var(--accent); }
+  #page-bracket .subtitle {
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; text-transform:uppercase;
+    font-size:1.2rem; letter-spacing:0.03em; color:var(--muted); margin:0 0 0.9rem;
+  }
+  #page-bracket .subtitle span { color:var(--accent); }
+  #page-bracket .tagline {
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:1.05rem;
+    color:var(--accent-2); text-transform:uppercase; letter-spacing:0.02em; margin:0 0 0.9rem;
+  }
+  #page-bracket .sub { color:var(--muted); font-size:0.98rem; max-width:64ch; line-height:1.6; margin:0 0 1.6rem; }
+
+  /* ---- belt progression: lifetime, not weekly — one bad bracket never costs
+     you a belt, same as a real one never gets taken back for a bad class ---- */
+  #page-bracket .belt-panel {
+    display:flex; align-items:center; gap:0.9rem; margin:0 0 1.6rem;
+    padding:0.8rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:8px;
+  }
+  #page-bracket .belt-swatch { width:2.3rem; height:1.15rem; border-radius:3px; flex:none; }
+  #page-bracket .belt-info { flex:none; }
+  #page-bracket .belt-name { font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.92rem;
+    text-transform:uppercase; letter-spacing:0.02em; }
+  #page-bracket .belt-stripes { display:flex; gap:0.2rem; margin-top:0.3rem; }
+  #page-bracket .belt-stripes .stripe { width:0.6rem; height:0.3rem; border-radius:1px; background:var(--line); }
+  #page-bracket .belt-stripes .stripe.filled { background:var(--accent-2); }
+  #page-bracket .belt-progress { flex:1; min-width:140px; }
+  #page-bracket .belt-bar-track { height:6px; border-radius:4px; background:var(--surface-2); overflow:hidden; }
+  #page-bracket .belt-bar-fill { height:100%; border-radius:4px; }
+  #page-bracket .belt-meta { font-size:0.72rem; color:var(--muted); margin-top:0.35rem; }
+
+  #page-bracket .rules {
+    display:flex; flex-direction:column; gap:0.55rem; margin-bottom:2.4rem;
+    padding:0.9rem 1.1rem; background:var(--card); border:1px solid var(--line);
+    border-radius:8px;
+  }
+  #page-bracket .rules-row { font-size:0.82rem; color:var(--muted); }
+  #page-bracket .rules-points { display:flex; flex-wrap:wrap; gap:0.45rem 1.1rem; }
+  #page-bracket .rules strong { font-family:'Barlow Condensed', sans-serif; color:var(--paper); font-weight:700; }
+
+  /* ---- bracket ---- */
+  #page-bracket .bracket-scroll { overflow-x:auto; padding-bottom:0.5rem; margin:0 -0.25rem 2.5rem; }
+  #page-bracket .bracket {
+    display:grid; grid-template-columns: repeat(4, minmax(200px,1fr)); gap:0 3.6rem;
+    min-width:980px; padding:0.25rem;
+  }
+  #page-bracket .round-label {
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.74rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted); text-align:center; margin-bottom:1rem;
+  }
+  /* QF/SF/Final labels get repositioned by JS (positionRoundLabels) to sit
+     right above that round's top-most tile, instead of floating at the very
+     top of the column when a round has fewer tiles than quarterfinals does. */
+  #page-bracket .round-col { display:flex; flex-direction:column; position:relative; }
+  #page-bracket .round-col:not(.champion-col) .round-label.positioned { position:absolute; left:0; right:0; margin-bottom:0; }
+  #page-bracket .slot-group { display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.6rem; }
+  /* groups two matchups whose winners meet in the same next-round slot, so the
+     elbow connector (bracket-pair::before/::after below) can merge their two
+     lines into the single line that reaches that slot */
+  #page-bracket .bracket-pair { position:relative; display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.6rem; }
+
+  #page-bracket .matchup { position:relative; display:flex; flex-direction:column; gap:0.5rem; }
+  #page-bracket .fcard {
+    display:flex; align-items:center; gap:0.6rem; padding:0.55rem 0.7rem;
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    cursor:pointer; transition:background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  #page-bracket .fcard:hover { background:var(--surface-2); }
+  #page-bracket .fcard:focus-visible { outline:2px solid var(--accent-2); outline-offset:2px; }
+  #page-bracket .fcard.picked { border-color:var(--accent); background:var(--surface-2); }
+  #page-bracket .fcard.picked .fname { color:var(--accent); }
+  #page-bracket .fcard.locked { cursor:default; }
+  #page-bracket .fcard.empty { cursor:default; opacity:0.4; border-style:dashed; }
+
+  /* post-submit: who actually won this real matchup (independent of your pick) */
+  #page-bracket .fcard.winner { border-color:var(--good); background:color-mix(in srgb, var(--good) 8%, var(--card)); }
+  #page-bracket .fcard.winner .fname { color:var(--good); }
+  #page-bracket .fcard.winner .seed { background:var(--good); color:var(--on-accent); border-color:var(--good); }
+  /* fade only the fighter's own info, not the whole card — a badge sitting on
+     top needs full-strength color regardless of whether the card lost */
+  #page-bracket .fcard.loser { border-color:var(--line); }
+  #page-bracket .fcard.loser .seed { opacity:0.4; }
+  #page-bracket .fcard.loser .fname { opacity:0.55; text-decoration:line-through; text-decoration-color:var(--bad); text-decoration-thickness:1.5px; }
+  #page-bracket .fcard.loser .flegacy { opacity:0.4; }
+
+  #page-bracket .pickbadge {
+    display:inline-flex; align-items:center; gap:0.25rem; font-family:'Barlow Condensed', sans-serif; font-weight:700;
+    font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent);
+    border:1px solid var(--accent); border-radius:4px; padding:0.1rem 0.35rem; margin-left:auto; flex:none;
+  }
+  #page-bracket .pickbadge::before { content:"\2605"; font-size:0.7rem; line-height:1; }
+  /* post-submit: badge color states the verdict, not just "this was your pick" */
+  #page-bracket .fcard.winner .pickbadge { color:var(--good); border-color:var(--good); }
+  #page-bracket .fcard.loser .pickbadge { color:var(--bad); border-color:var(--bad); }
+
+  #page-bracket .seed {
+    font-family:'Barlow Condensed', sans-serif; font-size:0.78rem; color:var(--accent-2);
+    background:color-mix(in srgb, var(--accent-2) 14%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent-2) 35%, transparent);
+    width:1.5rem; height:1.5rem; border-radius:5px;
+    display:flex; align-items:center; justify-content:center; flex:none; font-weight:800;
+  }
+  #page-bracket .fphoto {
+    width:2.5rem; height:2.5rem; border-radius:5px; object-fit:cover; flex:none;
+    background:var(--surface-2); border:1px solid var(--line);
+  }
+  #page-bracket .fcard.loser .fphoto { opacity:0.5; filter:grayscale(0.4); }
+  #page-bracket .fmeta { min-width:0; flex:1; }
+  #page-bracket .fname { font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.95rem; letter-spacing:0.01em;
+    text-transform:uppercase; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #page-bracket .flegacy { font-size:0.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  #page-bracket .vs { font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.66rem; color:var(--muted);
+    text-align:center; letter-spacing:0.1em; text-transform:uppercase; }
+
+  #page-bracket .modelcall {
+    font-family:'Barlow Condensed', sans-serif; font-weight:600; font-size:0.72rem; color:var(--muted);
+    text-align:center; letter-spacing:0.01em; padding-top:0.15rem; border-top:1px dashed var(--line);
+  }
+  #page-bracket .modelcall strong { color:var(--paper); font-weight:700; }
+  #page-bracket .modelmark { font-weight:800; }
+  #page-bracket .modelmark.hit { color:var(--good); }
+  #page-bracket .modelmark.miss { color:var(--bad); }
+  #page-bracket .consensusline { margin-top:0.3rem; }
+  #page-bracket .consensusline strong { color:var(--accent-2); font-weight:700; }
+
+  #page-bracket .youhad { font-size:0.68rem; color:var(--muted); text-align:center; }
+  #page-bracket .youhad strong { color:var(--bad); font-weight:700; }
+
+  /* connectors between rounds — real-bracket elbow style. Each matchup gets a
+     short stub with the advancing fighter's name sitting on it; where two
+     matchups feed the same next-round slot (bracket-pair), a vertical bar
+     merges those two stubs into one line that continues into the next round's
+     box, the way an actual tournament bracket diagram reads.
+     Everything below is sized off the column gap itself (--gap) with calc(),
+     rather than negative-right offsets layered on top of padding — the old
+     version's numbers didn't actually add up to less than the gap, so the
+     name label ran past the gap and bled into the next round's card. */
+  #page-bracket .bracket { --gap:3.6rem; --stub:0.8rem; }
+  #page-bracket .round-col:not(:last-child) .matchup::after {
+    content:""; position:absolute; left:100%; top:50%; width:var(--stub); height:1px;
+    background:var(--line);
+  }
+  #page-bracket .bracket-pair::before {
+    content:""; position:absolute; left:calc(100% + var(--stub)); top:25%; bottom:25%; width:1px;
+    background:var(--line);
+  }
+  #page-bracket .bracket-pair::after {
+    content:""; position:absolute; left:calc(100% + var(--stub)); top:50%; height:1px;
+    width:calc(var(--gap) - var(--stub)); background:var(--line);
+  }
+  #page-bracket .round-col:last-child .matchup::after, #page-bracket .round-col:last-child .bracket-pair::before, #page-bracket .round-col:last-child .bracket-pair::after { display:none; }
+
+  #page-bracket .connector-name {
+    position:absolute; left:calc(100% + var(--stub) + 0.2rem); top:50%; transform:translateY(-50%);
+    width:calc(var(--gap) - var(--stub) - 0.6rem); max-width:2.6rem;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.58rem;
+    letter-spacing:0.01em; text-transform:uppercase; color:var(--muted); z-index:1;
+  }
+  #page-bracket .connector-name.picked { color:var(--accent-2); }
+  #page-bracket .connector-name.winner { color:var(--good); }
+
+  #page-bracket .champion-col { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  /* Same "featured" treatment as the rest of the site (see .plan.featured on
+     /subscribe) — accent green border + inset glow — instead of the gold
+     that reads here as the model/data-layer color everywhere else on the page. */
+  #page-bracket .champ-card {
+    text-align:center; padding:1.1rem 1rem; background:var(--card); border:1px solid var(--accent);
+    box-shadow:inset 0 0 0 1px var(--accent); border-radius:8px; width:100%;
+  }
+  #page-bracket .champ-card .cap { font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:0.6rem; }
+  #page-bracket .champ-card .fphoto { width:3.4rem; height:3.4rem; margin:0 auto 0.6rem; border-color:var(--accent); }
+  #page-bracket .champ-card .fname { font-size:1.3rem; white-space:normal; }
+  /* Real result is in — the "Champion" label above the tile goes gold instead
+     of a second "Actual Champion" line duplicating it inside the card. */
+  #page-bracket .round-label.is-final { color:var(--accent-2); }
+
+  /* Same green-border/white-text treatment as the site's other secondary
+     buttons (see .pk-btn on the real nav pages), not the gold used for the
+     model/data-layer elsewhere on this page. */
+  #page-bracket .view-lb-btn {
+    margin-top:0.9rem; font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.76rem;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--paper);
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), color-mix(in srgb, var(--accent) 3%, transparent));
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius:6px; padding:0.5rem 0.9rem; cursor:pointer;
+    transition:background 0.12s, border-color 0.12s;
+  }
+  #page-bracket .view-lb-btn:hover {
+    border-color:var(--accent);
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 7%, transparent));
+  }
+
+  /* ---- submit ---- */
+  #page-bracket .submit-row { display:flex; align-items:center; gap:1rem; margin-bottom:3rem; flex-wrap:wrap; }
+  #page-bracket button.primary {
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.88rem; letter-spacing:0.06em;
+    text-transform:uppercase; background:var(--accent); color:var(--on-accent); border:none;
+    padding:0.75rem 1.5rem; border-radius:4px; cursor:pointer; box-shadow:var(--shadow);
+    transition:opacity 0.12s, transform 0.12s;
+  }
+  #page-bracket button.primary:hover:not(:disabled) { opacity:0.85; transform:translateY(-1px); }
+  #page-bracket button.primary:disabled { background:var(--surface-2); color:var(--muted); opacity:0.5; cursor:not-allowed; box-shadow:none; }
+  #page-bracket .progress { font-family:'Barlow Condensed', sans-serif; font-weight:600; font-size:0.82rem; color:var(--muted); }
+  #page-bracket .progress strong { color:var(--paper); }
+
+  /* ---- results ---- */
+  #page-bracket #results { display:none; }
+  #page-bracket #results.show { display:block; animation:rise 0.35s ease both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+
+  #page-bracket .score-banner {
+    display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1.4rem 1.5rem; background:var(--card); border:1px solid var(--line);
+    border-radius:8px; margin-bottom:2rem;
+  }
+  #page-bracket .score-banner .big { font-family:'Barlow Condensed', sans-serif; font-weight:900; font-size:3rem; color:var(--accent); line-height:1; }
+  #page-bracket .score-banner .of { font-family:'Barlow Condensed', sans-serif; font-weight:600; color:var(--muted); font-size:1rem; }
+  #page-bracket .score-banner .label { font-size:0.85rem; color:var(--muted); margin-left:auto; max-width:32ch; text-align:right; }
+
+  #page-bracket .lb-tabs { display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+  #page-bracket .lbtab {
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.76rem; letter-spacing:0.03em; text-transform:uppercase;
+    background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:6px;
+    padding:0.4rem 0.8rem; cursor:pointer;
+  }
+  #page-bracket .lbtab:hover { border-color:var(--accent-2); color:var(--paper); }
+  #page-bracket .lbtab.active { border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, var(--card)); }
+
+  #page-bracket h2.section {
+    font-family:'Barlow Condensed', sans-serif; font-weight:800; text-transform:uppercase;
+    font-size:1.3rem; letter-spacing:0.01em; margin:0 0 0.9rem; color:var(--paper);
+  }
+  #page-bracket .section-note { font-size:0.8rem; color:var(--muted); margin:-0.5rem 0 1.2rem; }
+
+  #page-bracket table.leaderboard { width:100%; border-collapse:collapse; font-size:0.9rem; }
+  #page-bracket table.leaderboard th {
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted); text-align:left; padding:0.5rem 0.7rem; border-bottom:1px solid var(--line);
+  }
+  #page-bracket table.leaderboard td { padding:0.55rem 0.7rem; border-bottom:1px solid var(--line); }
+  #page-bracket table.leaderboard td.rank { font-family:'Barlow Condensed', sans-serif; font-weight:700; color:var(--muted); }
+  #page-bracket table.leaderboard td.pts { font-family:'Barlow Condensed', sans-serif; font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
+  #page-bracket table.leaderboard tr.you { background:color-mix(in srgb, var(--accent) 10%, transparent); }
+  #page-bracket table.leaderboard tr.you td { font-weight:700; color:var(--paper); }
+
+  @media (max-width:640px){
+    #page-bracket .score-banner .label { margin-left:0; text-align:left; }
+  }
+
+  /* Keeps the real bracket shape (columns + connector lines) at every width —
+     turns out that reads better than stacking rounds vertically, even on a
+     phone. What actually made mobile feel like manual back-and-forth wasn't
+     the horizontal layout itself, it was having no reason to scroll anywhere
+     in particular; the auto-scroll-to-the-next-matchup behavior (see
+     pickQf/pickSf/pickFinal below) does that navigating for you. This just
+     narrows each column to fill most of the screen and snaps to it while
+     scrolling, so it reads as "one round in focus" rather than four thin
+     slivers. */
+  @media (max-width:820px){
+    #page-bracket .bracket-scroll { scroll-snap-type:x mandatory; }
+    #page-bracket .bracket { grid-template-columns:repeat(4, 86vw); min-width:0; gap:0 2.6rem; --gap:2.6rem; --stub:0.6rem; }
+    #page-bracket .round-col { scroll-snap-align:start; }
+    #page-bracket .connector-name { max-width:1.6rem; font-size:0.54rem; }
+  }
+
+/* BRACKET-EMBED:CSS:END */
+</style>
+
+<script>
+// BRACKET-EMBED:JS:START
+(function(){
+
+  // ---- real weekly state, fetched from the worker (see worker/index.js's
+  // handleBracketCurrent/-Submit/-Leaderboard) instead of the prototype's
+  // client-side Math.random simulation. FIGHTERS/bySeed/QF_PAIRS are now
+  // filled in once /api/bracket/current resolves; everything below that
+  // built the interactive picker/results UI against those variables is
+  // unchanged, since the server hands back the exact same shape (seed,
+  // name, legacy, photo) the mock array used. -->
+  var FIGHTERS = [];
+  var bySeed = {};
+  var QF_PAIRS = [];
+  var weekId = null;
+
+  // ---- the ACTUAL bracket outcome. Decided ONCE server-side at rotation
+  // time (see bracketBuildWeek in worker/index.js) -- this stays null (a
+  // spoiler withheld) until the API says you've already submitted this
+  // week, same reveal-on-submit flow as before.
+  var real = { qf:[], sf:[], final:null };
+
+  // ---- consensus: real QF-pick tallies from every submission so far this
+  // week (worker's bracket:tally:<weekId>), already gated server-side by a
+  // minimum sample size -- a null entry here just means "not enough picks
+  // in yet", same protection the prototype's CONSENSUS_THRESHOLD modeled,
+  // now against a real number instead of a simulated poolCount.
+  var consensus = [null, null, null, null];
+
+  // ---- user picks, one name per structural slot ----
+  var picks = { qf:[null,null,null,null], sf:[null,null], final:null };
+  var alreadySubmitted = false;
+
+  // ---- belts: lifetime progression, not weekly. A real belt never gets
+  // taken back for one bad week, so promotion runs off a cumulative total
+  // across every bracket you've ever submitted, not this week's score alone
+  // (worker's bracket:belt:<email>, returned as lifetimePts below). Real
+  // adult BJJ order: white, blue, purple, brown, black — that's it, no
+  // invented tiers on top (coral/red belts are honorary degree ranks handed
+  // out after decades, not something a points ladder should be minting).
+  var BELTS = [
+    { name:'White',  min:0,   color:'#e8e8ea' },
+    { name:'Blue',   min:20,  color:'#2f6fed' },
+    { name:'Purple', min:50,  color:'#8b5cf6' },
+    { name:'Brown',  min:100, color:'#8a5a2b' },
+    { name:'Black',  min:180, color:'#1a1a1a', outline:true },
+  ];
+  var lifetimePts = 0; // overwritten by the API's lifetimePts once loaded
+
+  function beltInfo(pts){
+    var idx = 0;
+    for (var i=0; i<BELTS.length; i++){ if (pts >= BELTS[i].min) idx = i; }
+    var belt = BELTS[idx], next = BELTS[idx+1];
+    var pct, stripes;
+    if (next){
+      pct = Math.max(0, Math.min(1, (pts - belt.min) / (next.min - belt.min)));
+      stripes = Math.min(4, Math.floor(pct * 4));
+    } else { pct = 1; stripes = 4; }
+    return { belt:belt, next:next, pct:pct, stripes:stripes };
+  }
+
+  function renderBeltPanel(){
+    var info = beltInfo(lifetimePts);
+    var stripesHTML = '';
+    for (var s=0; s<4; s++){ stripesHTML += '<span class="stripe'+(s<info.stripes?' filled':'')+'"></span>'; }
+    var nextText = info.next
+      ? (info.next.min - lifetimePts)+' pts to '+info.next.name+' Belt'
+      : 'Top belt reached';
+    document.getElementById('beltPanel').innerHTML =
+      '<div class="belt-swatch" style="background:'+info.belt.color+';'+(info.belt.outline?'border:1px solid var(--accent-2);':'')+'"></div>' +
+      '<div class="belt-info"><div class="belt-name">'+info.belt.name+' Belt</div>' +
+        '<div class="belt-stripes">'+stripesHTML+'</div></div>' +
+      '<div class="belt-progress">' +
+        '<div class="belt-bar-track"><div class="belt-bar-fill" style="width:'+(info.pct*100)+'%; background:'+info.belt.color+';"></div></div>' +
+        '<div class="belt-meta">'+lifetimePts+' lifetime pts &middot; '+nextText+'</div>' +
+      '</div>';
+  }
+  var boards = { week: [], season: [] };
+  function renderLeaderboard(tab){
+    var rows = boards[tab].slice().sort(function(a,b){ return b.pts-a.pts; });
+    var lb = document.getElementById('leaderboardBody'); lb.innerHTML = '';
+    rows.forEach(function(row, i){
+      var tr = document.createElement('tr'); if (row.mine) tr.className = 'you';
+      tr.innerHTML = '<td class="rank">#'+(i+1)+'</td><td>'+row.name+'</td><td class="pts">'+row.pts+'</td>';
+      lb.appendChild(tr);
+    });
+    document.querySelectorAll('.lbtab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===tab); });
+  }
+  document.querySelectorAll('.lbtab').forEach(function(btn){
+    btn.addEventListener('click', function(){ renderLeaderboard(btn.getAttribute('data-tab')); });
+  });
+  // Real leaderboard rows from the worker (see handleBracketLeaderboard) --
+  // "mine" is worked out by matching against that scope's own `me` row
+  // (display names aren't guaranteed globally unique, but this mirrors the
+  // same name-match convention the rest of the site's leaderboards use).
+  function loadLeaderboard(scope){
+    return fetch('/api/bracket/leaderboard?scope=' + scope).then(function(r){ return r.json(); }).then(function(res){
+      var meName = res.me && res.me.name;
+      boards[scope] = (res.rows || []).map(function(row){ return { name: row.name, pts: row.pts, mine: meName && row.name === meName }; });
+    }).catch(function(){ boards[scope] = []; });
+  }
+
+  function fcard(fighter, opts){
+    opts = opts||{};
+    var d = document.createElement('div');
+    d.className = 'fcard' + (opts.empty?' empty':'') + (opts.picked?' picked':'') +
+      (opts.locked?' locked':'') + (opts.winner?' winner':'') + (opts.loser?' loser':'');
+    if (!fighter){
+      d.innerHTML = '<span class="seed">&middot;</span><span class="fmeta"><div class="fname">TBD</div></span>';
+      return d;
+    }
+    d.innerHTML =
+      '<span class="seed">'+fighter.seed+'</span>' +
+      '<img class="fphoto" src="/photos/thumb/'+fighter.photo+'.png" alt="" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'">' +
+      '<span class="fmeta"><div class="fname">'+fighter.name+'</div>' +
+      '<div class="flegacy">'+fighter.legacy+'</div></span>' +
+      (opts.yourPick ? '<span class="pickbadge">Your pick</span>' : '');
+    if (opts.onClick){ d.addEventListener('click', opts.onClick); d.tabIndex = 0;
+      d.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); opts.onClick(); } }); }
+    return d;
+  }
+
+  // "GillyLab Model" isn't a separate competitor filling out its own bracket —
+  // it's just how we label the real result. The model's simulation is what
+  // decided who actually won, so "GillyLab Model: Cain Velasquez" and "Actual
+  // Winner: Cain Velasquez" are the same fact stated once. What this line adds
+  // is the verdict on YOUR pick for that slot — right or wrong.
+  //
+  // For QF matchups only, once the worker's own CONSENSUS_THRESHOLD sample
+  // size has been met (see handleBracketCurrent), a second line under it
+  // shows the crowd's majority pick — right where the model's call is,
+  // instead of a separate section elsewhere on the page. qfConsensus is
+  // already null from the API below that threshold, so there's nothing left
+  // to gate client-side.
+  function modelCallEl(winner, yourPick, qfConsensus){
+    var hit = yourPick === winner;
+    var d = document.createElement('div'); d.className='modelcall';
+    var html = 'GillyLab Model: <strong>'+winner.name+'</strong>' +
+      (yourPick ? ' <span class="modelmark '+(hit?'hit':'miss')+'">'+(hit?'✓ you had it':'✗ you missed it')+'</span>' : '');
+    if (qfConsensus){
+      var maj = qfConsensus.pctA >= qfConsensus.pctB
+        ? { pct:qfConsensus.pctA, f:qfConsensus.a }
+        : { pct:qfConsensus.pctB, f:qfConsensus.b };
+      html += '<div class="consensusline">'+maj.pct+'% picked <strong>'+maj.f.name+'</strong></div>';
+    }
+    d.innerHTML = html;
+    return d;
+  }
+
+  // Groups two matchups whose winners land in the same next-round slot, so
+  // the CSS elbow (.bracket-pair::before/::after) can merge their lines.
+  function bracketPair(m1, m2){
+    var p = document.createElement('div'); p.className='bracket-pair';
+    p.appendChild(m1); p.appendChild(m2);
+    return p;
+  }
+  // The name that rides along a connector line. "picked" = your hypothetical
+  // pick, pre-submit; "winner" = the real result, post-submit.
+  function connectorLabel(fighter, kind){
+    var s = document.createElement('span'); s.className='connector-name';
+    if (fighter){
+      s.classList.add(kind);
+      var parts = fighter.name.trim().split(' ');
+      s.textContent = parts[parts.length-1];
+    }
+    return s;
+  }
+
+  // Semifinals/Final (and champion, which is already handled by its own
+  // centered column) have fewer tiles than quarterfinals, so the round-col's
+  // reserved top space for the label leaves a big gap above the actual top
+  // tile. Pin the label just above wherever that tile really lands.
+  function positionRoundLabels(){
+    ['col-qf','col-sf','col-f'].forEach(function(id){
+      var col = document.getElementById(id);
+      var roundCol = col.parentElement;
+      var label = roundCol.querySelector('.round-label');
+      var firstMatchup = col.querySelector('.matchup');
+      if (!label || !firstMatchup) return;
+      var colTop = roundCol.getBoundingClientRect().top;
+      var mTop = firstMatchup.getBoundingClientRect().top;
+      var top = Math.max(0, (mTop - colTop) - label.offsetHeight - 12);
+      label.classList.add('positioned');
+      label.style.top = top + 'px';
+    });
+  }
+  window.addEventListener('resize', positionRoundLabels);
+
+  function render(){
+    var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
+    var colSF = document.getElementById('col-sf'); colSF.innerHTML='';
+    var colF  = document.getElementById('col-f');  colF.innerHTML='';
+
+    var qfMatchups = QF_PAIRS.map(function(pair, i){
+      var a = bySeed[pair[0]], b = bySeed[pair[1]];
+      var m = document.createElement('div'); m.className='matchup'; m.id='m-qf-'+i;
+      m.appendChild(fcard(a, { picked: picks.qf[i]===a, onClick:function(){ pickQf(i, a); } }));
+      var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
+      m.appendChild(vs);
+      m.appendChild(fcard(b, { picked: picks.qf[i]===b, onClick:function(){ pickQf(i, b); } }));
+      m.appendChild(connectorLabel(picks.qf[i], 'picked'));
+      return m;
+    });
+    colQF.appendChild(bracketPair(qfMatchups[0], qfMatchups[1]));
+    colQF.appendChild(bracketPair(qfMatchups[2], qfMatchups[3]));
+
+    var sfMatchups = [0,1].map(function(i){
+      var a = picks.qf[i*2], b = picks.qf[i*2+1];
+      var m = document.createElement('div'); m.className='matchup'; m.id='m-sf-'+i;
+      if (a) m.appendChild(fcard(a, { picked: picks.sf[i]===a, onClick:function(){ pickSf(i, a); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
+      m.appendChild(vs);
+      if (b) m.appendChild(fcard(b, { picked: picks.sf[i]===b, onClick:function(){ pickSf(i, b); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      m.appendChild(connectorLabel(picks.sf[i], 'picked'));
+      return m;
+    });
+    colSF.appendChild(bracketPair(sfMatchups[0], sfMatchups[1]));
+
+    (function(){
+      var a = picks.sf[0], b = picks.sf[1];
+      var m = document.createElement('div'); m.className='matchup'; m.id='m-final';
+      if (a) m.appendChild(fcard(a, { picked: picks.final===a, onClick:function(){ pickFinal(a); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
+      m.appendChild(vs);
+      if (b) m.appendChild(fcard(b, { picked: picks.final===b, onClick:function(){ pickFinal(b); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      m.appendChild(connectorLabel(picks.final, 'picked'));
+      colF.appendChild(m);
+    })();
+
+    document.getElementById('champ-name').textContent = picks.final ? picks.final.name : '—';
+    var champPhoto = document.getElementById('champ-photo');
+    if (picks.final){
+      champPhoto.src = '/photos/thumb/'+picks.final.photo+'.png';
+      champPhoto.style.display = '';
+    } else {
+      champPhoto.removeAttribute('src');
+      champPhoto.style.display = 'none';
+    }
+
+    var made = picks.qf.filter(Boolean).length + picks.sf.filter(Boolean).length + (picks.final?1:0);
+    document.getElementById('progress').innerHTML = '<strong>'+made+'</strong> of 7 picks made';
+    document.getElementById('submitBtn').disabled = made < 7;
+    positionRoundLabels();
+  }
+
+  // Scroll forward once the WHOLE round is done, not just the one matchup
+  // your last click happened to complete — jumping ahead mid-round would
+  // carry you past quarterfinals you haven't picked yet. Re-picking within an
+  // already-complete round (changing your mind) intentionally does NOT
+  // re-trigger the scroll, so correcting an earlier pick doesn't yank the
+  // page around.
+  var pendingScrollId = null;
+  function scrollToPending(){
+    if (!pendingScrollId) return;
+    var el = document.getElementById(pendingScrollId);
+    pendingScrollId = null;
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+  }
+  function pickQf(i, fighter){
+    var wasComplete = picks.qf.every(Boolean);
+    picks.qf[i] = fighter;
+    if (!wasComplete && picks.qf.every(Boolean)) pendingScrollId = 'm-sf-0';
+    onPickChanged();
+  }
+  function pickSf(i, fighter){
+    var wasComplete = picks.sf.every(Boolean);
+    picks.sf[i] = fighter;
+    if (!wasComplete && picks.sf.every(Boolean)) pendingScrollId = 'm-final';
+    onPickChanged();
+  }
+  function pickFinal(fighter){
+    picks.final = fighter;
+    pendingScrollId = 'submit-row';
+    onPickChanged();
+  }
+
+  function onPickChanged(){
+    // clear downstream picks that no longer trace back to a still-picked fighter
+    [0,1].forEach(function(i){
+      var a = picks.qf[i*2], b = picks.qf[i*2+1];
+      if (picks.sf[i] && picks.sf[i]!==a && picks.sf[i]!==b) picks.sf[i]=null;
+    });
+    if (picks.final && picks.final!==picks.sf[0] && picks.final!==picks.sf[1]) picks.final=null;
+    render();
+    scrollToPending();
+  }
+
+  // Reveals the results section on the champion tile (the payoff of the
+  // bracket, not the leaderboard below it) and wires "View Leaderboard" to
+  // scroll down deliberately -- unchanged from the prototype, just factored
+  // out so both the submit handler and the "already submitted" load path
+  // below can call it.
+  function showResults(score, label){
+    document.getElementById('scoreBig').textContent = score;
+    document.getElementById('scoreLabel').textContent = label;
+    document.getElementById('results').classList.add('show');
+    var champCard = document.getElementById('col-champ');
+    champCard.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+    var viewLbBtn = document.getElementById('viewLbBtn');
+    viewLbBtn.style.display = '';
+    viewLbBtn.onclick = function(){
+      // scrollIntoView(block:'start') lands the score banner's top edge
+      // exactly at the viewport's top edge — which is where the sticky nav
+      // bar sits, so the "X / 12" score gets cut off behind it. Scroll a bit
+      // short of that instead, leaving room for the sticky bar (if present)
+      // plus a little breathing room.
+      var results = document.getElementById('results');
+      var nav = document.querySelector('.site-header');
+      var offset = (nav ? nav.getBoundingClientRect().height : 0) + 16;
+      var top = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    };
+  }
+  function showSubmitError(msg){
+    var row = document.getElementById('submit-row');
+    var el = document.getElementById('submitMsg');
+    if (!el){ el = document.createElement('span'); el.id = 'submitMsg'; el.className = 'progress'; el.style.color = 'var(--bad)'; row.appendChild(el); }
+    el.textContent = msg;
+  }
+  // Real winners, resolved from the seed numbers the API sends (see
+  // worker/index.js's bracketBuildWeek) back into the same fighter objects
+  // FIGHTERS/bySeed already hold -- lets render()/markCardStates() below stay
+  // exactly as the prototype wrote them, comparing fighter objects by
+  // reference rather than threading seed numbers through every call site.
+  function resolveReal(raw){
+    return { qf: raw.qf.map(function(s){ return bySeed[s]; }), sf: raw.sf.map(function(s){ return bySeed[s]; }), final: bySeed[raw.final] };
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    if (alreadySubmitted || !picks.final) return;
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    showSubmitError('');
+    fetch('/api/bracket/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ picks: { qf: picks.qf.map(function(f){ return f.seed; }), sf: picks.sf.map(function(f){ return f.seed; }), final: picks.final.seed } }),
+    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); }).then(function(res){
+      if (!res.ok){
+        btn.disabled = false;
+        showSubmitError(res.data && res.data.error ? res.data.error : 'Something went wrong — try again.');
+        return;
+      }
+      alreadySubmitted = true;
+      real = resolveReal(res.data.real);
+      lifetimePts = res.data.lifetimePts || 0;
+      renderBeltPanel();
+      markCardStates();
+      showResults(res.data.score, res.data.score + ' pts added to your lifetime belt progress.');
+      Promise.all([loadLeaderboard('week'), loadLeaderboard('season')]).then(function(){ renderLeaderboard('week'); });
+    }).catch(function(){
+      btn.disabled = false;
+      showSubmitError('Couldn’t reach GillyLab — check your connection and try again.');
+    });
+  });
+
+  // Post-submit, the bracket switches from "your hypothetical path" to the
+  // real-results path: both fighters in every matchup, the actual winner clearly
+  // marked, the actual loser dimmed, and your pick for that slot badged onto
+  // whichever card it landed on. If your pick for a later round isn't one of
+  // the two fighters who actually got there, there's nothing to badge — show
+  // a small note instead of pretending your hypothetical matchup was real.
+  function realMatchupBlock(a, b, winner, yourPick, qfConsensus){
+    var m = document.createElement('div'); m.className='matchup';
+    m.appendChild(fcard(a, { locked:true, winner: a===winner, loser: a!==winner, yourPick: yourPick===a }));
+    m.appendChild(fcard(b, { locked:true, winner: b===winner, loser: b!==winner, yourPick: yourPick===b }));
+    m.appendChild(modelCallEl(winner, yourPick, qfConsensus));
+    if (yourPick && yourPick!==a && yourPick!==b){
+      var note = document.createElement('div'); note.className='youhad';
+      note.innerHTML = 'You had <strong>'+yourPick.name+'</strong> here — didn’t advance';
+      m.appendChild(note);
+    }
+    return m;
+  }
+
+  function markCardStates(){
+    var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
+    var qfBlocks = QF_PAIRS.map(function(pair,i){
+      var block = realMatchupBlock(bySeed[pair[0]], bySeed[pair[1]], real.qf[i], picks.qf[i], consensus[i]);
+      block.appendChild(connectorLabel(real.qf[i], 'winner'));
+      return block;
+    });
+    colQF.appendChild(bracketPair(qfBlocks[0], qfBlocks[1]));
+    colQF.appendChild(bracketPair(qfBlocks[2], qfBlocks[3]));
+
+    var colSF = document.getElementById('col-sf'); colSF.innerHTML='';
+    var sfBlocks = [
+      realMatchupBlock(real.qf[0], real.qf[1], real.sf[0], picks.sf[0]),
+      realMatchupBlock(real.qf[2], real.qf[3], real.sf[1], picks.sf[1])
+    ];
+    sfBlocks[0].appendChild(connectorLabel(real.sf[0], 'winner'));
+    sfBlocks[1].appendChild(connectorLabel(real.sf[1], 'winner'));
+    colSF.appendChild(bracketPair(sfBlocks[0], sfBlocks[1]));
+
+    var colF = document.getElementById('col-f'); colF.innerHTML='';
+    var fBlock = realMatchupBlock(real.sf[0], real.sf[1], real.final, picks.final);
+    fBlock.appendChild(connectorLabel(real.final, 'winner'));
+    colF.appendChild(fBlock);
+
+    document.getElementById('champ-label').classList.add('is-final');
+    document.getElementById('col-champ').innerHTML =
+      '<img class="fphoto" src="/photos/thumb/'+real.final.photo+'.png" alt="" onerror="this.style.display=\'none\'">' +
+      '<div class="fname">'+real.final.name+'</div>' +
+      (picks.final === real.final
+        ? '<span class="pickbadge" style="margin-top:0.6rem; color:var(--good); border-color:var(--good);">Your pick</span>'
+        : '<div class="youhad" style="margin-top:0.5rem;">You had <strong>'+(picks.final?picks.final.name:'—')+'</strong></div>');
+
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitBtn').textContent = 'Bracket Submitted';
+    positionRoundLabels();
+  }
+
+  // ---- boot: load this week's real state, then either render the
+  // interactive picker or, if you already submitted this week, jump
+  // straight to the results view with your saved picks and the real
+  // bracket already revealed.
+  document.getElementById('col-qf').innerHTML = '<p style="color:var(--muted)">Loading this week’s bracket…</p>';
+  fetch('/api/bracket/current').then(function(r){ return r.json(); }).then(function(res){
+    weekId = res.weekId;
+    document.getElementById('col-qf').innerHTML = '';
+    var divEl = document.getElementById('weekDivision');
+    if (divEl) divEl.textContent = res.divisionName || res.division || '—';
+
+    FIGHTERS = res.fighters || [];
+    bySeed = {}; FIGHTERS.forEach(function(f){ bySeed[f.seed] = f; });
+    QF_PAIRS = res.qfPairs || [];
+    consensus = (res.consensus || [null, null, null, null]).map(function(c){
+      return c ? { a: bySeed[c.seedA], b: bySeed[c.seedB], pctA: c.pctA, pctB: c.pctB } : null;
+    });
+    lifetimePts = res.lifetimePts || 0;
+    renderBeltPanel();
+
+    if (res.submitted && res.mine && res.real){
+      alreadySubmitted = true;
+      picks.qf = res.mine.picks.qf.map(function(s){ return bySeed[s]; });
+      picks.sf = res.mine.picks.sf.map(function(s){ return bySeed[s]; });
+      picks.final = bySeed[res.mine.picks.final];
+      real = resolveReal(res.real);
+      render();
+      markCardStates();
+      showResults(res.mine.score, "Every correct pick locked in above — here's the real bracket.");
+      Promise.all([loadLeaderboard('week'), loadLeaderboard('season')]).then(function(){ renderLeaderboard('week'); });
+    } else {
+      render();
+    }
+  }).catch(function(){
+    document.getElementById('col-qf').innerHTML = '<p style="color:var(--bad)">Couldn’t load this week’s bracket — check your connection and reload.</p>';
+  });
+
+})();
+// BRACKET-EMBED:JS:END
+</script>
 
 <footer class="site-footer">
   <div class="foot-brand">GILLY<span class="a">LAB</span></div>

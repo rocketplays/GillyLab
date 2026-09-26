@@ -49,6 +49,17 @@
     font-family:'Barlow', system-ui, sans-serif;
     -webkit-font-smoothing:antialiased;
   }
+  /* THE RULE THAT MAKES EVERY OTHER PAGE'S NAV WORK -- copied verbatim from
+     worker/climb-page.js, which already hit and documented this exact bug.
+     The browser ships its own a:link/a:visited colours, which are
+     declarations ON THE ELEMENT and beat an INHERITED value however specific
+     the ancestor -- so climbNav()'s .pk-navlinks{color:var(--muted)} never
+     reaches the <a> inside it, and the UA's visited purple wins instead.
+     Every other free page has a{color:inherit} at the top of its <style>;
+     this page, being a standalone prototype with no plain-text links of its
+     own (only buttons), never needed one until worker/index.js started
+     rendering climbNav()/freeTabs() around it for logged-in visitors. */
+  a{ color:inherit; }
   .wrap{ max-width:1180px; margin:0 auto; padding:2.25rem 1.5rem 5rem; }
 
   /* ---- header ---- */
