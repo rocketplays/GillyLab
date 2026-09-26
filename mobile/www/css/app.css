@@ -517,6 +517,14 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    simply rendering underneath a bar that should have been gone. */
 .pk-submitbar[hidden]{ display:none; }
 .pk-submitbar .gl-btn{ width:auto; padding:.7rem 1.2rem; flex-shrink:0; }
+/* Share picks sits directly beside Submit picks, same as the site's own
+   .pk-summary-actions row (index.html) -- it used to render as a separate
+   full-width block below this fixed bar, which put it out of the way at
+   the bottom of the bout list where it was easy to miss entirely. #pkBarInfo
+   gets min-width:0 so its text can shrink/wrap for two buttons' worth of
+   width instead of forcing the bar wider than the screen. */
+#pkBarInfo{ min-width:0; }
+.pk-submitbar-actions{ display:flex; align-items:center; gap:.5rem; flex-shrink:0; }
 #pkBouts{ padding-bottom:4.5rem; }
 
 /* ---- Pick'em: leaderboard scope tabs / live board / player profile ----

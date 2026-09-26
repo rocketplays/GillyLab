@@ -113,21 +113,26 @@ function mountPickem(container){
       '<div id="pkBouts"></div>' +
       '<div class="pk-submitbar">' +
         '<div class="gl-muted" id="pkBarInfo">0/' + card.bouts.length + ' picks · +0 possible</div>' +
-        '<button type="button" class="gl-btn gl-btn-primary" id="pkSubmit" disabled>Submit picks</button>' +
+        '<div class="pk-submitbar-actions">' +
+          (window.GL_SHEET ? '<button type="button" class="gl-btn gl-btn-outline" id="pkShareBtn" hidden>Share picks</button>' : '') +
+          '<button type="button" class="gl-btn gl-btn-primary" id="pkSubmit" disabled>Submit picks</button>' +
+        '</div>' +
       '</div>' +
-      (window.GL_SHEET ? '<button type="button" class="gl-sheet-btn" id="pkShareBtn" hidden>Share picks</button>' : '') +
       '<div id="pkPanel" hidden></div>';
 
     renderBouts();
     wireShell();
     updateShareBtn();
   }
-  // Mirrors the site's data-pk-share button on the live event page -- shown
-  // once picks are actually submitted, since a share sheet of half-finished
-  // picks isn't useful. Unlike the site (whose one button flips between
-  // "Share picks"/"Share results" depending on whether BOUTS.every(isDone)),
-  // this screen never shows graded results itself -- that's My History's job
-  // (see the separate share button in showHistoryEvent below) -- so here it's
+  // Mirrors the site's data-pk-share button on the live event page -- same
+  // spot too, now: inside the submit bar next to Submit picks, like the
+  // site's .pk-summary-actions row (index.html), not a separate full-width
+  // button below the fixed bar where it used to be easy to miss. Shown once
+  // picks are actually submitted, since a share sheet of half-finished picks
+  // isn't useful. Unlike the site (whose one button flips between "Share
+  // picks"/"Share results" depending on whether BOUTS.every(isDone)), this
+  // screen never shows graded results itself -- that's My History's job (see
+  // the separate share button in showHistoryEvent below) -- so here it's
   // always "Share picks", ungraded.
   function updateShareBtn(){
     var btn = container.querySelector('#pkShareBtn');
