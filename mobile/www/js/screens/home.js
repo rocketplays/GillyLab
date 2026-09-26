@@ -289,11 +289,13 @@ window.GL_ROUTER.register('home', {
     // category cards (reusing the Scheduled Cards strip pattern), each a
     // top-3 ranked list rather than a single number, so it reads as a real
     // leaderboard, not just another stat tile.
+    // Categories used to each get their own color (accent/blue/gold/purple);
+    // now all plain white, same as every other card title on Home.
     var LEADER_CATEGORIES = [
-      { key: 'sigStrikes', label: 'Sig. Strikes', unit: '', color: 'var(--accent)' },
-      { key: 'takedowns', label: 'Takedowns', unit: '', color: '#3a86ff' },
-      { key: 'ko', label: 'KO/TKO', unit: '', color: '#e6b800' },
-      { key: 'submissions', label: 'Submissions', unit: '', color: '#a855f7' },
+      { key: 'sigStrikes', label: 'Sig. Strikes' },
+      { key: 'takedowns', label: 'Takedowns' },
+      { key: 'ko', label: 'KO/TKO' },
+      { key: 'submissions', label: 'Submissions' },
     ];
     function leaderCard(cat, rows){
       if (!rows || !rows.length) return '';
@@ -311,7 +313,7 @@ window.GL_ROUTER.register('home', {
       }).join('');
       return (
         '<div class="hm-lead-card">' +
-          '<div class="hm-lead-title" style="color:' + cat.color + '">' + esc(cat.label) + '</div>' +
+          '<div class="hm-lead-title">' + esc(cat.label) + '</div>' +
           body +
         '</div>'
       );
@@ -410,6 +412,15 @@ window.GL_ROUTER.register('home', {
       if (card.locked) return 'Picks locked';
       return total + ' fights open';
     }
+    // Shared "Xd Xh" countdown formatter -- used for both the Bracket tile's
+    // weekly-rotation countdown and Pick'em's picks-lock countdown below.
+    function countdownStr(targetMs){
+      var ms = targetMs - Date.now();
+      if (ms <= 0) return null;
+      var totalHours = Math.floor(ms / 3600000);
+      var d = Math.floor(totalHours / 24), h = totalHours % 24;
+      return d + 'D ' + h + 'H';
+    }
     // Bracket rotates weekly at a fixed epoch Monday -- same
     // BRACKET_EPOCH_MONDAY/weekly-boundary math as worker/index.js's
     // bracketWeekIndex(), computed here client-side purely off Date.now()
@@ -417,21 +428,30 @@ window.GL_ROUTER.register('home', {
     var BRACKET_EPOCH_MONDAY = Date.UTC(2024, 0, 1, 5, 0, 0);
     var BRACKET_WEEK_MS = 7 * 24 * 3600 * 1000;
     function bracketCountdown(){
-      var now = Date.now();
-      var n = Math.floor((now - BRACKET_EPOCH_MONDAY) / BRACKET_WEEK_MS);
+      var n = Math.floor((Date.now() - BRACKET_EPOCH_MONDAY) / BRACKET_WEEK_MS);
       var nextRotation = BRACKET_EPOCH_MONDAY + (n + 1) * BRACKET_WEEK_MS;
-      var ms = nextRotation - now;
-      if (ms <= 0) return 'Updates soon';
-      var totalHours = Math.floor(ms / 3600000);
-      var d = Math.floor(totalHours / 24), h = totalHours % 24;
-      return 'Updates in ' + d + 'D ' + h + 'H';
+      var c = countdownStr(nextRotation);
+      return c ? 'Updates in ' + c : 'Updates soon';
+    }
+    // Second Pick'em subtext line -- countdown to when picks lock (prelims
+    // start), same field (card.prelimsAt) pickem.js's own lock check already
+    // reads off this card object. Empty once already past that point (the
+    // first subtext line already says "Picks locked" by then) or when there
+    // is no real card to count down to.
+    function pickemLockCountdown(card){
+      if (!card || !card.prelimsAt) return '';
+      var t = Date.parse(card.prelimsAt);
+      if (isNaN(t)) return '';
+      var c = countdownStr(t);
+      return c ? 'Locks in ' + c : '';
     }
     function playCompeteSection(pickemCard, pickemMine){
+      var lockCountdown = pickemLockCountdown(pickemCard);
       return (
         '<div class="gl-sec">' +
           '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Play <span class="a">&amp; Compete</span></h2></div>' +
           '<div class="hm-tile-row">' +
-            '<button type="button" class="hm-tile" data-goto="pickem"><span class="hm-tile-icon">🥊</span><span class="hm-tile-title">Pick’em</span><span class="hm-tile-sub">' + esc(pickemTileStatus(pickemCard, pickemMine)) + '</span></button>' +
+            '<button type="button" class="hm-tile" data-goto="pickem"><span class="hm-tile-icon">🥊</span><span class="hm-tile-title">Pick’em</span><span class="hm-tile-sub">' + esc(pickemTileStatus(pickemCard, pickemMine)) + '</span>' + (lockCountdown ? '<span class="hm-tile-sub">' + esc(lockCountdown) + '</span>' : '') + '</button>' +
             '<button type="button" class="hm-tile" data-goto="climb"><span class="hm-tile-icon">🏔️</span><span class="hm-tile-title">The Climb</span><span class="hm-tile-sub">Build a fighter, become the GOAT</span></button>' +
             '<button type="button" class="hm-tile" data-goto="bracket"><span class="hm-tile-icon">🏆</span><span class="hm-tile-title">Legends Bracket</span><span class="hm-tile-sub">' + esc(bracketCountdown()) + '</span></button>' +
           '</div>' +
@@ -571,11 +591,13 @@ window.GL_ROUTER.register('home', {
         // 401 with no session), so cardRes is always null for a logged-out
         // visitor -- the public /api/app/matchup response (matchupCard,
         // fetched either way for the Main Event section above) carries the
-        // same event name, which is the only field playCompeteSection's
-        // pickemTileStatus actually reads for a logged-out visitor, so it
-        // stands in here instead of the tile just reading "This week's card"
-        // with no event context.
-        if (!card && !loggedIn && matchupCard) card = { name: matchupCard.event || '', bouts: matchupCard.fights || [] };
+        // same event name (and prelimsAt, for the lock countdown -- same
+        // field name eventToCard() puts on both this and the real pickem
+        // card), which is what playCompeteSection's pickemTileStatus/
+        // pickemLockCountdown read for a logged-out visitor, so it stands in
+        // here instead of the tile just reading "This week's card" with no
+        // event context.
+        if (!card && !loggedIn && matchupCard) card = { name: matchupCard.event || '', bouts: matchupCard.fights || [], prelimsAt: matchupCard.prelimsAt || null };
         var subscribed = !!(acct && acct.subscribed);
         // GET /api/app/bets is subscribed-only server-side (403 otherwise --
         // see worker/index.js), so this is only ever fetched once we already

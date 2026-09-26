@@ -633,7 +633,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   flex:0 0 172px; background:var(--card); border:1px solid var(--border); border-radius:12px;
   padding:.65rem .7rem;
 }
-.hm-lead-title{ font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; font-weight:800; margin-bottom:.5rem; }
+.hm-lead-title{ font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; font-weight:800; margin-bottom:.5rem; color:var(--text); }
 .hm-lead-row{ display:flex; align-items:center; gap:.4rem; margin-bottom:.4rem; }
 .hm-lead-row:last-child{ margin-bottom:0; }
 .hm-lead-rank{ font-family:'Barlow Condensed',sans-serif; font-weight:800; color:var(--muted); font-size:.76rem; width:1.1rem; flex-shrink:0; }

@@ -66,7 +66,7 @@ window.GL_ROUTER.register('premium', {
       // itself contains, so this matches the real page beat for beat.
       container.innerHTML =
         '<div class="gl-sec gl-sec--first">' +
-          '<h1 class="gl-heading" style="font-size:1.4rem;margin:0 0 .3rem">Go Premium</h1>' +
+          '<h1 class="gl-heading" style="font-size:1.4rem;margin:0 0 .3rem">Go <span style="color:var(--accent)">Premium</span></h1>' +
           '<p class="gl-muted" style="margin:0">Everything free, plus the whole database and every tool.</p>' +
           // Same CTA as the one at the bottom of the tile carousel -- someone who
           // already knows they want Premium shouldn't have to scroll through the
