@@ -450,9 +450,9 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   display:flex; align-items:center; gap:.15rem; flex-shrink:0;
   background:none; border:none; padding:0; font:inherit; cursor:pointer;
   font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
-  color:var(--muted); white-space:nowrap;
+  color:var(--text); white-space:nowrap;
 }
-.hm-head-arrow{ font-size:.85rem; line-height:1; }
+.hm-head-arrow{ font-size:.85rem; line-height:1; color:var(--accent); }
 /* Each section's own name (Pick'em, The Climb, Active Roster, ...) reads as
    a real dashboard-widget title, not a small muted eyebrow -- so Home looks
    like a hub with a teaser under each heading rather than a flat list. */
