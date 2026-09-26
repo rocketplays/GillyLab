@@ -648,6 +648,20 @@ window.GL_BETTRACKER = (function(){
         var oddsVal = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
         var anyMatch = matches.some(Boolean);
         if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card, but not cleanly enough to auto-track (missing a leg\'s odds, a market this can\'t classify confidently, or an unclear winner) — logging as self-reported. You can log it again under Upcoming fights if you\'d rather have it tracked.</div>';
+        // A clean, read-only preview of what was actually read off the
+        // screenshot -- one boxed row per leg -- shown ABOVE the editable
+        // matchText/pickText fields below (which is what actually gets
+        // submitted, unchanged). Previously a multi-leg parlay had no
+        // per-leg view at all here: everything got jammed into those two
+        // combined single-line inputs ("Fighter A vs B + Fighter C vs D",
+        // "Pick 1 (MARKET) | Pick 2 (MARKET)"), unreadable past 2 legs.
+        if (scanLegs.length > 1){
+          h += '<div class="bt-stage-t" style="margin-bottom:.4rem">What we read</div>' +
+            scanLegs.map(function(l){
+              return '<div class="bt-scan-row"><div style="font-weight:700">' + esc(l.pick) + '</div>' +
+                '<div class="bt-leg-m" style="margin-top:2px;white-space:normal">' + esc(l.matchup) + ' · ' + esc(l.market) + '</div></div>';
+            }).join('');
+        }
         h += '<label>Matchup / event</label><input data-scan-match value="' + esc(matchText) + '">' +
           '<label>Your pick + market</label><input data-scan-pick value="' + esc(pickText) + '">' +
           '<div class="bt-row2"><div><label>Your odds</label><input type="number" data-scan-odds value="' + (isFinite(oddsVal) ? oddsVal : '') + '" placeholder="-150"></div>' +

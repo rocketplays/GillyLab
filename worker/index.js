@@ -1237,14 +1237,27 @@ function btStripFences(text) {
 function btValidateScanDraft(d) {
   if (!d || typeof d !== "object") return "Couldn't read this screenshot.";
   if (d.kind !== "manual" && d.kind !== "parlay") return "Couldn't read this screenshot.";
-  const leg = (l) => l && typeof l === "object" && typeof l.matchup === "string" && l.matchup.trim()
-    && typeof l.pick === "string" && l.pick.trim() && typeof l.market === "string" && l.market.trim()
-    && Number.isFinite(l.odds) && l.odds !== 0;
+  // matchup/pick/market are required on every leg either way. Odds are
+  // required on a MANUAL (single) bet's own leg -- that number IS the
+  // bet's odds, always printed. A PARLAY leg's own odds are a different
+  // story: plenty of real slips (seen: Fanatics Sportsbook) print only the
+  // combined price and never break out a per-leg number at all. Requiring
+  // every leg to carry its own odds rejected the whole screenshot outright
+  // on exactly that kind of slip -- "couldn't read this screenshot" for a
+  // perfectly readable one. Self-reported logging only ever needs the
+  // combined parlayOdds (checked separately below); legTrackable() in the
+  // client already independently excludes an odds-less leg from the
+  // "tracked" upgrade path, so relaxing this here can't let a leg silently
+  // get tracked without a real price.
+  const legCore = (l) => l && typeof l === "object" && typeof l.matchup === "string" && l.matchup.trim()
+    && typeof l.pick === "string" && l.pick.trim() && typeof l.market === "string" && l.market.trim();
   if (d.kind === "manual") {
-    if (!leg(d.manual)) return "Couldn't read this screenshot clearly enough.";
+    const m = d.manual;
+    if (!legCore(m) || !Number.isFinite(m.odds) || m.odds === 0) return "Couldn't read this screenshot clearly enough.";
   } else {
     const legs = d.parlay && Array.isArray(d.parlay.legs) ? d.parlay.legs : null;
-    if (!legs || legs.length < 2 || !legs.every(leg)) return "Couldn't read this screenshot clearly enough.";
+    if (!legs || legs.length < 2 || !legs.every(legCore)) return "Couldn't read this screenshot clearly enough.";
+    if (!Number.isFinite(d.parlay.parlayOdds) || d.parlay.parlayOdds === 0) return "Couldn't read this screenshot clearly enough — missing the combined odds.";
   }
   return null;
 }
