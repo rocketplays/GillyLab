@@ -70,15 +70,24 @@ window.GL_ROUTER.register('home', {
     // old mainEventSection) plus a new "Tale of the Tape" stat peek when the
     // API actually has one (taleOfTape is null for a pairing with too little
     // per-fighter stat coverage -- see worker/index.js's taleOfTapeFor).
-    function tapeHTML(rows){
+    // Each row now shows the actual value on each side (r.aVal/r.bVal,
+    // already sent by worker/index.js's taleOfTapeFor -- previously fetched
+    // but never rendered, so the bars had no numbers or full labels tied to
+    // them at all) plus a name legend so it's clear which color is which
+    // fighter, not just abstract green-vs-grey. Full label text now (no
+    // abbreviation) since it has its own row instead of squeezing next to
+    // the bar.
+    function tapeHTML(rows, f1, f2){
       if (!rows || !rows.length) return '';
-      var short = { 'Sig. strikes landed / min':'Sig Str', 'Striking accuracy':'Str Acc', 'Striking defense':'Str Def', 'Takedowns / 15 min':'TD Avg', 'Takedown accuracy':'TD Acc', 'Takedown defense':'TD Def' };
       var body = rows.map(function(r){
         var aw = Math.max(0, Math.min(100, r.aW || 0)), bw = Math.max(0, Math.min(100, r.bW || 0));
         var total = aw + bw || 1;
         return (
           '<div class="he-tape-row">' +
-            '<span class="he-tape-label">' + esc(short[r.label] || r.label) + '</span>' +
+            '<div class="he-tape-rowtop">' +
+              '<span class="he-tape-label">' + esc(r.label) + '</span>' +
+              '<span class="he-tape-vals"><span class="he-tape-val a">' + esc(r.aVal) + '</span><span class="he-tape-val b">' + esc(r.bVal) + '</span></span>' +
+            '</div>' +
             '<span class="he-tape-bar">' +
               '<span class="he-tape-fill a" style="width:' + (aw / total * 100) + '%"></span>' +
               '<span class="he-tape-fill b" style="width:' + (bw / total * 100) + '%"></span>' +
@@ -86,7 +95,16 @@ window.GL_ROUTER.register('home', {
           '</div>'
         );
       }).join('');
-      return '<div class="he-tape"><div class="he-tape-title">Tale of the Tape</div>' + body + '</div>';
+      return (
+        '<div class="he-tape">' +
+          '<div class="he-tape-title">Tale of the Tape</div>' +
+          '<div class="he-tape-legend">' +
+            '<span class="he-tape-legend-item"><span class="he-tape-dot a"></span>' + esc(f1) + '</span>' +
+            '<span class="he-tape-legend-item"><span class="he-tape-dot b"></span>' + esc(f2) + '</span>' +
+          '</div>' +
+          body +
+        '</div>'
+      );
     }
     function mainEventSection(card, taleOfTape){
       var main = card && (card.fights || [])[0];
@@ -112,7 +130,7 @@ window.GL_ROUTER.register('home', {
             '<div class="he-side">' + av(main.f2, main.s2, 'he-av') + heName(main.f2, main.s2) + '</div>' +
           '</div>' +
           '<p class="gl-muted" style="margin:.6rem 0 .8rem;text-align:center">' + esc(card.event) + '</p>' +
-          tapeHTML(taleOfTape) +
+          tapeHTML(taleOfTape, main.f1, main.f2) +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
         '</div>'
       );
@@ -171,7 +189,14 @@ window.GL_ROUTER.register('home', {
     // peek (the same moneyline the Events tab's tiles already show them).
     function impliedPct(o1, o2){
       if (o1 == null || o2 == null) return null;
-      var raw = function(american){ return american < 0 ? (-american) / (-american + 100) : 100 / (american + 100); };
+      // main.o1/o2 arrive as STRINGS ("+131"/"-156" -- pagesConsensusOdds's
+      // own fmtOdds prefixes a "+"), so this must coerce to Number before
+      // doing arithmetic on it: `"+131" + 100` is string concatenation
+      // ("+131100"), not addition, which silently produced a near-zero
+      // implied probability for every underdog and read as the favorite
+      // being a ~100% lock. The negative branch never showed this bug --
+      // unary minus (`-american`) already forces numeric coercion.
+      var raw = function(american){ var n = Number(american); return n < 0 ? (-n) / (-n + 100) : 100 / (n + 100); };
       var a = raw(o1), b = raw(o2);
       var sum = a + b;
       if (!sum) return null;
@@ -184,12 +209,12 @@ window.GL_ROUTER.register('home', {
       var fmt = function(v){ return (v == null || v === '') ? '—' : String(v); };
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Betting <span class="a">Odds</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Betting <span class="a">Odds</span></h2></div>' +
           '<div class="hm-odds-card">' +
             '<div class="hm-odds-fighter">' + av(main.f1, main.s1, 'hm-odds-av') + '<span class="hm-odds-fname">' + esc(main.f1) + '</span>' +
-              '<span class="hm-odds-pill ' + (main.o1 < main.o2 ? 'fav' : 'dog') + '">' + esc(fmt(main.o1)) + '</span></div>' +
+              '<span class="hm-odds-pill">' + esc(fmt(main.o1)) + '</span></div>' +
             '<div class="hm-odds-fighter" style="margin-bottom:0">' + av(main.f2, main.s2, 'hm-odds-av') + '<span class="hm-odds-fname">' + esc(main.f2) + '</span>' +
-              '<span class="hm-odds-pill ' + (main.o2 < main.o1 ? 'fav' : 'dog') + '">' + esc(fmt(main.o2)) + '</span></div>' +
+              '<span class="hm-odds-pill">' + esc(fmt(main.o2)) + '</span></div>' +
             (pct ? (
               '<div class="hm-odds-bar"><span class="hm-odds-bar-a" style="width:' + pct.a + '%"></span><span class="hm-odds-bar-b" style="width:' + pct.b + '%"></span></div>' +
               '<div class="hm-odds-foot"><span>' + esc(main.f1) + ' ' + pct.a + '%</span><span>' + esc(main.f2) + ' ' + pct.b + '%</span></div>'
@@ -287,7 +312,7 @@ window.GL_ROUTER.register('home', {
       if (!cards) return '';
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">' + year + ' <span class="a">Leaders</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">' + year + ' <span class="a">Leaders</span></h2></div>' +
           '<div class="hm-strip hm-lead-strip">' + cards + '</div>' +
         '</div>'
       );
@@ -313,7 +338,7 @@ window.GL_ROUTER.register('home', {
       if (!fighters.length){
         return (
           '<div class="gl-sec">' +
-            '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
+            '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
             '<p class="gl-muted" style="margin:.4rem 0 0">Roster unavailable right now.</p>' +
             '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View Roster</button>' +
           '</div>'
@@ -335,7 +360,7 @@ window.GL_ROUTER.register('home', {
       var photoStrip = photos.map(function(p){ return av(p.name, p.photo, 'hm-roster-av'); }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
           '<div class="hm-roster-top">' +
             '<div><div class="hm-roster-stat">' + total + '</div><div class="hm-roster-stat-label">on current roster</div></div>' +
             (photoStrip ? '<div class="hm-roster-strip">' + photoStrip + '</div>' : '') +
@@ -382,7 +407,7 @@ window.GL_ROUTER.register('home', {
     function playCompeteSection(pickemCard, pickemMine){
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Play <span class="a">&amp; Compete</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Play <span class="a">&amp; Compete</span></h2></div>' +
           '<div class="hm-tile-row">' +
             '<button type="button" class="hm-tile" data-goto="pickem"><span class="hm-tile-icon">🥊</span><span class="hm-tile-title">Pick’em</span><span class="hm-tile-sub">' + esc(pickemTileStatus(pickemCard, pickemMine)) + '</span></button>' +
             '<button type="button" class="hm-tile" data-goto="climb"><span class="hm-tile-icon">🏔️</span><span class="hm-tile-title">The Climb</span><span class="hm-tile-sub">Build a fighter, become the GOAT</span></button>' +
@@ -448,7 +473,7 @@ window.GL_ROUTER.register('home', {
     function premiumToolsSection(betsStats){
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">More Premium <span class="a">Tools</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">More Premium <span class="a">Tools</span></h2></div>' +
           '<div class="hm-tools-row">' +
             betTrackerCard(betsStats) +
             tapeStudyCard() +
