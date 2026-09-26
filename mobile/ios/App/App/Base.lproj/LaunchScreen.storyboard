@@ -19,24 +19,24 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="snD-IY-ifK">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tag">
-                                <rect key="frame" x="27" y="410" width="321" height="20"/>
-                                <attributedString key="attributedText">
-                                    <fragment content="Know the fight ">
-                                        <attributes>
-                                            <font key="NSFont" metaFont="system" weight="medium" size="15"/>
-                                            <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </attributes>
-                                    </fragment>
-                                    <fragment content="before it starts">
-                                        <attributes>
-                                            <font key="NSFont" metaFont="system" weight="medium" size="15"/>
-                                            <color key="NSColor" red="0.0" green="0.90196078431372551" blue="0.40392078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
+                            <!-- Two plain labels, not one attributedText label: a hand-authored
+                                 NSAttributedString fragment block can't be verified without Xcode
+                                 actually compiling this storyboard (ibtool), and a first attempt at
+                                 it rendered as no subtext at all on a real device. Two ordinary
+                                 single-color UILabels use the exact same simple text/textColor
+                                 shape the original single label already used successfully, just
+                                 duplicated: centered as a pair via the centerX +/-1pt trick below
+                                 instead of a UIStackView, for the same reason (unverifiable schema). -->
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Know the fight " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tag">
+                                <rect key="frame" x="27" y="410" width="160" height="20"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="before it starts" textAlignment="left" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tg2">
+                                <rect key="frame" x="188" y="410" width="160" height="20"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                <color key="textColor" red="0.0" green="0.90196078431372551" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -46,7 +46,12 @@
                             <constraint firstItem="snD-IY-ifK" firstAttribute="trailing" secondItem="Gxr-0V-1cJ" secondAttribute="trailing" id="c02-tr-ai1"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="top" secondItem="Gxr-0V-1cJ" secondAttribute="top" id="c03-to-p02"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="bottom" secondItem="Gxr-0V-1cJ" secondAttribute="bottom" id="c04-bo-t03"/>
-                            <constraint firstItem="slG-an-tag" firstAttribute="centerX" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" id="c05-cx-04"/>
+                            <!-- Pair of labels centered as a unit: label1's trailing sits 1pt left
+                                 of view.centerX, label2's leading sits 1pt right of it, reading
+                                 as one centered "Know the fight before it starts" line with a
+                                 2pt gap, same visual effect a single centered label had, without
+                                 needing a UIStackView (see the label comment above for why not). -->
+                            <constraint firstItem="slG-an-tag" firstAttribute="trailing" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="-1" id="c05-cx-04"/>
                             <!-- 1.26, not the old 1.46: the splash image's logo/wordmark moved up
                                  (see mobile/assets/splash.png), so this needs to move up with it to
                                  stay a subtext right under the wordmark instead of drifting further
@@ -54,7 +59,9 @@
                                  (centerY = view.centerY * multiplier = viewHeight * multiplier/2). -->
                             <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.26" constant="0.0" id="c06-cy-05"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="leadingMargin" constant="16" id="c07-lm-06"/>
-                            <constraint firstItem="slG-an-tag" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="trailingMargin" constant="-16" id="c08-tm-07"/>
+                            <constraint firstItem="slG-an-tg2" firstAttribute="leading" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="1" id="c09-cx-08"/>
+                            <constraint firstItem="slG-an-tg2" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.26" constant="0.0" id="c10-cy-09"/>
+                            <constraint firstItem="slG-an-tg2" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="trailingMargin" constant="-16" id="c11-tm-10"/>
                         </constraints>
                     </view>
                 </viewController>
