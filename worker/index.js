@@ -2238,14 +2238,48 @@ async function bracketLoadPool(env, url) {
   return pool;
 }
 
+// Fisher-Yates using the shared seeded RNG, so a shuffle is reproducible from
+// its seed just like the outcome sim is.
+function bracketShuffle(arr, rng) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const BRACKET_POOL_SIZE = 8;
+const BRACKET_MIN_ERA_IN_DRAW = 3;
+
+// Draws this week's 8-fighter field out of a division's full (larger) pool.
+// Seeded independently from the outcome-sim RNG (distinct seed string) so
+// which 8 fighters show up and who beats whom are two separate random draws,
+// not entangled. Guarantees at least BRACKET_MIN_ERA_IN_DRAW "current" and
+// BRACKET_MIN_ERA_IN_DRAW "former" fighters make the cut (when the pool has
+// enough of each) so a week's bracket is never accidentally all-one-era, even
+// though the underlying pool is large and shuffled.
+function bracketSelectPool(weekIndex, division, poolAll) {
+  if (poolAll.length <= BRACKET_POOL_SIZE) return poolAll.slice();
+  const rng = bracketSeededRng("pick:w" + weekIndex + ":" + division);
+  const current = bracketShuffle(poolAll.filter((f) => f.era === "current"), rng);
+  const former = bracketShuffle(poolAll.filter((f) => f.era === "former"), rng);
+  const minEach = Math.min(BRACKET_MIN_ERA_IN_DRAW, current.length, former.length);
+  const picked = current.slice(0, minEach).concat(former.slice(0, minEach));
+  const remaining = bracketShuffle(current.slice(minEach).concat(former.slice(minEach)), rng);
+  for (let i = 0; picked.length < BRACKET_POOL_SIZE && i < remaining.length; i++) picked.push(remaining[i]);
+  return picked.slice(0, BRACKET_POOL_SIZE);
+}
+
 // Builds one week's full state: division, seeded 8-fighter bracket, and the
 // real outcome. Pure function of (weekIndex, pool) -- same inputs always
 // produce the same output, which is the whole point of seeding off the week
 // index rather than Math.random().
 function bracketBuildWeek(weekIndex, pool) {
   const division = BRACKET_DIVISIONS[((weekIndex % BRACKET_DIVISIONS.length) + BRACKET_DIVISIONS.length) % BRACKET_DIVISIONS.length];
-  const raw = pool[division];
-  if (!raw || raw.length !== 8) throw new Error("legends-pool.json: division " + division + " does not have exactly 8 fighters");
+  const divisionPool = pool[division];
+  if (!divisionPool || divisionPool.length < BRACKET_POOL_SIZE) throw new Error("legends-pool.json: division " + division + " has fewer than " + BRACKET_POOL_SIZE + " fighters");
+  const raw = bracketSelectPool(weekIndex, division, divisionPool);
   // Seed 1 = highest power in this week's pool -- same "keep top seeds apart
   // until late rounds" bracket shape the prototype used.
   const seeded = raw.slice().sort((a, b) => b.power - a.power).map((f, i) => ({ ...f, seed: i + 1 }));
