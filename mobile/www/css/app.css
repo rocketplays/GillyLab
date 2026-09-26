@@ -124,7 +124,17 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    every real touch-drag scrolled the GAME, not the app shell, so the
    header never appeared to scroll away on a real device. See climb.js. */
 .gl-embed-frame{
-  display:block; width:100%; border:none; background:var(--bg);
+  display:block; width:100%; border:none;
+  /* transparent, not var(--bg): climb-game.html's own aurora background
+     (html{background:radial-gradient(...)}, #bgfx, #bgedge) is stripped by
+     gen-climb-app-page.cjs, because that copy is sized to the IFRAME's own
+     (shorter) viewport while index.html's #bgfx/#bgedge are sized to the
+     real device viewport -- the two gradients didn't line up at the
+     iframe's edges, which read as the game sitting in its own separate box
+     rather than blending into the rest of the app. A transparent iframe
+     over a solid var(--bg) background lets the app shell's own, correctly-
+     sized aurora (rendered once, behind everything) show through instead. */
+  background:transparent;
   /* -3.4rem (was -2.8rem): climb.js now renders an h1.gl-heading page title
      above this iframe (it previously had none), so the fallback estimate
      needs room for that too -- fit()'s real measurement overrides this the
