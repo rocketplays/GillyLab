@@ -304,7 +304,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    actual fight card that IS boxed, since it's meant to stand out as an
    upsell rather than blend into the free content above it. */
 .gl-cta{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem 1.1rem; margin-top:1.4rem; text-align:center; font-size:.85rem; color:var(--muted); line-height:1.5; }
-.gl-link-btn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:800; color:var(--accent); cursor:pointer; text-decoration:underline; }
+/* text-align:left is not a stray reset -- <button> defaults to text-align:center
+   in the UA stylesheet, and every other property here got reset (background,
+   border, padding, margin, font) except that one. Inside a flex:1 box like
+   .gl-dash-row-name, whose width varies row to row with how much a sibling
+   (e.g. the trailing division label) squeezes it, centred text lands at a
+   different x per row -- a <span> name (the no-slug fallback) never hit this
+   because plain text defaults to left, so it only ever showed up for rows
+   whose name renders as a clickable <button>, confirmed by reproducing both
+   variants: the span version aligned, the button version didn't. */
+.gl-link-btn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:800; color:var(--accent); cursor:pointer; text-decoration:underline; text-align:left; }
 .gl-error{ color:var(--bad); font-size:.82rem; margin:.4rem 0 0; }
 .gl-locked{
   display:flex; flex-direction:column; align-items:center; text-align:center; gap:.8rem;
