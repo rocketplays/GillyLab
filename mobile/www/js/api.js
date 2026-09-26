@@ -97,12 +97,19 @@ window.GL_API = (function(){
     changePassword: function(current, password){ return request('/api/change-password', { method:'POST', body:{ current:current, password:password } }); },
     deleteAccount: function(){ return request('/api/delete-account', { method:'POST' }); },
     // Settings screen notification preferences -- see worker/index.js's
-    // /api/app/notification-prefs. Push categories persist now with no send
-    // pipeline behind them yet (no native push plugin/device-token
-    // registration in this app); email categories are live, read by the
-    // Pick'em reminder/recap/missed-nudge cron jobs.
+    // /api/app/notification-prefs. Both push and email categories are live:
+    // push actually sends now (see registerPushToken below + worker's FCM
+    // send pipeline wired into runLockReminders/runResultRecaps/
+    // runBetResultPushes); email categories are read by the Pick'em
+    // reminder/recap/missed-nudge cron jobs.
     notificationPrefs: function(){ return request('/api/app/notification-prefs'); },
     setNotificationPrefs: function(prefs){ return request('/api/app/notification-prefs', { method:'POST', body:prefs }); },
+    // Push device-token registration -- see js/native.js's registerPush/
+    // unregisterPush (fired off GL_AUTH's ready/onChange, not this screen)
+    // and worker/index.js's /api/app/push-token. Token is the raw FCM/APNs
+    // token string from the PushNotifications plugin's 'registration' event.
+    registerPushToken: function(token){ return request('/api/app/push-token', { method:'POST', body:{ token:token } }); },
+    unregisterPushToken: function(token){ return request('/api/app/push-token', { method:'DELETE', body:{ token:token } }); },
     // App -> web SSO handoff (see worker/index.js's handleAppWebHandoff) --
     // any button that opens an authenticated site page (Manage Subscription,
     // Go Premium checkout) should ask for a handoff URL and open THAT, not

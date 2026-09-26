@@ -50,5 +50,71 @@ window.GL_NATIVE = (function(){
     }
   }
 
+  // ── Push notifications (Pick'em Reminders/Results, Bet Results -- see
+  // Settings' Notifications section and worker/index.js's runLockReminders/
+  // runResultRecaps/runBetResultPushes) ──────────────────────────────────
+  // Account-tied, not device-tied: a logged-out visitor has no email/device
+  // record to send to at all (see settings.js's own reasoning for hiding
+  // the toggles entirely for them), so registration only ever happens once
+  // logged in, and is torn down again on logout. Wired off GL_AUTH's own
+  // onChange/ready rather than from account.js's login/signup screen, so it
+  // fires the same way whether the session came from a fresh login or was
+  // just restored from Preferences on app launch.
+  var lastPushToken = null;
+  function registerPush(){
+    var P = plugins();
+    if (!P.PushNotifications || !isNative()) return;
+    P.PushNotifications.checkPermissions().then(function(perm){
+      if (perm && perm.receive === 'granted') return perm;
+      return P.PushNotifications.requestPermissions();
+    }).then(function(perm){
+      if (!perm || perm.receive !== 'granted') return;   // denied -- nothing more to do here
+      return P.PushNotifications.register();
+    }).catch(function(){});
+  }
+  function unregisterPush(){
+    var P = plugins();
+    if (!P.PushNotifications || !isNative()) return;
+    if (lastPushToken){
+      window.GL_API.unregisterPushToken(lastPushToken).catch(function(){});
+      lastPushToken = null;
+    }
+  }
+  function wirePushListeners(){
+    var P = plugins();
+    if (!P.PushNotifications) return;
+    // Fires once register() above succeeds, with the actual APNs/FCM device
+    // token -- this is the "device record" Settings' toggles otherwise have
+    // nothing to attach to. Re-fires on every app launch even for an
+    // already-registered device (APNs/FCM tokens can rotate), so this POSTs
+    // every time rather than only the first time.
+    P.PushNotifications.addListener('registration', function(token){
+      lastPushToken = token && token.value;
+      if (lastPushToken && window.GL_AUTH.isLoggedIn()){
+        window.GL_API.registerPushToken(lastPushToken).catch(function(){});
+      }
+    });
+    P.PushNotifications.addListener('registrationError', function(){
+      // Denied permission or a native registration failure -- Settings'
+      // toggles simply won't do anything for this device until it
+      // succeeds; no separate UI for this yet.
+    });
+    // Tapping a delivered notification (app backgrounded or closed) -- no
+    // per-notification deep link built yet (which card, which bet), so this
+    // just brings the app to Home rather than doing nothing.
+    P.PushNotifications.addListener('pushNotificationActionPerformed', function(){
+      try { window.GL_ROUTER.go('home'); } catch(e){}
+    });
+  }
+  wirePushListeners();
+  if (window.GL_AUTH){
+    window.GL_AUTH.ready.then(function(){
+      if (window.GL_AUTH.isLoggedIn()) registerPush();
+    });
+    window.GL_AUTH.onChange(function(state){
+      if (state.loggedIn) registerPush(); else unregisterPush();
+    });
+  }
+
   return { init: init, tap: tap, openExternal: openExternal, isNative: isNative };
 })();
