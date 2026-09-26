@@ -43,6 +43,16 @@ window.GL_ROUTER.register('home', {
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
     function go(route, params){ return function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go(route, params); }; }
 
+    // Last name only, same suffix-skipping logic as bettracker.js's own
+    // surname() -- used here for the Scheduled Cards strip's matchup line
+    // ("Silva vs Wang" rather than the full billed event name).
+    function surname(n){
+      var p = String(n || '').trim().split(/\s+/);
+      var i = p.length - 1;
+      while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--;
+      return p[i] || n;
+    }
+
     // Small circular avatar (photo, falling back to initials) -- shared by
     // every section below (hero, event strip, movers, roster strip) rather
     // than each inventing its own markup, same as the old moverAvatar().
@@ -80,7 +90,7 @@ window.GL_ROUTER.register('home', {
     }
     function mainEventSection(card, taleOfTape){
       var main = card && (card.fights || [])[0];
-      var head = '<div class="gl-dash-head"><h2 class="gl-dash-title">This Week’s Main Event</h2></div>';
+      var head = '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">This Week’s Main Event</h2></div>';
       if (!card || !main){
         return (
           '<div class="gl-sec gl-sec--first">' + head +
@@ -117,7 +127,18 @@ window.GL_ROUTER.register('home', {
       if (/contender\s+series|dana\s+white/i.test(name || '')) return 'blue';
       return 'green';
     }
-    function eventKindLabel(kind){ return kind === 'gold' ? 'Numbered' : kind === 'blue' ? 'DWCS' : 'Fight Night'; }
+    // The billed event string is the only place season/week shows up (no
+    // separate structured field from the API) -- older cards were numbered
+    // sequentially instead ("Dana White's Contender Series 68") and have no
+    // season/week to parse, so those just fall back to the plain "DWCS" tag.
+    function eventKindLabel(kind, name){
+      if (kind === 'gold') return name;
+      if (kind === 'blue'){
+        var m = /Season\s*(\d+)\D+Week\s*(\d+)/i.exec(name || '');
+        return m ? ('DWCS: S' + m[1] + ' E' + m[2]) : 'DWCS';
+      }
+      return 'Fight Night';
+    }
     function scheduledCardsSection(carousel){
       var events = (carousel || []).slice(0, 8);
       if (!events.length) return '';
@@ -125,18 +146,19 @@ window.GL_ROUTER.register('home', {
         var main = (c.fights || [])[0];
         var kind = eventKind(c.event);
         var when = c.date ? new Date(c.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+        var matchup = main ? (surname(main.f1) + ' vs ' + surname(main.f2)) : (c.event || '');
         return (
           '<button type="button" class="hm-ev-card ' + kind + '" data-goto="matchup">' +
-            '<div class="hm-ev-tag ' + kind + '">' + eventKindLabel(kind) + '</div>' +
+            '<div class="hm-ev-tag ' + kind + '">' + esc(eventKindLabel(kind, c.event)) + '</div>' +
             (main ? '<div class="hm-ev-fighters">' + av(main.f1, main.s1, 'hm-ev-av') + av(main.f2, main.s2, 'hm-ev-av') + '</div>' : '') +
-            '<div class="hm-ev-title">' + esc(c.event) + '</div>' +
+            '<div class="hm-ev-title">' + esc(matchup) + '</div>' +
             '<div class="hm-ev-date">' + esc(when) + '</div>' +
           '</button>'
         );
       }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title">Scheduled Cards</h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Scheduled Cards</h2></div>' +
           '<div class="hm-strip">' + cards + '</div>' +
         '</div>'
       );
@@ -162,7 +184,7 @@ window.GL_ROUTER.register('home', {
       var fmt = function(v){ return (v == null || v === '') ? '—' : String(v); };
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">Betting Odds</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Betting Odds</h2></div>' +
           '<div class="hm-odds-card">' +
             '<div class="hm-odds-fighter">' + av(main.f1, main.s1, 'hm-odds-av') + '<span class="hm-odds-fname">' + esc(main.f1) + '</span>' +
               '<span class="hm-odds-pill ' + (main.o1 < main.o2 ? 'fav' : 'dog') + '">' + esc(fmt(main.o1)) + '</span></div>' +
@@ -217,7 +239,7 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title">' + (movers.length ? 'Biggest Movers' : 'Rankings — Pound-for-Pound') + '</h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">' + (movers.length ? 'Biggest Movers' : 'Rankings — Pound-for-Pound') + '</h2></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">View Rankings</button>' +
         '</div>'
@@ -265,7 +287,7 @@ window.GL_ROUTER.register('home', {
       if (!cards) return '';
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">' + year + ' Leaders</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">' + year + ' Leaders</h2></div>' +
           '<div class="hm-strip hm-lead-strip">' + cards + '</div>' +
         '</div>'
       );
@@ -291,7 +313,7 @@ window.GL_ROUTER.register('home', {
       if (!fighters.length){
         return (
           '<div class="gl-sec">' +
-            '<div class="gl-dash-head"><h2 class="gl-dash-title">Active Roster</h2></div>' +
+            '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active Roster</h2></div>' +
             '<p class="gl-muted" style="margin:.4rem 0 0">Roster unavailable right now.</p>' +
             '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View Roster</button>' +
           '</div>'
@@ -313,7 +335,7 @@ window.GL_ROUTER.register('home', {
       var photoStrip = photos.map(function(p){ return av(p.name, p.photo, 'hm-roster-av'); }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">Active Roster</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active Roster</h2></div>' +
           '<div class="hm-roster-top">' +
             '<div><div class="hm-roster-stat">' + total + '</div><div class="hm-roster-stat-label">on current roster</div></div>' +
             (photoStrip ? '<div class="hm-roster-strip">' + photoStrip + '</div>' : '') +
@@ -341,22 +363,30 @@ window.GL_ROUTER.register('home', {
       if (card.locked) return 'Picks locked';
       return total + ' fights open';
     }
-    function climbTileStatus(){
-      var bests = null;
-      try { var raw = localStorage.getItem('gl_climb_bests_v1'); if (raw) bests = JSON.parse(raw); } catch(e){}
-      var divs = bests && bests.belts ? Object.keys(bests.belts).length : 0;
-      if (divs) return divs + ' belt' + (divs === 1 ? '' : 's');
-      if (bests && bests.mostWins) return 'Best run: ' + bests.mostWins;
-      return 'Play free';
+    // Bracket rotates weekly at a fixed epoch Monday -- same
+    // BRACKET_EPOCH_MONDAY/weekly-boundary math as worker/index.js's
+    // bracketWeekIndex(), computed here client-side purely off Date.now()
+    // since the rotation instant is fixed and needs no API round-trip.
+    var BRACKET_EPOCH_MONDAY = Date.UTC(2024, 0, 1, 5, 0, 0);
+    var BRACKET_WEEK_MS = 7 * 24 * 3600 * 1000;
+    function bracketCountdown(){
+      var now = Date.now();
+      var n = Math.floor((now - BRACKET_EPOCH_MONDAY) / BRACKET_WEEK_MS);
+      var nextRotation = BRACKET_EPOCH_MONDAY + (n + 1) * BRACKET_WEEK_MS;
+      var ms = nextRotation - now;
+      if (ms <= 0) return 'Updates soon';
+      var totalHours = Math.floor(ms / 3600000);
+      var d = Math.floor(totalHours / 24), h = totalHours % 24;
+      return 'Updates in ' + d + 'D ' + h + 'H';
     }
     function playCompeteSection(pickemCard, pickemMine){
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">Play & Compete</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Play & Compete</h2></div>' +
           '<div class="hm-tile-row">' +
             '<button type="button" class="hm-tile" data-goto="pickem"><span class="hm-tile-icon">🥊</span><span class="hm-tile-title">Pick’em</span><span class="hm-tile-sub">' + esc(pickemTileStatus(pickemCard, pickemMine)) + '</span></button>' +
-            '<button type="button" class="hm-tile" data-goto="climb"><span class="hm-tile-icon">🏔️</span><span class="hm-tile-title">The Climb</span><span class="hm-tile-sub">' + esc(climbTileStatus()) + '</span></button>' +
-            '<button type="button" class="hm-tile" data-goto="bracket"><span class="hm-tile-icon">🏆</span><span class="hm-tile-title">Bracket</span><span class="hm-tile-sub">New weekly</span></button>' +
+            '<button type="button" class="hm-tile" data-goto="climb"><span class="hm-tile-icon">🏔️</span><span class="hm-tile-title">The Climb</span><span class="hm-tile-sub">Build a fighter, become the GOAT</span></button>' +
+            '<button type="button" class="hm-tile" data-goto="bracket"><span class="hm-tile-icon">🏆</span><span class="hm-tile-title">Legends Bracket</span><span class="hm-tile-sub">' + esc(bracketCountdown()) + '</span></button>' +
           '</div>' +
         '</div>'
       );
@@ -370,54 +400,58 @@ window.GL_ROUTER.register('home', {
     // (real numbers, real avatars) rather than a third square icon tile,
     // since these already have actual data behind them, unlike Play &
     // Compete's tiles which are mostly just entry points.
+    // Same icon+title header shape on both cards below (previously Bet
+    // Tracker was a stat grid and Tape Study was an avatar pair -- two
+    // different layouts side by side read as messy/inconsistent; unified
+    // to one shape so the row reads as a matched pair).
+    function toolStat(val, cls, label){
+      return '<div class="hm-tool-stat"><span class="hm-tool-stat-v ' + (cls || '') + '">' + val + '</span><span class="hm-tool-stat-l">' + label + '</span></div>';
+    }
     function betTrackerCard(stats){
       var hasBets = !!(stats && stats.n > 0);
       var body;
       if (!hasBets){
-        body = '<div class="hm-tool-sub">Log your first bet and this card starts tracking your record and closing-line value automatically.</div>';
+        body = '<div class="hm-tool-sub">Log your first bet and this card starts tracking your units, record and closing-line value automatically.</div>';
       } else {
+        var unitsTxt = stats.units == null ? '—' : (stats.units > 0 ? '+' : '') + stats.units.toFixed(1) + 'u';
+        var unitsCls = stats.units > 0 ? 'hm-tool-pos' : stats.units < 0 ? 'hm-tool-neg' : '';
         var roiTxt = stats.roi == null ? '—' : (stats.roi > 0 ? '+' : '') + stats.roi.toFixed(1) + '%';
         var roiCls = stats.roi > 0 ? 'hm-tool-pos' : stats.roi < 0 ? 'hm-tool-neg' : '';
         var clvTxt = stats.avgClv == null ? '—' : (stats.avgClv > 0 ? '+' : '') + stats.avgClv.toFixed(1) + ' pts';
         var clvCls = stats.avgClv > 0 ? 'hm-tool-pos' : stats.avgClv < 0 ? 'hm-tool-neg' : '';
         body = (
           '<div class="hm-tool-stats">' +
-            '<div class="hm-tool-stat"><span class="hm-tool-stat-v">' + stats.w + '-' + stats.l + '</span><span class="hm-tool-stat-l">Record</span></div>' +
-            '<div class="hm-tool-stat"><span class="hm-tool-stat-v ' + roiCls + '">' + roiTxt + '</span><span class="hm-tool-stat-l">ROI</span></div>' +
-            '<div class="hm-tool-stat"><span class="hm-tool-stat-v ' + clvCls + '">' + clvTxt + '</span><span class="hm-tool-stat-l">Avg CLV</span></div>' +
+            toolStat(unitsTxt, unitsCls, 'Units') +
+            toolStat(stats.w + '-' + stats.l, '', 'Record') +
+            toolStat(roiTxt, roiCls, 'ROI') +
+            toolStat(clvTxt, clvCls, 'Avg CLV') +
           '</div>'
         );
       }
       return (
-        '<div class="hm-tool-card hm-tool-bt">' +
-          '<div class="hm-tool-icon">🎯</div>' +
-          '<div class="hm-tool-title">Bet Tracker</div>' +
+        '<div class="hm-tool-card">' +
+          '<div class="hm-tool-head"><span class="hm-tool-icon">🎯</span><span class="hm-tool-title">Bet Tracker</span></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline hm-tool-btn" data-goto="bettracker">Open Bet Tracker</button>' +
         '</div>'
       );
     }
-    function tapeStudyCard(main){
-      var avatars = main ? (av(main.f1, main.s1, 'hm-tool-av') + av(main.f2, main.s2, 'hm-tool-av')) : '';
-      var teaser = main
-        ? 'Full footage for ' + esc(main.f1) + ' vs ' + esc(main.f2) + ', both corners.'
-        : 'Full fight footage for every fighter on the upcoming cards.';
+    function tapeStudyCard(){
       return (
-        '<div class="hm-tool-card hm-tool-tape">' +
-          (avatars ? '<div class="hm-tool-avpair">' + avatars + '</div>' : '<div class="hm-tool-icon">🎬</div>') +
-          '<div class="hm-tool-title">Tape Study</div>' +
-          '<div class="hm-tool-sub">' + teaser + '</div>' +
+        '<div class="hm-tool-card">' +
+          '<div class="hm-tool-head"><span class="hm-tool-icon">🎬</span><span class="hm-tool-title">Tape Study</span></div>' +
+          '<div class="hm-tool-sub">Full tape index for all upcoming events.</div>' +
           '<button type="button" class="gl-btn gl-btn-outline hm-tool-btn" data-goto="tapestudy">Browse Tape Study</button>' +
         '</div>'
       );
     }
-    function premiumToolsSection(betsStats, matchupCard){
+    function premiumToolsSection(betsStats){
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">Your Premium Tools</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">More Premium Tools</h2></div>' +
           '<div class="hm-tools-row">' +
             betTrackerCard(betsStats) +
-            tapeStudyCard(matchupCard) +
+            tapeStudyCard() +
           '</div>' +
         '</div>'
       );
@@ -441,25 +475,26 @@ window.GL_ROUTER.register('home', {
     }
 
     // Order: Main Event -> Scheduled Cards -> Betting Odds -> Biggest Movers
-    // -> <year> Leaders -> Active Roster -> Play & Compete -> (subscribed
-    // accounts only) Your Premium Tools (Bet Tracker/Tape Study previews) ->
-    // (free accounts only) Go Premium pitch. Leaders is free-tier content,
-    // same as everything above it; the two premium/free blocks at the very
-    // end are the only tier-specific branch left, and they're mutually
-    // exclusive with each other -- see the file header comment for what
-    // reintroducing the old premium-only Bet Tracker/Tape Study teasers
-    // traded away the first time this was rebuilt (nothing now -- both are
-    // back, just reshaped to fit this one-shared-layout structure).
+    // -> Scheduled Cards -> <year> Leaders -> Biggest Movers -> Active
+    // Roster -> Play & Compete -> (subscribed accounts only) More Premium
+    // Tools (Bet Tracker/Tape Study previews) -> (free accounts only) Go
+    // Premium pitch. Leaders is free-tier content, same as everything above
+    // it; the two premium/free blocks at the very end are the only
+    // tier-specific branch left, and they're mutually exclusive with each
+    // other -- see the file header comment for what reintroducing the old
+    // premium-only Bet Tracker/Tape Study teasers traded away the first
+    // time this was rebuilt (nothing now -- both are back, just reshaped
+    // to fit this one-shared-layout structure).
     function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsStats){
       container.innerHTML =
         mainEventSection(matchupCard, taleOfTape) +
-        scheduledCardsSection(carousel) +
         oddsSection(matchupCard, subscribed) +
-        moversSection(rankingsData) +
+        scheduledCardsSection(carousel) +
         leadersSection(leadersData) +
+        moversSection(rankingsData) +
         rosterSection(rosterData) +
         playCompeteSection(pickemCard, pickemMine) +
-        (subscribed ? premiumToolsSection(betsStats, matchupCard) : '') +
+        (subscribed ? premiumToolsSection(betsStats) : '') +
         (subscribed ? '' : (
           '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
             '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
