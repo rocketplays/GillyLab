@@ -9,7 +9,13 @@
 // site's auto-scroll-to-the-next-round behavior either.
 window.GL_ROUTER.register('bracket', {
   title: 'Legends Bracket',
-  showBack: true,
+  // A direct free-tab-bar destination now (see router.js's FREE_TABS), same
+  // as Climb -- no showBack, same convention climb.js uses, since a tab-bar
+  // screen has nowhere "back" to from a direct tap. Still reachable via the
+  // premium More sheet and the Home dashboard's bracketSection() button too;
+  // both of those call go() with no opts, so they land here with the same
+  // no-back-button treatment climb.js already gets from those entry points.
+  tab: 'bracket',
   render: function(container){
     window.GL_AUTH.ready.then(function(){
       if (!window.GL_AUTH.isLoggedIn()){

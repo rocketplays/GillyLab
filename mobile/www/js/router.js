@@ -49,8 +49,9 @@ window.GL_ROUTER = (function(){
   // persistent top-right avatar menu (see index.html's #avatarBtn +
   // js/avatar-menu.js) instead of costing a tab slot for either plan.
   //
-  // Free: Home, Events, Pick'em, Climb, Rankings, Roster -- unchanged from
-  // before this restructure, just Card -> Events.
+  // Free: Home, Events, Pick'em, Climb, Bracket, Rankings, Roster -- Bracket
+  // added after Climb once Legends Bracket got its own free-tier tab-bar
+  // slot (it used to be reachable only via the Home dashboard card).
   // Premium: Home, Events, Simulator, Odds, Bet Tracker, Tape Study as the
   // 6 direct tabs, then a 7th, "More" (js/more-sheet.js's sheet), holding
   // Rankings/Roster/Pick'em/Climb -- those don't lose their tab-bar
@@ -81,6 +82,13 @@ window.GL_ROUTER = (function(){
   var CLIMB_TAB = {
     route: 'climb', label: 'Climb',
     icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+  };
+  // A trophy -- deliberately NOT the boxing glove EVENTS_TAB already uses,
+  // since the two now sit side by side in the free tab bar and would be
+  // indistinguishable at a glance otherwise.
+  var BRACKET_TAB = {
+    route: 'bracket', label: 'Bracket',
+    icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M7 4h10v3a5 5 0 0 1-5 5 5 5 0 0 1-5-5V4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 5H4.5A1.5 1.5 0 0 0 3 6.5c0 2 1.5 3.3 3.2 3.6M17 5h2.5A1.5 1.5 0 0 1 21 6.5c0 2-1.5 3.3-3.2 3.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 12v3M9 19.5h6M9.5 19.5c0-1.8.7-2.8 2.5-2.8s2.5 1 2.5 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
   var RANKINGS_TAB = {
     route: 'rankings', label: 'Rankings',
@@ -118,7 +126,7 @@ window.GL_ROUTER = (function(){
     route: 'more', label: 'More',
     icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>',
   };
-  var FREE_TABS = [HOME_TAB, EVENTS_TAB, PICKEM_TAB, CLIMB_TAB, RANKINGS_TAB, ROSTER_TAB];
+  var FREE_TABS = [HOME_TAB, EVENTS_TAB, PICKEM_TAB, CLIMB_TAB, BRACKET_TAB, RANKINGS_TAB, ROSTER_TAB];
   var PREMIUM_TABS = [HOME_TAB, EVENTS_TAB, SIMULATOR_TAB, ODDS_TAB, BETTRACKER_TAB, TAPESTUDY_TAB];
   var isPremium = false;
 

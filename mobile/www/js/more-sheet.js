@@ -40,12 +40,14 @@ window.GL_MORE = (function(){
       icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     },
     // Legends Bracket -- free (login required, no subscription), same as the
-    // other three above. Its only other in-app entry point is a Home
-    // dashboard section (see home.js's bracketSection) -- there's no tab-bar
-    // room for a 5th free game, same reasoning that put these four here.
+    // other three above. For a premium account this More sheet is its only
+    // in-app entry point besides the Home dashboard card (home.js's
+    // bracketSection); a free account also gets it as a direct tab-bar
+    // destination now (see router.js's FREE_TABS/BRACKET_TAB), same trophy
+    // icon as that tab so it reads as the same feature in both places.
     {
       route: 'bracket', label: 'Legends Bracket', premium: false,
-      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M8 12V8.2a4 4 0 0 1 8 0V12a2.6 2.6 0 0 1-1 2.05V15a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.95A2.6 2.6 0 0 1 8 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 16.5h5a1.5 1.5 0 0 1 1.5 1.5v.5a2.5 2.5 0 0 1-2.5 2.5h-3A2.5 2.5 0 0 1 8 18.5V18a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M7 4h10v3a5 5 0 0 1-5 5 5 5 0 0 1-5-5V4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 5H4.5A1.5 1.5 0 0 0 3 6.5c0 2 1.5 3.3 3.2 3.6M17 5h2.5A1.5 1.5 0 0 1 21 6.5c0 2-1.5 3.3-3.2 3.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 12v3M9 19.5h6M9.5 19.5c0-1.8.7-2.8 2.5-2.8s2.5 1 2.5 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     },
   ];
 
