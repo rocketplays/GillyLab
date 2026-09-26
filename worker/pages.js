@@ -452,7 +452,7 @@ export function eventWhen(card, opts) {
     opts || {}));
 }
 
-function freeTabs(active) {
+export function freeTabs(active) {
   // "All Fighters" tab removed site-wide — "Active Roster" covers the same
   // need and having both was redundant nav clutter.
   const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];

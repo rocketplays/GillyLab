@@ -1,12 +1,17 @@
 // Legends Bracket -- free (login required, no subscription), wired to the
 // real weekly game (see worker/index.js's handleBracketCurrent/-Submit/
 // -Leaderboard). One shared bracket for everyone each week: the division
-// rotates automatically, the "real" outcome is decided once server-side, and
-// this screen is a native, vertically-stacked take on the site's own
-// /bracket page (prototypes/legends-bracket.html) rather than a literal port
-// of its desktop bracket-with-connector-lines layout -- the rounds already
-// read top-to-bottom in normal scroll order here, so there's no need for the
-// site's auto-scroll-to-the-next-round behavior either.
+// rotates automatically, the "real" outcome is decided once server-side.
+// This screen ports the site's own /bracket page's (prototypes/legends-
+// bracket.html) bracket-with-connector-lines layout literally: the site's
+// OWN mobile breakpoint (max-width:820px -- 4 columns of ~86vw, horizontal
+// scroll-snap) is already a phone-width design, so app.css's .br-scroll/
+// .br-bracket/.br-col block is that same CSS, and this screen scrolls
+// HORIZONTALLY through Quarterfinals -> Semifinals -> Final -> Champion
+// exactly like the site, rather than the old vertical round-by-round stack.
+// pickQf/pickSf/pickFinal auto-advance the horizontal scroll to the next
+// column once its round is fully picked, mirroring the site's own
+// scrollToPending.
 window.GL_ROUTER.register('bracket', {
   title: 'Legends Bracket',
   // A direct free-tab-bar destination now (see router.js's FREE_TABS), same
@@ -93,32 +98,66 @@ function mountBracket(container){
     );
   }
 
+  // Small last-name label that sits on the connector line between a match
+  // and the next round, same idea as the site's own connector labels --
+  // shows who's advancing (gold before you submit, green once it's the
+  // real/locked result) without needing to look at the next column yet.
+  function connectorHTML(fighter, kind){
+    if (!fighter) return '';
+    var parts = String(fighter.name).trim().split(' ');
+    return '<span class="br-connector-name ' + kind + '">' + esc(parts[parts.length - 1]) + '</span>';
+  }
+
   function updateProgress(){
     var made = picks.qf.filter(Boolean).length + picks.sf.filter(Boolean).length + (picks.final ? 1 : 0);
     document.getElementById('brProgress').innerHTML = '<strong>' + made + '</strong> of 7 picks made';
     document.getElementById('brSubmitBtn').disabled = made < 7;
   }
 
+  function pickerMatchHTML(a, b, pickedFighter, aClickable, bClickable){
+    return (
+      '<div class="br-match">' +
+        fighterRowHTML(a, { picked: pickedFighter === a, clickable: aClickable }) +
+        '<div class="br-vs">vs</div>' +
+        fighterRowHTML(b, { picked: pickedFighter === b, clickable: bClickable }) +
+        connectorHTML(pickedFighter, 'picked') +
+      '</div>'
+    );
+  }
+
   function renderPicker(){
-    var qfHTML = QF_PAIRS.map(function(pair, i){
+    var qfMatches = QF_PAIRS.map(function(pair, i){
       var a = bySeed[pair[0]], b = bySeed[pair[1]];
-      return '<div class="br-match">' + fighterRowHTML(a, { picked: picks.qf[i] === a, clickable: true }) + fighterRowHTML(b, { picked: picks.qf[i] === b, clickable: true }) + '</div>';
+      return pickerMatchHTML(a, b, picks.qf[i], true, true);
     });
-    var sfHTML = [0, 1].map(function(i){
+    var qfPairsHTML =
+      '<div class="br-pair">' + qfMatches[0] + qfMatches[1] + '</div>' +
+      '<div class="br-pair">' + qfMatches[2] + qfMatches[3] + '</div>';
+
+    var sfMatches = [0, 1].map(function(i){
       var a = picks.qf[i * 2], b = picks.qf[i * 2 + 1];
-      return '<div class="br-match">' + fighterRowHTML(a, { picked: picks.sf[i] === a, clickable: !!a }) + fighterRowHTML(b, { picked: picks.sf[i] === b, clickable: !!b }) + '</div>';
+      return pickerMatchHTML(a, b, picks.sf[i], !!a, !!b);
     });
+    var sfPairHTML = '<div class="br-pair">' + sfMatches[0] + sfMatches[1] + '</div>';
+
     var fa = picks.sf[0], fb = picks.sf[1];
-    var finalHTML = '<div class="br-match">' + fighterRowHTML(fa, { picked: picks.final === fa, clickable: !!fa }) + fighterRowHTML(fb, { picked: picks.final === fb, clickable: !!fb }) + '</div>';
+    var finalMatchHTML = pickerMatchHTML(fa, fb, picks.final, !!fa, !!fb);
 
     document.getElementById('brBracket').innerHTML =
-      '<div class="br-round"><div class="br-round-label">Quarterfinals</div>' + qfHTML.join('') + '</div>' +
-      '<div class="br-round"><div class="br-round-label">Semifinals</div>' + sfHTML.join('') + '</div>' +
-      '<div class="br-round"><div class="br-round-label">Final</div>' + finalHTML + '</div>' +
-      '<div class="br-round"><div class="br-round-label">Champion</div><div class="br-champ">' + (picks.final ? fighterRowHTML(picks.final) : '<div class="br-fcard br-fcard--empty">—</div>') + '</div></div>';
+      '<div class="br-col"><div class="br-collabel">Quarterfinals</div><div class="br-pairgroup">' + qfPairsHTML + '</div></div>' +
+      '<div class="br-col"><div class="br-collabel">Semifinals</div><div class="br-pairgroup">' + sfPairHTML + '</div></div>' +
+      '<div class="br-col"><div class="br-collabel">Final</div>' + finalMatchHTML + '</div>' +
+      '<div class="br-col br-champcol"><div class="br-collabel" id="brChampLabel">Champion</div>' +
+        '<div class="br-champcard" id="brChampCard">' +
+          '<div class="br-champ-cap">Your Pick</div>' +
+          (picks.final ? fighterRowHTML(picks.final) : '<div class="br-fcard br-fcard--empty">TBD</div>') +
+        '</div>' +
+      '</div>';
 
     var matches = document.getElementById('brBracket').querySelectorAll('.br-match');
-    // QF matches are the first 4 .br-match nodes, SF the next 2, Final the last.
+    // QF matches are the first 4 .br-match nodes, SF the next 2, Final the last --
+    // still true here since querySelectorAll returns document order regardless
+    // of the extra .br-pairgroup/.br-pair column wrappers around them.
     matches.forEach(function(m, mi){
       var cards = m.querySelectorAll('.br-fcard[data-seed]');
       cards.forEach(function(el){
@@ -134,9 +173,38 @@ function mountBracket(container){
     updateProgress();
   }
 
-  function pickQf(i, f){ picks.qf[i] = f; onPickChanged(); }
-  function pickSf(i, f){ picks.sf[i] = f; onPickChanged(); }
-  function pickFinal(f){ picks.final = f; onPickChanged(); }
+  // Horizontal auto-advance -- same idea as the site's own scrollToPending,
+  // but scrolls #brScroll's own scrollLeft directly (via the target column's
+  // offsetLeft) rather than scrollIntoView, so the OUTER page's vertical
+  // scroll position is never touched, just the bracket strip itself.
+  var pendingScrollTarget = null; // 'sf' | 'final' | 'champion' | null
+  function scrollToPending(){
+    if (!pendingScrollTarget) return;
+    var idx = { sf: 1, final: 2, champion: 3 }[pendingScrollTarget];
+    pendingScrollTarget = null;
+    var scroller = document.getElementById('brScroll');
+    var cols = document.querySelectorAll('#brBracket .br-col');
+    var target = cols[idx];
+    if (scroller && target) scroller.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
+  }
+
+  function pickQf(i, f){
+    var wasComplete = picks.qf.every(Boolean);
+    picks.qf[i] = f;
+    if (!wasComplete && picks.qf.every(Boolean)) pendingScrollTarget = 'sf';
+    onPickChanged();
+  }
+  function pickSf(i, f){
+    var wasComplete = picks.sf.every(Boolean);
+    picks.sf[i] = f;
+    if (!wasComplete && picks.sf.every(Boolean)) pendingScrollTarget = 'final';
+    onPickChanged();
+  }
+  function pickFinal(f){
+    picks.final = f;
+    pendingScrollTarget = 'champion';
+    onPickChanged();
+  }
   function onPickChanged(){
     [0, 1].forEach(function(i){
       var a = picks.qf[i * 2], b = picks.qf[i * 2 + 1];
@@ -144,6 +212,7 @@ function mountBracket(container){
     });
     if (picks.final && picks.final !== picks.sf[0] && picks.final !== picks.sf[1]) picks.final = null;
     renderPicker();
+    scrollToPending();
   }
 
   // "GillyLab Model" is just how the real result is labeled -- the model's
@@ -165,27 +234,43 @@ function mountBracket(container){
     return (
       '<div class="br-match">' +
         fighterRowHTML(a, { winner: a === winner, loser: a !== winner, yourPick: yourPick === a }) +
+        '<div class="br-vs">vs</div>' +
         fighterRowHTML(b, { winner: b === winner, loser: b !== winner, yourPick: yourPick === b }) +
         modelCallHTML(winner, yourPick, qfConsensus) +
         note +
+        connectorHTML(winner, 'winner') +
       '</div>'
     );
   }
   function renderResults(score){
-    var qfHTML = QF_PAIRS.map(function(pair, i){
+    var qfMatches = QF_PAIRS.map(function(pair, i){
       return realMatchHTML(bySeed[pair[0]], bySeed[pair[1]], bySeed[real.qf[i]], picks.qf[i], consensus[i]);
-    }).join('');
-    var sfHTML = [0, 1].map(function(i){
+    });
+    var qfPairsHTML = '<div class="br-pair">' + qfMatches[0] + qfMatches[1] + '</div><div class="br-pair">' + qfMatches[2] + qfMatches[3] + '</div>';
+    var sfMatches = [0, 1].map(function(i){
       return realMatchHTML(bySeed[real.qf[i * 2]], bySeed[real.qf[i * 2 + 1]], bySeed[real.sf[i]], picks.sf[i], null);
-    }).join('');
+    });
+    var sfPairHTML = '<div class="br-pair">' + sfMatches[0] + sfMatches[1] + '</div>';
     var finalWinner = bySeed[real.final];
-    var finalHTML = realMatchHTML(bySeed[real.sf[0]], bySeed[real.sf[1]], finalWinner, picks.final, null);
+    var finalMatchHTML = realMatchHTML(bySeed[real.sf[0]], bySeed[real.sf[1]], finalWinner, picks.final, null);
 
     document.getElementById('brBracket').innerHTML =
-      '<div class="br-round"><div class="br-round-label">Quarterfinals</div>' + qfHTML + '</div>' +
-      '<div class="br-round"><div class="br-round-label">Semifinals</div>' + sfHTML + '</div>' +
-      '<div class="br-round"><div class="br-round-label">Final</div>' + finalHTML + '</div>' +
-      '<div class="br-round"><div class="br-round-label" style="color:var(--accent)">Champion</div><div class="br-champ">' + fighterRowHTML(finalWinner, { yourPick: picks.final === finalWinner }) + '</div></div>';
+      '<div class="br-col"><div class="br-collabel">Quarterfinals</div><div class="br-pairgroup">' + qfPairsHTML + '</div></div>' +
+      '<div class="br-col"><div class="br-collabel">Semifinals</div><div class="br-pairgroup">' + sfPairHTML + '</div></div>' +
+      '<div class="br-col"><div class="br-collabel">Final</div>' + finalMatchHTML + '</div>' +
+      '<div class="br-col br-champcol"><div class="br-collabel is-final">Champion</div>' +
+        '<div class="br-champcard">' +
+          fighterRowHTML(finalWinner, { yourPick: picks.final === finalWinner }) +
+        '</div>' +
+        '<button type="button" class="gl-btn gl-btn-outline" id="brViewLbBtn" style="margin-top:.9rem">View Leaderboard ↓</button>' +
+      '</div>';
+
+    var viewLbBtn = document.getElementById('brViewLbBtn');
+    if (viewLbBtn) viewLbBtn.addEventListener('click', function(){
+      window.GL_NATIVE.tap();
+      var lbSec = document.getElementById('brLbSection');
+      if (lbSec) lbSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
 
     document.getElementById('brSubmitBtn').disabled = true;
     document.getElementById('brSubmitBtn').textContent = 'Bracket Submitted';
@@ -232,15 +317,15 @@ function mountBracket(container){
       '<div class="gl-sec">' +
         '<p class="gl-muted" style="margin:0">Fill out every round, then submit once. 1 pt per quarterfinal · 2 pts per semifinal · 4 pts for the final — 12 pts possible.</p>' +
       '</div>' +
-      '<div id="brBracket"></div>' +
-      '<div class="gl-sec" id="brSubmitRow">' +
-        '<div id="brScore" class="br-score" hidden></div>' +
+      '<div class="gl-sec"><div class="br-scroll" id="brScroll"><div class="br-bracket" id="brBracket"></div></div></div>' +
+      '<div class="gl-sec br-submitrow" id="brSubmitRow">' +
         '<button type="button" class="gl-btn gl-btn-primary" id="brSubmitBtn" disabled>Submit Bracket</button>' +
-        '<p class="gl-muted" id="brProgress" style="margin-top:.5rem">0 of 7 picks made</p>' +
-        '<div class="gl-error" id="brSubmitErr"></div>' +
+        '<p class="gl-muted" id="brProgress" style="margin:0">0 of 7 picks made</p>' +
       '</div>' +
-      '<div class="gl-sec">' +
-        '<div class="gl-dash-head"><h2 class="gl-dash-title">Leaderboards</h2></div>' +
+      '<div class="gl-error" id="brSubmitErr"></div>' +
+      '<div class="gl-sec br-score" id="brScore" hidden></div>' +
+      '<div class="gl-sec" id="brLbSection">' +
+        '<div class="gl-dash-head"><h2 class="gl-dash-title">Leaderboard</h2></div>' +
         '<div class="pk-tabs" id="brLbTabs">' +
           '<button type="button" class="pk-tab sel" data-lb-scope="week">This Week</button>' +
           '<button type="button" class="pk-tab" data-lb-scope="season">Season</button>' +
@@ -277,7 +362,17 @@ function mountBracket(container){
       }).catch(function(err){
         submitting = false;
         btn.disabled = false;
-        document.getElementById('brSubmitErr').textContent = (err && err.data && err.data.error) ? err.data.error : 'Something went wrong — try again.';
+        // Surface whatever detail we actually have instead of always falling
+        // back to the same generic line -- a real server-side error message,
+        // an HTTP status, or (no err.status at all) a network-level failure
+        // are three different problems and look identical as "something went
+        // wrong" otherwise.
+        var msg;
+        if (err && err.data && err.data.error) msg = err.data.error;
+        else if (err && err.status) msg = 'Server error (' + err.status + ') — try again.';
+        else if (err && err.message) msg = 'Couldn’t reach the server: ' + err.message;
+        else msg = 'Something went wrong — try again.';
+        document.getElementById('brSubmitErr').textContent = msg;
       });
     });
 

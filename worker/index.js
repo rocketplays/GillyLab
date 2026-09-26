@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, freeTabs, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
 import { getFighterExtras } from "./fighter-extras.js";
 import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown, customSimBase, customSimMethodBaseline } from "./fight-sim.js";
@@ -4666,12 +4666,25 @@ export default {
         // Real weekly game now (see handleBracketCurrent/-Submit/-Leaderboard
         // above) -- login required, same as /pickem, since a shared
         // leaderboard + lifetime belt only mean something tied to a real
-        // account. NOT climbNav here: that helper's CSS reads
-        // var(--border)/var(--text), the SITE's shared token names, which
-        // this page never defines (it has its own palette, --line/--paper/
-        // etc.) — a small self-contained bar in this page's own tokens
-        // avoids that mismatch while still carrying real nav (account links
-        // + the other free games), not just a brand mark.
+        // account.
+        //
+        // Two different arrivals, two different chromes -- same distinction
+        // /theclimb already draws with subscribed (climbCta's Open-app vs
+        // Go-Premium branch), just carried one step further here:
+        //   - A PREMIUM account only ever reaches /bracket by leaving the
+        //     SPA (index.html's nav-dropdown does `location.href='/bracket'`
+        //     for exactly this page -- see that file's "Legends Bracket is
+        //     its own standalone server-rendered page" comment). They came
+        //     from inside the app, so the page should read like the rest of
+        //     it: the plain climbNav bar (brand left, "Open app" to get back
+        //     + Account) and nothing else -- no free-game cross-links, no
+        //     browse tabs, since a subscriber isn't browsing the free site.
+        //   - A FREE (logged-in, not subscribed) account reaches /bracket
+        //     from /matchup, /rankings, /roster, /pickem or /theclimb's own
+        //     freeTabs() row, i.e. mid-browse -- so it gets the exact same
+        //     nav + freeTabs() row every other free page opens with,
+        //     "Legends Bracket" active, same as /theclimb passes
+        //     climbTabs()==freeTabs("/theclimb") today.
         const s = await readSession(request, env);
         if (!s) return redirect(env.SITE_URL + "/signup?next=/bracket");
         const u = await getUser(env, s.email);
@@ -4681,29 +4694,10 @@ export default {
           "Fill out an 8-fighter bracket of recognizable names every week, any era, scored like a March Madness pool. Free to play on GillyLab.",
           "/bracket"
         );
-        const otherGames = [["/theclimb", "The Climb"], ["/pickem", "Pick'em"]];
-        const nav = `<style>
-          .lb-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
-          .lb-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--paper);flex:none}
-          .lb-brand img{height:24px;width:auto;display:block}
-          .lb-brand .a{color:var(--accent)}
-          .lb-navlinks{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.02em;text-transform:uppercase}
-          .lb-navlinks a{color:var(--muted);text-decoration:none}
-          .lb-navlinks a:hover{color:var(--paper)}
-          .lb-navlinks a.upg{color:var(--accent)}
-        </style>
-        <div class="lb-topbar">
-          <a class="lb-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""><span>GILLY<span class="a">LAB</span></span></a>
-          <div class="lb-navlinks">
-            ${otherGames.map(([h, l]) => `<a href="${h}">${l}</a>`).join("")}
-            ${u?.subscribed ? `<a href="/">Open app</a>` : `<a class="upg" href="/subscribe">Go Premium</a>`}
-            <a href="/account">Account</a>
-          </div>
-        </div>`;
         return html(bracketPage({
           head,
-          nav,
-          back: "",
+          nav: climbNav(true, !!u?.subscribed),
+          back: u?.subscribed ? "" : freeTabs("/bracket"),
           cta: "",
           footer: climbFooter(),
         }), 200, { "Cache-Control": "private, no-store" });

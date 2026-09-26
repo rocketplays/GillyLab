@@ -33,6 +33,17 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     --bad:#ff3d00;
     --on-accent:#04140a;
     --shadow: 0 8px 24px rgba(0,0,0,0.4);
+    /* Aliases for the SITE's shared token names, not this page's own --line/
+       --paper/--surface-2 -- needed only when this page is served with the
+       shared free-page chrome (climbNav()/freeTabs(), see worker/index.js's
+       /bracket route) instead of a bespoke bar. Those helpers' CSS is written
+       once against var(--border)/var(--text)/var(--surface2) for every free
+       page (rankings/roster/matchup/climb); aliasing here means their CSS
+       works verbatim on this page too instead of forking a copy that only
+       drifts from the original over time. */
+    --border:var(--line);
+    --text:var(--paper);
+    --surface2:var(--surface-2);
   }
 
   *{ box-sizing:border-box; }
@@ -383,12 +394,11 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       <span class="label" id="scoreLabel">Every correct pick locked in above &mdash; here's the real bracket.</span>
     </div>
 
-    <h2 class="section">Leaderboards</h2>
+    <h2 class="section">Leaderboard</h2>
     <div class="lb-tabs" id="lbTabs">
       <button type="button" class="lbtab active" data-tab="week">This Week</button>
       <button type="button" class="lbtab" data-tab="season">Season</button>
     </div>
-    <p class="section-note">Sample field for demo purposes.</p>
     <table class="leaderboard">
       <thead><tr><th>Rank</th><th>Player</th><th>Pts</th></tr></thead>
       <tbody id="leaderboardBody"></tbody>

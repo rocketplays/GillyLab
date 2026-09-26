@@ -1988,15 +1988,47 @@ body #mh-box{
 .bt-leg-void .bt-leg-p{ opacity:.5; font-style:italic; }
 .pk-hist-back{ background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.82rem; padding:0; margin-bottom:.6rem; cursor:pointer; }
 
-/* ---- Legends Bracket (screens/bracket.js) -- a native, vertically-stacked
-   take on the site's own /bracket page (prototypes/legends-bracket.html):
-   each round is a labeled stack of two-fighter matchups rather than the
-   site's desktop bracket-with-connector-lines layout, which doesn't fit a
-   phone width without heavy horizontal scrolling. */
-.br-round{ margin:0 0 1.4rem; }
-.br-round-label{ font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .5rem; }
-.br-match{ display:flex; flex-direction:column; gap:.5rem; padding:.9rem 0; border-top:1px solid var(--border); }
-.br-round:first-of-type .br-match:first-child{ border-top:none; padding-top:0; }
+/* ---- Legends Bracket (screens/bracket.js) -- ports the site's own /bracket
+   page (prototypes/legends-bracket.html) bracket-with-connector-lines layout
+   literally, rather than the round-by-round vertical stack this used to be.
+   The site's own mobile breakpoint (max-width:820px: 4 columns of ~86vw each,
+   horizontal scroll-snap) already IS a phone-width layout -- it's what this
+   is built from directly, not a new design. Swiping right moves QF -> SF ->
+   Final -> Champion; pickQf/pickSf/pickFinal below auto-scroll to the next
+   column once a round is fully picked, same as the site's scrollToPending. */
+.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
+.br-bracket{ display:grid; grid-template-columns:repeat(4, 86vw); gap:0 2.2rem; --br-gap:2.2rem; --br-stub:.55rem; }
+.br-col{ display:flex; flex-direction:column; position:relative; scroll-snap-align:start; min-width:0; }
+.br-collabel{ font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .9rem; }
+.br-collabel.is-final{ color:var(--accent); }
+.br-pairgroup{ display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.3rem; }
+.br-pair{ position:relative; display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.3rem; }
+.br-champcol{ align-items:center; text-align:center; }
+.br-champcard{ width:100%; padding:1rem .9rem; background:var(--card); border:1px solid var(--accent); border-radius:10px; }
+.br-champcard .br-champ-cap{ font-weight:800; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:.7rem; }
+.br-champcard .br-fcard{ background:none; border:none; padding:0; flex-direction:column; text-align:center; }
+.br-champcard .br-photo{ width:3.4rem; height:3.4rem; margin:0 auto .5rem; }
+.br-champcard .br-name{ font-size:1.05rem; white-space:normal; }
+.br-champcard .br-legacy{ white-space:normal; }
+.br-champcard .br-badge{ margin:.6rem auto 0; }
+/* connector lines between rounds -- an elbow per pair (bracket-pair::before/
+   ::after), a short stub off every matchup (br-match::after), the advancing
+   name riding the line. Sized off --br-gap/--br-stub so a change to either
+   column-gap variable keeps the lines meeting the next column's edge exactly,
+   same calc() approach as the site's own CSS. */
+.br-match{ position:relative; display:flex; flex-direction:column; gap:.5rem; }
+.br-col:not(:last-child) .br-match::after{ content:""; position:absolute; left:100%; top:50%; width:var(--br-stub); height:1px; background:var(--border); }
+.br-pair::before{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:25%; bottom:25%; width:1px; background:var(--border); }
+.br-pair::after{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:50%; height:1px; width:calc(var(--br-gap) - var(--br-stub)); background:var(--border); }
+.br-col:last-child .br-match::after, .br-col:last-child .br-pair::before, .br-col:last-child .br-pair::after{ display:none; }
+.br-connector-name{
+  position:absolute; left:calc(100% + var(--br-stub) + .15rem); top:50%; transform:translateY(-50%);
+  max-width:1.7rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
+  font-weight:700; font-size:.56rem; letter-spacing:.01em; text-transform:uppercase; color:var(--muted); z-index:1;
+}
+.br-connector-name.picked{ color:#d4af37; }
+.br-connector-name.winner{ color:var(--accent); }
+.br-vs{ font-weight:700; font-size:.62rem; color:var(--muted); text-align:center; letter-spacing:.1em; text-transform:uppercase; }
 .br-fcard{ display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:8px; }
 .br-fcard[role="button"]{ cursor:pointer; }
 .br-fcard.picked{ border-color:var(--accent); }
@@ -2013,7 +2045,12 @@ body #mh-box{
 .br-name{ font-weight:800; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .br-legacy{ font-size:.72rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .br-badge{ font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:4px; padding:.1rem .4rem; margin-left:auto; flex:none; }
-.br-champ{ max-width:22rem; }
 .br-modelcall{ font-size:.78rem; color:var(--muted); padding-top:.4rem; border-top:1px dashed var(--border); }
 .br-score{ text-align:center; margin-bottom:1rem; }
 .br-score-big{ font-weight:900; font-size:2.2rem; color:var(--accent); }
+/* Submit button + progress text sit side by side with real breathing room
+   between them, same as the site's own .submit-row -- these used to be
+   plain stacked block children of #brSubmitRow with nothing but default
+   margins between them, which is the "buttons too close together" gap. */
+.br-submitrow{ display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+.br-submitrow .gl-btn{ width:auto; flex:none; }
