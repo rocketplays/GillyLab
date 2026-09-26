@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-26T23:10:10.593Z",
+ "generatedAt": "2026-09-26T23:40:50.522Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -8458,6 +8458,194 @@
       ]
      },
      "capturedAt": "2026-09-26T23:10:10.487Z"
+    }
+   ]
+  },
+  "Rodolfo Vieira": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Robert Bryczek",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Robert Bryczek",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 43,
+      "totL": 91,
+      "totA": 128,
+      "tdL": 2,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "10:52",
+      "head": [
+       12,
+       30
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       11,
+       12
+      ],
+      "dist": [
+       18,
+       36
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 76,
+      "totL": 47,
+      "totA": 86,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       31,
+       68
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       34,
+       73
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-26T23:40:50.414Z"
+    }
+   ]
+  },
+  "Robert Bryczek": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Vieira",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Vieira",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 76,
+      "totL": 47,
+      "totA": 86,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       31,
+       68
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       34,
+       73
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 43,
+      "totL": 91,
+      "totA": 128,
+      "tdL": 2,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "10:52",
+      "head": [
+       12,
+       30
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       11,
+       12
+      ],
+      "dist": [
+       18,
+       36
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-26T23:40:50.414Z"
     }
    ]
   }
