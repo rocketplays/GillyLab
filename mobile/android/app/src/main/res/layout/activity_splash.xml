@@ -7,10 +7,13 @@
   it starts" slogan under the GILLYLAB wordmark that's already baked into that
   image. The two spacer Views use weights instead of a fixed dp offset so the
   slogan lands right under the wordmark on any screen size, without pulling in
-  a ConstraintLayout dependency this module doesn't already have: 60/40, not
-  the old 67/33, since the logo/wordmark in the image itself moved up (see
-  mobile/assets/splash.png; it now ends at ~59.6% of the image's height, down
-  from ~65.5%). The slogan itself is two TextViews in a row (not one, with
+  a ConstraintLayout dependency this module doesn't already have: 66/34, not
+  the old 67/33 (or this rework's first pass at 60/40, confirmed too tight
+  by actually compositing text onto the real cropped image rather than
+  estimating: the wordmark ends around 60% of the image's height, and a
+  spacer that also stops at 60% leaves the text starting right at, not
+  below, the wordmark's own bottom edge). The slogan itself is two TextViews
+  in a row (not one, with
   plain android:text) so "before it starts" can be its own color: a single
   TextView's android:text can't mix colors without building a Spannable in
   code, which this plain-XML splash layout deliberately avoids needing.
@@ -34,7 +37,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="60" />
+            android:layout_weight="66" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -64,7 +67,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="40" />
+            android:layout_weight="34" />
 
     </LinearLayout>
 

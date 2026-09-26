@@ -28,13 +28,13 @@
                                  duplicated: centered as a pair via the centerX +/-1pt trick below
                                  instead of a UIStackView, for the same reason (unverifiable schema). -->
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Know the fight " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tag">
-                                <rect key="frame" x="27" y="410" width="160" height="20"/>
+                                <rect key="frame" x="27" y="443" width="160" height="20"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="before it starts" textAlignment="left" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tg2">
-                                <rect key="frame" x="188" y="410" width="160" height="20"/>
+                                <rect key="frame" x="188" y="443" width="160" height="20"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                 <color key="textColor" red="0.0" green="0.90196078431372551" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -52,15 +52,18 @@
                                  2pt gap, same visual effect a single centered label had, without
                                  needing a UIStackView (see the label comment above for why not). -->
                             <constraint firstItem="slG-an-tag" firstAttribute="trailing" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="-1" id="c05-cx-04"/>
-                            <!-- 1.26, not the old 1.46: the splash image's logo/wordmark moved up
-                                 (see mobile/assets/splash.png), so this needs to move up with it to
-                                 stay a subtext right under the wordmark instead of drifting further
-                                 down the now-larger gap. multiplier/2 = fraction of screen height
-                                 (centerY = view.centerY * multiplier = viewHeight * multiplier/2). -->
-                            <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.26" constant="0.0" id="c06-cy-05"/>
+                            <!-- 1.36, not the old 1.46 or this rework's first pass at 1.26: 1.26
+                                 (63% down) put the label's CENTER right at the wordmark's own
+                                 bottom edge, so the label's top half overlapped the wordmark text
+                                 instead of sitting under it: confirmed by actually compositing
+                                 this label position onto the real (aspect-fill-cropped) splash
+                                 image rather than estimating again. 1.36 (68% down) clears it with
+                                 real margin. multiplier/2 = fraction of screen height (centerY =
+                                 view.centerY * multiplier = viewHeight * multiplier/2). -->
+                            <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.36" constant="0.0" id="c06-cy-05"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="leadingMargin" constant="16" id="c07-lm-06"/>
                             <constraint firstItem="slG-an-tg2" firstAttribute="leading" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="1" id="c09-cx-08"/>
-                            <constraint firstItem="slG-an-tg2" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.26" constant="0.0" id="c10-cy-09"/>
+                            <constraint firstItem="slG-an-tg2" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.36" constant="0.0" id="c10-cy-09"/>
                             <constraint firstItem="slG-an-tg2" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="trailingMargin" constant="-16" id="c11-tm-10"/>
                         </constraints>
                     </view>
