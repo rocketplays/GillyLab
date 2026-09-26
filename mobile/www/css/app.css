@@ -454,6 +454,8 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-dash-arrow{ font-size:.78rem; font-weight:800; width:2.6rem; flex-shrink:0; }
 .gl-dash-arrow.up{ color:var(--accent); }
 .gl-dash-arrow.down{ color:var(--bad); }
+.gl-dash-av{ width:34px; height:34px; }
+.gl-dash-av .av-initials{ font-size:.65rem; }
 /* Home's Odds preview row (see home.js's oddsPreviewSection) -- fighter
    avatar+name on each outside edge, the moneylines and "vs" in the middle,
    all spaced evenly across the row rather than clumped by .gl-dash-row-name's
