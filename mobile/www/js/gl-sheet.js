@@ -1451,7 +1451,21 @@
 
         ov.querySelector('#glSheetSave').addEventListener('click', function () {
           if (!asset) return;
-          if (IOS && canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(function () {}); return; }
+          // Capacitor's real Filesystem+Share plugins instead of the raw Web
+          // Share API -- see native.js's saveImage() for why: navigator.share
+          // inside this app's WKWebView doesn't reliably get recognized as an
+          // image by iOS, so "Save Image" was missing from the sheet that
+          // came up. Falls back to the old blob-download for the plain-browser
+          // preview (no window.Capacitor there).
+          if (window.GL_NATIVE && window.GL_NATIVE.isNative()) {
+            window.GL_NATIVE.saveImage(img.src, filename);
+            return;
+          }
+          // Non-native (web preview) fallback -- same fix as index.html's
+          // copy of this: was gated `IOS &&`, dropping every other browser
+          // straight to a silent download() with no share/save sheet at
+          // all, even where canShareFiles() says the browser supports it.
+          if (canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(function () {}); return; }
           download(asset.blob, filename);
         });
         var shareBtn = canShare && ov.querySelector('#glSheetShare');

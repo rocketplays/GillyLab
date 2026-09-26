@@ -1402,7 +1402,26 @@ const GL_SHEET = (function () {
     // out of the click — the PNG is already rendered by the time the buttons enable.
     ov.querySelector('#glSheetSave').addEventListener('click', () => {
       if (!asset) return;
-      if (IOS && canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
+      // This block (GL_SHEET) is generated verbatim into the app's
+      // gl-sheet.js by scripts/gen-gl-sheet.cjs -- window.GL_NATIVE only
+      // ever exists there (native.js, inside the Capacitor shell), so on
+      // the plain website this check is always false and falls straight
+      // through to the browser logic below unchanged. In the app it routes
+      // through Capacitor's real Filesystem+Share plugins instead of the
+      // raw Web Share API, because navigator.share inside that app's
+      // WKWebView doesn't reliably get recognized as an image by iOS --
+      // "Save Image" was missing from the sheet that came up there.
+      if (window.GL_NATIVE && window.GL_NATIVE.isNative()) {
+        window.GL_NATIVE.saveImage(img.src, filename);
+        return;
+      }
+      // Was gated `IOS &&` -- so on Android (and any desktop browser that
+      // also supports the File Share API) this never even tried
+      // navigator.share and went straight to the silent download() below,
+      // with no share/save sheet shown at all. The Share button just below
+      // already only checks canShareFiles() with no platform gate; Save
+      // photo should use the same capability check, not a platform guess.
+      if (canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
       download(asset.blob, filename);
     });
     // Absent on the paywalled sheets — see canShare above. Save photo still routes

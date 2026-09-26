@@ -50,6 +50,43 @@ window.GL_NATIVE = (function(){
     }
   }
 
+  // ── Save/share a generated image (share sheets -- gl-sheet.js's "Save
+  // photo" button, used by every fight-card/pick'em/bet-tracker sheet in
+  // the app) ────────────────────────────────────────────────────────────
+  // Previously this used the raw Web Share API (navigator.share/canShare)
+  // straight from gl-sheet.js -- works in Safari, but a Capacitor app's
+  // WKWebView doesn't reliably tag a shared File as an actual image to the
+  // OS, so the native sheet that comes up is missing "Save Image" (iOS)
+  // entirely, and on Android there's no navigator.share(files) path here at
+  // all -- it silently fell through to a plain <a download> click, which
+  // does nothing in an embedded WebView (no download manager attached).
+  // The real fix is to go through Capacitor's own Filesystem + Share
+  // plugins instead of the web-layer API: write the PNG to a real file in
+  // the app's cache dir, then hand that file:// URI to the NATIVE share
+  // sheet (UIActivityViewController on iOS / Intent.ACTION_SEND on
+  // Android) -- that's what actually recognizes it as an image and offers
+  // Save Image, same as sharing a photo out of any other app.
+  function saveImage(dataUrl, filename){
+    var P = plugins();
+    if (isNative() && P.Filesystem && P.Share){
+      var base64 = String(dataUrl || '').split(',')[1] || '';
+      return P.Filesystem.writeFile({ path: filename, data: base64, directory: 'CACHE' })
+        .then(function(res){
+          return P.Share.share({ url: res.uri, dialogTitle: 'Save or share' });
+        })
+        .catch(function(){});   // user cancelled the sheet, or a native error -- nothing more to do
+    }
+    // Web preview fallback (no Capacitor plugins available) -- plain
+    // browser download, same as before.
+    return fetch(dataUrl).then(function(r){ return r.blob(); }).then(function(blob){
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url; link.download = filename;
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+    }).catch(function(){});
+  }
+
   // ── Push notifications (Pick'em Reminders/Results, Bet Results -- see
   // Settings' Notifications section and worker/index.js's runLockReminders/
   // runResultRecaps/runBetResultPushes) ──────────────────────────────────
@@ -116,5 +153,5 @@ window.GL_NATIVE = (function(){
     });
   }
 
-  return { init: init, tap: tap, openExternal: openExternal, isNative: isNative };
+  return { init: init, tap: tap, openExternal: openExternal, isNative: isNative, saveImage: saveImage };
 })();

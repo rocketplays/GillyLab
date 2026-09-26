@@ -133062,7 +133062,26 @@ const GL_SHEET = (function () {
     // out of the click — the PNG is already rendered by the time the buttons enable.
     ov.querySelector('#glSheetSave').addEventListener('click', () => {
       if (!asset) return;
-      if (IOS && canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
+      // This block (GL_SHEET) is generated verbatim into the app's
+      // gl-sheet.js by scripts/gen-gl-sheet.cjs -- window.GL_NATIVE only
+      // ever exists there (native.js, inside the Capacitor shell), so on
+      // the plain website this check is always false and falls straight
+      // through to the browser logic below unchanged. In the app it routes
+      // through Capacitor's real Filesystem+Share plugins instead of the
+      // raw Web Share API, because navigator.share inside that app's
+      // WKWebView doesn't reliably get recognized as an image by iOS --
+      // "Save Image" was missing from the sheet that came up there.
+      if (window.GL_NATIVE && window.GL_NATIVE.isNative()) {
+        window.GL_NATIVE.saveImage(img.src, filename);
+        return;
+      }
+      // Was gated `IOS &&` -- so on Android (and any desktop browser that
+      // also supports the File Share API) this never even tried
+      // navigator.share and went straight to the silent download() below,
+      // with no share/save sheet shown at all. The Share button just below
+      // already only checks canShareFiles() with no platform gate; Save
+      // photo should use the same capability check, not a platform guess.
+      if (canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
       download(asset.blob, filename);
     });
     // Absent on the paywalled sheets — see canShare above. Save photo still routes
@@ -148522,10 +148541,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       if (canTrack) {
         const allPriced = matches.every(m => m.priced);
-        const rows = legs.map((l, i) => {
-          const m = matches[i], pickTxt = btScanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
-          return '<div class="bt-row2 bt-scan-row"><div>' + btEsc(pickTxt) + '</div><div style="text-align:right">' + btEsc(String(l.odds)) + '</div></div>';
-        }).join('');
+        // Same "What we read" boxed-row treatment as the self-reported
+        // branch below, instead of a bare pick-text/odds pair in a plain
+        // .bt-row2 -- this branch is the one that's actually FULLY read
+        // (every leg matched and priced), so it deserves at least as clean
+        // a summary as a bet that only partially read. Uses the matched
+        // bout's own f1/f2 (from the live feed) rather than the model's
+        // raw OCR'd matchup text, since this is the one place we know for
+        // certain which real fight each leg landed on.
+        const rows = '<div class="bt-stage-t" style="margin-bottom:.4rem">What we read</div>' +
+          legs.map((l, i) => {
+            const m = matches[i], pickTxt = btScanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
+            return '<div class="bt-scan-row"><div style="font-weight:700">' + btEsc(pickTxt) + '</div>' +
+              '<div class="bt-leg-m" style="margin-top:2px;white-space:normal">' + btEsc(m.f1) + ' vs ' + btEsc(m.f2) + ' · ' + btEsc(btFmtO(l.odds)) + '</div></div>';
+          }).join('');
         h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (legs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
           ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>' +
           (allPriced ? ', and CLV-eligible until that segment starts.' : '. Not CLV-scored (this market doesn\'t carry a trustworthy closing line), same as picking it manually.') + '</div>' +

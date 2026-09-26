@@ -629,10 +629,20 @@ window.GL_BETTRACKER = (function(){
       if (unc.length) h += '<div class="bt-note">Couldn\'t read clearly: ' + esc(unc.join(', ')) + ' — check before confirming.</div>';
       if (canTrack){
         var allPriced = matches.every(function(m){ return m.priced; });
-        var rows = scanLegs.map(function(l, i){
-          var m = matches[i], pickTxt = scanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
-          return '<div class="bt-row2 bt-scan-row"><div>' + esc(pickTxt) + '</div><div style="text-align:right">' + esc(String(l.odds)) + '</div></div>';
-        }).join('');
+        // Same "What we read" boxed-row treatment as the self-reported
+        // branch below, instead of a bare pick-text/odds pair in a plain
+        // .bt-row2 -- this branch is the one that's actually FULLY read
+        // (every leg matched and priced), so it deserves at least as clean
+        // a summary as a bet that only partially read. Uses the matched
+        // bout's own f1/f2 (from the live feed) rather than the model's
+        // raw OCR'd matchup text, since this is the one place we know for
+        // certain which real fight each leg landed on.
+        var rows = '<div class="bt-stage-t" style="margin-bottom:.4rem">What we read</div>' +
+          scanLegs.map(function(l, i){
+            var m = matches[i], pickTxt = scanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
+            return '<div class="bt-scan-row"><div style="font-weight:700">' + esc(pickTxt) + '</div>' +
+              '<div class="bt-leg-m" style="margin-top:2px;white-space:normal">' + esc(m.f1) + ' vs ' + esc(m.f2) + ' · ' + esc(fmtOdds(l.odds)) + '</div></div>';
+          }).join('');
         h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (scanLegs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
           ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>' +
           (allPriced ? ', and CLV-eligible until that segment starts.' : '. Not CLV-scored (this market doesn\'t carry a trustworthy closing line), same as picking it manually.') + '</div>' +
