@@ -40,6 +40,18 @@ window.GL_ROUTER.register('matchup', {
   }
 });
 
+// Which upcoming-carousel slide the visitor was last looking at, by event
+// slug rather than raw index -- persists across a full re-mount of this
+// screen (module-level, outside mountMatchup, which is torn down and
+// rebuilt from scratch on every navigation -- see router.js's go(), which
+// hands every render() call a brand-new container). Without this, scrolling
+// to event #3 in the carousel, tapping into a fighter, then hitting back
+// re-rendered the whole screen from zero and always landed back on slide 0.
+// Keyed by slug (not index) so it still finds the right slide if the
+// carousel's event list has shifted since (an event dropping off, one
+// completing and moving out of "upcoming").
+var lastCarouselSlug = null;
+
 function mountMatchup(container){
   container.innerHTML = '<p class="gl-muted">Loading the card…</p>';
 
@@ -1384,18 +1396,34 @@ function mountMatchup(container){
     var dotsWrap = container.querySelector('#mfCarDots');
     if (!track || !prev || !next) return;
     var dots = dotsWrap ? Array.prototype.slice.call(dotsWrap.querySelectorAll('.mf-car-dot')) : [];
-    var slideCount = track.children.length;
+    var slides = Array.prototype.slice.call(track.children);
+    var slideCount = slides.length;
+    // Resume on whichever slide was last viewed (by slug -- see
+    // lastCarouselSlug's own comment above) instead of always slide 0.
+    var startIdx = 0;
+    if (lastCarouselSlug){
+      for (var si = 0; si < slides.length; si++){
+        if (slides[si].getAttribute('data-slug') === lastCarouselSlug){ startIdx = si; break; }
+      }
+    }
     var curIdx = 0, scrolling = false, fallbackTimer = null;
 
     function clamp(i){ if (!slideCount) return 0; return ((i % slideCount) + slideCount) % slideCount; }
     function updateDots(){ dots.forEach(function(d, i){ d.classList.toggle('active', i === curIdx); }); }
+    function remember(){ lastCarouselSlug = slides[curIdx] ? slides[curIdx].getAttribute('data-slug') : null; }
     function goTo(i, smooth){
       curIdx = clamp(i);
       scrolling = true;
       track.scrollTo({ left: curIdx * track.clientWidth, behavior: smooth === false ? 'auto' : 'smooth' });
       updateDots();
+      remember();
       if (fallbackTimer) clearTimeout(fallbackTimer);
       fallbackTimer = setTimeout(function(){ scrolling = false; }, 600);
+    }
+    // Jump to the resumed slide with no animation and no scroll-snap fight --
+    // wait a frame so track.clientWidth reflects real layout first.
+    if (startIdx > 0){
+      requestAnimationFrame(function(){ goTo(startIdx, false); });
     }
     prev.addEventListener('click', function(){ window.GL_NATIVE.tap(); if (!scrolling && slideCount > 1) goTo(curIdx - 1); });
     next.addEventListener('click', function(){ window.GL_NATIVE.tap(); if (!scrolling && slideCount > 1) goTo(curIdx + 1); });
@@ -1408,6 +1436,7 @@ function mountMatchup(container){
         scrolling = false;
         curIdx = clamp(Math.round(track.scrollLeft / Math.max(1, track.clientWidth)));
         updateDots();
+        remember();
       }, 120);
     });
   }
