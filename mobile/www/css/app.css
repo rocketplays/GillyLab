@@ -439,11 +439,24 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .gl-sec{ padding:1.1rem 0; border-top:1px solid var(--border); }
 .gl-sec:first-child, .gl-sec--first{ border-top:none; padding-top:0; }
 .gl-dash-card{ padding:1rem 1.1rem; }
-.gl-dash-head{ margin-bottom:.1rem; }
+.gl-dash-head{ display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.3rem .6rem; margin-bottom:.1rem; }
+/* Small "view all" link that lives in the header row next to the title
+   (home.js's headLink()) -- replaces what used to be a full-width button
+   at the bottom of Odds/Scheduled Cards/Biggest Movers/Active Roster.
+   A single h2 child with justify-content:space-between (no second child)
+   is unaffected, so this is safe on every other screen sharing
+   .gl-dash-head (Bracket/Settings/Account) too. */
+.hm-head-link{
+  display:flex; align-items:center; gap:.15rem; flex-shrink:0;
+  background:none; border:none; padding:0; font:inherit; cursor:pointer;
+  font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--muted); white-space:nowrap;
+}
+.hm-head-arrow{ font-size:.85rem; line-height:1; }
 /* Each section's own name (Pick'em, The Climb, Active Roster, ...) reads as
    a real dashboard-widget title, not a small muted eyebrow -- so Home looks
    like a hub with a teaser under each heading rather than a flat list. */
-.gl-dash-title{ font-size:1.1rem; margin:0; color:var(--text); }
+.gl-dash-title{ font-size:1.1rem; margin:0; color:var(--text); white-space:nowrap; }
 /* Home dashboard section titles -- white with the closing word(s) in
    accent green, per the reference mockup's own `.sec-title .a` (a plain
    inline span around the green portion, not a mid-word 50/50 split --
@@ -591,9 +604,16 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .hm-roster-top{ display:flex; align-items:center; gap:.9rem; margin-bottom:.75rem; }
 .hm-roster-stat{ font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.9rem; color:var(--accent); line-height:1; }
 .hm-roster-stat-label{ font-size:.68rem; color:var(--muted); margin-top:.1rem; }
-.hm-roster-strip{ display:flex; align-items:center; gap:.35rem; }
+.hm-roster-strip{ display:flex; align-items:center; }
 .hm-roster-av{ width:34px; height:34px; }
 .hm-roster-av .av-initials{ font-size:.65rem; }
+/* Overlapping stack instead of a plain spaced-out row -- each avatar after
+   the first pulls left under the previous one, with a bg-colored ring
+   (matching the page background, not the usual border color) so the
+   overlap actually reads as separate circles instead of one blob. */
+.hm-roster-av + .hm-roster-av{ margin-left:-12px; }
+.hm-roster-av .av-initials, .hm-roster-av .av-photo{ border-color:var(--bg); }
+.hm-roster-more{ margin-left:.6rem; font-size:.7rem; font-weight:700; color:var(--muted); white-space:nowrap; }
 .hm-comp-bar{ display:flex; height:10px; border-radius:6px; overflow:hidden; margin-bottom:.5rem; gap:1px; }
 .hm-comp-group-label{ font-size:.6rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; margin:.5rem 0 .3rem; }
 .hm-comp-group-label:first-of-type{ margin-top:0; }

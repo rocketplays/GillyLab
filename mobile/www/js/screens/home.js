@@ -97,7 +97,7 @@ window.GL_ROUTER.register('home', {
       }).join('');
       return (
         '<div class="he-tape">' +
-          '<div class="he-tape-title">Tale of the Tape</div>' +
+          '<div class="he-tape-title">Matchup Preview</div>' +
           '<div class="he-tape-legend">' +
             '<span class="he-tape-legend-item"><span class="he-tape-dot a"></span>' + esc(f1) + '</span>' +
             '<span class="he-tape-legend-item"><span class="he-tape-dot b"></span>' + esc(f2) + '</span>' +
@@ -134,6 +134,19 @@ window.GL_ROUTER.register('home', {
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
         '</div>'
       );
+    }
+
+    // Small "view all" link in a section header row, replacing what used to
+    // be a full-width button at the bottom of that section -- saves the
+    // vertical room a whole extra button row cost, at the price of being
+    // less discoverable than a bottom button; worth revisiting if that
+    // trade doesn't hold up. Main Event's "View Full Card" is deliberately
+    // NOT converted (kept as the one full-width button left on Home), and
+    // neither are Play & Compete's tiles or More Premium Tools' cards --
+    // both already route to more than one destination, so there's no
+    // single "view all" this pattern fits.
+    function headLink(label, route){
+      return '<button type="button" class="hm-head-link" data-goto="' + route + '">' + esc(label) + '<span class="hm-head-arrow">›</span></button>';
     }
 
     // ── 2. Scheduled Cards -- horizontal strip of the upcoming carousel,
@@ -176,7 +189,7 @@ window.GL_ROUTER.register('home', {
       }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Scheduled <span class="a">Cards</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Scheduled <span class="a">Cards</span></h2>' + headLink('View All Upcoming Cards', 'matchup') + '</div>' +
           '<div class="hm-strip">' + cards + '</div>' +
         '</div>'
       );
@@ -209,7 +222,7 @@ window.GL_ROUTER.register('home', {
       var fmt = function(v){ return (v == null || v === '') ? '—' : String(v); };
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Betting <span class="a">Odds</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Betting <span class="a">Odds</span></h2>' + (subscribed ? headLink('View Full Odds and Props', 'odds') : '') + '</div>' +
           '<div class="hm-odds-card">' +
             '<div class="hm-odds-fighter">' + av(main.f1, main.s1, 'hm-odds-av') + '<span class="hm-odds-fname">' + esc(main.f1) + '</span>' +
               '<span class="hm-odds-pill">' + esc(fmt(main.o1)) + '</span></div>' +
@@ -220,7 +233,6 @@ window.GL_ROUTER.register('home', {
               '<div class="hm-odds-foot"><span>' + esc(main.f1) + ' ' + pct.a + '%</span><span>' + esc(main.f2) + ' ' + pct.b + '%</span></div>'
             ) : '') +
           '</div>' +
-          (subscribed ? '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="odds">View Odds</button>' : '') +
         '</div>'
       );
     }
@@ -264,9 +276,8 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">' + (movers.length ? 'Biggest <span class="a">Movers</span>' : 'Rankings — <span class="a">Pound-for-Pound</span>') + '</h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">' + (movers.length ? 'Biggest <span class="a">Movers</span>' : 'Rankings — <span class="a">Pound-for-Pound</span>') + '</h2>' + headLink('View Rankings', 'rankings') + '</div>' +
           body +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">View Rankings</button>' +
         '</div>'
       );
     }
@@ -338,18 +349,27 @@ window.GL_ROUTER.register('home', {
       if (!fighters.length){
         return (
           '<div class="gl-sec">' +
-            '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
+            '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2>' + headLink('View Roster', 'roster') + '</div>' +
             '<p class="gl-muted" style="margin:.4rem 0 0">Roster unavailable right now.</p>' +
-            '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View Roster</button>' +
           '</div>'
         );
       }
       var total = fighters.length;
       var byDiv = {};
       divisions.forEach(function(d){ byDiv[d.division] = d.count; });
-      var bar = divisions.filter(function(d){ return d.count > 0; }).map(function(d){
-        return '<span style="width:' + (d.count / total * 100) + '%;background:' + (DIVISION_COLORS[d.division] || DIVISION_COLORS.Other) + '"></span>';
-      }).join('');
+      // Two separate bars (Men's composition, Women's composition) instead
+      // of one bar mixing both -- each normalized to its OWN group total,
+      // so it reads as "how Men's/Women's divisions break down" rather than
+      // a fragment of the combined roster.
+      var divisionBar = function(divs, groupTotal){
+        if (!groupTotal) return '';
+        var segs = divs.filter(function(d){ return (byDiv[d] || 0) > 0; }).map(function(d){
+          return '<span style="width:' + (byDiv[d] / groupTotal * 100) + '%;background:' + DIVISION_COLORS[d] + '"></span>';
+        }).join('');
+        return segs ? '<div class="hm-comp-bar">' + segs + '</div>' : '';
+      };
+      var menTotal = MEN_DIVS.reduce(function(s, d){ return s + (byDiv[d] || 0); }, 0);
+      var womenTotal = WOMEN_DIVS.reduce(function(s, d){ return s + (byDiv[d] || 0); }, 0);
       var legendGroup = function(label, divs){
         var items = divs.filter(function(d){ return (byDiv[d] || 0) > 0; }).map(function(d){
           return '<span class="hm-comp-item"><span class="hm-comp-dot" style="background:' + DIVISION_COLORS[d] + '"></span>' + esc(d.replace("Women's ", '')) + '</span>';
@@ -357,19 +377,24 @@ window.GL_ROUTER.register('home', {
         return items ? '<div class="hm-comp-group-label">' + label + '</div><div class="hm-comp-legend">' + items + '</div>' : '';
       };
       var otherCount = byDiv['Other'] || 0;
+      // Overlapping avatar stack (see .hm-roster-av's sibling-overlap rule)
+      // + a "+N fighters" count for everyone not pictured, instead of a
+      // plain non-overlapping row of exactly 4 photos with no sense of how
+      // much bigger the real roster is.
       var photoStrip = photos.map(function(p){ return av(p.name, p.photo, 'hm-roster-av'); }).join('');
+      var remaining = total - photos.length;
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2>' + headLink('View Roster', 'roster') + '</div>' +
           '<div class="hm-roster-top">' +
             '<div><div class="hm-roster-stat">' + total + '</div><div class="hm-roster-stat-label">on current roster</div></div>' +
-            (photoStrip ? '<div class="hm-roster-strip">' + photoStrip + '</div>' : '') +
+            (photoStrip ? '<div class="hm-roster-strip">' + photoStrip + (remaining > 0 ? '<span class="hm-roster-more">+' + remaining + ' fighters</span>' : '') + '</div>' : '') +
           '</div>' +
-          (bar ? '<div class="hm-comp-bar">' + bar + '</div>' : '') +
+          divisionBar(MEN_DIVS, menTotal) +
           legendGroup("Men's", MEN_DIVS) +
+          divisionBar(WOMEN_DIVS, womenTotal) +
           legendGroup("Women's", WOMEN_DIVS) +
           (otherCount ? '<div class="hm-comp-legend"><span class="hm-comp-item"><span class="hm-comp-dot" style="background:' + DIVISION_COLORS.Other + '"></span>Other</span></div>' : '') +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View Roster</button>' +
         '</div>'
       );
     }
