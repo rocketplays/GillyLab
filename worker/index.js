@@ -2226,9 +2226,19 @@ function bracketSeededRng(seedStr) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+// Divisor 22 (the original) made even the single biggest power gap possible
+// anywhere in the whole 192-fighter pool (17 points) work out to only ~85%
+// for the favorite -- too close to a coin flip for what should be a legend
+// vs. journeyman mismatch. 13 is steeper: combined with the title-history
+// bonus baked into power scores (see gen-legends-pool.cjs's TITLE_BONUS), a
+// genuine multi-time-champion-vs-never-champion gap now lands in the low-to-
+// mid 90s, while two fighters of genuinely similar caliber (the kind the
+// standard 1v8/4v5/3v6/2v7 seeding deliberately pushes together in the later
+// rounds) still land in a believably competitive 55-70% range.
+const BRACKET_WINPROB_DIVISOR = 13;
 function bracketWinProb(a, b) {
   const diff = a.power - b.power;
-  return 1 / (1 + Math.pow(10, -diff / 22));
+  return 1 / (1 + Math.pow(10, -diff / BRACKET_WINPROB_DIVISOR));
 }
 function bracketSimMatch(a, b, rng) { return rng() < bracketWinProb(a, b) ? a : b; }
 
