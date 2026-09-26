@@ -477,12 +477,13 @@ function freeTabs(active) {
        two buttons is the wrong trade on pages whose whole point is loading fast. */
     .ftab-pick{display:block;text-align:center;text-decoration:none;font-weight:700;font-size:.95rem;letter-spacing:.01em;color:var(--text);background:linear-gradient(180deg,rgba(0,230,104,0.09),rgba(0,230,104,0.03));border:1px solid rgba(0,230,104,0.35);border-radius:8px;padding:.8rem;margin:0;transition:background .15s ease,border-color .15s ease}
     .ftab-pick:hover{background:linear-gradient(180deg,rgba(0,230,104,0.18),rgba(0,230,104,0.07));border-color:var(--accent)}
-    /* The two free games share a row and split it. flex:1 1 0 (not 1 1 auto) makes
-       them exactly half each regardless of label length — "The Climb →" is shorter
-       than "Play Pick'em →" and auto would give Pick'em the bigger half. When one
-       is hidden (you're already on that page) the survivor takes the full width on
-       its own, which is what the single button did before there were two. */
-    .fplay{display:flex;gap:8px;margin:0 0 1.2rem}
+    /* The free games share a row and split it evenly. flex:1 1 0 (not 1 1 auto)
+       makes them exactly equal regardless of label length — "The Climb →" is
+       shorter than "Play Pick'em →" and auto would give Pick'em the bigger
+       share. When one is hidden (you're already on that page) the remaining
+       ones take the full width between them, same as a single survivor took
+       it all before there were three. */
+    .fplay{display:flex;gap:8px;margin:0 0 1.2rem;flex-wrap:wrap}
     .fplay .ftab-pick{flex:1 1 0;min-width:0}
     @media(max-width:380px){ .fplay .ftab-pick{font-size:.86rem;padding:.8rem .4rem} }
   </style>
@@ -494,6 +495,7 @@ function freeTabs(active) {
           can't link to itself — but don't read it as evidence they're there. */
       active === "/theclimb" ? "" : `<a class="ftab-pick" href="/theclimb">The Climb →</a>`}
     ${active === "/pickem" ? "" : `<a class="ftab-pick" href="/pickem">Play Pick'em →</a>`}
+    ${active === "/bracket" ? "" : `<a class="ftab-pick" href="/bracket">Legends Bracket →</a>`}
   </div>`;
 }
 

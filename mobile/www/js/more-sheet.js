@@ -39,6 +39,14 @@ window.GL_MORE = (function(){
       route: 'climb', label: 'The Climb', premium: false,
       icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>',
     },
+    // Legends Bracket -- free (login required, no subscription), same as the
+    // other three above. Its only other in-app entry point is a Home
+    // dashboard section (see home.js's bracketSection) -- there's no tab-bar
+    // room for a 5th free game, same reasoning that put these four here.
+    {
+      route: 'bracket', label: 'Legends Bracket', premium: false,
+      icon: '<svg viewBox="0 0 24 24" class="more-item-icon"><path d="M8 12V8.2a4 4 0 0 1 8 0V12a2.6 2.6 0 0 1-1 2.05V15a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-.95A2.6 2.6 0 0 1 8 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 16.5h5a1.5 1.5 0 0 1 1.5 1.5v.5a2.5 2.5 0 0 1-2.5 2.5h-3A2.5 2.5 0 0 1 8 18.5V18a1.5 1.5 0 0 1 1.5-1.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    },
   ];
 
   var overlay, sheet, list, scrollY = 0, wired = false, isOpen = false;

@@ -4184,6 +4184,12 @@
         <li role="menuitem" id="tab-active-roster"           onclick="navigate('active-roster'); closeNavDropdown()">Active Roster</li>
         <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em</li>
         <li role="menuitem" id="tab-theclimb"                onclick="navigate('theclimb');    closeNavDropdown()">The Climb</li>
+        <!-- Legends Bracket is its own standalone server-rendered page (see
+             worker/index.js's /bracket route), not a view inside this SPA's
+             own navigate() router -- a real navigation out, same as any
+             external link, rather than adding a whole new client-side render
+             path to this file for one free game. -->
+        <li role="menuitem" id="tab-bracket"                 onclick="window.location.href='/bracket'">Legends Bracket</li>
       </ul>
     </div>
 

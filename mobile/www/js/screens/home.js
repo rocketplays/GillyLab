@@ -293,6 +293,22 @@ window.GL_ROUTER.register('home', {
       );
     }
 
+    // Legends Bracket is a free feature (login required, no subscription --
+    // see worker/index.js's /bracket route and /api/bracket/*), same "own
+    // top-level category with its own small teaser" treatment as Pick'em and
+    // Climb above rather than something buried in a menu, since it has no
+    // direct tab slot of its own in either the free or premium tab bar (see
+    // more-sheet.js for its premium-side entry point).
+    function bracketSection(){
+      return (
+        '<div class="gl-sec">' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">Legends Bracket</h2></div>' +
+          '<p class="gl-muted" style="margin:.4rem 0 0">Eight recognizable names from one division, any era. New bracket every week — free account required.</p>' +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="bracket">Play Legends Bracket</button>' +
+        '</div>'
+      );
+    }
+
     function wire(){
       container.querySelectorAll('[data-goto]').forEach(function(el){
         el.addEventListener('click', go(el.getAttribute('data-goto')));
@@ -324,6 +340,7 @@ window.GL_ROUTER.register('home', {
     function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, btPreview){
       var pickem = pickemCard ? pickemSection(pickemCard, pickemMine) : '';
       var climb = climbSection();
+      var bracket = bracketSection();
       var rankings = moversSection(rankingsData);
       var roster = rosterSection(rosterData);
       container.innerHTML = subscribed
@@ -335,12 +352,14 @@ window.GL_ROUTER.register('home', {
             rankings +
             roster +
             pickem +
-            climb
+            climb +
+            bracket
           )
         : (
             mainEventSection(matchupCard) +
             pickem +
             climb +
+            bracket +
             rankings +
             roster +
             '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +

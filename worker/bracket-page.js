@@ -331,8 +331,8 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   ` + (back || "") + `
 
   <h1>Legends <span>Bracket</span></h1>
-  <p class="subtitle">This Week: <span>Heavyweight</span></p>
-  <p class="sub">A randomly drawn 8-fighter pool from one division, any era &mdash; the division rotates every week. Fill it out like a March Madness bracket, earn points for every correct call, and see how you stack up. The GillyLab Model decides every winner.</p>
+  <p class="subtitle">This Week: <span id="weekDivision">&mdash;</span></p>
+  <p class="sub">Eight recognizable names from one division, any era &mdash; the division rotates every week. Fill it out like a March Madness bracket, earn points for every correct call, and see how you stack up. The GillyLab Model decides every winner.</p>
 
   <div class="belt-panel" id="beltPanel"></div>
 
@@ -408,65 +408,40 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
 
 <script>
 (function(){
-  // ---- fighters: seed, mock power score, one-line legacy tag ----
-  var FIGHTERS = [
-    { seed:1, name:"Fedor Emelianenko",   power:96, legacy:"PRIDE Heavyweight King, 2000s", photo:"fedor-emelianenko" },
-    { seed:8, name:"Fabricio Werdum",     power:74, legacy:"Ended Fedor's streak, 2010",     photo:"fabricio-werdum" },
-    { seed:4, name:"Stipe Miocic",        power:88, legacy:"Most UFC HW title defenses",     photo:"stipe-miocic" },
-    { seed:5, name:"Junior Dos Santos",   power:83, legacy:"UFC 155 champion",               photo:"junior-dos-santos" },
-    { seed:3, name:"Cain Velasquez",      power:90, legacy:"Undefeated title reign, 2010s",  photo:"cain-velasquez" },
-    { seed:6, name:"Randy Couture",       power:79, legacy:"5x UFC Heavyweight Champion",    photo:"randy-couture" },
-    { seed:2, name:"Brock Lesnar",        power:92, legacy:"Fastest to a UFC HW belt",       photo:"brock-lesnar" },
-    { seed:7, name:"Francis Ngannou",     power:76, legacy:"Hardest punch ever recorded",    photo:"francis-ngannou" },
-  ];
-  var bySeed = {}; FIGHTERS.forEach(function(f){ bySeed[f.seed]=f; });
+  // ---- real weekly state, fetched from the worker (see worker/index.js's
+  // handleBracketCurrent/-Submit/-Leaderboard) instead of the prototype's
+  // client-side Math.random simulation. FIGHTERS/bySeed/QF_PAIRS are now
+  // filled in once /api/bracket/current resolves; everything below that
+  // built the interactive picker/results UI against those variables is
+  // unchanged, since the server hands back the exact same shape (seed,
+  // name, legacy, photo) the mock array used. -->
+  var FIGHTERS = [];
+  var bySeed = {};
+  var QF_PAIRS = [];
+  var weekId = null;
 
-  // Standard bracket pairing: keep top seeds apart until late rounds.
-  var QF_PAIRS = [ [1,8], [4,5], [3,6], [2,7] ];
-
-  function winProb(a,b){
-    // logistic on power gap, scaled so a ~15-20pt gap is a heavy but not lock favorite
-    var diff = a.power - b.power;
-    return 1/(1+Math.pow(10, -diff/22));
-  }
-  function simMatch(a,b){
-    return Math.random() < winProb(a,b) ? a : b;
-  }
-
-  // ---- run the ACTUAL bracket once, up front (the "real" outcome) ----
+  // ---- the ACTUAL bracket outcome. Decided ONCE server-side at rotation
+  // time (see bracketBuildWeek in worker/index.js) -- this stays null (a
+  // spoiler withheld) until the API says you've already submitted this
+  // week, same reveal-on-submit flow as before.
   var real = { qf:[], sf:[], final:null };
-  QF_PAIRS.forEach(function(p){ real.qf.push(simMatch(bySeed[p[0]], bySeed[p[1]])); });
-  real.sf.push(simMatch(real.qf[0], real.qf[1]));
-  real.sf.push(simMatch(real.qf[2], real.qf[3]));
-  real.final = simMatch(real.sf[0], real.sf[1]);
 
-  // fabricated (but plausible, power-informed) consensus % for the QF round
-  function consensusPct(a,b){
-    var p = Math.round(winProb(a,b)*100);
-    // add a little human noise so it isn't a carbon copy of the model line
-    p = Math.max(4, Math.min(96, p + Math.round((Math.random()-0.5)*14)));
-    return p;
-  }
-  var consensus = QF_PAIRS.map(function(p){
-    var a=bySeed[p[0]], b=bySeed[p[1]];
-    var pctA = consensusPct(a,b);
-    return { a:a, b:b, pctA:pctA, pctB:100-pctA };
-  });
+  // ---- consensus: real QF-pick tallies from every submission so far this
+  // week (worker's bracket:tally:<weekId>), already gated server-side by a
+  // minimum sample size -- a null entry here just means "not enough picks
+  // in yet", same protection the prototype's CONSENSUS_THRESHOLD modeled,
+  // now against a real number instead of a simulated poolCount.
+  var consensus = [null, null, null, null];
 
   // ---- user picks, one name per structural slot ----
   var picks = { qf:[null,null,null,null], sf:[null,null], final:null };
-
-  // Consensus % isn't held back until the whole week's window closes — it's
-  // held back until YOU submit, same protection with a much shorter wait.
-  // Below a minimum sample it's also hidden regardless, since "1 of 2 people
-  // picked Fedor (50%)" isn't a real signal, just noise dressed as data.
-  var CONSENSUS_THRESHOLD = 10;
-  var poolCount = 340; // simulated: how many brackets are in so far this week (above CONSENSUS_THRESHOLD so the % line previews)
+  var alreadySubmitted = false;
 
   // ---- belts: lifetime progression, not weekly. A real belt never gets
   // taken back for one bad week, so promotion runs off a cumulative total
-  // across every bracket you've ever submitted, not this week's score alone.
-  // Real adult BJJ order: white, blue, purple, brown, black — that's it, no
+  // across every bracket you've ever submitted, not this week's score alone
+  // (worker's bracket:belt:<email>, returned as lifetimePts below). Real
+  // adult BJJ order: white, blue, purple, brown, black — that's it, no
   // invented tiers on top (coral/red belts are honorary degree ranks handed
   // out after decades, not something a points ladder should be minting).
   var BELTS = [
@@ -476,7 +451,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     { name:'Brown',  min:100, color:'#8a5a2b' },
     { name:'Black',  min:180, color:'#1a1a1a', outline:true },
   ];
-  var lifetimePts = 0; // starts at White Belt, 0 stripes
+  var lifetimePts = 0; // overwritten by the API's lifetimePts once loaded
 
   function beltInfo(pts){
     var idx = 0;
@@ -506,9 +481,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
         '<div class="belt-meta">'+lifetimePts+' lifetime pts &middot; '+nextText+'</div>' +
       '</div>';
   }
-  renderBeltPanel();
-
-  var boards = {};
+  var boards = { week: [], season: [] };
   function renderLeaderboard(tab){
     var rows = boards[tab].slice().sort(function(a,b){ return b.pts-a.pts; });
     var lb = document.getElementById('leaderboardBody'); lb.innerHTML = '';
@@ -522,6 +495,16 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   document.querySelectorAll('.lbtab').forEach(function(btn){
     btn.addEventListener('click', function(){ renderLeaderboard(btn.getAttribute('data-tab')); });
   });
+  // Real leaderboard rows from the worker (see handleBracketLeaderboard) --
+  // "mine" is worked out by matching against that scope's own \`me\` row
+  // (display names aren't guaranteed globally unique, but this mirrors the
+  // same name-match convention the rest of the site's leaderboards use).
+  function loadLeaderboard(scope){
+    return fetch('/api/bracket/leaderboard?scope=' + scope).then(function(r){ return r.json(); }).then(function(res){
+      var meName = res.me && res.me.name;
+      boards[scope] = (res.rows || []).map(function(row){ return { name: row.name, pts: row.pts, mine: meName && row.name === meName }; });
+    }).catch(function(){ boards[scope] = []; });
+  }
 
   function fcard(fighter, opts){
     opts = opts||{};
@@ -550,15 +533,18 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   // Winner: Cain Velasquez" are the same fact stated once. What this line adds
   // is the verdict on YOUR pick for that slot — right or wrong.
   //
-  // For QF matchups only, once at least CONSENSUS_THRESHOLD brackets are in,
-  // a second line under it shows the crowd's majority pick — right where the
-  // model's call is, instead of a separate section elsewhere on the page.
+  // For QF matchups only, once the worker's own CONSENSUS_THRESHOLD sample
+  // size has been met (see handleBracketCurrent), a second line under it
+  // shows the crowd's majority pick — right where the model's call is,
+  // instead of a separate section elsewhere on the page. qfConsensus is
+  // already null from the API below that threshold, so there's nothing left
+  // to gate client-side.
   function modelCallEl(winner, yourPick, qfConsensus){
     var hit = yourPick === winner;
     var d = document.createElement('div'); d.className='modelcall';
     var html = 'GillyLab Model: <strong>'+winner.name+'</strong>' +
       (yourPick ? ' <span class="modelmark '+(hit?'hit':'miss')+'">'+(hit?'✓ you had it':'✗ you missed it')+'</span>' : '');
-    if (qfConsensus && poolCount >= CONSENSUS_THRESHOLD){
+    if (qfConsensus){
       var maj = qfConsensus.pctA >= qfConsensus.pctB
         ? { pct:qfConsensus.pctA, f:qfConsensus.a }
         : { pct:qfConsensus.pctB, f:qfConsensus.b };
@@ -710,61 +696,17 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     scrollToPending();
   }
 
-  render();
-
-  document.getElementById('submitBtn').addEventListener('click', function(){
-    var score = 0;
-    var rows = [];
-    QF_PAIRS.forEach(function(pair,i){
-      rows.push({ pick:picks.qf[i], actual:real.qf[i], pts:1 });
-    });
-    rows.push({ pick:picks.sf[0], actual:real.sf[0], pts:2 });
-    rows.push({ pick:picks.sf[1], actual:real.sf[1], pts:2 });
-    rows.push({ pick:picks.final, actual:real.final, pts:4 });
-
-    rows.forEach(function(r){
-      var correct = r.pick && r.actual && r.pick.name===r.actual.name;
-      if (correct) score += r.pts;
-    });
-
-    markCardStates();
-
+  // Reveals the results section on the champion tile (the payoff of the
+  // bracket, not the leaderboard below it) and wires "View Leaderboard" to
+  // scroll down deliberately -- unchanged from the prototype, just factored
+  // out so both the submit handler and the "already submitted" load path
+  // below can call it.
+  function showResults(score, label){
     document.getElementById('scoreBig').textContent = score;
-    document.getElementById('scoreLabel').textContent = score+' pts added to your lifetime belt progress.';
-
-    poolCount += 1; // your submission just joined the pool
-    lifetimePts += score;
-    renderBeltPanel();
-
-    boards = {
-      week: [
-        { name:'You', pts:score, mine:true },
-        { name:'cagesider_92', pts:9 },
-        { name:'ParisOrBust', pts:8 },
-        { name:'oddsmakerjeff', pts:7 },
-        { name:'chalk_only', pts:6 },
-        { name:'fightIQ_low', pts:3 },
-      ],
-      season: [
-        { name:'You', pts:lifetimePts, mine:true },
-        { name:'cagesider_92', pts:214 },
-        { name:'oddsmakerjeff', pts:188 },
-        { name:'ParisOrBust', pts:171 },
-        { name:'chalk_only', pts:140 },
-        { name:'fightIQ_low', pts:96 },
-      ],
-    };
-    renderLeaderboard('week');
-
+    document.getElementById('scoreLabel').textContent = label;
     document.getElementById('results').classList.add('show');
-
-    // Land on the champion tile first — it's the payoff of the bracket you
-    // just filled out — rather than jumping straight past it to the
-    // leaderboard below. "View Leaderboard" (revealed below the tile) takes
-    // you there deliberately instead.
     var champCard = document.getElementById('col-champ');
     champCard.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
-
     var viewLbBtn = document.getElementById('viewLbBtn');
     viewLbBtn.style.display = '';
     viewLbBtn.onclick = function(){
@@ -779,6 +721,48 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       var top = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     };
+  }
+  function showSubmitError(msg){
+    var row = document.getElementById('submit-row');
+    var el = document.getElementById('submitMsg');
+    if (!el){ el = document.createElement('span'); el.id = 'submitMsg'; el.className = 'progress'; el.style.color = 'var(--bad)'; row.appendChild(el); }
+    el.textContent = msg;
+  }
+  // Real winners, resolved from the seed numbers the API sends (see
+  // worker/index.js's bracketBuildWeek) back into the same fighter objects
+  // FIGHTERS/bySeed already hold -- lets render()/markCardStates() below stay
+  // exactly as the prototype wrote them, comparing fighter objects by
+  // reference rather than threading seed numbers through every call site.
+  function resolveReal(raw){
+    return { qf: raw.qf.map(function(s){ return bySeed[s]; }), sf: raw.sf.map(function(s){ return bySeed[s]; }), final: bySeed[raw.final] };
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    if (alreadySubmitted || !picks.final) return;
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    showSubmitError('');
+    fetch('/api/bracket/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ picks: { qf: picks.qf.map(function(f){ return f.seed; }), sf: picks.sf.map(function(f){ return f.seed; }), final: picks.final.seed } }),
+    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); }).then(function(res){
+      if (!res.ok){
+        btn.disabled = false;
+        showSubmitError(res.data && res.data.error ? res.data.error : 'Something went wrong — try again.');
+        return;
+      }
+      alreadySubmitted = true;
+      real = resolveReal(res.data.real);
+      lifetimePts = res.data.lifetimePts || 0;
+      renderBeltPanel();
+      markCardStates();
+      showResults(res.data.score, res.data.score + ' pts added to your lifetime belt progress.');
+      Promise.all([loadLeaderboard('week'), loadLeaderboard('season')]).then(function(){ renderLeaderboard('week'); });
+    }).catch(function(){
+      btn.disabled = false;
+      showSubmitError('Couldn’t reach GillyLab — check your connection and try again.');
+    });
   });
 
   // Post-submit, the bracket switches from "your hypothetical path" to the
@@ -836,6 +820,43 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     document.getElementById('submitBtn').textContent = 'Bracket Submitted';
     positionRoundLabels();
   }
+
+  // ---- boot: load this week's real state, then either render the
+  // interactive picker or, if you already submitted this week, jump
+  // straight to the results view with your saved picks and the real
+  // bracket already revealed.
+  document.getElementById('col-qf').innerHTML = '<p style="color:var(--muted)">Loading this week’s bracket…</p>';
+  fetch('/api/bracket/current').then(function(r){ return r.json(); }).then(function(res){
+    weekId = res.weekId;
+    document.getElementById('col-qf').innerHTML = '';
+    var divEl = document.getElementById('weekDivision');
+    if (divEl) divEl.textContent = res.divisionName || res.division || '—';
+
+    FIGHTERS = res.fighters || [];
+    bySeed = {}; FIGHTERS.forEach(function(f){ bySeed[f.seed] = f; });
+    QF_PAIRS = res.qfPairs || [];
+    consensus = (res.consensus || [null, null, null, null]).map(function(c){
+      return c ? { a: bySeed[c.seedA], b: bySeed[c.seedB], pctA: c.pctA, pctB: c.pctB } : null;
+    });
+    lifetimePts = res.lifetimePts || 0;
+    renderBeltPanel();
+
+    if (res.submitted && res.mine && res.real){
+      alreadySubmitted = true;
+      picks.qf = res.mine.picks.qf.map(function(s){ return bySeed[s]; });
+      picks.sf = res.mine.picks.sf.map(function(s){ return bySeed[s]; });
+      picks.final = bySeed[res.mine.picks.final];
+      real = resolveReal(res.real);
+      render();
+      markCardStates();
+      showResults(res.mine.score, "Every correct pick locked in above — here's the real bracket.");
+      Promise.all([loadLeaderboard('week'), loadLeaderboard('season')]).then(function(){ renderLeaderboard('week'); });
+    } else {
+      render();
+    }
+  }).catch(function(){
+    document.getElementById('col-qf').innerHTML = '<p style="color:var(--bad)">Couldn’t load this week’s bracket — check your connection and reload.</p>';
+  });
 })();
 </script>
 </body>

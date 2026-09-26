@@ -136,6 +136,15 @@ window.GL_API = (function(){
     betSettle: function(id, status){ return request('/api/bets/settle', { method: 'POST', body: { id: id, status: status } }); },
     betLeaderboard: function(tab, range){ return request('/api/bets/leaderboard?tab=' + encodeURIComponent(tab || 'units') + '&range=' + encodeURIComponent(range || 'all')); },
     betPlayer: function(name){ return request('/api/bets/player?name=' + encodeURIComponent(name)); },
+    // Legends Bracket -- free, login required (see worker/index.js's
+    // pickemSession-gated /api/bracket/* routes). bracketCurrent() is safe to
+    // call logged out too (it just comes back with loggedIn:false/no mine/
+    // real), matching how the site's own /bracket page behaves before the
+    // login-required route redirect was added there -- kept lenient here in
+    // case a future app entry point wants a read-only peek.
+    bracketCurrent: function(){ return request('/api/bracket/current'); },
+    bracketSubmit: function(picks){ return request('/api/bracket/submit', { method: 'POST', body: { picks: picks } }); },
+    bracketLeaderboard: function(scope){ return request('/api/bracket/leaderboard?scope=' + encodeURIComponent(scope || 'week')); },
     request: request,
     BASE: BASE,
   };

@@ -2166,6 +2166,259 @@ async function handlePickemLeaderboard(request, env, url) {
   const rows = buildLeaderboard(aggs, ordered, scope);
   return json({ scope, rows: rows.slice(0, 100), me: myName ? (rows.find(r => r.name === myName) || null) : null }, 200, cors);
 }
+
+/* ───────────────────────── Legends Bracket (weekly fantasy game) ──────────────
+ * Free feature, login required (same "account but no subscription needed"
+ * model as Pick'em -- see pickemSession above, reused as-is). One shared
+ * bracket for everyone each week: the division rotates on a fixed 8-week
+ * cycle (BRACKET_DIVISIONS below) every Monday ~12am ET, driven by the same
+ * hourly cron Pick'em's reminder emails use (see scheduled() +
+ * bracketRotateIfNeeded), and the "real" outcome is decided ONCE at rotation
+ * time by a seeded, reproducible simulation over that division's curated
+ * 8-fighter pool (data/legends-pool.json, built by scripts/gen-legends-pool.cjs
+ * from real record/accolade data -- see that script's own header for why a
+ * record-and-competition-quality model stands in for the live Fight
+ * Simulator here) -- never re-rolled per request, and never influenced by
+ * anyone's picks.
+ *
+ * KV layout (env.PICKS, same namespace Pick'em uses):
+ *   bracket:week:current           -- the live week's state (bracketBuildWeek)
+ *   bracket:week:<weekId>          -- same state, kept by id for lookup/history
+ *   bracket:pick:<weekId>:<email>  -- one user's submitted picks + score
+ *   bracket:tally:<weekId>         -- running QF-pick counts, for the
+ *                                      "N% picked <fighter>" consensus line
+ *   bracket:count:<weekId>         -- total submissions this week (consensus gate)
+ *   bracket:belt:<email>           -- lifetime points across every week ever
+ *                                      submitted -- belt progression never resets
+ */
+const BRACKET_DIVISIONS = ["FLW", "BW", "FW", "LW", "WW", "MW", "LHW", "HW"];
+const BRACKET_DIVISION_NAMES = {
+  FLW: "Flyweight", BW: "Bantamweight", FW: "Featherweight", LW: "Lightweight",
+  WW: "Welterweight", MW: "Middleweight", LHW: "Light Heavyweight", HW: "Heavyweight",
+};
+const BRACKET_QF_PAIRS = [[1, 8], [4, 5], [3, 6], [2, 7]];
+// A fixed Monday, offset -5h so the weekly boundary lands at ~12am ET (EST)
+// rather than 12am UTC. This doesn't track the DST shift to EDT (that would
+// need real timezone-aware date math for a one-hour wobble twice a year on a
+// feature that already only rotates once a week) -- close enough that the
+// division flips "Monday morning" every week, which is the actual promise.
+const BRACKET_EPOCH_MONDAY = Date.UTC(2024, 0, 1, 5, 0, 0);
+const BRACKET_CONSENSUS_THRESHOLD = 10;
+
+function bracketWeekIndex(date) {
+  return Math.floor((date.getTime() - BRACKET_EPOCH_MONDAY) / (7 * 24 * 3600 * 1000));
+}
+// xmur3 string hash -> mulberry32 PRNG. Deterministic and seedable so the same
+// weekId always reproduces the exact same "real" bracket outcome -- needed so
+// the result is fixed the instant the week rotates rather than redrawn on
+// every request, and so it can be re-derived for debugging.
+function bracketSeededRng(seedStr) {
+  let h = 1779033703 ^ seedStr.length;
+  for (let i = 0; i < seedStr.length; i++) {
+    h = Math.imul(h ^ seedStr.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  let a = (h ^ (h >>> 16)) >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function bracketWinProb(a, b) {
+  const diff = a.power - b.power;
+  return 1 / (1 + Math.pow(10, -diff / 22));
+}
+function bracketSimMatch(a, b, rng) { return rng() < bracketWinProb(a, b) ? a : b; }
+
+async function bracketLoadPool(env, url) {
+  const pool = await loadAssetJson(env, url, "/data/legends-pool.json");
+  if (!pool) throw new Error("data/legends-pool.json missing or unreadable");
+  return pool;
+}
+
+// Builds one week's full state: division, seeded 8-fighter bracket, and the
+// real outcome. Pure function of (weekIndex, pool) -- same inputs always
+// produce the same output, which is the whole point of seeding off the week
+// index rather than Math.random().
+function bracketBuildWeek(weekIndex, pool) {
+  const division = BRACKET_DIVISIONS[((weekIndex % BRACKET_DIVISIONS.length) + BRACKET_DIVISIONS.length) % BRACKET_DIVISIONS.length];
+  const raw = pool[division];
+  if (!raw || raw.length !== 8) throw new Error("legends-pool.json: division " + division + " does not have exactly 8 fighters");
+  // Seed 1 = highest power in this week's pool -- same "keep top seeds apart
+  // until late rounds" bracket shape the prototype used.
+  const seeded = raw.slice().sort((a, b) => b.power - a.power).map((f, i) => ({ ...f, seed: i + 1 }));
+  const bySeed = {}; seeded.forEach((f) => { bySeed[f.seed] = f; });
+  const rng = bracketSeededRng("w" + weekIndex + ":" + division);
+  const qf = BRACKET_QF_PAIRS.map(([a, b]) => bracketSimMatch(bySeed[a], bySeed[b], rng));
+  const sf = [bracketSimMatch(qf[0], qf[1], rng), bracketSimMatch(qf[2], qf[3], rng)];
+  const final = bracketSimMatch(sf[0], sf[1], rng);
+  return {
+    weekIndex, weekId: "w" + weekIndex, division, divisionName: BRACKET_DIVISION_NAMES[division],
+    fighters: seeded,
+    qfPairs: BRACKET_QF_PAIRS,
+    real: { qf: qf.map((f) => f.seed), sf: sf.map((f) => f.seed), final: final.seed },
+  };
+}
+
+async function bracketCurrentWeek(env, url) {
+  const weekIndex = bracketWeekIndex(new Date());
+  const cached = await pkGet(env, "bracket:week:current");
+  if (cached && cached.weekIndex === weekIndex) return cached;
+  // Cron hasn't rotated it yet (cold path, or the worker just deployed) --
+  // build and persist it on read instead of ever serving a stale week. Same
+  // "don't show a wrong answer just because the scheduled job hasn't run
+  // yet" instinct as ensureGraded() above.
+  const pool = await bracketLoadPool(env, url);
+  const state = bracketBuildWeek(weekIndex, pool);
+  await pkPut(env, "bracket:week:current", state);
+  await pkPut(env, "bracket:week:" + state.weekId, state);
+  return state;
+}
+
+// Called every hour from scheduled(); a no-op every hour except the first one
+// after a new week starts (idempotent via the weekIndex check inside
+// bracketCurrentWeek, which this just calls for its side effect).
+async function bracketRotateIfNeeded(env) {
+  await bracketCurrentWeek(env, new URL(env.SITE_URL));
+}
+
+function bracketScoreRow(pickSeed, realSeed, pts) {
+  return pickSeed != null && realSeed != null && pickSeed === realSeed ? pts : 0;
+}
+function bracketScorePicks(picks, real) {
+  let score = 0;
+  (picks.qf || []).forEach((p, i) => { score += bracketScoreRow(p, real.qf[i], 1); });
+  (picks.sf || []).forEach((p, i) => { score += bracketScoreRow(p, real.sf[i], 2); });
+  score += bracketScoreRow(picks.final, real.final, 4);
+  return score;
+}
+// Structural validity, re-checked server-side since this is the source of
+// truth for scoring, not just a UI nicety: every slot filled, and each pick
+// actually traces back through the bracket (an SF pick has to be one of the
+// two QF seeds that could even reach that slot; the Final pick has to be one
+// of the two SF picks) -- same downstream-clearing rule the prototype's
+// client JS enforces interactively.
+function bracketValidatePicks(picks, fighters) {
+  const bySeed = {}; fighters.forEach((f) => { bySeed[f.seed] = f; });
+  if (!picks || !Array.isArray(picks.qf) || picks.qf.length !== 4) return false;
+  if (!Array.isArray(picks.sf) || picks.sf.length !== 2) return false;
+  if (picks.qf.some((seed) => !bySeed[seed])) return false;
+  for (let i = 0; i < 2; i++) {
+    const feeders = [picks.qf[i * 2], picks.qf[i * 2 + 1]];
+    if (!feeders.includes(picks.sf[i])) return false;
+  }
+  if (!picks.final || !bySeed[picks.final]) return false;
+  if (!picks.sf.includes(picks.final)) return false;
+  return true;
+}
+
+async function bracketRecordTally(env, weekId, picks) {
+  const key = "bracket:tally:" + weekId;
+  const tally = (await pkGet(env, key)) || { qf0: {}, qf1: {}, qf2: {}, qf3: {} };
+  picks.qf.forEach((seed, i) => {
+    const slot = tally["qf" + i];
+    slot[seed] = (slot[seed] || 0) + 1;
+  });
+  await pkPut(env, key, tally);
+  const countKey = "bracket:count:" + weekId;
+  const n = parseInt((await env.PICKS.get(countKey)) || "0", 10) + 1;
+  await env.PICKS.put(countKey, String(n));
+}
+
+async function handleBracketCurrent(request, env, url) {
+  const cors = appCorsHeaders(request);
+  const s = await pickemSession(request, env);
+  const state = await bracketCurrentWeek(env, url);
+  const mine = s ? await pkGet(env, "bracket:pick:" + state.weekId + ":" + s.email) : null;
+  const belt = s ? ((await pkGet(env, "bracket:belt:" + s.email)) || { pts: 0 }) : null;
+  const poolCount = parseInt((await env.PICKS.get("bracket:count:" + state.weekId)) || "0", 10);
+  // Held back until enough of the pool is in, same protection Pick'em-style
+  // consensus lines use elsewhere -- "1 of 2 people picked X (50%)" isn't a
+  // real signal, just noise dressed as data.
+  let consensus = null;
+  if (poolCount >= BRACKET_CONSENSUS_THRESHOLD) {
+    const tally = (await pkGet(env, "bracket:tally:" + state.weekId)) || {};
+    consensus = [0, 1, 2, 3].map((i) => {
+      const slot = tally["qf" + i] || {};
+      const [seedA, seedB] = BRACKET_QF_PAIRS[i];
+      const nA = slot[seedA] || 0, nB = slot[seedB] || 0;
+      const total = nA + nB;
+      return total ? { seedA, seedB, pctA: Math.round((nA / total) * 100), pctB: Math.round((nB / total) * 100) } : null;
+    });
+  }
+  return json({
+    weekId: state.weekId, division: state.division, divisionName: state.divisionName,
+    // power is deliberately left out of the client payload -- the prototype
+    // only ever surfaces seed numbers, never the raw score behind them.
+    fighters: state.fighters.map((f) => ({ seed: f.seed, name: f.name, slug: f.slug, legacy: f.legacy, photo: f.photo })),
+    qfPairs: state.qfPairs,
+    poolCount, consensus,
+    loggedIn: !!s,
+    submitted: !!mine,
+    mine: mine ? { picks: mine.picks, score: mine.score } : null,
+    // The real result is a spoiler until you've submitted your own bracket --
+    // same reveal-on-submit flow the prototype's client JS models.
+    real: mine ? state.real : null,
+    lifetimePts: belt ? belt.pts : null,
+  }, 200, cors);
+}
+
+async function handleBracketSubmit(request, env, url) {
+  const cors = appCorsHeaders(request);
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
+  const state = await bracketCurrentWeek(env, url);
+  const pickKey = "bracket:pick:" + state.weekId + ":" + s.email;
+  if (await pkGet(env, pickKey)) return json({ error: "You already submitted this week's bracket." }, 409, cors);
+  const body = await readBody(request);
+  const picks = body && body.picks;
+  if (!bracketValidatePicks(picks, state.fighters)) return json({ error: "Incomplete or invalid bracket." }, 400, cors);
+  const score = bracketScorePicks(picks, state.real);
+  const name = await getDisplayName(env, s.email);
+  await pkPut(env, pickKey, { picks, score, name: name || null, submittedAt: Date.now() });
+  await bracketRecordTally(env, state.weekId, picks);
+  const belt = (await pkGet(env, "bracket:belt:" + s.email)) || { pts: 0 };
+  belt.pts = (belt.pts || 0) + score;
+  belt.name = name || belt.name || null;
+  await pkPut(env, "bracket:belt:" + s.email, belt);
+  return json({ ok: true, score, real: state.real, lifetimePts: belt.pts }, 200, cors);
+}
+
+async function handleBracketLeaderboard(request, env, url) {
+  const cors = appCorsHeaders(request);
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401, cors);
+  const scope = url.searchParams.get("scope") === "season" ? "season" : "week";
+  const myName = await getDisplayName(env, s.email);
+  let rows;
+  if (scope === "season") {
+    const keys = await listAllKeys(env, "bracket:belt:");
+    rows = (await Promise.all(keys.map(async (k) => {
+      const rec = await pkGet(env, k);
+      if (!rec) return null;
+      const email = k.slice("bracket:belt:".length);
+      const name = rec.name || (await getDisplayName(env, email));
+      return name ? { name, pts: rec.pts || 0 } : null;
+    }))).filter(Boolean);
+  } else {
+    const state = await bracketCurrentWeek(env, url);
+    const prefix = "bracket:pick:" + state.weekId + ":";
+    const keys = await listAllKeys(env, prefix);
+    rows = (await Promise.all(keys.map(async (k) => {
+      const rec = await pkGet(env, k);
+      if (!rec) return null;
+      const email = k.slice(prefix.length);
+      const name = rec.name || (await getDisplayName(env, email));
+      return name ? { name, pts: rec.score || 0 } : null;
+    }))).filter(Boolean);
+  }
+  rows.sort((a, b) => b.pts - a.pts || a.name.localeCompare(b.name));
+  const ranked = rows.map((r, i) => ({ rank: i + 1, ...r }));
+  return json({ scope, rows: ranked.slice(0, 100), me: myName ? (ranked.find((r) => r.name === myName) || null) : null }, 200, cors);
+}
+
 // Public (subscriber) profile for any player by display name.
 async function handlePickemPlayer(request, env, url) {
   const cors = appCorsHeaders(request);
@@ -2724,6 +2977,12 @@ export default {
       if (path === "/api/pickem/history") return handlePickemHistory(request, env, url);
       if (path === "/api/pickem/leaderboard") return handlePickemLeaderboard(request, env, url);
       if (path === "/api/pickem/player") return handlePickemPlayer(request, env, url);
+      // Legends Bracket -- free, login required (pickemSession, not a
+      // subscription check), CORS-attached for the app the same way every
+      // other /api/* route above is.
+      if (path === "/api/bracket/current") return handleBracketCurrent(request, env, url);
+      if (path === "/api/bracket/submit" && request.method === "POST") return handleBracketSubmit(request, env, url);
+      if (path === "/api/bracket/leaderboard") return handleBracketLeaderboard(request, env, url);
       if (path === "/api/live-results") return handleLiveResults(env, url);
 
       // ---- app-only read endpoints ----
@@ -4360,35 +4619,50 @@ export default {
         }), 200, pubHeaders(s));
       }
       if (path === "/bracket") {
-        // Playtest route: mock 8-fighter pool, no real backend yet, no login/
-        // account nav (not needed for a page nobody has to sign in for). Reuses
-        // climbFooter for the shared free-page footer, but NOT climbNav — that
-        // helper's CSS reads var(--border)/var(--text), the SITE's shared token
-        // names, which this page never defines (it has its own palette, --line/
-        // --paper/etc.) — so it rendered with an unstyled blue "GILLY" wordmark
-        // and broken login buttons. A tiny brand-only bar in this page's own
-        // tokens avoids that mismatch entirely instead of importing more vars.
+        // Real weekly game now (see handleBracketCurrent/-Submit/-Leaderboard
+        // above) -- login required, same as /pickem, since a shared
+        // leaderboard + lifetime belt only mean something tied to a real
+        // account. NOT climbNav here: that helper's CSS reads
+        // var(--border)/var(--text), the SITE's shared token names, which
+        // this page never defines (it has its own palette, --line/--paper/
+        // etc.) — a small self-contained bar in this page's own tokens
+        // avoids that mismatch while still carrying real nav (account links
+        // + the other free games), not just a brand mark.
         const s = await readSession(request, env);
-        if (s) await logActivity(env, ctx, s.email, "bracket_page");
+        if (!s) return redirect(env.SITE_URL + "/signup?next=/bracket");
+        const u = await getUser(env, s.email);
+        await logActivity(env, ctx, s.email, "bracket_page");
         const head = ogTags(
           "Legends Bracket — Weekly UFC Fantasy Tournament · GillyLab",
-          "Fill out a randomized 8-fighter bracket every week, any era, scored like a March Madness pool. Free to play on GillyLab.",
+          "Fill out an 8-fighter bracket of recognizable names every week, any era, scored like a March Madness pool. Free to play on GillyLab.",
           "/bracket"
         );
+        const otherGames = [["/theclimb", "The Climb"], ["/pickem", "Pick'em"]];
         const nav = `<style>
-          .lb-topbar{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
-          .lb-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--paper)}
+          .lb-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+          .lb-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--paper);flex:none}
           .lb-brand img{height:24px;width:auto;display:block}
           .lb-brand .a{color:var(--accent)}
+          .lb-navlinks{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.02em;text-transform:uppercase}
+          .lb-navlinks a{color:var(--muted);text-decoration:none}
+          .lb-navlinks a:hover{color:var(--paper)}
+          .lb-navlinks a.upg{color:var(--accent)}
         </style>
-        <div class="lb-topbar"><a class="lb-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""><span>GILLY<span class="a">LAB</span></span></a></div>`;
+        <div class="lb-topbar">
+          <a class="lb-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""><span>GILLY<span class="a">LAB</span></span></a>
+          <div class="lb-navlinks">
+            ${otherGames.map(([h, l]) => `<a href="${h}">${l}</a>`).join("")}
+            ${u?.subscribed ? `<a href="/">Open app</a>` : `<a class="upg" href="/subscribe">Go Premium</a>`}
+            <a href="/account">Account</a>
+          </div>
+        </div>`;
         return html(bracketPage({
           head,
           nav,
           back: "",
           cta: "",
           footer: climbFooter(),
-        }), 200, pubHeaders(s));
+        }), 200, { "Cache-Control": "private, no-store" });
       }
       if (path === "/rankings") {
         const s = await readSession(request, env);
@@ -4889,6 +5163,11 @@ export default {
   // post-grade "results recap" emails. No-op unless EMAIL_REMINDERS_ENABLED === "1",
   // so the feature ships dark and is switched on only after a dry-run/test.
   async scheduled(event, env, ctx) {
+    // Legends Bracket's weekly rotation rides the same hourly cron, unlike
+    // the email reminders below -- it's not behind EMAIL_REMINDERS_ENABLED,
+    // since it has nothing to do with email and the game should always be
+    // live regardless of that flag.
+    ctx.waitUntil(bracketRotateIfNeeded(env).catch(() => {}));
     if (env.EMAIL_REMINDERS_ENABLED !== "1") return;
     ctx.waitUntil(runReminders(env, { dry: false }).catch(() => {}));
   },

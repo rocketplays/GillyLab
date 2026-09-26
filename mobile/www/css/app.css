@@ -1987,3 +1987,33 @@ body #mh-box{
 .bt-leg-lost .bt-leg-ico{ color:#ff6a5e; }
 .bt-leg-void .bt-leg-p{ opacity:.5; font-style:italic; }
 .pk-hist-back{ background:none; border:none; color:var(--muted); font:inherit; font-weight:700; font-size:.82rem; padding:0; margin-bottom:.6rem; cursor:pointer; }
+
+/* ---- Legends Bracket (screens/bracket.js) -- a native, vertically-stacked
+   take on the site's own /bracket page (prototypes/legends-bracket.html):
+   each round is a labeled stack of two-fighter matchups rather than the
+   site's desktop bracket-with-connector-lines layout, which doesn't fit a
+   phone width without heavy horizontal scrolling. */
+.br-round{ margin:0 0 1.4rem; }
+.br-round-label{ font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .5rem; }
+.br-match{ display:flex; flex-direction:column; gap:.5rem; padding:.9rem 0; border-top:1px solid var(--border); }
+.br-round:first-of-type .br-match:first-child{ border-top:none; padding-top:0; }
+.br-fcard{ display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:8px; }
+.br-fcard[role="button"]{ cursor:pointer; }
+.br-fcard.picked{ border-color:var(--accent); }
+.br-fcard.picked .br-name{ color:var(--accent); }
+.br-fcard.winner{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 8%, var(--card)); }
+.br-fcard.winner .br-name{ color:var(--accent); }
+.br-fcard.loser .br-name{ opacity:.55; text-decoration:line-through; }
+.br-fcard.loser .br-photo{ opacity:.5; filter:grayscale(.4); }
+.br-fcard.loser .br-legacy{ opacity:.4; }
+.br-fcard--empty{ opacity:.4; border-style:dashed; justify-content:center; font-size:.85rem; color:var(--muted); }
+.br-seed{ font-size:.78rem; font-weight:800; color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, transparent); border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); width:1.5rem; height:1.5rem; border-radius:5px; display:flex; align-items:center; justify-content:center; flex:none; }
+.br-photo{ width:2.4rem; height:2.4rem; border-radius:6px; object-fit:cover; flex:none; background:var(--surface); border:1px solid var(--border); }
+.br-meta{ min-width:0; flex:1; display:flex; flex-direction:column; }
+.br-name{ font-weight:800; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.br-legacy{ font-size:.72rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.br-badge{ font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:4px; padding:.1rem .4rem; margin-left:auto; flex:none; }
+.br-champ{ max-width:22rem; }
+.br-modelcall{ font-size:.78rem; color:var(--muted); padding-top:.4rem; border-top:1px dashed var(--border); }
+.br-score{ text-align:center; margin-bottom:1rem; }
+.br-score-big{ font-weight:900; font-size:2.2rem; color:var(--accent); }
