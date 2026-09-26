@@ -209,7 +209,10 @@ window.GL_ROUTER.register('account', {
       var portalBtn = container.querySelector('#portalBtn');
       if (portalBtn) portalBtn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
-        window.GL_NATIVE.openExternal(window.GL_API.BASE + '/api/portal');
+        var fallback = function(){ window.GL_NATIVE.openExternal(window.GL_API.BASE + '/api/portal'); };
+        window.GL_API.webHandoff('/api/portal').then(function(res){
+          window.GL_NATIVE.openExternal(res && res.url ? res.url : window.GL_API.BASE + '/api/portal');
+        }).catch(fallback);
       });
 
       var toggleBtn = container.querySelector('#togglePwBtn');

@@ -102,6 +102,13 @@ window.GL_API = (function(){
     // Pick'em reminder/recap/missed-nudge cron jobs.
     notificationPrefs: function(){ return request('/api/app/notification-prefs'); },
     setNotificationPrefs: function(prefs){ return request('/api/app/notification-prefs', { method:'POST', body:prefs }); },
+    // App -> web SSO handoff (see worker/index.js's handleAppWebHandoff) --
+    // any button that opens an authenticated site page (Manage Subscription,
+    // Go Premium checkout) should ask for a handoff URL and open THAT, not
+    // the raw destination -- the external browser Browser.open() launches
+    // shares none of the app's own session (a separate origin/context
+    // entirely), so a raw link there is always logged out.
+    webHandoff: function(next){ return request('/api/app/web-handoff?next=' + encodeURIComponent(next)); },
     // Odds & Projections -- Premium-only (see worker/index.js's /api/app/odds).
     // Returns the featured odds event's matched fights, each with moneyline/
     // totals/method/doubleChance/roundProps/lineMovement + a no-vig `noVig`

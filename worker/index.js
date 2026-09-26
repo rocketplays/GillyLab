@@ -2683,6 +2683,7 @@ export default {
       if (path === "/api/stripe-webhook" && request.method === "POST") return handleWebhook(request, env);
       if (path === "/api/magic/start" && request.method === "POST") return handleMagicStart(request, env);
       if (path === "/api/magic/verify") return handleMagicVerify(request, env, url);
+      if (path === "/login/app-handoff") return handleAppHandoffConsume(request, env, url);
       if (path === "/api/change-password" && request.method === "POST") return handleChangePassword(request, env);
       if (path === "/api/delete-account" && request.method === "POST") return handleDeleteAccount(request, env);
       if (path === "/api/reset/start" && request.method === "POST") return handleResetStart(request, env);
@@ -4177,6 +4178,11 @@ export default {
           memberSince: (u && u.createdAt) || null,
         }, 200, cors);
       }
+      // App -> web SSO handoff -- see handleAppWebHandoff's own comment. Used
+      // by any button that sends the app out to an authenticated site page
+      // (Manage Subscription, Go Premium checkout) instead of opening that
+      // URL directly with no session at all.
+      if (path === "/api/app/web-handoff" && request.method === "GET") return handleAppWebHandoff(request, env, url);
       // App Settings screen: notification preferences. Push has no delivery
       // pipeline yet (no Capacitor push plugin, no device-token registration,
       // no APNs/FCM config on this Worker) -- these toggles just persist the
@@ -5174,6 +5180,42 @@ async function handleMagicVerify(request, env, url) {
   const e = await env.MAGIC.get("m:" + token);
   if (!e) return html(notePage("Link expired", "That sign-in link has expired or was already used. Request a new one from the login page."), 400);
   await env.MAGIC.delete("m:" + token);
+  const u = await getUser(env, e);
+  const cookie = await makeSessionCookie(env, e, !!u?.subscribed);
+  return redirect(env.SITE_URL + authDest(safeNext(url.searchParams.get("next")), !!u?.subscribed), cookie);
+}
+
+/* ── App -> web SSO handoff ──────────────────────────────────────────────
+ * The app carries its own Bearer session token (see readSession's fallback
+ * above), never the site's HttpOnly cookie -- so every "Manage Subscription"/
+ * "Go Premium" button that used to just openExternal() straight to
+ * /api/portal or /subscribe was opening a stock external browser tab with
+ * NO session at all: /api/portal bounced it to /login, and /subscribe (with
+ * no session) sent it through signup, asking someone who already has an
+ * account to create a second one.
+ *
+ * Fix mirrors the magic-link flow above almost exactly: the app first asks
+ * this endpoint (Bearer-authed, like every other /api/app/* route) for a
+ * one-time, 60-second handoff token, then opens the returned URL in the
+ * external browser instead of the raw destination. That URL's own visit
+ * (handleAppHandoffConsume) burns the token, sets the SAME session cookie
+ * makeSessionCookie/handleMagicVerify use, and redirects on to `next` --
+ * which by then has a real cookie to work with. */
+async function handleAppWebHandoff(request, env, url) {
+  const cors = appCorsHeaders(request);
+  const s = await readSession(request, env);
+  if (!s) return json({ error: "Not signed in" }, 401, cors);
+  const next = safeNext(url.searchParams.get("next")) || "/";
+  const token = randHex(32);
+  await env.MAGIC.put("h:" + token, s.email, { expirationTtl: 60 });
+  return json({ url: env.SITE_URL + "/login/app-handoff?t=" + token + "&next=" + encodeURIComponent(next) }, 200, cors);
+}
+async function handleAppHandoffConsume(request, env, url) {
+  const token = url.searchParams.get("t");
+  if (!token) return redirect(env.SITE_URL + "/login");
+  const e = await env.MAGIC.get("h:" + token);
+  if (!e) return html(notePage("Link expired", "That link has expired or was already used — go back to the app and tap it again."), 400);
+  await env.MAGIC.delete("h:" + token);
   const u = await getUser(env, e);
   const cookie = await makeSessionCookie(env, e, !!u?.subscribed);
   return redirect(env.SITE_URL + authDest(safeNext(url.searchParams.get("next")), !!u?.subscribed), cookie);

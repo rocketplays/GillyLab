@@ -41,6 +41,21 @@ window.GL_ROUTER.register('premium', {
       document.head.appendChild(tag);
     }
 
+    // Shared by both the loaded-tiles view and the error-fallback view below.
+    // Tries the SSO handoff first so checkout opens already signed in; if the
+    // caller isn't logged in yet (a free/logged-out visitor can reach this
+    // screen too) the handoff 401s and this falls back to the plain URL,
+    // which is correct there -- /subscribe's own signup flow handles that
+    // visitor fine on its own.
+    var openCheckout = function(){
+      window.GL_NATIVE.tap();
+      window.GL_API.webHandoff('/subscribe').then(function(res){
+        window.GL_NATIVE.openExternal(res && res.url ? res.url : window.GL_API.BASE + '/subscribe');
+      }).catch(function(){
+        window.GL_NATIVE.openExternal(window.GL_API.BASE + '/subscribe');
+      });
+    };
+
     window.GL_API.premiumFeatures().then(function(res){
       // .sub-cx is the exact wrapper subscribePage() puts around this same
       // markup on the site -- its own local CSS-variable overrides (the
@@ -73,10 +88,6 @@ window.GL_ROUTER.register('premium', {
         document.body.appendChild(s);
       }
 
-      var openCheckout = function(){
-        window.GL_NATIVE.tap();
-        window.GL_NATIVE.openExternal(window.GL_API.BASE + '/subscribe');
-      };
       var upgradeBtn = container.querySelector('#upgradeBtn');
       if (upgradeBtn) upgradeBtn.addEventListener('click', openCheckout);
       var upgradeBtnTop = container.querySelector('#upgradeBtnTop');
@@ -87,10 +98,7 @@ window.GL_ROUTER.register('premium', {
         '<p class="gl-muted">Check your connection and try again.</p>' +
         '<button type="button" class="gl-btn gl-btn-primary" id="upgradeBtn" style="margin-top:1rem">Continue to Upgrade</button>';
       var upgradeBtn = container.querySelector('#upgradeBtn');
-      if (upgradeBtn) upgradeBtn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
-        window.GL_NATIVE.openExternal(window.GL_API.BASE + '/subscribe');
-      });
+      if (upgradeBtn) upgradeBtn.addEventListener('click', openCheckout);
     });
   }
 });
