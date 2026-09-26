@@ -47,11 +47,18 @@ window.GL_ROUTER.register('climb', {
   title: 'The Climb',
   tab: 'climb',
   render: function(container){
+    // Title added above the iframe -- this screen previously had NONE (the
+    // game's own in-iframe header is climb-game.html's, a different
+    // document), so it was the one page in the app with no page title at
+    // all. Matches every other screen's convention exactly (h1.gl-heading,
+    // first word plain, second word var(--accent)) -- see roster.js/
+    // rankings.js/odds.js for the same pattern.
+    container.innerHTML = '<h1 class="gl-heading" style="margin:.1rem 0 .5rem">The <span style="color:var(--accent)">Climb</span></h1>';
+
     var frame = document.createElement('iframe');
     frame.className = 'gl-embed-frame';
     frame.title = 'The Climb';
     frame.src = 'climb-game.html';
-    container.innerHTML = '';
     container.appendChild(frame);
 
     var ro = null;

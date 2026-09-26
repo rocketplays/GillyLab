@@ -317,7 +317,7 @@ function mountBracket(container){
   function render(){
     container.innerHTML =
       '<div class="gl-sec gl-sec--first">' +
-        '<div class="gl-dash-head"><h2 class="gl-dash-title">Legends Bracket</h2></div>' +
+        '<h1 class="gl-heading" style="margin:.1rem 0 .2rem">Legends <span style="color:var(--accent)">Bracket</span></h1>' +
         '<p class="gl-muted" id="brDivision" style="margin:0">This week: —</p>' +
       '</div>' +
       '<div class="gl-sec" id="brBelt"></div>' +

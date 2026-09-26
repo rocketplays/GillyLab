@@ -198,7 +198,7 @@ function mountRankings(container){
       ? (function(){ var dt = new Date(data.date + 'T00:00:00Z'); return isNaN(dt.getTime()) ? '' : 'Updated ' + dt.toLocaleDateString(undefined, { timeZone: 'UTC', month: 'long', day: 'numeric', year: 'numeric' }); })()
       : '';
     container.innerHTML =
-      '<h1 class="gl-heading" style="font-size:1.3rem;margin:0 0 .2rem">UFC Rankings</h1>' +
+      '<h1 class="gl-heading" style="margin:.1rem 0 .2rem">UFC <span style="color:var(--accent)">Rankings</span></h1>' +
       (dateLine ? '<p class="gl-muted" style="margin:0 0 .9rem">' + esc(dateLine) + '</p>' : '') +
       '<div class="rk-toggle">' +
         '<button type="button" class="' + (source === 'media' ? 'sel' : '') + '" data-src="media">Media Panel</button>' +

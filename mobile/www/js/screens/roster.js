@@ -71,7 +71,7 @@ function mountRoster(container){
 
   function renderList(){
     container.innerHTML =
-      '<h1 class="gl-heading" style="font-size:1.3rem;margin:0 0 .2rem">Active Roster</h1>' +
+      '<h1 class="gl-heading" style="margin:.1rem 0 .2rem">Active <span style="color:var(--accent)">Roster</span></h1>' +
       '<p class="gl-muted" style="margin:0 0 1.1rem">' + fighters.length + ' fighters, kept up to date with the week’s signings and releases.</p>' +
       changesHTML() +
       '<div id="arList">' + listHTML() + '</div>' +
