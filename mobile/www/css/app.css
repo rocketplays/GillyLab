@@ -535,7 +535,12 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    (Rankings' division tabs, task #88) -- .4rem/.45rem .4rem read as the
    three buttons sitting flush against each other with barely any breathing
    room around their own text. */
-.pk-tabs{ display:flex; gap:.5rem; margin-bottom:1.1rem; }
+/* margin-bottom bumped 1.1rem -> 1.7rem: that was about the buttons' OWN
+   padding/gap (above), not the space between the tab row and whatever comes
+   right after it (the leaderboard list here, or #pkLbStatus's event/progress
+   line on Pick'em) -- both still read as the tabs sitting flush against that
+   next block, reported twice now on both screens that share this class. */
+.pk-tabs{ display:flex; gap:.5rem; margin-bottom:1.7rem; }
 .pk-tab{
   flex:1; background:var(--surface2); border:1px solid var(--border); color:var(--muted);
   border-radius:8px; padding:.5rem .6rem; font-size:.76rem; font-weight:700; cursor:pointer;

@@ -492,8 +492,15 @@ export function freeTabs(active) {
     ${/* A GUARD, not live behaviour: /theclimb renders climbNav() (a back arrow),
           not these tabs, so today this branch never fires and the Climb button is
           always drawn. Kept so that if the tabs ever come back to that page it
-          can't link to itself — but don't read it as evidence they're there. */
-      active === "/theclimb" ? "" : `<a class="ftab-pick" href="/theclimb">The Climb →</a>`}
+          can't link to itself — but don't read it as evidence they're there.
+
+          FORCED <br>: "The Climb →" is short enough to sit on one line at
+          these widths while "Play Pick'em →" and "Legends Bracket →" wrap to
+          two, so the three equal-width (.fplay .ftab-pick{flex:1 1 0}) buttons
+          ended up different heights with Climb's text floating in the middle
+          of a taller box. Breaking it the same way keeps all three the same
+          height without touching the shared .ftab-pick sizing. */
+      active === "/theclimb" ? "" : `<a class="ftab-pick" href="/theclimb">The Climb<br>→</a>`}
     ${active === "/pickem" ? "" : `<a class="ftab-pick" href="/pickem">Play Pick'em →</a>`}
     ${active === "/bracket" ? "" : `<a class="ftab-pick" href="/bracket">Legends Bracket →</a>`}
   </div>`;
