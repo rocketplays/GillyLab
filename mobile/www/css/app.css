@@ -475,6 +475,112 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .he-name{ font-weight:700; font-size:.85rem; text-align:center; line-height:1.2; }
 .he-vs{ font-family:'Barlow Condensed',sans-serif; font-weight:800; color:var(--muted); font-size:.85rem; flex-shrink:0; }
 
+/* ---- Home dashboard v2 (this section) ----
+   Home used to build a bespoke little avatar (initials + optional photo)
+   separately in each of its own helper functions, each with its own class
+   names (.he-av-*, .rk-av-* borrowed from Rankings, an inline one-off for
+   the hero name button). This rebuild uses everywhere on Home now needs the
+   same circle in half a dozen different sizes (hero, event strip, movers
+   row, roster strip, odds slip), so it's one shared base (.av/.av-initials/
+   .av-photo) plus a size-only modifier class per context, rather than
+   repeating the same five properties five times under five different names.
+   Nothing outside home.js emits these classes -- Rankings/Roster/Fighter
+   keep their own .rk-av-*/etc. untouched. */
+.av{ position:relative; border-radius:50%; flex-shrink:0; display:inline-block; }
+.av-initials{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; background:var(--surface2); border:2px solid var(--border);
+  color:var(--muted); font-weight:800; font-family:'Barlow Condensed',sans-serif; font-size:.7rem;
+}
+.av-photo{ position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover; object-position:top center; background:var(--surface2); border:2px solid var(--border); }
+/* Hero keeps its old accent-ringed photo treatment; every other context uses
+   the plain border above. */
+.he-av{ width:64px; height:64px; }
+.he-av .av-initials{ font-size:1.1rem; }
+.he-av .av-photo{ border-color:var(--accent); }
+
+/* Hero's new "Tale of the Tape" stat peek -- see worker/index.js's
+   taleOfTapeFor() for where aW/bW (0-100 roster-percentile bar widths,
+   already computed server-side) come from. Two colors, not accent-vs-muted:
+   this is fighter A vs fighter B, not good-vs-bad, so accent is A's color
+   and a plain neutral covers B -- reusing var(--bad) here (like the old
+   strike-map mockup did) would wrongly read as "B is worse". */
+.he-tape{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:.75rem .85rem; text-align:left; }
+.he-tape-title{ font-size:.65rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; margin-bottom:.55rem; }
+.he-tape-row{ display:flex; align-items:center; gap:.5rem; margin-bottom:.4rem; }
+.he-tape-row:last-child{ margin-bottom:0; }
+.he-tape-label{ width:50px; font-size:.68rem; color:var(--muted); flex-shrink:0; }
+.he-tape-bar{ flex:1; display:flex; align-items:center; height:6px; border-radius:4px; overflow:hidden; background:var(--surface2); }
+.he-tape-fill{ height:100%; }
+.he-tape-fill.a{ background:var(--accent); }
+.he-tape-fill.b{ background:#5b7fff; }
+
+/* Scheduled Cards -- horizontal strip of the upcoming carousel. Same
+   numbered(gold)/DWCS(blue)/regular(green) event classification the Events
+   tab's own tiles use (see matchup.js's eventKind() equivalent), just
+   applied to a small card instead of a full-width tile. */
+.hm-strip{ display:flex; gap:.6rem; overflow-x:auto; margin:0 -1.1rem; padding:0 1.1rem .3rem; -webkit-overflow-scrolling:touch; }
+.hm-strip::-webkit-scrollbar{ display:none; }
+.hm-ev-card{
+  flex:0 0 138px; background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:.65rem; text-align:left; cursor:pointer; font:inherit; color:var(--text);
+}
+.hm-ev-card.gold{ border-color:color-mix(in srgb, #e6b800 45%, var(--border)); background:linear-gradient(160deg, color-mix(in srgb, #e6b800 10%, var(--card)), var(--card)); }
+.hm-ev-card.blue{ border-color:color-mix(in srgb, #3a86ff 45%, var(--border)); background:linear-gradient(160deg, color-mix(in srgb, #3a86ff 10%, var(--card)), var(--card)); }
+.hm-ev-tag{ font-size:.58rem; text-transform:uppercase; letter-spacing:.06em; font-weight:800; margin-bottom:.35rem; }
+.hm-ev-tag.gold{ color:#e6b800; } .hm-ev-tag.blue{ color:#3a86ff; } .hm-ev-tag.green{ color:var(--accent); }
+.hm-ev-fighters{ display:flex; align-items:center; gap:.3rem; margin-bottom:.35rem; }
+.hm-ev-av{ width:28px; height:28px; }
+.hm-ev-av .av-initials{ font-size:.6rem; }
+.hm-ev-title{ font-size:.72rem; font-weight:700; line-height:1.2; margin-bottom:.25rem; }
+.hm-ev-date{ font-size:.64rem; color:var(--muted); }
+
+/* Betting Odds -- a real probability slip (moneyline pill + de-vigged win%
+   bar) for the main event, not a full odds board -- that's the premium
+   Odds & Projections tab. */
+.hm-odds-card{ background:var(--card); border:1px solid var(--border); border-radius:14px; padding:.9rem 1rem; }
+.hm-odds-fighter{ display:flex; align-items:center; gap:.6rem; margin-bottom:.55rem; }
+.hm-odds-av{ width:36px; height:36px; }
+.hm-odds-av .av-initials{ font-size:.72rem; }
+.hm-odds-fname{ flex:1; font-weight:700; font-size:.85rem; }
+.hm-odds-pill{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.85rem; padding:.15rem .55rem; border-radius:6px; }
+.hm-odds-pill.fav{ background:color-mix(in srgb, var(--accent) 18%, transparent); color:var(--accent); }
+.hm-odds-pill.dog{ background:var(--surface2); color:var(--muted); }
+.hm-odds-bar{ display:flex; height:8px; border-radius:5px; overflow:hidden; margin:.65rem 0 .5rem; }
+.hm-odds-bar-a{ background:var(--accent); }
+.hm-odds-bar-b{ background:var(--border); }
+.hm-odds-foot{ display:flex; justify-content:space-between; font-size:.66rem; color:var(--muted); }
+
+/* Active Roster -- big count + a small photo strip, plus a 12-division
+   composition bar with a Men's/Women's-grouped legend underneath (worker's
+   /api/app/roster now sends `divisions`/`photos`, cross-referenced from
+   fighter-lite.json since roster.json itself is just a flat name list). */
+.hm-roster-top{ display:flex; align-items:center; gap:.9rem; margin-bottom:.75rem; }
+.hm-roster-stat{ font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.9rem; color:var(--accent); line-height:1; }
+.hm-roster-stat-label{ font-size:.68rem; color:var(--muted); margin-top:.1rem; }
+.hm-roster-strip{ display:flex; align-items:center; gap:.35rem; }
+.hm-roster-av{ width:34px; height:34px; }
+.hm-roster-av .av-initials{ font-size:.65rem; }
+.hm-comp-bar{ display:flex; height:10px; border-radius:6px; overflow:hidden; margin-bottom:.5rem; gap:1px; }
+.hm-comp-group-label{ font-size:.6rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; margin:.5rem 0 .3rem; }
+.hm-comp-group-label:first-of-type{ margin-top:0; }
+.hm-comp-legend{ display:grid; grid-template-columns:1fr 1fr; gap:.35rem .6rem; }
+.hm-comp-item{ display:flex; align-items:center; gap:.35rem; font-size:.62rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hm-comp-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+/* Play & Compete -- Pick'em/Climb/Legends Bracket as one row of three
+   square tiles instead of three separate full-width sections. */
+.hm-tile-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.55rem; }
+.hm-tile{
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:.75rem .5rem; display:flex; flex-direction:column; align-items:center;
+  text-align:center; gap:.35rem; cursor:pointer; font:inherit; color:var(--text);
+}
+.hm-tile:active{ border-color:color-mix(in srgb, var(--accent) 35%, var(--border)); }
+.hm-tile-icon{ width:36px; height:36px; border-radius:10px; background:color-mix(in srgb, var(--accent) 14%, var(--surface2)); display:flex; align-items:center; justify-content:center; font-size:1rem; }
+.hm-tile-title{ font-weight:700; font-size:.74rem; line-height:1.15; }
+.hm-tile-sub{ font-size:.6rem; color:var(--muted); line-height:1.2; }
+
 /* ---- Pick'em: bout cards, winner/method/round/confidence pickers ---- */
 .pk-subnav{ display:flex; gap:.6rem; margin-bottom:.9rem; }
 /* Same [hidden]-vs-class-selector specificity bug already fixed for

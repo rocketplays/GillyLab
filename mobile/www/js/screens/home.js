@@ -1,7 +1,31 @@
 // Real dashboard, not a static list of links to the other tabs. Pulls a
-// little from each: this week's Pick'em card + your status on it, the
-// biggest rankings movers, and a Climb teaser -- so Home actually tells you
-// something on open instead of just being a table of contents.
+// little from each: this week's main event (with a real tale-of-the-tape
+// stat peek), the upcoming card strip, a betting-odds peek, the biggest
+// rankings movers, the active roster (with a division breakdown), and
+// Pick'em/Climb/Legends Bracket collapsed into one compact "Play & Compete"
+// row -- so Home actually tells you something on open instead of being a
+// table of contents, and reads as a dashboard with real variety in it
+// (a hero visual, a horizontal scroller, a probability slip, a composition
+// chart) rather than six identical text-and-button blocks stacked straight
+// down. This is a full rebuild of the previous version, worked out with the
+// user across several mockup passes before being ported here.
+//
+// One deliberate simplification versus the old Home: the Bet Tracker and
+// Tape Study preview cards that used to live here for premium members are
+// gone. Both tools are still fully reachable (Bet Tracker/Tape Study tabs,
+// or the More sheet), they just don't get their own Home teaser anymore --
+// the new layout is one shared structure for every account tier rather than
+// a different premium-only stack of sections, and those two didn't have a
+// place in the design the user actually approved. Worth revisiting if that
+// costs those features real discoverability.
+//
+// Also NOT included yet: a "2026 Leaders" stat-leaderboard section (sig.
+// strikes/takedowns/KO/submission leaders) was part of the mockups this was
+// built from, but there is no season-stat-leaders data pipeline anywhere in
+// this codebase yet -- computing it for real means a new aggregation script
+// over fight-stats.json, not just a home.js change. Left out rather than
+// shipped with placeholder numbers; see the conversation this was built
+// from for the mockup if/when that pipeline gets built.
 //
 // Climb progress note: Climb is deliberately playable with no account (see
 // climb.js), and the-climb.html itself only ever persists your bests to
@@ -17,48 +41,44 @@ window.GL_ROUTER.register('home', {
     container.innerHTML = '<p class="gl-muted">Loading…</p>';
 
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
-    function go(route){ return function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go(route); }; }
+    function go(route, params){ return function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go(route, params); }; }
 
-    // Pick'em is its own top-level category, same as Climb/Rankings/Roster --
-    // it just sits right after This Week's Main Event since it's about that
-    // same card.
-    function pickemSection(card, mine){
-      var loggedIn = window.GL_AUTH.isLoggedIn();
-      var head =
-        '<div class="gl-dash-head">' +
-          '<h2 class="gl-dash-title">Pick’em</h2>' +
-          '<p class="gl-muted" style="margin:.2rem 0 0">' + esc(card.name) + '</p>' +
-        '</div>';
-      var body, cta;
-      if (!loggedIn){
-        body = '<p class="gl-muted" style="margin:.4rem 0 0">Free account required to play Pick’em.</p>';
-        cta = 'Sign up free';
-      } else {
-        var total = card.bouts.length;
-        var done = mine && mine.record && Array.isArray(mine.record.picks) ? mine.record.picks.length : 0;
-        if (mine && mine.record){
-          body = '<p style="margin:.4rem 0 0"><strong style="color:var(--accent)">Picks submitted</strong> — ' + done + '/' + total + ' fights</p>';
-          cta = 'Review picks';
-        } else if (card.locked){
-          body = '<p class="gl-error" style="margin:.4rem 0 0">Prelims have started — picks are locked for this card.</p>';
-          cta = 'View card';
-        } else {
-          body = '<p class="gl-muted" style="margin:.4rem 0 0">You haven’t made picks yet — ' + total + ' fights on the card.</p>';
-          cta = 'Make your picks';
-        }
-      }
+    // Small circular avatar (photo, falling back to initials) -- shared by
+    // every section below (hero, event strip, movers, roster strip) rather
+    // than each inventing its own markup, same as the old moverAvatar().
+    function av(name, photo, cls){
+      var ini = window.GL_FIGHTER.initials(name);
       return (
-        '<div class="gl-sec" id="homePickemCard">' +
-          head + body +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="pickem">' + cta + '</button>' +
-        '</div>'
+        '<span class="av ' + (cls || '') + '">' +
+          '<span class="av-initials">' + esc(ini) + '</span>' +
+          (photo ? '<img class="av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(photo) + '.png" alt="" onerror="this.style.display=\'none\'">' : '') +
+        '</span>'
       );
     }
 
-    // The top of Home -- a side-by-side main-event teaser (both fighters'
-    // photos, tap "View Full Card" for the real Card/Matchup screen), same
-    // spot the premium in-app home page gives its own featured event.
-    function mainEventSection(card){
+    // ── 1. This Week's Main Event -- hero avatars/VS row (unchanged from the
+    // old mainEventSection) plus a new "Tale of the Tape" stat peek when the
+    // API actually has one (taleOfTape is null for a pairing with too little
+    // per-fighter stat coverage -- see worker/index.js's taleOfTapeFor).
+    function tapeHTML(rows){
+      if (!rows || !rows.length) return '';
+      var short = { 'Sig. strikes landed / min':'Sig Str', 'Striking accuracy':'Str Acc', 'Striking defense':'Str Def', 'Takedowns / 15 min':'TD Avg', 'Takedown accuracy':'TD Acc', 'Takedown defense':'TD Def' };
+      var body = rows.map(function(r){
+        var aw = Math.max(0, Math.min(100, r.aW || 0)), bw = Math.max(0, Math.min(100, r.bW || 0));
+        var total = aw + bw || 1;
+        return (
+          '<div class="he-tape-row">' +
+            '<span class="he-tape-label">' + esc(short[r.label] || r.label) + '</span>' +
+            '<span class="he-tape-bar">' +
+              '<span class="he-tape-fill a" style="width:' + (aw / total * 100) + '%"></span>' +
+              '<span class="he-tape-fill b" style="width:' + (bw / total * 100) + '%"></span>' +
+            '</span>' +
+          '</div>'
+        );
+      }).join('');
+      return '<div class="he-tape"><div class="he-tape-title">Tale of the Tape</div>' + body + '</div>';
+    }
+    function mainEventSection(card, taleOfTape){
       var main = card && (card.fights || [])[0];
       var head = '<div class="gl-dash-head"><h2 class="gl-dash-title">This Week’s Main Event</h2></div>';
       if (!card || !main){
@@ -68,20 +88,6 @@ window.GL_ROUTER.register('home', {
           '</div>'
         );
       }
-      var av = function(slug, name){
-        var ini = window.GL_FIGHTER.initials(name);
-        return (
-          '<div class="he-av">' +
-            '<span class="he-av-initials">' + esc(ini) + '</span>' +
-            (slug ? '<img class="he-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(slug) + '.png" alt="" onerror="this.style.display=\'none\'">' : '') +
-          '</div>'
-        );
-      };
-      // Tappable straight to the fighter's profile when a slug came back --
-      // same generic [data-slug] delegate wire() already wires up for
-      // Movers/Odds below, just a plain reset-button here (not .gl-link-btn)
-      // so the hero name keeps its own bold/centered look instead of picking
-      // up that treatment's underline+accent color.
       var heName = function(name, slug){
         return slug
           ? '<button type="button" class="he-name" style="background:none;border:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer" data-slug="' + esc(slug) + '">' + esc(name) + '</button>'
@@ -91,52 +97,90 @@ window.GL_ROUTER.register('home', {
         '<div class="gl-sec gl-sec--first">' +
           head +
           '<div class="he-row">' +
-            '<div class="he-side">' + av(main.s1, main.f1) + heName(main.f1, main.s1) + '</div>' +
+            '<div class="he-side">' + av(main.f1, main.s1, 'he-av') + heName(main.f1, main.s1) + '</div>' +
             '<div class="he-vs">VS</div>' +
-            '<div class="he-side">' + av(main.s2, main.f2) + heName(main.f2, main.s2) + '</div>' +
+            '<div class="he-side">' + av(main.f2, main.s2, 'he-av') + heName(main.f2, main.s2) + '</div>' +
           '</div>' +
-          '<p class="gl-muted" style="margin:.6rem 0 0;text-align:center">' + esc(card.event) + '</p>' +
+          '<p class="gl-muted" style="margin:.6rem 0 .8rem;text-align:center">' + esc(card.event) + '</p>' +
+          tapeHTML(taleOfTape) +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
         '</div>'
       );
     }
 
-    function rosterSection(rosterData){
-      var fighters = (rosterData && rosterData.fighters) || [];
-      var weeks = (rosterData && rosterData.changes) || [];
-      var w = weeks[0];
-      var body;
-      if (!fighters.length){
-        body = '<p class="gl-muted" style="margin:.4rem 0 0">Roster unavailable right now.</p>';
-      } else {
-        body = '<p style="margin:.4rem 0 0">' + fighters.length + ' fighters on the active roster</p>';
-        if (w && ((w.added && w.added.length) || (w.removed && w.removed.length))){
-          body += '<p class="gl-muted" style="margin:.2rem 0 0;font-size:.82rem">' +
-            (w.added ? w.added.length : 0) + ' added &nbsp;·&nbsp; ' + (w.removed ? w.removed.length : 0) + ' removed this week</p>';
-        }
-      }
+    // ── 2. Scheduled Cards -- horizontal strip of the upcoming carousel,
+    // same numbered(gold)/DWCS(blue)/regular(green) event classification
+    // matchup.js's own eventTypeClass()/isDwcsName() use for the Events tab,
+    // ported here rather than shared as a module since it's three lines.
+    function eventKind(name){
+      if (/^UFC\s+\d+\b/i.test(String(name || '').trim())) return 'gold';
+      if (/contender\s+series|dana\s+white/i.test(name || '')) return 'blue';
+      return 'green';
+    }
+    function eventKindLabel(kind){ return kind === 'gold' ? 'Numbered' : kind === 'blue' ? 'DWCS' : 'Fight Night'; }
+    function scheduledCardsSection(carousel){
+      var events = (carousel || []).slice(0, 8);
+      if (!events.length) return '';
+      var cards = events.map(function(c){
+        var main = (c.fights || [])[0];
+        var kind = eventKind(c.event);
+        var when = c.date ? new Date(c.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+        return (
+          '<button type="button" class="hm-ev-card ' + kind + '" data-goto="matchup">' +
+            '<div class="hm-ev-tag ' + kind + '">' + eventKindLabel(kind) + '</div>' +
+            (main ? '<div class="hm-ev-fighters">' + av(main.f1, main.s1, 'hm-ev-av') + av(main.f2, main.s2, 'hm-ev-av') + '</div>' : '') +
+            '<div class="hm-ev-title">' + esc(c.event) + '</div>' +
+            '<div class="hm-ev-date">' + esc(when) + '</div>' +
+          '</button>'
+        );
+      }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">Active Roster</h2></div>' +
-          body +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View roster</button>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title">Scheduled Cards</h2></div>' +
+          '<div class="hm-strip">' + cards + '</div>' +
         '</div>'
       );
     }
 
-    // Small circular avatar (photo, falling back to initials) -- reuses
-    // Rankings' own .rk-av/.rk-av-initials/.rk-av-photo styling rather than
-    // inventing a third avatar size, since this list is basically a 3-row
-    // slice of that same screen.
-    function moverAvatar(name, photo){
-      var ini = window.GL_FIGHTER.initials(name);
+    // ── 3. Betting Odds -- a real probability slip for the main event
+    // (moneyline + a de-vigged win% bar), not a full odds board -- the full
+    // Odds & Projections screen is a premium tab, so the button under this
+    // only appears for subscribed accounts; free accounts still get the
+    // peek (the same moneyline the Events tab's tiles already show them).
+    function impliedPct(o1, o2){
+      if (o1 == null || o2 == null) return null;
+      var raw = function(american){ return american < 0 ? (-american) / (-american + 100) : 100 / (american + 100); };
+      var a = raw(o1), b = raw(o2);
+      var sum = a + b;
+      if (!sum) return null;
+      return { a: Math.round(a / sum * 100), b: Math.round(b / sum * 100) };
+    }
+    function oddsSection(matchupCard, subscribed){
+      var main = matchupCard && (matchupCard.fights || [])[0];
+      if (!main || (main.o1 == null && main.o2 == null)) return '';
+      var pct = impliedPct(main.o1, main.o2);
+      var fmt = function(v){ return (v == null || v === '') ? '—' : String(v); };
       return (
-        '<span class="rk-av">' +
-          '<span class="rk-av-initials">' + esc(ini) + '</span>' +
-          (photo ? '<img class="rk-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(photo) + '.png" alt="" onerror="this.style.display=\'none\'">' : '') +
-        '</span>'
+        '<div class="gl-sec">' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">Betting Odds</h2></div>' +
+          '<div class="hm-odds-card">' +
+            '<div class="hm-odds-fighter">' + av(main.f1, main.s1, 'hm-odds-av') + '<span class="hm-odds-fname">' + esc(main.f1) + '</span>' +
+              '<span class="hm-odds-pill ' + (main.o1 < main.o2 ? 'fav' : 'dog') + '">' + esc(fmt(main.o1)) + '</span></div>' +
+            '<div class="hm-odds-fighter" style="margin-bottom:0">' + av(main.f2, main.s2, 'hm-odds-av') + '<span class="hm-odds-fname">' + esc(main.f2) + '</span>' +
+              '<span class="hm-odds-pill ' + (main.o2 < main.o1 ? 'fav' : 'dog') + '">' + esc(fmt(main.o2)) + '</span></div>' +
+            (pct ? (
+              '<div class="hm-odds-bar"><span class="hm-odds-bar-a" style="width:' + pct.a + '%"></span><span class="hm-odds-bar-b" style="width:' + pct.b + '%"></span></div>' +
+              '<div class="hm-odds-foot"><span>' + esc(main.f1) + ' ' + pct.a + '%</span><span>' + esc(main.f2) + ' ' + pct.b + '%</span></div>'
+            ) : '') +
+          '</div>' +
+          (subscribed ? '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="odds">View Odds</button>' : '') +
+        '</div>'
       );
     }
+
+    // ── 4. Biggest Movers -- unchanged rows, always ends in a real button
+    // (this used to be the one list-style section that only had a top-right
+    // text link instead of a bottom button like Odds/Roster; fixed to match).
     function moverName(name, slug){
       return slug
         ? '<button type="button" class="gl-dash-row-name gl-link-btn" style="text-decoration:none;color:inherit" data-slug="' + esc(slug) + '">' + esc(name) + '</button>'
@@ -151,7 +195,7 @@ window.GL_ROUTER.register('home', {
           var up = m.change > 0;
           return (
             '<div class="gl-dash-row">' +
-              moverAvatar(m.name, m.photo) +
+              av(m.name, m.photo, 'gl-dash-av') +
               '<span class="gl-dash-arrow ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(m.change) + '</span>' +
               moverName(m.name, m.slug) +
               '<span class="gl-muted" style="font-size:.78rem">' + esc(m.division) + '</span>' +
@@ -159,13 +203,11 @@ window.GL_ROUTER.register('home', {
           );
         }).join('');
       } else if (rows.length){
-        // No movement data this sync -- fall back to the top of the
-        // pound-for-pound board rather than showing an empty card.
         body = rows.slice(0, 3).map(function(r){
           return (
             '<div class="gl-dash-row">' +
               '<span class="gl-dash-rank">#' + r.rank + '</span>' +
-              moverAvatar(r.name, r.photo) +
+              av(r.name, r.photo, 'gl-dash-av') +
               moverName(r.name, r.slug) +
             '</div>'
           );
@@ -175,136 +217,100 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title">' + (movers.length ? 'Rankings — Biggest Movers' : 'Rankings — Pound-for-Pound') + '</h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title">' + (movers.length ? 'Biggest Movers' : 'Rankings — Pound-for-Pound') + '</h2></div>' +
           body +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">See full rankings</button>' +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">View Rankings</button>' +
         '</div>'
       );
     }
 
-    // Premium-only teaser cards for the three tools that got their own
-    // direct tabs (see router.js's PREMIUM_TABS) but have no screen of
-    // their own built yet -- odds.js/bettracker.js/tapestudy.js are still
-    // "Coming soon" stub screens. Simulator isn't previewed here since it
-    // already has its own "Simulate Matchup" button on every fight on the
-    // Events tab -- a Home teaser for it would just be a second, redundant
-    // entry point. Each one now carries a real little data peek (like
-    // Rankings' own Biggest Movers section above), not just descriptive
-    // copy: Odds shows the actual current main-event moneyline (from the
-    // same matchupCard data already on this page), Bet Tracker shows the
-    // top of the real units leaderboard (worker/index.js's
-    // /api/app/bettracker-preview), and Tape Study shows a real indexed
-    // fight for one of this week's main-event fighters (worker's existing
-    // /api/app/fighter-extras, same data the Tape Study tab on a fighter's
-    // own profile already uses).
-    function toolPreviewSection(title, blurb, cta, route, peek){
+    // ── 5. Active Roster -- big count + a 4-photo strip (worker's own
+    // /api/app/roster now sends both `divisions` and `photos`, cross-
+    // referenced from fighter-lite.json since roster.json itself is just a
+    // flat name list with no division on it) plus a 12-division composition
+    // bar with its own legend, grouped under Men's/Women's.
+    var DIVISION_COLORS = {
+      'Flyweight': '#00e668', 'Bantamweight': '#3a86ff', 'Featherweight': '#e6b800', 'Lightweight': '#a855f7',
+      'Welterweight': '#ff9d3a', 'Middleweight': '#ff3d00', 'Light Heavyweight': '#ff5c8a', 'Heavyweight': '#14b8a6',
+      "Women's Strawweight": '#38bdf8', "Women's Flyweight": '#a3e635', "Women's Bantamweight": '#818cf8', "Women's Featherweight": '#d6a26a',
+      'Other': '#5b5b63'
+    };
+    var MEN_DIVS = ['Flyweight', 'Bantamweight', 'Featherweight', 'Lightweight', 'Welterweight', 'Middleweight', 'Light Heavyweight', 'Heavyweight'];
+    var WOMEN_DIVS = ["Women's Strawweight", "Women's Flyweight", "Women's Bantamweight", "Women's Featherweight"];
+    function rosterSection(rosterData){
+      var fighters = (rosterData && rosterData.fighters) || [];
+      var divisions = (rosterData && rosterData.divisions) || [];
+      var photos = (rosterData && rosterData.photos) || [];
+      if (!fighters.length){
+        return (
+          '<div class="gl-sec">' +
+            '<div class="gl-dash-head"><h2 class="gl-dash-title">Active Roster</h2></div>' +
+            '<p class="gl-muted" style="margin:.4rem 0 0">Roster unavailable right now.</p>' +
+            '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View Roster</button>' +
+          '</div>'
+        );
+      }
+      var total = fighters.length;
+      var byDiv = {};
+      divisions.forEach(function(d){ byDiv[d.division] = d.count; });
+      var bar = divisions.filter(function(d){ return d.count > 0; }).map(function(d){
+        return '<span style="width:' + (d.count / total * 100) + '%;background:' + (DIVISION_COLORS[d.division] || DIVISION_COLORS.Other) + '"></span>';
+      }).join('');
+      var legendGroup = function(label, divs){
+        var items = divs.filter(function(d){ return (byDiv[d] || 0) > 0; }).map(function(d){
+          return '<span class="hm-comp-item"><span class="hm-comp-dot" style="background:' + DIVISION_COLORS[d] + '"></span>' + esc(d.replace("Women's ", '')) + '</span>';
+        }).join('');
+        return items ? '<div class="hm-comp-group-label">' + label + '</div><div class="hm-comp-legend">' + items + '</div>' : '';
+      };
+      var otherCount = byDiv['Other'] || 0;
+      var photoStrip = photos.map(function(p){ return av(p.name, p.photo, 'hm-roster-av'); }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">' + esc(title) + '</h2></div>' +
-          '<p style="margin:.4rem 0 0">' + blurb + '</p>' +
-          (peek || '') +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="' + route + '">' + esc(cta) + '</button>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">Active Roster</h2></div>' +
+          '<div class="hm-roster-top">' +
+            '<div><div class="hm-roster-stat">' + total + '</div><div class="hm-roster-stat-label">on current roster</div></div>' +
+            (photoStrip ? '<div class="hm-roster-strip">' + photoStrip + '</div>' : '') +
+          '</div>' +
+          (bar ? '<div class="hm-comp-bar">' + bar + '</div>' : '') +
+          legendGroup("Men's", MEN_DIVS) +
+          legendGroup("Women's", WOMEN_DIVS) +
+          (otherCount ? '<div class="hm-comp-legend"><span class="hm-comp-item"><span class="hm-comp-dot" style="background:' + DIVISION_COLORS.Other + '"></span>Other</span></div>' : '') +
+          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View Roster</button>' +
         '</div>'
       );
     }
-    // f.o1/f.o2 are already pre-formatted, signed strings (e.g. "+128"),
-    // same convention matchup.js's own fmtOdds relies on.
-    function fmtOdds(v){ return (v == null || v === '') ? '—' : String(v); }
-    // Site header: "Betting Odds" / "Odds across all major sportsbooks ·
-    // Updated daily" (index.html's #page-odds). Peek: the real current
-    // moneyline on this week's main event, when there's odds data for it.
-    function oddsPreviewSection(matchupCard){
-      var main = matchupCard && (matchupCard.fights || [])[0];
-      var peek = (main && (main.o1 != null || main.o2 != null))
-        ? '<div class="gl-dash-row gl-dash-row--odds" style="margin-top:.5rem">' +
-            '<span class="gl-dash-oddscell">' + moverAvatar(main.f1, main.s1) + moverName(main.f1, main.s1) + '</span>' +
-            '<span class="gl-muted" style="font-size:.82rem">' + esc(fmtOdds(main.o1)) + '</span>' +
-            '<span class="gl-muted" style="font-size:.78rem">vs</span>' +
-            '<span class="gl-muted" style="font-size:.82rem">' + esc(fmtOdds(main.o2)) + '</span>' +
-            '<span class="gl-dash-oddscell">' + moverName(main.f2, main.s2) + moverAvatar(main.f2, main.s2) + '</span>' +
-          '</div>'
-        : '';
-      return toolPreviewSection(
-        'Betting Odds',
-        'Moneylines and prop markets across every major sportsbook for every fight on the card.',
-        'View Odds', 'odds', peek
-      );
-    }
-    // Site header: "Bet & CLV Tracker" / "Input your bets to track CLV,
-    // ROI, units and record." (index.html's #page-bets). Peek: the top of
-    // the real units leaderboard.
-    function bettrackerPreviewSection(btPreview){
-      var rows = (btPreview && btPreview.rows) || [];
-      var peek = rows.length
-        ? '<div style="margin-top:.7rem">' +
-            rows.slice(0, 3).map(function(r, i){
-              return (
-                '<div class="gl-dash-row">' +
-                  '<span class="gl-dash-rank">#' + (i + 1) + '</span>' +
-                  '<span class="gl-dash-row-name">' + esc(r.name) + '</span>' +
-                  '<span class="gl-muted" style="font-size:.78rem">' + (r.units > 0 ? '+' : '') + r.units + 'u</span>' +
-                '</div>'
-              );
-            }).join('') +
-          '</div>'
-        : '';
-      return toolPreviewSection(
-        'Bet & CLV Tracker',
-        'Log your bets to track closing-line value, ROI, units and your record.',
-        'Open Bet Tracker', 'bettracker', peek
-      );
-    }
-    // Site header: "Tape Study" / "Tape index for upcoming events" --
-    // organized by event then fighter (index.html's #page-tape-study),
-    // separate from the tape study tab already inside a fighter's own
-    // profile. No data peek here (just the explainer) -- unlike Odds/Bet
-    // Tracker above, per feedback.
-    function tapestudyPreviewSection(){
-      return toolPreviewSection(
-        'Tape Study',
-        'A tape index for every upcoming card — browse by event, then by fighter.',
-        'Browse Tape Study', 'tapestudy'
-      );
-    }
 
-    function climbSection(){
+    // ── 6. Play & Compete -- Pick'em/Climb/Legends Bracket as one row of
+    // three square tiles instead of three separate full-width sections.
+    // Each tile carries its own short status line, computed the same way
+    // the old full-size sections used to.
+    function pickemTileStatus(card, mine){
+      var loggedIn = window.GL_AUTH.isLoggedIn();
+      if (!card) return 'This week’s card';
+      if (!loggedIn) return 'Sign up free';
+      var total = card.bouts.length;
+      var done = mine && mine.record && Array.isArray(mine.record.picks) ? mine.record.picks.length : 0;
+      if (mine && mine.record) return done + '/' + total + ' picked';
+      if (card.locked) return 'Picks locked';
+      return total + ' fights open';
+    }
+    function climbTileStatus(){
       var bests = null;
       try { var raw = localStorage.getItem('gl_climb_bests_v1'); if (raw) bests = JSON.parse(raw); } catch(e){}
-      var body, cta;
       var divs = bests && bests.belts ? Object.keys(bests.belts).length : 0;
-      if (bests && (bests.mostWins || divs || bests.fastestBelt)){
-        var parts = [];
-        if (divs) parts.push('Champion in ' + divs + ' division' + (divs === 1 ? '' : 's'));
-        if (bests.mostWins) parts.push('Best run: ' + bests.mostWins + ' wins');
-        if (bests.fastestBelt) parts.push('Fastest belt: ' + bests.fastestBelt + ' fight' + (bests.fastestBelt === 1 ? '' : 's'));
-        body = '<p style="margin:.4rem 0 0">' + parts.map(esc).join(' &nbsp;·&nbsp; ') + '</p>' +
-          '<p class="gl-muted" style="margin:.3rem 0 0;font-size:.78rem">Saved on this device only — not tied to your account.</p>';
-        cta = 'Keep climbing';
-      } else {
-        body = '<p class="gl-muted" style="margin:.4rem 0 0">Build a fighter from a 10-0 prospect and climb the real rankings to a belt. No account needed.</p>';
-        cta = 'Play The Climb';
-      }
-      return (
-        '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">The Climb</h2></div>' +
-          body +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="climb">' + cta + '</button>' +
-        '</div>'
-      );
+      if (divs) return divs + ' belt' + (divs === 1 ? '' : 's');
+      if (bests && bests.mostWins) return 'Best run: ' + bests.mostWins;
+      return 'Play free';
     }
-
-    // Legends Bracket is a free feature (login required, no subscription --
-    // see worker/index.js's /bracket route and /api/bracket/*), same "own
-    // top-level category with its own small teaser" treatment as Pick'em and
-    // Climb above rather than something buried in a menu, since it has no
-    // direct tab slot of its own in either the free or premium tab bar (see
-    // more-sheet.js for its premium-side entry point).
-    function bracketSection(){
+    function playCompeteSection(pickemCard, pickemMine){
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title">Legends Bracket</h2></div>' +
-          '<p class="gl-muted" style="margin:.4rem 0 0">Eight recognizable names from one division, any era. New bracket every week — free account required.</p>' +
-          '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="bracket">Play Legends Bracket</button>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">Play & Compete</h2></div>' +
+          '<div class="hm-tile-row">' +
+            '<button type="button" class="hm-tile" data-goto="pickem"><span class="hm-tile-icon">🥊</span><span class="hm-tile-title">Pick’em</span><span class="hm-tile-sub">' + esc(pickemTileStatus(pickemCard, pickemMine)) + '</span></button>' +
+            '<button type="button" class="hm-tile" data-goto="climb"><span class="hm-tile-icon">🏔️</span><span class="hm-tile-title">The Climb</span><span class="hm-tile-sub">' + esc(climbTileStatus()) + '</span></button>' +
+            '<button type="button" class="hm-tile" data-goto="bracket"><span class="hm-tile-icon">🏆</span><span class="hm-tile-title">Bracket</span><span class="hm-tile-sub">New weekly</span></button>' +
+          '</div>' +
         '</div>'
       );
     }
@@ -313,9 +319,11 @@ window.GL_ROUTER.register('home', {
       container.querySelectorAll('[data-goto]').forEach(function(el){
         el.addEventListener('click', go(el.getAttribute('data-goto')));
       });
-      // Movers' names are tappable straight to their fighter profile, same as
-      // everywhere else in the app (Roster/Matchup/Rankings) -- a full route
-      // navigation with its own back button, not a panel over Home.
+      // Scheduled Cards' tiles all route to the Events tab's own carousel
+      // rather than deep-linking to that specific slide -- matchup.js's
+      // render() doesn't currently accept a route param to preselect one
+      // (it always loads the default featured card + carousel), so jumping
+      // straight to a specific card would need that screen extended first.
       container.querySelectorAll('[data-slug]').forEach(function(el){
         el.addEventListener('click', function(){
           window.GL_NATIVE.tap();
@@ -324,62 +332,27 @@ window.GL_ROUTER.register('home', {
       });
     }
 
-    // Free order: Card, Pick'em (about that same card), Climb, Rankings,
-    // Roster, then the Go Premium pitch -- each its own top-level category
-    // with its own small preview, so Home reads as a dashboard over the
-    // rest of the app rather than an arbitrary list.
-    //
-    // Premium order differs: Card, then teasers for the three new
-    // premium-only tools that don't have their own Home real estate yet
-    // (Odds/Bet Tracker/Tape Study -- see the toolPreviewSection functions
-    // above), then Rankings, Roster, and Pick'em/Climb pushed down to the
-    // bottom two slots. A premium member already knows Pick'em and Climb
-    // are there (they're direct tabs' worth of familiar), so the new tools
-    // get the prominent spots up top instead; the Go Premium pitch is
-    // dropped entirely since a subscriber has already bought in.
-    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, btPreview){
-      var pickem = pickemCard ? pickemSection(pickemCard, pickemMine) : '';
-      var climb = climbSection();
-      var bracket = bracketSection();
-      var rankings = moversSection(rankingsData);
-      var roster = rosterSection(rosterData);
-      container.innerHTML = subscribed
-        ? (
-            mainEventSection(matchupCard) +
-            oddsPreviewSection(matchupCard) +
-            bettrackerPreviewSection(btPreview) +
-            tapestudyPreviewSection() +
-            rankings +
-            roster +
-            pickem +
-            climb +
-            bracket
-          )
-        : (
-            mainEventSection(matchupCard) +
-            pickem +
-            climb +
-            bracket +
-            rankings +
-            roster +
-            '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
-              '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
-              '<p style="margin-bottom:.8rem;color:var(--muted)">Full fighter database, live odds, the simulator, and more.</p>' +
-              '<button type="button" class="gl-btn gl-btn-outline" data-goto="premium">See what’s included</button>' +
-            '</div>'
-          );
+    // Order: Main Event -> Scheduled Cards -> Betting Odds -> Biggest Movers
+    // -> Active Roster -> Play & Compete -> (free accounts only) Go Premium
+    // pitch. One shared structure for every account tier now, rather than a
+    // separate premium-only stack -- see the file header comment for what
+    // that traded away (Bet Tracker/Tape Study's old Home teasers).
+    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel){
+      container.innerHTML =
+        mainEventSection(matchupCard, taleOfTape) +
+        scheduledCardsSection(carousel) +
+        oddsSection(matchupCard, subscribed) +
+        moversSection(rankingsData) +
+        rosterSection(rosterData) +
+        playCompeteSection(pickemCard, pickemMine) +
+        (subscribed ? '' : (
+          '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
+            '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
+            '<p style="margin-bottom:.8rem;color:var(--muted)">Full fighter database, live odds, the simulator, and more.</p>' +
+            '<button type="button" class="gl-btn gl-btn-outline" data-goto="premium">See what’s included</button>' +
+          '</div>'
+        ));
       wire();
-    }
-
-    // Bet Tracker's leaderboard-top preview only matters once we already
-    // know the visitor is subscribed -- only available after the first
-    // batch below resolves, so this runs as a second step rather than
-    // joining the initial Promise.all. Skipped entirely for a free/
-    // logged-out visitor (their premium teasers never render, so there's
-    // nothing to peek at).
-    function fetchPremiumPreviews(subscribed){
-      if (!subscribed) return Promise.resolve(null);
-      return window.GL_API.bettrackerPreview().catch(function(){ return null; });
     }
 
     window.GL_AUTH.ready.then(function(){
@@ -394,23 +367,21 @@ window.GL_ROUTER.register('home', {
         var cardRes = results[0], rankingsData = results[1], matchupRes = results[2], rosterData = results[3], acct = results[4];
         var card = cardRes && cardRes.card;
         var matchupCard = matchupRes && matchupRes.card;
+        var taleOfTape = matchupRes && matchupRes.taleOfTape;
+        var carousel = matchupRes && matchupRes.carousel;
         // /api/app/pickem-card requires a session (worker/index.js returns
         // 401 with no session), so cardRes is always null for a logged-out
-        // visitor and the Pick'em section used to just disappear from Home
-        // entirely for them -- even though pickemSection() already has a
-        // whole "Free account required" branch built for exactly this case,
-        // it was simply never reached. The public /api/app/matchup response
-        // (matchupCard, fetched either way for the Main Event section above)
-        // carries the same event name, which is the only field that branch
-        // actually reads, so it stands in here instead of leaving the
-        // section out.
-        if (!card && !loggedIn && matchupCard) card = { name: matchupCard.event || '' };
+        // visitor -- the public /api/app/matchup response (matchupCard,
+        // fetched either way for the Main Event section above) carries the
+        // same event name, which is the only field playCompeteSection's
+        // pickemTileStatus actually reads for a logged-out visitor, so it
+        // stands in here instead of the tile just reading "This week's card"
+        // with no event context.
+        if (!card && !loggedIn && matchupCard) card = { name: matchupCard.event || '', bouts: matchupCard.fights || [] };
         var subscribed = !!(acct && acct.subscribed);
-        return fetchPremiumPreviews(subscribed).then(function(btPreview){
-          if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData, subscribed, btPreview);
-          return window.GL_API.pickemMine(card.slug).catch(function(){ return null; }).then(function(mine){
-            render(card, mine, rankingsData, matchupCard, rosterData, subscribed, btPreview);
-          });
+        if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel);
+        return window.GL_API.pickemMine(card.slug).catch(function(){ return null; }).then(function(mine){
+          render(card, mine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel);
         });
       });
     });

@@ -3193,10 +3193,12 @@ export default {
       // behind an account (unlike Pick'em above).
       if (path === "/api/app/roster" && request.method === "GET") {
         const cors = appCorsHeaders(request);
-        const [ro, profileSlugs] = await Promise.all([
+        const [ro, profileSlugs, lite] = await Promise.all([
           loadAssetJson(env, url, "/data/roster.json"),
           loadProfileSlugs(env, url),
+          loadAssetJson(env, url, "/data/fighter-lite.json"),
         ]);
+        const fighterLiteBySlug = (lite && lite.bySlug) || {};
         const withSlug = (n) => ({ name: n, slug: profileSlugFor(n, profileSlugs) || null });
         const fighters = ((ro && ro.fighters) || []).map(withSlug);
         const changes = ((ro && ro.changes) || []).map((w) => ({
@@ -3204,7 +3206,34 @@ export default {
           added: (w.added || []).map(withSlug),
           removed: (w.removed || []).map(withSlug),
         }));
-        return json({ fighters, changes }, 200, cors);
+        // Home's roster composition bar/legend, and its little photo strip --
+        // roster.json itself is just a flat list of names (no division on it),
+        // so division has to be cross-referenced from fighter-lite.json's own
+        // per-slug record, the same source /api/app/matchup's tale-of-tape
+        // above reads. All 12 UFC weight classes get their own bucket (fixed
+        // order/labels, not "whatever divisions happen to show up"), so the
+        // legend is stable even on a week nobody in a given division is on
+        // the tracked roster; anything that can't be matched to one of these
+        // -- unresolved slug, catchweight, super-heavyweight exhibition, etc
+        // -- falls into "Other" rather than silently vanishing from the count.
+        const DIVISION_BUCKETS = [
+          "Flyweight", "Bantamweight", "Featherweight", "Lightweight",
+          "Welterweight", "Middleweight", "Light Heavyweight", "Heavyweight",
+          "Women's Strawweight", "Women's Flyweight", "Women's Bantamweight", "Women's Featherweight",
+        ];
+        const divisionCounts = {};
+        DIVISION_BUCKETS.forEach((d) => { divisionCounts[d] = 0; });
+        divisionCounts["Other"] = 0;
+        const photos = [];
+        fighters.forEach((f) => {
+          const lite2 = f.slug ? fighterLiteBySlug[f.slug] : null;
+          const div = lite2 && DIVISION_BUCKETS.includes(lite2.division) ? lite2.division : "Other";
+          divisionCounts[div] += 1;
+          if (photos.length < 4 && lite2 && lite2.photo) photos.push({ name: f.name, slug: f.slug, photo: lite2.photo });
+        });
+        const divisions = DIVISION_BUCKETS.map((d) => ({ division: d, count: divisionCounts[d] }))
+          .concat(divisionCounts["Other"] ? [{ division: "Other", count: divisionCounts["Other"] }] : []);
+        return json({ fighters, changes, divisions, photos }, 200, cors);
       }
 
       // Matchup hub, free on the website at /matchup -- upcoming/past card
@@ -3600,11 +3629,55 @@ export default {
           }
         }
 
+        // Home's own compact "Tale of the Tape" peek (sig. strikes/min, striking
+        // accuracy/defense, takedowns/15min, TD accuracy/defense) -- the site's
+        // actual "Tale of the tape" label means something different (age/height/
+        // reach/stance, see mf-tape in pages.js); this is a separate, smaller
+        // slice of the SAME per-fighter `.groups` rows fighter-lite.json already
+        // carries (used elsewhere for the fighter profile's own stat bars), just
+        // picked out by label for the featured card's main event only. `w` is
+        // that row's own precomputed roster-percentile bar width (0-100), so it
+        // can be used directly as each side's fill -- no re-normalizing needed.
+        const TALE_LABELS = [
+          "Sig. strikes landed / min",
+          "Striking accuracy",
+          "Striking defense",
+          "Takedowns / 15 min",
+          "Takedown accuracy",
+          "Takedown defense",
+        ];
+        function taleOfTapeFor(slugA, slugB) {
+          if (!slugA || !slugB) return null;
+          const a = fighterLiteBySlug[slugA], b = fighterLiteBySlug[slugB];
+          if (!a || !b) return null;
+          const rowsFor = (f) => {
+            const out = {};
+            (f.groups || []).forEach((g) => (g.rows || []).forEach((r) => { out[r.label] = r; }));
+            return out;
+          };
+          const ra = rowsFor(a), rb = rowsFor(b);
+          const rows = TALE_LABELS.map((label) => {
+            const x = ra[label], y = rb[label];
+            if (!x || !y || !x.bar || !y.bar) return null;
+            return { label, aVal: x.val, aW: x.w, bVal: y.val, bW: y.w };
+          }).filter(Boolean);
+          // Fewer than half the rows resolving means this pairing's stat
+          // coverage is too thin to read as a real comparison (a debuting or
+          // very short-notice fighter, mainly) -- Home only shows this when
+          // there's something real to say, same reasoning as deepDive's own
+          // {available:false} gate elsewhere in this endpoint.
+          return rows.length >= 4 ? rows : null;
+        }
+        const taleOfTape = card && card.fights && card.fights[0]
+          ? taleOfTapeFor(card.fights[0].s1, card.fights[0].s2)
+          : null;
+
         return json({
           card,
           isPast: isPastView,
           deepDive,
           breakdown,
+          taleOfTape,
           hub,
           carousel,
           past: pastFiltered.map(liteEvent),
