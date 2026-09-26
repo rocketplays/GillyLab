@@ -52,10 +52,13 @@ const ROOT = path.join(__dirname, "..");
 const EXTRAS_PATH = path.join(ROOT, "data", "fighter-extras-full.json");
 const OUT_PATH = path.join(ROOT, "data", "legends-pool.json");
 
-// [name, legacy, era]. Curated, not derived. Roughly 16 per division, a real
-// mix of current stars and former/retired legends -- the actual product
-// decision ("recognizable names, not random people nobody would recognize",
-// "a fairly large pool... mix of current and former notable fighters").
+// [name, legacy, era]. Curated, not derived. 24 per division, a real mix of
+// current stars and former/retired legends -- the actual product decision
+// ("recognizable names, not random people nobody would recognize", "a fairly
+// large pool... mix of current and former notable fighters, so it stays
+// evergreen"). 24 gives the weekly draw real variety -- a division's 8-of-24
+// draw has millions of possible combinations rather than repeating a small
+// fixed set every few months.
 const LEGENDS = {
   FLW: [
     ["Demetrious Johnson", "Longest UFC flyweight title reign ever, 11 defenses", "former"],
@@ -74,6 +77,14 @@ const LEGENDS = {
     ["Tim Elliott", "Division mainstay for over a decade", "current"],
     ["Alex Perez", "Perennial top-10 flyweight contender", "current"],
     ["Jussier Formiga", "Longtime top-5 flyweight, BJJ black belt", "former"],
+    ["Matheus Nicolau", "Longtime top-10 flyweight, elite grappler", "current"],
+    ["Amir Albazi", "Undefeated-for-years top-5 flyweight contender", "current"],
+    ["Tyson Nam", "Knockout artist, fan-favorite flyweight finisher", "former"],
+    ["Ray Borg", "Former title challenger, one of the fastest finishes in UFC history", "former"],
+    ["Wilson Reis", "Longtime top-10 flyweight, BJJ black belt", "former"],
+    ["Louis Smolka", "Early UFC flyweight prospect and top-10 contender", "former"],
+    ["Dustin Ortiz", "Division mainstay through the flyweight division's early years", "former"],
+    ["Ali Bagautinov", "Former title challenger, dangerous wrestler", "former"],
   ],
   BW: [
     ["Dominick Cruz", "Two-time UFC bantamweight champion, pioneer of the division", "former"],
@@ -92,6 +103,14 @@ const LEGENDS = {
     ["Umar Nurmagomedov", "Undefeated rising bantamweight title contender", "current"],
     ["Rob Font", "Longtime top-10 bantamweight contender", "current"],
     ["Song Yadong", "Top-5 bantamweight contender", "current"],
+    ["Cory Sandhagen", "Longtime top-5 bantamweight, highlight-reel finisher", "current"],
+    ["Jimmie Rivera", "Longtime top-10 bantamweight contender", "former"],
+    ["Eddie Wineland", "Former WEC bantamweight champion", "former"],
+    ["Miguel Torres", "Former WEC bantamweight champion, pound-for-pound great in his prime", "former"],
+    ["Brad Pickett", "Fan-favorite British bantamweight, longtime top-10 fixture", "former"],
+    ["Michael McDonald", "Youngest UFC title challenger in bantamweight history", "former"],
+    ["Iuri Alcantara", "Longtime top-10 bantamweight, dangerous submission artist", "former"],
+    ["Jonathan Martinez", "Top-10 bantamweight contender", "current"],
   ],
   FW: [
     ["Jose Aldo", "First UFC featherweight champion, 10-year WEC/UFC title reign", "former"],
@@ -110,6 +129,14 @@ const LEGENDS = {
     ["Chan Sung Jung", "\"The Korean Zombie\", cult-favorite title challenger", "former"],
     ["Ricardo Lamas", "Former UFC featherweight title challenger", "former"],
     ["Dan Ige", "Longtime top-10 featherweight contender", "current"],
+    ["Zabit Magomedsharipov", "Undefeated top-5 featherweight, cult-favorite finisher", "former"],
+    ["Calvin Kattar", "Longtime top-5 featherweight, granite chin", "current"],
+    ["Giga Chikadze", "Kickboxing knockout artist, former title contender", "current"],
+    ["Arnold Allen", "Longtime unbeaten run, top-5 featherweight contender", "current"],
+    ["Jeremy Stephens", "One of the longest-tenured featherweights in UFC history", "former"],
+    ["Dooho Choi", "Explosive Korean knockout artist, cult PPV favorite", "former"],
+    ["Mirsad Bektic", "Undefeated-for-years top-10 featherweight prospect", "former"],
+    ["Charles Jourdain", "Fan-favorite finisher, top-15 featherweight contender", "current"],
   ],
   LW: [
     ["Khabib Nurmagomedov", "Undefeated UFC lightweight champion, 29-0", "former"],
@@ -128,6 +155,14 @@ const LEGENDS = {
     ["Anthony Pettis", "\"Showtime\", former WEC and UFC lightweight champion", "former"],
     ["Rafael dos Anjos", "Former UFC lightweight champion", "former"],
     ["Jim Miller", "UFC's all-time wins and fights leader", "current"],
+    ["Gilbert Melendez", "Former Strikeforce lightweight champion", "former"],
+    ["Al Iaquinta", "Former interim lightweight title challenger on a week's notice", "former"],
+    ["Paul Felder", "Longtime top-10 lightweight, Fight of the Night staple", "former"],
+    ["Diego Ferreira", "Longtime top-10 lightweight, submission specialist", "former"],
+    ["Mateusz Gamrot", "Top-5 lightweight contender, KSW champion", "current"],
+    ["Arman Tsarukyan", "Undefeated-for-years top-5 lightweight title contender", "current"],
+    ["Renato Moicano", "Top-10 lightweight contender, two-division veteran", "current"],
+    ["Edson Barboza", "Legendary leg-kicker, longtime top-10 lightweight", "former"],
   ],
   WW: [
     ["Georges St-Pierre", "One of the greatest welterweights ever, 9 straight title defenses", "former"],
@@ -146,6 +181,14 @@ const LEGENDS = {
     ["Josh Koscheck", "Former UFC welterweight title challenger, TUF 1 finalist", "former"],
     ["Diego Sanchez", "The first-ever TUF winner", "former"],
     ["Matt Serra", "Scored one of the biggest upsets in UFC history over GSP", "former"],
+    ["Stephen Thompson", "Longtime top-5 welterweight, elite karate striker", "current"],
+    ["Vicente Luque", "Longtime top-10 welterweight finisher", "current"],
+    ["Gilbert Burns", "Former title challenger, top-5 welterweight contender", "current"],
+    ["Neil Magny", "One of the most active welterweights in UFC history", "current"],
+    ["Thiago Alves", "Former title challenger, feared Muay Thai striker", "former"],
+    ["Jake Ellenberger", "Longtime top-10 welterweight knockout artist", "former"],
+    ["Jake Shields", "Former Strikeforce welterweight champion", "former"],
+    ["Matt Brown", "Cult-favorite brawler, one of the sport's toughest finishers", "former"],
   ],
   MW: [
     ["Anderson Silva", "Longest UFC middleweight title reign ever, 16 straight wins", "former"],
@@ -164,6 +207,14 @@ const LEGENDS = {
     ["Jacare Souza", "Longtime top-5 middleweight, ADCC champion", "former"],
     ["Kelvin Gastelum", "Former TUF winner, title challenger", "current"],
     ["Dan Henderson", "Two-division PRIDE champion, cross-era legend", "former"],
+    ["Jared Cannonier", "Longtime top-5 middleweight, former title challenger", "current"],
+    ["Marvin Vettori", "Longtime top-5 middleweight, former title challenger", "current"],
+    ["Derek Brunson", "Longtime top-10 middleweight wrestler-striker", "former"],
+    ["Nate Marquardt", "Former title challenger, longtime top-10 middleweight", "former"],
+    ["Gegard Mousasi", "Former Strikeforce and Bellator middleweight champion", "former"],
+    ["Uriah Hall", "Fan-favorite knockout artist, former title challenger", "former"],
+    ["Yushin Okami", "Longtime top-5 middleweight, former title challenger", "former"],
+    ["Thales Leites", "Former title challenger, elite BJJ black belt", "former"],
   ],
   LHW: [
     ["Jon Jones", "Youngest UFC champion ever, widely considered pound-for-pound GOAT", "current"],
@@ -182,6 +233,14 @@ const LEGENDS = {
     ["Anthony Johnson", "One of the hardest hitters in UFC history", "former"],
     ["Rashad Evans", "Former UFC light heavyweight champion", "former"],
     ["Mauricio Rua", "\"Shogun\", PRIDE Grand Prix winner and former UFC champion", "former"],
+    ["Dominick Reyes", "Former UFC light heavyweight title challenger", "current"],
+    ["Volkan Oezdemir", "Former title challenger, feared knockout power", "current"],
+    ["Corey Anderson", "Former Bellator light heavyweight champion", "current"],
+    ["Ovince Saint Preux", "Former interim UFC light heavyweight title challenger", "former"],
+    ["Ryan Bader", "Former Bellator light heavyweight champion", "former"],
+    ["Phil Davis", "Longtime top-5 light heavyweight, former Bellator title challenger", "former"],
+    ["Rogerio Nogueira", "PRIDE legend, twin brother of Antonio Rodrigo Nogueira", "former"],
+    ["Tito Ortiz", "UFC Hall of Famer, longest light heavyweight title reign of the early era", "former"],
   ],
   HW: [
     ["Fedor Emelianenko", "PRIDE Heavyweight King, 2000s", "former"],
@@ -200,6 +259,14 @@ const LEGENDS = {
     ["Andrei Arlovski", "Former UFC heavyweight champion", "former"],
     ["Antonio Rodrigo Nogueira", "\"Minotauro\", PRIDE and UFC legend", "former"],
     ["Alistair Overeem", "Former Strikeforce and K-1 champion", "former"],
+    ["Derrick Lewis", "UFC's all-time knockout leader", "current"],
+    ["Frank Mir", "Former UFC heavyweight champion, submission specialist", "former"],
+    ["Tim Sylvia", "Former two-time UFC heavyweight champion", "former"],
+    ["Josh Barnett", "Former UFC heavyweight champion, catch-wrestling legend", "former"],
+    ["Pedro Rizzo", "Longtime top-5 heavyweight in the division's early era", "former"],
+    ["Aleksei Oleinik", "One of the most active submission finishers in UFC history", "former"],
+    ["Marcin Tybura", "Longtime top-10 heavyweight contender", "current"],
+    ["Kevin Randleman", "Former UFC heavyweight champion, elite wrestler", "former"],
   ],
 };
 
