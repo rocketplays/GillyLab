@@ -4630,6 +4630,13 @@ export default {
           const status = g ? g.status : "pending";
           const names = btBetNames(eventsBySlug, b);
           const slugs = names.map((n) => profileSlugFor(n, profileSlugs) || null).filter(Boolean);
+          // Positionally aligned with `names` (unlike `slugs` above, which
+          // drops unresolved entries for gl-sheet.js's own use and so can't
+          // be safely zipped back with names) -- the app's bet row avatars
+          // need name[i]/photo[i] to line up so a two-fighter bet doesn't
+          // silently show the wrong face. null where no profile slug
+          // resolves; the avatar just falls back to initials for that seat.
+          const photos = names.map((n) => profileSlugFor(n, profileSlugs) || null);
           const legs = b.market === "PARLAY" && b.legs
             ? b.legs.map((l) => {
                 const ln = btBetNames(eventsBySlug, { market: l.market, fightId: l.fightId, params: l.params });
@@ -4642,7 +4649,7 @@ export default {
             market: b.market, pick: b.pick, match: b.match,
             fightId: b.fightId || null, evSlug: b.evSlug || null,
             params: b.params || null,
-            names, slugs,
+            names, slugs, photos,
             legs,
             legStatuses: (g && g.legStatuses) || null,
             legsIn: (g && g.legsIn) || null, legsLive: (g && g.legsLive) || null,

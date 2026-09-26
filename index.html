@@ -1207,8 +1207,24 @@
        page around when you tap an odds box. Same guard .pl-stake uses. */
     @media (max-width: 600px) { #page-bets select, #page-bets input { font-size: 16px; } }
     .bt-row2 { display: flex; gap: 8px; } .bt-row2 > div { flex: 1; }
-    .bt-note { font-size: 0.72rem; color: var(--muted); margin-top: 10px; line-height: 1.5; }
-    .bt-note.lock { color: #ffcf7a; }
+    /* Long-standing bug: several call sites (btScanHTML among them) set
+       style="border-color:var(--accent)" on a .bt-note expecting a
+       highlighted callout box, but this rule never declared a border in
+       the first place -- so that override was a silent no-op and every
+       note, highlighted or not, rendered as the same plain line of gray
+       text. That's a lot of why a screen with several stacked notes (the
+       scan-review flow especially) reads as a wall of text instead of
+       distinct, scannable callouts. Giving it a real box makes those
+       overrides actually visible, and the bottom margin gives stacked
+       notes breathing room instead of only spacing above each one. */
+    .bt-note { font-size: 0.72rem; color: var(--muted); line-height: 1.5; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin: 10px 0; }
+    .bt-note.lock { color: #ffcf7a; border-color: rgba(255,207,122,0.35); }
+    /* Boxed preview row for a matched leg during screenshot review
+       (btScanHTML's canTrack branch) -- was a bare .bt-row2 with no
+       background, so it blended straight into the page between two .bt-note
+       callouts instead of reading as its own reviewable line item. */
+    .bt-scan-row { background: var(--surface2, #14141a); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 0.82rem; }
+    .bt-scan-row:last-of-type { margin-bottom: 0; }
     .bt-btn { width: 100%; text-align: center; font: inherit; font-weight: 800; font-size: 0.9rem; border-radius: 9px; padding: 11px; cursor: pointer; border: 1px solid rgba(0,230,104,.35); background: linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03)); color: #f4f5f7; margin-top: 12px; transition: background .15s, border-color .15s; }
     .bt-btn:hover { background: linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07)); border-color: var(--accent); }
     .bt-btn-ghost { background: none; border: 1px solid var(--border); color: var(--muted); margin-top: 8px; }
@@ -148508,13 +148524,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const allPriced = matches.every(m => m.priced);
         const rows = legs.map((l, i) => {
           const m = matches[i], pickTxt = btScanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
-          return '<div class="bt-row2"><div>' + btEsc(pickTxt) + '</div><div style="text-align:right">' + btEsc(String(l.odds)) + '</div></div>';
+          return '<div class="bt-row2 bt-scan-row"><div>' + btEsc(pickTxt) + '</div><div style="text-align:right">' + btEsc(String(l.odds)) + '</div></div>';
         }).join('');
         h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (legs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
           ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>' +
           (allPriced ? ', and CLV-eligible until that segment starts.' : '. Not CLV-scored (this market doesn\'t carry a trustworthy closing line), same as picking it manually.') + '</div>' +
           rows +
-          '<div class="bt-row2" style="margin-top:.4rem"><div><label>Stake (units)</label><input id="bt-scan-stake" type="number" value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
+          '<div class="bt-row2" style="margin-top:.9rem"><div><label>Stake (units)</label><input id="bt-scan-stake" type="number" value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
           '<div><label>Sportsbook (optional)</label><input id="bt-scan-book" maxlength="40" value="' + btEsc(d.book || '') + '"></div></div>' +
           '<label style="display:flex;align-items:center;gap:.4rem;font-weight:400"><input type="checkbox" id="bt-scan-track" checked style="width:auto"> Track this bet (verified) — uncheck to log as self-reported instead</label>' +
           '<button type="button" class="bt-btn" onclick="btScanConfirmTracked()">Log this bet</button> ' +

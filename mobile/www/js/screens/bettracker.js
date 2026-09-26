@@ -66,6 +66,34 @@ window.GL_BETTRACKER = (function(){
     while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--;
     return p[i] || n;
   }
+  // ── fighter avatars -- mirrors the site's own .bt-av/.bt-avs (index.html's
+  // btAvHTML/btAvsHTML), just resolved server-side instead of client-side:
+  // this screen never had the site's local nameToSlug/BOUTS to figure out
+  // whose face belongs on a bet, so every row always fell back to no photo
+  // at all. GET /api/app/bets now sends names[]/photos[] per bet (worker/
+  // index.js), positionally aligned (photos[i] is null, not dropped, when
+  // no profile slug resolves) so a two-fighter bet can't show the wrong
+  // face in the wrong seat -- reuses GL_FIGHTER's own initials()/PHOTO_BASE
+  // rather than re-deriving them here.
+  function betAvHTML(name, photo){
+    var ini = window.GL_FIGHTER.initials(name);
+    return '<div class="bt-av"><span class="bt-av-initials">' + esc(ini) + '</span>' +
+      (photo ? '<img class="bt-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(photo) + '.png" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+      '</div>';
+  }
+  function betAvsHTML(names, photos){
+    names = names || []; photos = photos || [];
+    if (!names.length) return '';
+    if (names.length === 1) return '<div class="bt-avs">' + betAvHTML(names[0], photos[0]) + '</div>';
+    return '<div class="bt-avs bt-avs-2">' + betAvHTML(names[0], photos[0]) + '<span class="bt-vs">v</span>' + betAvHTML(names[1], photos[1]) + '</div>';
+  }
+  // Mini version for parlay legs -- mirrors the site's btLegAvHTML.
+  function legAvHTML(name, photo){
+    var ini = window.GL_FIGHTER.initials(name);
+    return '<div class="bt-leg-av"><span class="bt-leg-av-initials">' + esc(ini) + '</span>' +
+      (photo ? '<img class="bt-leg-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(photo) + '.png" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+      '</div>';
+  }
   var RANGE_DAYS = { '7d': 7, '30d': 30, '6m': 182, '12m': 365, all: null };
   var BT_SCAN_MAX_BATCH = 12;   // mirrors the site's own cap -- an accidental "select all" from a camera roll
   var BT_SCAN_CONCURRENCY = 3;
@@ -272,7 +300,11 @@ window.GL_BETTRACKER = (function(){
     return '<div class="bt-legs">' + b.legs.map(function(l, i){
       var st = statuses[i] || 'pending';
       var ico = st === 'won' ? '✓' : st === 'lost' ? '✗' : st === 'void' ? '·' : '…';
-      return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' +
+      // l.name/l.slug resolved server-side (worker/index.js's /api/app/bets)
+      // the same way the row-level avatar above is -- null for a fight-level
+      // leg (a total, the distance, etc.) that has no single fighter to show.
+      var av = l.name ? legAvHTML(l.name, l.slug) : '';
+      return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' + av +
         '<span class="bt-leg-p">' + esc(l.pick) + '</span><span class="bt-leg-o">' + fmtOdds(l.odds) + '</span></div>';
     }).join('') + '</div>';
   }
@@ -314,7 +346,7 @@ window.GL_BETTRACKER = (function(){
           '<div class="bt-acts"><button class="win" data-edit-save="' + esc(b.id) + '">Save</button><button data-edit-cancel>Cancel</button></div></div>';
       }
     }
-    return '<div class="bt-bet"><div class="bt-bet-top">' +
+    return '<div class="bt-bet"><div class="bt-bet-top">' + betAvsHTML(b.names, b.photos) +
       '<div class="bt-bet-txt"><div class="bt-nm">' + esc(b.pick) + '</div><div class="bt-mk">' + esc(b.match) + '</div></div>' + res + '</div>' +
       legsHTML(b) + '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
   }
@@ -599,13 +631,13 @@ window.GL_BETTRACKER = (function(){
         var allPriced = matches.every(function(m){ return m.priced; });
         var rows = scanLegs.map(function(l, i){
           var m = matches[i], pickTxt = scanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
-          return '<div class="bt-row2"><div>' + esc(pickTxt) + '</div><div style="text-align:right">' + esc(String(l.odds)) + '</div></div>';
+          return '<div class="bt-row2 bt-scan-row"><div>' + esc(pickTxt) + '</div><div style="text-align:right">' + esc(String(l.odds)) + '</div></div>';
         }).join('');
         h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (scanLegs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
           ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>' +
           (allPriced ? ', and CLV-eligible until that segment starts.' : '. Not CLV-scored (this market doesn\'t carry a trustworthy closing line), same as picking it manually.') + '</div>' +
           rows +
-          '<div class="bt-row2" style="margin-top:.4rem"><div><label>Stake (units)</label><input type="number" data-scan-stake value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
+          '<div class="bt-row2" style="margin-top:.9rem"><div><label>Stake (units)</label><input type="number" data-scan-stake value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
           '<div><label>Sportsbook (optional)</label><input maxlength="40" data-scan-book value="' + esc(d.book || '') + '"></div></div>' +
           '<label style="display:flex;align-items:center;gap:.4rem;font-weight:400;text-transform:none;letter-spacing:0"><input type="checkbox" data-scan-track checked style="width:auto"> Track this bet (verified) — uncheck to log as self-reported instead</label>' +
           '<button type="button" class="bt-btn" data-scan-confirm-tracked>Log this bet</button> ' +

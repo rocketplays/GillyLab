@@ -2156,6 +2156,22 @@ body #mh-box{
 .bt-bet{ background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:11px 13px; margin-bottom:9px; }
 .bt-bet-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
 .bt-bet-txt{ flex:1; min-width:0; }
+/* Fighter avatar(s) on a bet row -- mirrors the site's .bt-av/.bt-avs
+   (index.html), just using this app's own initials-behind-photo pattern
+   (see .av/.av-photo on Home, .fp-av on the fighter profile) instead of the
+   site's onerror-replaces-textContent trick, so a missing photo degrades
+   the same way it does everywhere else in the app. names[]/photos[] come
+   from GET /api/app/bets (worker/index.js), positionally aligned. */
+.bt-avs{ display:flex; align-items:center; gap:3px; flex:0 0 auto; }
+.bt-av{ position:relative; width:34px; height:34px; border-radius:50%; overflow:hidden; background:#1b1e25; border:2px solid rgba(255,255,255,.14); flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+.bt-av-initials{ font-weight:700; font-size:.6rem; color:var(--muted); }
+.bt-av-photo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; }
+.bt-avs-2 .bt-av{ width:28px; height:28px; }
+.bt-avs-2 .bt-av-initials{ font-size:.52rem; }
+.bt-vs{ font-size:.5rem; font-weight:800; color:var(--muted); text-transform:uppercase; }
+.bt-leg-av{ position:relative; width:16px; height:16px; border-radius:50%; overflow:hidden; background:#1b1e25; border:1px solid rgba(255,255,255,.14); flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+.bt-leg-av-initials{ font-weight:700; font-size:.42rem; color:var(--muted); }
+.bt-leg-av-photo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; }
 .bt-nm{ font-weight:700; font-size:.9rem; }
 .bt-mk{ color:var(--muted); font-weight:600; font-size:.76rem; margin-top:1px; }
 .bt-res{ font-weight:800; font-size:.88rem; white-space:nowrap; }
@@ -2178,10 +2194,40 @@ body #mh-box{
 .bt-panel label{ display:block; font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:.8rem 0 .3rem; }
 .bt-panel label:first-of-type{ margin-top:0; }
 .bt-panel select, .bt-panel input{ width:100%; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:.55rem .65rem; color:var(--text); font:inherit; font-size:.88rem; }
+/* The staged-parlay box (.bt-stage, once you've added a leg) and an
+   in-progress bet edit (.bt-editrow) have their own label/input pairs --
+   Combined odds, Stake, Sportsbook -- outside .bt-panel, so they never
+   picked up the rule above: the site's equivalent works because its whole
+   page carries one #page-bets id these are scoped under, which this
+   screen's container doesn't have. Left unstyled, those inputs fall back
+   to the browser's plain white text-field chrome (readable, but nothing
+   like the rest of the app) and the labels sit with no breathing room
+   above them, since a bare <label> has no default margin. Same fix,
+   applied to both spots instead of just .bt-panel. */
+.bt-stage label, .bt-editrow label{ display:block; font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:.8rem 0 .3rem; }
+.bt-stage label:first-of-type, .bt-editrow label:first-of-type{ margin-top:0; }
+.bt-stage select, .bt-stage input, .bt-editrow select, .bt-editrow input{ width:100%; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:.55rem .65rem; color:var(--text); font:inherit; font-size:.88rem; }
 .bt-row2{ display:flex; gap:8px; }
 .bt-row2 > div{ flex:1; }
-.bt-note{ font-size:.72rem; color:var(--muted); margin-top:10px; line-height:1.5; }
-.bt-note.lock{ color:#ffcf7a; }
+/* Long-standing bug (matches index.html's identical copy of this rule):
+   several call sites (scanHTML's canTrack branch among them) set
+   style="border-color:var(--accent)" on a .bt-note expecting a highlighted
+   callout box, but this rule never declared a border in the first place --
+   so that override was a silent no-op and every note, highlighted or not,
+   rendered as the same plain line of gray text with no visual separation.
+   That's a lot of why a screen with several stacked notes (scan review
+   especially) read as a wall of text instead of distinct, scannable
+   callouts. Giving it a real box makes those overrides actually visible,
+   and the bottom margin gives stacked notes breathing room instead of only
+   spacing above each one. */
+.bt-note{ font-size:.72rem; color:var(--muted); line-height:1.5; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:8px; padding:8px 10px; margin:10px 0; }
+.bt-note.lock{ color:#ffcf7a; border-color:rgba(255,207,122,.35); }
+/* Boxed preview row for a matched leg during screenshot review (scanHTML's
+   canTrack branch) -- was a bare .bt-row2 with no background, so it
+   blended straight into the page between two .bt-note callouts instead of
+   reading as its own reviewable line item. */
+.bt-scan-row{ background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:.82rem; }
+.bt-scan-row:last-of-type{ margin-bottom:0; }
 .bt-btn{ width:100%; text-align:center; font:inherit; font-weight:800; font-size:.9rem; border-radius:9px; padding:11px; cursor:pointer; border:1px solid rgba(0,230,104,.35); background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03)); color:var(--text); margin-top:12px; }
 .bt-btn-ghost{ background:none; border:1px solid var(--border); color:var(--muted); margin-top:8px; }
 .bt-stage{ background:var(--surface2); border:1px solid rgba(0,230,104,.35); border-radius:12px; padding:14px; margin-bottom:.9rem; }
