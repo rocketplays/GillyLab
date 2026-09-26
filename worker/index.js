@@ -3146,6 +3146,18 @@ export default {
         if (!data) return json({ error: "Climb data unavailable" }, 502, cors);
         return json(data, 200, cors);
       }
+      // Home dashboard's "<year> Leaders" section -- public, same as
+      // /api/app/rankings, no session needed. data/season-leaders.json is a
+      // small (few KB) pre-baked file (see scripts/gen-season-leaders.cjs),
+      // already resolved to slug/photo/division at build time off the same
+      // fighter-lite.json bySlug identity space every other /api/app/* route
+      // uses -- no per-request cross-referencing needed here.
+      if (path === "/api/app/leaders" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const data = await loadAssetJson(env, url, "/data/season-leaders.json");
+        if (!data) return json({ error: "Leaders unavailable" }, 502, cors);
+        return json(data, 200, cors);
+      }
       // Token refresh: the bearer token in the app carries the same
       // exp/TTL as the session cookie (SESSION_TTL_HOURS, default 12h), but
       // an app is expected to stay "logged in" far longer than a browser

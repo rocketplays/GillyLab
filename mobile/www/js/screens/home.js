@@ -224,6 +224,53 @@ window.GL_ROUTER.register('home', {
       );
     }
 
+    // ── 4b. "<year> Leaders" -- the season stat-leaderboard from the
+    // original mockups, built for real now off GET /api/app/leaders (see
+    // worker/index.js + scripts/gen-season-leaders.cjs). Free-tier content,
+    // same as everything else above it -- one horizontal strip of four
+    // category cards (reusing the Scheduled Cards strip pattern), each a
+    // top-3 ranked list rather than a single number, so it reads as a real
+    // leaderboard, not just another stat tile.
+    var LEADER_CATEGORIES = [
+      { key: 'sigStrikes', label: 'Sig. Strikes', unit: '', color: 'var(--accent)' },
+      { key: 'takedowns', label: 'Takedowns', unit: '', color: '#3a86ff' },
+      { key: 'ko', label: 'KO/TKO', unit: '', color: '#e6b800' },
+      { key: 'submissions', label: 'Submissions', unit: '', color: '#a855f7' },
+    ];
+    function leaderCard(cat, rows){
+      if (!rows || !rows.length) return '';
+      var body = rows.slice(0, 3).map(function(r, i){
+        return (
+          '<div class="hm-lead-row">' +
+            '<span class="hm-lead-rank">' + (i + 1) + '</span>' +
+            av(r.name, r.photo, 'hm-lead-av') +
+            (r.slug
+              ? '<button type="button" class="hm-lead-name gl-link-btn" data-slug="' + esc(r.slug) + '">' + esc(r.name) + '</button>'
+              : '<span class="hm-lead-name">' + esc(r.name) + '</span>') +
+            '<span class="hm-lead-val">' + r.value + '</span>' +
+          '</div>'
+        );
+      }).join('');
+      return (
+        '<div class="hm-lead-card">' +
+          '<div class="hm-lead-title" style="color:' + cat.color + '">' + esc(cat.label) + '</div>' +
+          body +
+        '</div>'
+      );
+    }
+    function leadersSection(leadersData){
+      var year = (leadersData && leadersData.year) || new Date().getFullYear();
+      var categories = (leadersData && leadersData.categories) || {};
+      var cards = LEADER_CATEGORIES.map(function(cat){ return leaderCard(cat, categories[cat.key]); }).filter(Boolean).join('');
+      if (!cards) return '';
+      return (
+        '<div class="gl-sec">' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">' + year + ' Leaders</h2></div>' +
+          '<div class="hm-strip hm-lead-strip">' + cards + '</div>' +
+        '</div>'
+      );
+    }
+
     // ── 5. Active Roster -- big count + a 4-photo strip (worker's own
     // /api/app/roster now sends both `divisions` and `photos`, cross-
     // referenced from fighter-lite.json since roster.json itself is just a
@@ -315,6 +362,67 @@ window.GL_ROUTER.register('home', {
       );
     }
 
+    // ── 7. Your Premium Tools -- Bet Tracker + Tape Study previews,
+    // subscribed accounts only (see render()'s subscribed ? ... branch).
+    // Reintroduces what the previous rebuild deliberately dropped (see the
+    // file header comment), reshaped to fit this one-shared-layout Home
+    // instead of living in a separate premium-only stack: two richer cards
+    // (real numbers, real avatars) rather than a third square icon tile,
+    // since these already have actual data behind them, unlike Play &
+    // Compete's tiles which are mostly just entry points.
+    function betTrackerCard(stats){
+      var hasBets = !!(stats && stats.n > 0);
+      var body;
+      if (!hasBets){
+        body = '<div class="hm-tool-sub">Log your first bet and this card starts tracking your record and closing-line value automatically.</div>';
+      } else {
+        var roiTxt = stats.roi == null ? '—' : (stats.roi > 0 ? '+' : '') + stats.roi.toFixed(1) + '%';
+        var roiCls = stats.roi > 0 ? 'hm-tool-pos' : stats.roi < 0 ? 'hm-tool-neg' : '';
+        var clvTxt = stats.avgClv == null ? '—' : (stats.avgClv > 0 ? '+' : '') + stats.avgClv.toFixed(1) + ' pts';
+        var clvCls = stats.avgClv > 0 ? 'hm-tool-pos' : stats.avgClv < 0 ? 'hm-tool-neg' : '';
+        body = (
+          '<div class="hm-tool-stats">' +
+            '<div class="hm-tool-stat"><span class="hm-tool-stat-v">' + stats.w + '-' + stats.l + '</span><span class="hm-tool-stat-l">Record</span></div>' +
+            '<div class="hm-tool-stat"><span class="hm-tool-stat-v ' + roiCls + '">' + roiTxt + '</span><span class="hm-tool-stat-l">ROI</span></div>' +
+            '<div class="hm-tool-stat"><span class="hm-tool-stat-v ' + clvCls + '">' + clvTxt + '</span><span class="hm-tool-stat-l">Avg CLV</span></div>' +
+          '</div>'
+        );
+      }
+      return (
+        '<div class="hm-tool-card hm-tool-bt">' +
+          '<div class="hm-tool-icon">🎯</div>' +
+          '<div class="hm-tool-title">Bet Tracker</div>' +
+          body +
+          '<button type="button" class="gl-btn gl-btn-outline hm-tool-btn" data-goto="bettracker">Open Bet Tracker</button>' +
+        '</div>'
+      );
+    }
+    function tapeStudyCard(main){
+      var avatars = main ? (av(main.f1, main.s1, 'hm-tool-av') + av(main.f2, main.s2, 'hm-tool-av')) : '';
+      var teaser = main
+        ? 'Full footage for ' + esc(main.f1) + ' vs ' + esc(main.f2) + ', both corners.'
+        : 'Full fight footage for every fighter on the upcoming cards.';
+      return (
+        '<div class="hm-tool-card hm-tool-tape">' +
+          (avatars ? '<div class="hm-tool-avpair">' + avatars + '</div>' : '<div class="hm-tool-icon">🎬</div>') +
+          '<div class="hm-tool-title">Tape Study</div>' +
+          '<div class="hm-tool-sub">' + teaser + '</div>' +
+          '<button type="button" class="gl-btn gl-btn-outline hm-tool-btn" data-goto="tapestudy">Browse Tape Study</button>' +
+        '</div>'
+      );
+    }
+    function premiumToolsSection(betsStats, matchupCard){
+      return (
+        '<div class="gl-sec">' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title">Your Premium Tools</h2></div>' +
+          '<div class="hm-tools-row">' +
+            betTrackerCard(betsStats) +
+            tapeStudyCard(matchupCard) +
+          '</div>' +
+        '</div>'
+      );
+    }
+
     function wire(){
       container.querySelectorAll('[data-goto]').forEach(function(el){
         el.addEventListener('click', go(el.getAttribute('data-goto')));
@@ -333,18 +441,25 @@ window.GL_ROUTER.register('home', {
     }
 
     // Order: Main Event -> Scheduled Cards -> Betting Odds -> Biggest Movers
-    // -> Active Roster -> Play & Compete -> (free accounts only) Go Premium
-    // pitch. One shared structure for every account tier now, rather than a
-    // separate premium-only stack -- see the file header comment for what
-    // that traded away (Bet Tracker/Tape Study's old Home teasers).
-    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel){
+    // -> <year> Leaders -> Active Roster -> Play & Compete -> (subscribed
+    // accounts only) Your Premium Tools (Bet Tracker/Tape Study previews) ->
+    // (free accounts only) Go Premium pitch. Leaders is free-tier content,
+    // same as everything above it; the two premium/free blocks at the very
+    // end are the only tier-specific branch left, and they're mutually
+    // exclusive with each other -- see the file header comment for what
+    // reintroducing the old premium-only Bet Tracker/Tape Study teasers
+    // traded away the first time this was rebuilt (nothing now -- both are
+    // back, just reshaped to fit this one-shared-layout structure).
+    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsStats){
       container.innerHTML =
         mainEventSection(matchupCard, taleOfTape) +
         scheduledCardsSection(carousel) +
         oddsSection(matchupCard, subscribed) +
         moversSection(rankingsData) +
+        leadersSection(leadersData) +
         rosterSection(rosterData) +
         playCompeteSection(pickemCard, pickemMine) +
+        (subscribed ? premiumToolsSection(betsStats, matchupCard) : '') +
         (subscribed ? '' : (
           '<div class="gl-cta" style="border-color:color-mix(in srgb, var(--accent) 40%, var(--border))">' +
             '<h3 style="margin:0 0 .3rem;color:var(--accent)">Go Premium</h3>' +
@@ -363,8 +478,9 @@ window.GL_ROUTER.register('home', {
         window.GL_API.matchup().catch(function(){ return null; }),
         window.GL_API.roster().catch(function(){ return null; }),
         loggedIn ? window.GL_API.account().catch(function(){ return null; }) : Promise.resolve(null),
+        window.GL_API.leaders().catch(function(){ return null; }),
       ]).then(function(results){
-        var cardRes = results[0], rankingsData = results[1], matchupRes = results[2], rosterData = results[3], acct = results[4];
+        var cardRes = results[0], rankingsData = results[1], matchupRes = results[2], rosterData = results[3], acct = results[4], leadersData = results[5];
         var card = cardRes && cardRes.card;
         var matchupCard = matchupRes && matchupRes.card;
         var taleOfTape = matchupRes && matchupRes.taleOfTape;
@@ -379,9 +495,24 @@ window.GL_ROUTER.register('home', {
         // with no event context.
         if (!card && !loggedIn && matchupCard) card = { name: matchupCard.event || '', bouts: matchupCard.fights || [] };
         var subscribed = !!(acct && acct.subscribed);
-        if (!card || !loggedIn) return render(card, null, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel);
-        return window.GL_API.pickemMine(card.slug).catch(function(){ return null; }).then(function(mine){
-          render(card, mine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel);
+        // GET /api/app/bets is subscribed-only server-side (403 otherwise --
+        // see worker/index.js), so this is only ever fetched once we already
+        // know this account is subscribed, same gating pickemMine below does
+        // off loggedIn. Its `stats` field is exactly what Bet Tracker's own
+        // history header already summarizes a bettor's record/ROI/CLV from --
+        // reused as-is, no new backend work for this preview.
+        var betsPromise = subscribed ? window.GL_API.bets().catch(function(){ return null; }) : Promise.resolve(null);
+        if (!card || !loggedIn) {
+          return betsPromise.then(function(betsRes){
+            render(card, null, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsRes && betsRes.stats);
+          });
+        }
+        return Promise.all([
+          window.GL_API.pickemMine(card.slug).catch(function(){ return null; }),
+          betsPromise,
+        ]).then(function(more){
+          var mine = more[0], betsRes = more[1];
+          render(card, mine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsRes && betsRes.stats);
         });
       });
     });

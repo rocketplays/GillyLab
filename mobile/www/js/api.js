@@ -35,6 +35,7 @@ window.GL_API = (function(){
     login: function(email, password){ return request('/api/login', { method:'POST', body:{ email:email, password:password } }); },
     signup: function(email, password){ return request('/api/signup', { method:'POST', body:{ email:email, password:password } }); },
     rankings: function(source){ return request('/api/app/rankings' + (source ? '?source=' + encodeURIComponent(source) : '')); },
+    leaders: function(){ return request('/api/app/leaders'); },
     refresh: function(){ return request('/api/app/refresh'); },
     // Pick'em -- same JSON endpoints the website's own /pickem page calls
     // client-side, now CORS-enabled for the app's origin (see appCorsHeaders
