@@ -437,18 +437,15 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    a real dashboard-widget title, not a small muted eyebrow -- so Home looks
    like a hub with a teaser under each heading rather than a flat list. */
 .gl-dash-title{ font-size:1.1rem; margin:0; color:var(--text); }
-/* Home dashboard section titles -- half white, half accent green, same
-   split-color treatment as the mockup this Home rebuild is based on. A
-   flat 50/50 gradient with hard color stops (not a smooth blend) clipped
-   to the text, so it works on any title string with zero per-title
-   markup -- the split lands at the middle of the rendered text width,
-   not at a word boundary. Only wraps titles that stay on one line (the
-   gradient is positioned across the whole element box, not per line);
-   every current Home title fits on one line at phone width. */
-.hm-title{
-  background:linear-gradient(90deg, var(--text) 0%, var(--text) 50%, var(--accent) 50%, var(--accent) 100%);
-  -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
-}
+/* Home dashboard section titles -- white with the closing word(s) in
+   accent green, per the reference mockup's own `.sec-title .a` (a plain
+   inline span around the green portion, not a mid-word 50/50 split --
+   each title picks its own split point in home.js, at a word boundary,
+   matching the mockup title-by-title: "Scheduled <a>Cards</a>", "This
+   Week's <a>Main Event</a>", etc.). Scoped to Home's own titles
+   (`.hm-title`), not Bracket/Settings/Account, which share the base
+   `.gl-dash-title` class but weren't part of this. */
+.hm-title .a{ color:var(--accent); }
 /* Scoped vertical-rhythm fix for a section head, used where the gap from
    the section's own top divider down to the title is otherwise noticeably
    bigger than the gap from the title down to the first row below it (the

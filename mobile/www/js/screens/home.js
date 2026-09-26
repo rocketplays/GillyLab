@@ -90,7 +90,7 @@ window.GL_ROUTER.register('home', {
     }
     function mainEventSection(card, taleOfTape){
       var main = card && (card.fights || [])[0];
-      var head = '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">This Week’s Main Event</h2></div>';
+      var head = '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">This Week’s <span class="a">Main Event</span></h2></div>';
       if (!card || !main){
         return (
           '<div class="gl-sec gl-sec--first">' + head +
@@ -158,7 +158,7 @@ window.GL_ROUTER.register('home', {
       }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Scheduled Cards</h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Scheduled <span class="a">Cards</span></h2></div>' +
           '<div class="hm-strip">' + cards + '</div>' +
         '</div>'
       );
@@ -184,7 +184,7 @@ window.GL_ROUTER.register('home', {
       var fmt = function(v){ return (v == null || v === '') ? '—' : String(v); };
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Betting Odds</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Betting <span class="a">Odds</span></h2></div>' +
           '<div class="hm-odds-card">' +
             '<div class="hm-odds-fighter">' + av(main.f1, main.s1, 'hm-odds-av') + '<span class="hm-odds-fname">' + esc(main.f1) + '</span>' +
               '<span class="hm-odds-pill ' + (main.o1 < main.o2 ? 'fav' : 'dog') + '">' + esc(fmt(main.o1)) + '</span></div>' +
@@ -239,7 +239,7 @@ window.GL_ROUTER.register('home', {
       }
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">' + (movers.length ? 'Biggest Movers' : 'Rankings — Pound-for-Pound') + '</h2></div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">' + (movers.length ? 'Biggest <span class="a">Movers</span>' : 'Rankings — <span class="a">Pound-for-Pound</span>') + '</h2></div>' +
           body +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="rankings">View Rankings</button>' +
         '</div>'
@@ -287,7 +287,7 @@ window.GL_ROUTER.register('home', {
       if (!cards) return '';
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">' + year + ' Leaders</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">' + year + ' <span class="a">Leaders</span></h2></div>' +
           '<div class="hm-strip hm-lead-strip">' + cards + '</div>' +
         '</div>'
       );
@@ -313,7 +313,7 @@ window.GL_ROUTER.register('home', {
       if (!fighters.length){
         return (
           '<div class="gl-sec">' +
-            '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active Roster</h2></div>' +
+            '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
             '<p class="gl-muted" style="margin:.4rem 0 0">Roster unavailable right now.</p>' +
             '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="roster">View Roster</button>' +
           '</div>'
@@ -335,7 +335,7 @@ window.GL_ROUTER.register('home', {
       var photoStrip = photos.map(function(p){ return av(p.name, p.photo, 'hm-roster-av'); }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active Roster</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Active <span class="a">Roster</span></h2></div>' +
           '<div class="hm-roster-top">' +
             '<div><div class="hm-roster-stat">' + total + '</div><div class="hm-roster-stat-label">on current roster</div></div>' +
             (photoStrip ? '<div class="hm-roster-strip">' + photoStrip + '</div>' : '') +
@@ -382,7 +382,7 @@ window.GL_ROUTER.register('home', {
     function playCompeteSection(pickemCard, pickemMine){
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Play & Compete</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">Play <span class="a">&amp; Compete</span></h2></div>' +
           '<div class="hm-tile-row">' +
             '<button type="button" class="hm-tile" data-goto="pickem"><span class="hm-tile-icon">🥊</span><span class="hm-tile-title">Pick’em</span><span class="hm-tile-sub">' + esc(pickemTileStatus(pickemCard, pickemMine)) + '</span></button>' +
             '<button type="button" class="hm-tile" data-goto="climb"><span class="hm-tile-icon">🏔️</span><span class="hm-tile-title">The Climb</span><span class="hm-tile-sub">Build a fighter, become the GOAT</span></button>' +
@@ -448,7 +448,7 @@ window.GL_ROUTER.register('home', {
     function premiumToolsSection(betsStats){
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">More Premium Tools</h2></div>' +
+          '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">More Premium <span class="a">Tools</span></h2></div>' +
           '<div class="hm-tools-row">' +
             betTrackerCard(betsStats) +
             tapeStudyCard() +
