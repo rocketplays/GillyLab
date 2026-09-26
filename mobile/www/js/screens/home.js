@@ -337,8 +337,7 @@ window.GL_ROUTER.register('home', {
     var DIVISION_COLORS = {
       'Flyweight': '#00e668', 'Bantamweight': '#3a86ff', 'Featherweight': '#e6b800', 'Lightweight': '#a855f7',
       'Welterweight': '#ff9d3a', 'Middleweight': '#ff3d00', 'Light Heavyweight': '#ff5c8a', 'Heavyweight': '#14b8a6',
-      "Women's Strawweight": '#38bdf8', "Women's Flyweight": '#a3e635', "Women's Bantamweight": '#818cf8', "Women's Featherweight": '#d6a26a',
-      'Other': '#5b5b63'
+      "Women's Strawweight": '#38bdf8', "Women's Flyweight": '#a3e635', "Women's Bantamweight": '#818cf8', "Women's Featherweight": '#d6a26a'
     };
     var MEN_DIVS = ['Flyweight', 'Bantamweight', 'Featherweight', 'Lightweight', 'Welterweight', 'Middleweight', 'Light Heavyweight', 'Heavyweight'];
     var WOMEN_DIVS = ["Women's Strawweight", "Women's Flyweight", "Women's Bantamweight", "Women's Featherweight"];
@@ -376,7 +375,6 @@ window.GL_ROUTER.register('home', {
         }).join('');
         return items ? '<div class="hm-comp-group-label">' + label + '</div><div class="hm-comp-legend">' + items + '</div>' : '';
       };
-      var otherCount = byDiv['Other'] || 0;
       // Overlapping avatar stack (see .hm-roster-av's sibling-overlap rule)
       // + a "+N fighters" count for everyone not pictured, instead of a
       // plain non-overlapping row of exactly 4 photos with no sense of how
@@ -394,7 +392,6 @@ window.GL_ROUTER.register('home', {
           legendGroup("Men's", MEN_DIVS) +
           divisionBar(WOMEN_DIVS, womenTotal) +
           legendGroup("Women's", WOMEN_DIVS) +
-          (otherCount ? '<div class="hm-comp-legend"><span class="hm-comp-item"><span class="hm-comp-dot" style="background:' + DIVISION_COLORS.Other + '"></span>Other</span></div>' : '') +
         '</div>'
       );
     }

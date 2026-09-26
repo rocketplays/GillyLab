@@ -6,9 +6,14 @@
   variants keep working automatically), just adds the "Know the fight before
   it starts" slogan under the GILLYLAB wordmark that's already baked into that
   image. The two spacer Views use weights instead of a fixed dp offset so the
-  slogan lands right under the wordmark (which ends at ~65.5% of the image's
-  height) on any screen size, without pulling in a ConstraintLayout
-  dependency this module doesn't already have.
+  slogan lands right under the wordmark on any screen size, without pulling in
+  a ConstraintLayout dependency this module doesn't already have: 60/40, not
+  the old 67/33, since the logo/wordmark in the image itself moved up (see
+  mobile/assets/splash.png; it now ends at ~59.6% of the image's height, down
+  from ~65.5%). The slogan itself is two TextViews in a row (not one, with
+  plain android:text) so "before it starts" can be its own color: a single
+  TextView's android:text can't mix colors without building a Spannable in
+  code, which this plain-XML splash layout deliberately avoids needing.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -29,24 +34,37 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="67" />
+            android:layout_weight="60" />
 
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="6dp"
-            android:gravity="center_horizontal"
-            android:text="Know the fight before it starts"
-            android:textColor="#ffffff"
-            android:textSize="15sp"
-            android:fontFamily="sans-serif-medium" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Know the fight "
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="before it starts"
+                android:textColor="#00e668"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium" />
+
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="33" />
+            android:layout_weight="40" />
 
     </LinearLayout>
 

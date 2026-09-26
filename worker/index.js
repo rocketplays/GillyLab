@@ -3236,16 +3236,26 @@ export default {
         const divisionCounts = {};
         DIVISION_BUCKETS.forEach((d) => { divisionCounts[d] = 0; });
         divisionCounts["Other"] = 0;
+        // Home's photo strip -- champions only (fighter-lite.json's rank
+        // "#C"), not just whichever 4 fighters happen to come first in
+        // roster.json's own order. Collected across the whole loop (not
+        // capped at 4 as we go) so a champion appearing late in roster.json
+        // still gets picked up; falls back to any 4 fighters with a photo
+        // in the (unlikely) case fewer than 4 champions resolve a photo.
         const photos = [];
+        const champPhotos = [];
         fighters.forEach((f) => {
           const lite2 = f.slug ? fighterLiteBySlug[f.slug] : null;
           const div = lite2 && DIVISION_BUCKETS.includes(lite2.division) ? lite2.division : "Other";
           divisionCounts[div] += 1;
-          if (photos.length < 4 && lite2 && lite2.photo) photos.push({ name: f.name, slug: f.slug, photo: lite2.photo });
+          if (lite2 && lite2.photo){
+            if (photos.length < 4) photos.push({ name: f.name, slug: f.slug, photo: lite2.photo });
+            if (champPhotos.length < 4 && lite2.rank === "#C") champPhotos.push({ name: f.name, slug: f.slug, photo: lite2.photo });
+          }
         });
         const divisions = DIVISION_BUCKETS.map((d) => ({ division: d, count: divisionCounts[d] }))
           .concat(divisionCounts["Other"] ? [{ division: "Other", count: divisionCounts["Other"] }] : []);
-        return json({ fighters, changes, divisions, photos }, 200, cors);
+        return json({ fighters, changes, divisions, photos: champPhotos.length ? champPhotos : photos }, 200, cors);
       }
 
       // Matchup hub, free on the website at /matchup -- upcoming/past card

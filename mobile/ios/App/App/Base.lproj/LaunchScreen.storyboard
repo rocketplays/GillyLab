@@ -19,8 +19,22 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="snD-IY-ifK">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Know the fight before it starts" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tag">
-                                <rect key="frame" x="27" y="487" width="321" height="20"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slG-an-tag">
+                                <rect key="frame" x="27" y="410" width="321" height="20"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Know the fight ">
+                                        <attributes>
+                                            <font key="NSFont" metaFont="system" weight="medium" size="15"/>
+                                            <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="before it starts">
+                                        <attributes>
+                                            <font key="NSFont" metaFont="system" weight="medium" size="15"/>
+                                            <color key="NSColor" red="0.0" green="0.90196078431372551" blue="0.40392078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -33,7 +47,12 @@
                             <constraint firstItem="snD-IY-ifK" firstAttribute="top" secondItem="Gxr-0V-1cJ" secondAttribute="top" id="c03-to-p02"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="bottom" secondItem="Gxr-0V-1cJ" secondAttribute="bottom" id="c04-bo-t03"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="centerX" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" id="c05-cx-04"/>
-                            <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.46" constant="0.0" id="c06-cy-05"/>
+                            <!-- 1.26, not the old 1.46: the splash image's logo/wordmark moved up
+                                 (see mobile/assets/splash.png), so this needs to move up with it to
+                                 stay a subtext right under the wordmark instead of drifting further
+                                 down the now-larger gap. multiplier/2 = fraction of screen height
+                                 (centerY = view.centerY * multiplier = viewHeight * multiplier/2). -->
+                            <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.26" constant="0.0" id="c06-cy-05"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="leadingMargin" constant="16" id="c07-lm-06"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="trailingMargin" constant="-16" id="c08-tm-07"/>
                         </constraints>

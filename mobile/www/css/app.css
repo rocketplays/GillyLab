@@ -618,13 +618,11 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .hm-comp-group-label{ font-size:.6rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; margin:.5rem 0 .3rem; }
 .hm-comp-group-label:first-of-type{ margin-top:0; }
 .hm-comp-legend{ display:grid; grid-template-columns:1fr 1fr; gap:.35rem .6rem; }
-/* The standalone "Other" row (home.js's rosterSection) has no
-   .hm-comp-group-label of its own before it, unlike Men's/Women's --
-   without this it sat flush against whichever group's legend came
-   right before it (often reading as e.g. Bantamweight and Other
-   crowded together) instead of getting the same breathing room every
-   other group boundary gets. */
-.hm-comp-legend + .hm-comp-legend{ margin-top:.5rem; }
+/* Women's bar sits directly after Men's legend (two separate bars now,
+   see rosterSection's divisionBar) -- without this it sat flush against
+   the legend row above it, reading as Bantamweight and the bar below it
+   crowded together instead of a new group starting. */
+.hm-comp-legend + .hm-comp-bar{ margin-top:.6rem; }
 .hm-comp-item{ display:flex; align-items:center; gap:.35rem; font-size:.62rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .hm-comp-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 
