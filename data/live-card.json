@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-26T22:39:01.782Z",
+ "generatedAt": "2026-09-26T23:10:10.593Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -8270,6 +8270,194 @@
       ]
      },
      "capturedAt": "2026-09-26T22:39:01.674Z"
+    }
+   ]
+  },
+  "Rodolfo Bellato": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Christian Edwards",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "1:47",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Christian Edwards",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 30,
+      "sigA": 57,
+      "totL": 73,
+      "totA": 104,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:12",
+      "head": [
+       18,
+       45
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       17,
+       39
+      ],
+      "clinch": [
+       13,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 59,
+      "sigA": 94,
+      "totL": 85,
+      "totA": 120,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:42",
+      "head": [
+       37,
+       67
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       32,
+       64
+      ],
+      "clinch": [
+       23,
+       25
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "capturedAt": "2026-09-26T23:10:10.487Z"
+    }
+   ]
+  },
+  "Christian Edwards": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Bellato",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "1:47",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Bellato",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 59,
+      "sigA": 94,
+      "totL": 85,
+      "totA": 120,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:42",
+      "head": [
+       37,
+       67
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       32,
+       64
+      ],
+      "clinch": [
+       23,
+       25
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 30,
+      "sigA": 57,
+      "totL": 73,
+      "totA": 104,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:12",
+      "head": [
+       18,
+       45
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       17,
+       39
+      ],
+      "clinch": [
+       13,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-26T23:10:10.487Z"
     }
    ]
   }
