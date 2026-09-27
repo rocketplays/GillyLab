@@ -4351,7 +4351,268 @@
         "pts": 0,
         "leaned": true
       }
+    },
+    {
+      "fightId": "ailin perez|norma dumont",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.663Z",
+      "a": {
+        "feed": "Norma Dumont",
+        "db": "Norma Dumont"
+      },
+      "b": {
+        "feed": "Ailin Perez",
+        "db": "Ailín Pérez"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.3639,
+      "modelClose": 0.6361,
+      "marketOpen": 0.4561,
+      "marketClose": 0.596,
+      "leanA": -0.0922,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": false,
+        "pts": -0.1399,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "brady hiestand|rinya nakamura",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.663Z",
+      "a": {
+        "feed": "Brady Hiestand",
+        "db": "Brady Hiestand"
+      },
+      "b": {
+        "feed": "Rinya Nakamura",
+        "db": "Rinya Nakamura"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.2333,
+      "modelClose": 0.767,
+      "marketOpen": 0.2638,
+      "marketClose": 0.76,
+      "leanA": -0.0305,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": false,
+        "pts": -0.4962,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "christian edwards|rodolfo bellato",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.663Z",
+      "a": {
+        "feed": "Rodolfo Bellato",
+        "db": "Rodolfo Bellato"
+      },
+      "b": {
+        "feed": "Christian Edwards",
+        "db": "Christian Edwards"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5494,
+      "modelClose": 0.4506,
+      "marketOpen": 0.5922,
+      "marketClose": 0.3775,
+      "leanA": -0.0428,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.2147,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "montel jackson|ricky simon",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.664Z",
+      "a": {
+        "feed": "Montel Jackson",
+        "db": "Montel Jackson"
+      },
+      "b": {
+        "feed": "Ricky Simon",
+        "db": "Ricky Simon"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6512,
+      "modelClose": 0.3489,
+      "marketOpen": 0.6136,
+      "marketClose": 0.3379,
+      "leanA": 0.0376,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": false,
+        "pts": -0.2757,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "robert bryczek|rodolfo vieira",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.664Z",
+      "a": {
+        "feed": "Rodolfo Vieira",
+        "db": "Rodolfo Vieira"
+      },
+      "b": {
+        "feed": "Robert Bryczek",
+        "db": "Robert Bryczek"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4933,
+      "modelClose": 0.5163,
+      "marketOpen": 0.5,
+      "marketClose": 0.3962,
+      "leanA": -0.0067,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.1038,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "vanessa demopoulos|yazmin jauregui",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.664Z",
+      "a": {
+        "feed": "Vanessa Demopoulos",
+        "db": "Vanessa Demopoulos"
+      },
+      "b": {
+        "feed": "Yazmin Jauregui",
+        "db": "Yazmin Jauregui"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.2921,
+      "modelClose": 0.7145,
+      "marketOpen": 0.1747,
+      "marketClose": 0.8677,
+      "leanA": 0.1174,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.693,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "ilimbek akylbek|mehemmedeli osmanli",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.664Z",
+      "a": {
+        "feed": "Mehemmedeli Osmanli",
+        "db": "Mehemmedeli Osmanli"
+      },
+      "b": {
+        "feed": "Ilimbek Akylbek",
+        "db": "Ilimbek Akylbek Uulu"
+      },
+      "winner": "B",
+      "method": "DQ",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5694,
+      "modelClose": 0.5694,
+      "marketOpen": 0.7063,
+      "marketClose": 0.712,
+      "leanA": -0.1369,
+      "nSnapshots": 12,
+      "clv": {
+        "toward": false,
+        "pts": -0.0057,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "melissa amaya|valesca machado",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.664Z",
+      "a": {
+        "feed": "Melissa Amaya",
+        "db": "Melissa Amaya"
+      },
+      "b": {
+        "feed": "Valesca Machado",
+        "db": "Valesca Machado"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5604,
+      "modelClose": 0.5604,
+      "marketOpen": 0.3601,
+      "marketClose": 0.3501,
+      "leanA": 0.2003,
+      "nSnapshots": 12,
+      "clv": {
+        "toward": false,
+        "pts": -0.01,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "luis hernandez|sedriques dumas",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T02:06:11.666Z",
+      "a": {
+        "feed": "Luis Hernandez",
+        "db": "Luis Hernandez"
+      },
+      "b": {
+        "feed": "Sedriques Dumas",
+        "db": "Sedriques Dumas"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.7289,
+      "modelClose": 0.7289,
+      "marketOpen": 0.6621,
+      "marketClose": 0.68,
+      "leanA": 0.0668,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": true,
+        "pts": 0.0179,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-26T15:35:34.124Z"
+  "generatedAt": "2026-09-27T02:06:11.670Z"
 }
