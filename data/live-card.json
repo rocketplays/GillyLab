@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T01:30:12.104Z",
+ "generatedAt": "2026-09-27T02:01:25.164Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -9392,6 +9392,194 @@
       ]
      },
      "capturedAt": "2026-09-27T01:30:11.999Z"
+    }
+   ]
+  },
+  "Norma Dumont": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ailin Perez",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ailin Perez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 106,
+      "totL": 102,
+      "totA": 166,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       17,
+       67
+      ],
+      "body": [
+       14,
+       20
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       42,
+       100
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 85,
+      "totL": 47,
+      "totA": 99,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:41",
+      "head": [
+       13,
+       47
+      ],
+      "body": [
+       13,
+       17
+      ],
+      "leg": [
+       11,
+       21
+      ],
+      "dist": [
+       29,
+       77
+      ],
+      "clinch": [
+       8,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T02:01:25.059Z"
+    }
+   ]
+  },
+  "Ailin Perez": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Norma Dumont",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Norma Dumont",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 85,
+      "totL": 47,
+      "totA": 99,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:41",
+      "head": [
+       13,
+       47
+      ],
+      "body": [
+       13,
+       17
+      ],
+      "leg": [
+       11,
+       21
+      ],
+      "dist": [
+       29,
+       77
+      ],
+      "clinch": [
+       8,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 106,
+      "totL": 102,
+      "totA": 166,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       17,
+       67
+      ],
+      "body": [
+       14,
+       20
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       42,
+       100
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T02:01:25.059Z"
     }
    ]
   }
