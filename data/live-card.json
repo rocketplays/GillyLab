@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T00:43:17.118Z",
+ "generatedAt": "2026-09-27T00:58:57.956Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-09-27T00:43:17.028Z"
+    }
+   ]
+  },
+  "Mehemmedeli Osmanli": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ilimbek Akylbek Uulu",
+     "result": "L",
+     "method": "DQ",
+     "round": 1,
+     "time": "2:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ilimbek Akylbek Uulu",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 13,
+      "totL": 46,
+      "totA": 53,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       10
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       12
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 12,
+      "totL": 18,
+      "totA": 29,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:55",
+      "head": [
+       2,
+       8
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:58:57.852Z"
+    }
+   ]
+  },
+  "Ilimbek Akylbek Uulu": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Mehemmedeli Osmanli",
+     "result": "W",
+     "method": "DQ",
+     "round": 1,
+     "time": "2:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Mehemmedeli Osmanli",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 12,
+      "totL": 18,
+      "totA": 29,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:55",
+      "head": [
+       2,
+       8
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 13,
+      "totL": 46,
+      "totA": 53,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       10
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       12
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-27T00:58:57.852Z"
     }
    ]
   }
