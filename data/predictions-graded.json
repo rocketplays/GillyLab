@@ -4612,7 +4612,36 @@
         "pts": 0.0179,
         "leaned": true
       }
+    },
+    {
+      "fightId": "raoni barcelos|raul rosas jr",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-27T16:14:30.933Z",
+      "a": {
+        "feed": "Raul Rosas Jr",
+        "db": "Raul Rosas Jr."
+      },
+      "b": {
+        "feed": "Raoni Barcelos",
+        "db": "Raoni Barcelos"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 5,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.5695,
+      "modelClose": 0.4305,
+      "marketOpen": 0.6193,
+      "marketClose": 0.4139,
+      "leanA": -0.0498,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.2054,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-27T02:06:11.670Z"
+  "generatedAt": "2026-09-27T16:14:30.939Z"
 }
