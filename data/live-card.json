@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T00:12:06.559Z",
+ "generatedAt": "2026-09-27T00:43:17.118Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -8834,6 +8834,194 @@
       ]
      },
      "capturedAt": "2026-09-27T00:12:06.451Z"
+    }
+   ]
+  },
+  "Melissa Amaya": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Valesca Machado",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Valesca Machado",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 58,
+      "totL": 29,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       15,
+       49
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       19,
+       54
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 50,
+      "sigA": 105,
+      "totL": 57,
+      "totA": 113,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       44,
+       97
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       39,
+       88
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       1,
+       4
+      ]
+     },
+     "capturedAt": "2026-09-27T00:43:17.028Z"
+    }
+   ]
+  },
+  "Valesca Machado": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Melissa Amaya",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Melissa Amaya",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 50,
+      "sigA": 105,
+      "totL": 57,
+      "totA": 113,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       44,
+       97
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       39,
+       88
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       1,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 58,
+      "totL": 29,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       15,
+       49
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       19,
+       54
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:43:17.028Z"
     }
    ]
   }
