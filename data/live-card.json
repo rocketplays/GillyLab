@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-26T23:40:50.522Z",
+ "generatedAt": "2026-09-27T00:12:06.559Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -8646,6 +8646,194 @@
       ]
      },
      "capturedAt": "2026-09-26T23:40:50.414Z"
+    }
+   ]
+  },
+  "Brady Hiestand": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rinya Nakamura",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:07",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rinya Nakamura",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 55,
+      "totL": 50,
+      "totA": 80,
+      "tdL": 0,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "1:51",
+      "head": [
+       21,
+       49
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       21,
+       48
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 65,
+      "totL": 40,
+      "totA": 79,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:32",
+      "head": [
+       11,
+       47
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       18,
+       49
+      ],
+      "clinch": [
+       11,
+       16
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:12:06.451Z"
+    }
+   ]
+  },
+  "Rinya Nakamura": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Brady Hiestand",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:07",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Brady Hiestand",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 65,
+      "totL": 40,
+      "totA": 79,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:32",
+      "head": [
+       11,
+       47
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       18,
+       49
+      ],
+      "clinch": [
+       11,
+       16
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 55,
+      "totL": 50,
+      "totA": 80,
+      "tdL": 0,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "1:51",
+      "head": [
+       21,
+       49
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       21,
+       48
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:12:06.451Z"
     }
    ]
   }
