@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T02:01:25.164Z",
+ "generatedAt": "2026-09-27T02:52:42.346Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -9580,6 +9580,194 @@
       ]
      },
      "capturedAt": "2026-09-27T02:01:25.059Z"
+    }
+   ]
+  },
+  "Raul Rosas Jr.": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raoni Barcelos",
+     "result": "W",
+     "method": "KO/TKO",
+     "round": 5,
+     "time": "1:38",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raoni Barcelos",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 113,
+      "sigA": 251,
+      "totL": 179,
+      "totA": 327,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:54",
+      "head": [
+       89,
+       223
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       92,
+       224
+      ],
+      "clinch": [
+       17,
+       21
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 127,
+      "sigA": 223,
+      "totL": 198,
+      "totA": 303,
+      "tdL": 9,
+      "tdA": 22,
+      "sub": 5,
+      "rev": 0,
+      "ctrl": "6:21",
+      "head": [
+       90,
+       180
+      ],
+      "body": [
+       34,
+       40
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       117,
+       209
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-27T02:52:42.254Z"
+    }
+   ]
+  },
+  "Raoni Barcelos": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raul Rosas Jr.",
+     "result": "L",
+     "method": "KO/TKO",
+     "round": 5,
+     "time": "1:38",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raul Rosas Jr.",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 127,
+      "sigA": 223,
+      "totL": 198,
+      "totA": 303,
+      "tdL": 9,
+      "tdA": 22,
+      "sub": 5,
+      "rev": 0,
+      "ctrl": "6:21",
+      "head": [
+       90,
+       180
+      ],
+      "body": [
+       34,
+       40
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       117,
+       209
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 113,
+      "sigA": 251,
+      "totL": 179,
+      "totA": 327,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:54",
+      "head": [
+       89,
+       223
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       92,
+       224
+      ],
+      "clinch": [
+       17,
+       21
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-09-27T02:52:42.254Z"
     }
    ]
   }
