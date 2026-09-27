@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-27T00:58:57.956Z",
+ "generatedAt": "2026-09-27T01:30:12.104Z",
  "fighters": {
   "Colton Loud": {
    "history": [
@@ -3576,6 +3576,16 @@
   "Luis Hernandez": {
    "history": [
     {
+     "date": "Sep 26, 2026",
+     "opponent": "Sedriques Dumas",
+     "result": "W",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "0:57",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    },
+    {
      "date": "Sep 15, 2026",
      "opponent": "Hugo Guillon",
      "result": "W",
@@ -3587,6 +3597,84 @@
     }
    ],
    "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Sedriques Dumas",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 6,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:24",
+      "head": [
+       2,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 3,
+      "totL": 0,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T01:30:11.999Z"
+    },
     {
      "date": "Sep 15, 2026",
      "opponent": "Hugo Guillon",
@@ -9210,6 +9298,100 @@
       ]
      },
      "capturedAt": "2026-09-27T00:58:57.852Z"
+    }
+   ]
+  },
+  "Sedriques Dumas": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Luis Hernandez",
+     "result": "L",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "0:57",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Luis Hernandez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 3,
+      "totL": 0,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 6,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:24",
+      "head": [
+       2,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T01:30:11.999Z"
     }
    ]
   }
