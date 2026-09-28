@@ -563,6 +563,26 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .he-tape-fill.a{ background:var(--accent); }
 .he-tape-fill.b{ background:var(--border); }
 
+/* Bio/regional-strength fallback for the Main Event matchup preview -- shown
+   instead of .he-tape-row's stat bars when taleOfTapeFor() has nothing (a
+   debuting or short-notice fighter, mainly). Row layout mirrors a compact
+   two-column vs. row rather than the stat bars, since these are discrete
+   values (age, height, a tier label) rather than a 0-100 comparison. */
+.he-bio-tape .he-tape-title{ margin-bottom:.3rem; }
+.he-bio-row{ display:flex; align-items:baseline; justify-content:space-between; gap:.5rem; padding:.32rem 0; border-bottom:1px solid var(--border); }
+.he-bio-row:last-child{ border-bottom:none; }
+.he-bio-val{ flex:1 1 0; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.82rem; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.he-bio-val.a{ color:var(--accent); text-align:left; }
+.he-bio-val.b{ color:var(--text); text-align:right; }
+.he-bio-label{ flex:0 0 auto; font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:center; padding:0 .4rem; }
+.he-l5-tile{ display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:4px; font-size:.6rem; font-weight:800; margin-left:2px; }
+.he-l5-tile:first-child{ margin-left:0; }
+.he-bio-val.b .he-l5-tile{ margin-left:0; margin-right:2px; }
+.he-bio-val.b .he-l5-tile:first-child{ margin-right:0; }
+.he-l5-tile.w{ background:color-mix(in srgb, #00e668 25%, transparent); color:#00e668; }
+.he-l5-tile.l{ background:color-mix(in srgb, #ff3d00 25%, transparent); color:#ff3d00; }
+.he-l5-tile.d{ background:color-mix(in srgb, #ffb340 25%, transparent); color:#ffb340; }
+
 /* Scheduled Cards -- horizontal strip of the upcoming carousel. Same
    numbered(gold)/DWCS(blue)/regular(green) event classification the Events
    tab's own tiles use (see matchup.js's eventKind() equivalent), just

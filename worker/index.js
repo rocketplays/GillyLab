@@ -3912,12 +3912,40 @@ export default {
           ? taleOfTapeFor(card.fights[0].s1, card.fights[0].s2)
           : null;
 
+        // Fallback for Home's matchup preview when taleOfTapeFor() above came
+        // back null -- a debuting or very short-notice fighter (a DWCS card,
+        // mainly) has no fight-stats coverage yet, so there's nothing for the
+        // stat-bar comparison to show. fighter-lite.json's own `.phys` object
+        // (age/ht/reach/stance/layoff/l5/promoTier) is what the site's own
+        // free "Tale of the tape" widget (mf-tape in pages.js) and the free
+        // /matchup main-event tape (buildMainTape's `promo` field) already
+        // draw from -- promoTier itself is gen-landing-data.cjs's per-fighter
+        // "regional promotion strength" (highest pre-UFC tier reached), baked
+        // into fighter-lite.json so it's free and already loaded here, no new
+        // endpoint or premium gate needed. Only built when taleOfTape is
+        // empty -- when there IS real stat coverage, that stays the featured
+        // comparison and this stays unused.
+        function bioTapeFor(slugA, slugB) {
+          if (!slugA || !slugB) return null;
+          const a = fighterLiteBySlug[slugA], b = fighterLiteBySlug[slugB];
+          if (!a || !b || !a.phys || !b.phys) return null;
+          const pa = a.phys, pb = b.phys;
+          const has = (p) => p.age != null || p.ht || p.reach || p.stance || (p.l5 && p.l5.length) || p.promoTier;
+          if (!has(pa) && !has(pb)) return null;
+          const pick = (p) => ({ age: p.age, ht: p.ht, reach: p.reach, stance: p.stance, layoff: p.layoff || null, l5: p.l5 || [], promoTier: p.promoTier || null });
+          return { a: pick(pa), b: pick(pb) };
+        }
+        const bioTape = !taleOfTape && card && card.fights && card.fights[0]
+          ? bioTapeFor(card.fights[0].s1, card.fights[0].s2)
+          : null;
+
         return json({
           card,
           isPast: isPastView,
           deepDive,
           breakdown,
           taleOfTape,
+          bioTape,
           hub,
           carousel,
           past: pastFiltered.map(liteEvent),

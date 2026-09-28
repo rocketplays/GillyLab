@@ -106,7 +106,77 @@ window.GL_ROUTER.register('home', {
         '</div>'
       );
     }
-    function mainEventSection(card, taleOfTape){
+    // Fallback for when taleOfTape (the stat-bar comparison) has nothing to
+    // show -- a debuting or very short-notice fighter (a DWCS card, mainly)
+    // has no fight-stats coverage yet, so worker/index.js's taleOfTapeFor()
+    // returns null. bioTape (also from /api/app/matchup, built by the
+    // worker's bioTapeFor()) carries each fighter's bio (age/height/reach/
+    // stance), layoff, last-5 form, and regional promotion strength instead
+    // -- all free data fighter-lite.json's own `.phys` object already
+    // carries, same source the site's own free "Tale of the tape" widget
+    // (mf-tape in pages.js) draws from. Shown only when taleOfTape itself is
+    // empty, so a pairing WITH real stat coverage still gets the richer
+    // comparison as the featured one.
+    function bioRow(label, av, bv){
+      if (av == null || av === '') { if (bv == null || bv === '') return ''; }
+      var fmt = function(v){ return (v == null || v === '') ? '—' : v; };
+      return (
+        '<div class="he-bio-row">' +
+          '<span class="he-bio-val a">' + esc(fmt(av)) + '</span>' +
+          '<span class="he-bio-label">' + esc(label) + '</span>' +
+          '<span class="he-bio-val b">' + esc(fmt(bv)) + '</span>' +
+        '</div>'
+      );
+    }
+    function promoRow(pa, pb){
+      if (!pa && !pb) return '';
+      var fmt = function(p){ return p ? p.label : '—'; };
+      return (
+        '<div class="he-bio-row">' +
+          '<span class="he-bio-val a">' + esc(fmt(pa)) + '</span>' +
+          '<span class="he-bio-label">Regional Strength</span>' +
+          '<span class="he-bio-val b">' + esc(fmt(pb)) + '</span>' +
+        '</div>'
+      );
+    }
+    function l5HTML(l5){
+      if (!l5 || !l5.length) return '—';
+      return l5.map(function(r){
+        var cls = r.r === 'W' ? 'w' : (r.r === 'L' ? 'l' : 'd');
+        return '<span class="he-l5-tile ' + cls + '">' + esc(r.r || '?') + '</span>';
+      }).join('');
+    }
+    function bioTapeHTML(bt, f1, f2){
+      if (!bt) return '';
+      var a = bt.a || {}, b = bt.b || {};
+      var rows =
+        bioRow('Age', a.age, b.age) +
+        bioRow('Height', a.ht, b.ht) +
+        bioRow('Reach', a.reach, b.reach) +
+        bioRow('Stance', a.stance, b.stance) +
+        bioRow('Layoff', a.layoff && a.layoff.txt, b.layoff && b.layoff.txt) +
+        promoRow(a.promoTier, b.promoTier);
+      var l5 = ((a.l5 && a.l5.length) || (b.l5 && b.l5.length)) ? (
+        '<div class="he-bio-row">' +
+          '<span class="he-bio-val a">' + l5HTML(a.l5) + '</span>' +
+          '<span class="he-bio-label">Last 5</span>' +
+          '<span class="he-bio-val b">' + l5HTML(b.l5) + '</span>' +
+        '</div>'
+      ) : '';
+      if (!rows && !l5) return '';
+      return (
+        '<div class="he-tape he-bio-tape">' +
+          '<div class="he-tape-title">Matchup Preview</div>' +
+          '<p class="gl-muted" style="margin:0 0 .55rem;font-size:.72rem">No fight-stats data yet — showing bio &amp; background instead.</p>' +
+          '<div class="he-tape-legend">' +
+            '<span class="he-tape-legend-item"><span class="he-tape-dot a"></span>' + esc(f1) + '</span>' +
+            '<span class="he-tape-legend-item"><span class="he-tape-dot b"></span>' + esc(f2) + '</span>' +
+          '</div>' +
+          rows + l5 +
+        '</div>'
+      );
+    }
+    function mainEventSection(card, taleOfTape, bioTape){
       var main = card && (card.fights || [])[0];
       var head = '<div class="gl-dash-head"><h2 class="gl-dash-title hm-title">This Week’s <span class="a">Main Event</span></h2></div>';
       if (!card || !main){
@@ -130,7 +200,7 @@ window.GL_ROUTER.register('home', {
             '<div class="he-side">' + av(main.f2, main.s2, 'he-av') + heName(main.f2, main.s2) + '</div>' +
           '</div>' +
           '<p class="gl-muted" style="margin:.6rem 0 .8rem;text-align:center">' + esc(card.event) + '</p>' +
-          tapeHTML(taleOfTape, main.f1, main.f2) +
+          ((taleOfTape && taleOfTape.length) ? tapeHTML(taleOfTape, main.f1, main.f2) : bioTapeHTML(bioTape, main.f1, main.f2)) +
           '<button type="button" class="gl-btn gl-btn-outline" style="margin-top:.8rem" data-goto="matchup">View Full Card</button>' +
         '</div>'
       );
@@ -552,9 +622,9 @@ window.GL_ROUTER.register('home', {
     // premium-only Bet Tracker/Tape Study teasers traded away the first
     // time this was rebuilt (nothing now -- both are back, just reshaped
     // to fit this one-shared-layout structure).
-    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsStats){
+    function render(pickemCard, pickemMine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsStats, bioTape){
       container.innerHTML =
-        mainEventSection(matchupCard, taleOfTape) +
+        mainEventSection(matchupCard, taleOfTape, bioTape) +
         oddsSection(matchupCard, subscribed) +
         scheduledCardsSection(carousel) +
         leadersSection(leadersData) +
@@ -586,6 +656,7 @@ window.GL_ROUTER.register('home', {
         var card = cardRes && cardRes.card;
         var matchupCard = matchupRes && matchupRes.card;
         var taleOfTape = matchupRes && matchupRes.taleOfTape;
+        var bioTape = matchupRes && matchupRes.bioTape;
         var carousel = matchupRes && matchupRes.carousel;
         // /api/app/pickem-card requires a session (worker/index.js returns
         // 401 with no session), so cardRes is always null for a logged-out
@@ -608,7 +679,7 @@ window.GL_ROUTER.register('home', {
         var betsPromise = subscribed ? window.GL_API.bets().catch(function(){ return null; }) : Promise.resolve(null);
         if (!card || !loggedIn) {
           return betsPromise.then(function(betsRes){
-            render(card, null, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsRes && betsRes.stats);
+            render(card, null, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsRes && betsRes.stats, bioTape);
           });
         }
         return Promise.all([
@@ -616,7 +687,7 @@ window.GL_ROUTER.register('home', {
           betsPromise,
         ]).then(function(more){
           var mine = more[0], betsRes = more[1];
-          render(card, mine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsRes && betsRes.stats);
+          render(card, mine, rankingsData, matchupCard, rosterData, subscribed, taleOfTape, carousel, leadersData, betsRes && betsRes.stats, bioTape);
         });
       });
     });
