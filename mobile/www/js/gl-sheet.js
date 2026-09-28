@@ -818,20 +818,24 @@
     ctx.textAlign = 'center'; ctx.font = '800 ' + (31 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('VS', x + w / 2, avY + 10 * s);
 
-    var nameY = avY + R + 41 * s;
+    // Names and the result/method caption line bumped up (same fix as the
+    // site's copy of this function: fighter names ~20%, caption ~25-30%) --
+    // reported as reading too small next to the avatars. ROW_H grew to match
+    // (see its own comment below).
+    var nameY = avY + R + 44 * s;
     var nameMax = w * 0.4;
-    ctx.font = '700 ' + (28 * s).toFixed(1) + 'px ' + COND;
+    ctx.font = '700 ' + (34 * s).toFixed(1) + 'px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText(clip(ctx, (p.winner || '').toUpperCase(), nameMax), cxA, nameY);
     ctx.fillStyle = '#c8ccd2'; ctx.fillText(clip(ctx, (p.loser || '').toUpperCase(), nameMax), cxB, nameY);
 
-    var lineY = nameY + 33 * s;
+    var lineY = nameY + 40 * s;
     ctx.textAlign = 'left';
     if (!graded) {
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (23 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (29 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
       ctx.fillText(clip(ctx, pkMethodLabel(p), nameMax), cxA, lineY);
       ctx.textAlign = 'left';
     } else if (p.voided) {
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (23 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (29 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
       ctx.fillText('Draw / No Contest', x + w / 2, lineY);
       ctx.textAlign = 'left';
     } else {
@@ -839,15 +843,18 @@
       var pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
       var ptsCol = pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT);
       var seg = [
-        { t: win, f: '700 ' + (24 * s).toFixed(1) + 'px ' + COND, c: TXT },
-        { t: ' def. ', f: '400 ' + (19 * s).toFixed(1) + 'px ' + SANS, c: MUT },
-        { t: los, f: '400 ' + (20 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
-        { t: '   ' + ptsStr, f: '800 ' + (22 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
+        { t: win, f: '700 ' + (30 * s).toFixed(1) + 'px ' + COND, c: TXT },
+        { t: ' def. ', f: '400 ' + (24 * s).toFixed(1) + 'px ' + SANS, c: MUT },
+        { t: los, f: '400 ' + (25 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: '   ' + ptsStr, f: '800 ' + (28 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
   }
-  var ROW_H = 225;
+  // Bumped from 225 -- same fix as the site's copy, see its comment: at 225
+  // the caption line's baseline landed just 2px above the next row once the
+  // name/caption fonts grew.
+  var ROW_H = 248;
   function drawPickem(data) {
     return fontsReady().then(function () {
       return loadBrandLogo();

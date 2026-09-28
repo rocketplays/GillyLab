@@ -746,9 +746,14 @@ const GL_SHEET = (function () {
     ctx.textAlign = 'center'; ctx.font = '800 ' + (31 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('VS', x + w / 2, avY + 10 * s);
 
-    const nameY = avY + R + 41 * s;
+    // Names and the result/method caption line bumped up (fighter names
+    // ~20%, the caption line ~25-30%) -- reported as reading too small next
+    // to the avatars, especially in the two-column grid where `s` already
+    // shrinks everything further. The nameY/lineY gaps grow along with the
+    // fonts so the bigger text doesn't crowd the row above or below it.
+    const nameY = avY + R + 44 * s;
     const nameMax = w * 0.4;
-    ctx.font = '700 ' + (28 * s).toFixed(1) + 'px ' + COND;
+    ctx.font = '700 ' + (34 * s).toFixed(1) + 'px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText(clip(ctx, (p.winner || '').toUpperCase(), nameMax), cxA, nameY);
     ctx.fillStyle = '#c8ccd2'; ctx.fillText(clip(ctx, (p.loser || '').toUpperCase(), nameMax), cxB, nameY);
 
@@ -758,17 +763,17 @@ const GL_SHEET = (function () {
     // under both names made it read as unattached to either side. Once
     // graded it becomes the actual result, which genuinely is about both
     // fighters, so that line stays centred on the whole bout.
-    const lineY = nameY + 33 * s;
+    const lineY = nameY + 40 * s;
     ctx.textAlign = 'left';   // drawSegs positions from a fixed x, so undo the centring above
     if (!graded) {
       // Confidence is already shown by the ring around the picked fighter's
       // photo, so this line is just the method — no need to repeat "High/Med/
       // Low pick" in text too.
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (23 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (29 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
       ctx.fillText(clip(ctx, pkMethodLabel(p), nameMax), cxA, lineY);
       ctx.textAlign = 'left';
     } else if (p.voided) {
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (23 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (29 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
       ctx.fillText('Draw / No Contest', x + w / 2, lineY);
       ctx.textAlign = 'left';
     } else {
@@ -776,10 +781,10 @@ const GL_SHEET = (function () {
       const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
       const ptsCol = pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT);
       const seg = [
-        { t: win, f: '700 ' + (24 * s).toFixed(1) + 'px ' + COND, c: TXT },
-        { t: ' def. ', f: '400 ' + (19 * s).toFixed(1) + 'px ' + SANS, c: MUT },
-        { t: los, f: '400 ' + (20 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
-        { t: '   ' + ptsStr, f: '800 ' + (22 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
+        { t: win, f: '700 ' + (30 * s).toFixed(1) + 'px ' + COND, c: TXT },
+        { t: ' def. ', f: '400 ' + (24 * s).toFixed(1) + 'px ' + SANS, c: MUT },
+        { t: los, f: '400 ' + (25 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: '   ' + ptsStr, f: '800 ' + (28 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
@@ -791,8 +796,11 @@ const GL_SHEET = (function () {
   // pick or the result, never both, so it never needs extra room post-grade.
   // 225 (down from 240) — the header/avatar gap in pkBoutCard tightened now
   // that most rows draw no header text at all (division/rounds is gone, and
-  // only the main event still shows MAIN EVENT up there).
-  const ROW_H = 225;
+  // only the main event still shows MAIN EVENT up there). Bumped back up to
+  // 248 when the name/caption fonts grew (see pkBoutCard) -- at 225 the
+  // caption line's baseline landed just 2px above the next row, effectively
+  // zero clearance, versus ~12px before the font bump.
+  const ROW_H = 248;
   async function drawPickem(data) {
     await fontsReady();
     const logo = await loadBrandLogo();
