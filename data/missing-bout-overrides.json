@@ -1,4 +1,40 @@
 {
   "_comment": "Manual corrections for bouts that are real/booked (confirmed via UFC.com, Sherdog, BestFightOdds, etc.) but are entirely missing from the Cito API feed — as opposed to fighter-overrides.json, which swaps one fighter within an EXISTING bout, this file injects a brand-new bout object into an existing event. The update-odds workflow re-fetches data/event.json from scratch every run and would otherwise never show these bouts — apply-missing-bout-overrides.js re-applies every entry here on top of the fresh fetch before it's committed. Remove an entry once the upstream API picks the bout up on its own (the script also auto-skips if a bout with the same fighters already exists, so it's safe to leave entries in after the API catches up).",
-  "overrides": []
+  "overrides": [
+    {
+      "addedOn": "2026-09-28",
+      "eventSlug": "ufc-332",
+      "matchFighterNames": ["Jacobe Smith", "Bruce Whitehead"],
+      "note": "Short-notice welterweight addition to UFC 332 (Oct 3, 2026), confirmed via ufc.com's Fight By Fight Preview — Whitehead steps in on short notice for his Octagon debut. Not yet in the Cito/ESPN feed as of 2026-09-28.",
+      "bout": {
+        "cardSection": "Early Prelims",
+        "cardSectionOrder": 3,
+        "cardPosition": "Early Prelims 3",
+        "boutOrder": 3002.5,
+        "weightClass": "Welterweight Bout",
+        "titleBout": false,
+        "fighters": [
+          {
+            "fighterSlug": "jacobe-smith",
+            "fighterName": "Jacobe Smith",
+            "corner": "red",
+            "country": "USA",
+            "flag": "🇺🇸",
+            "division": "Welterweight",
+            "recordText": "12-0-0"
+          },
+          {
+            "fighterSlug": "bruce-whitehead",
+            "fighterName": "Bruce Whitehead",
+            "corner": "blue",
+            "country": "USA",
+            "flag": "🇺🇸",
+            "division": "Welterweight",
+            "recordText": "8-2-0",
+            "nickname": "The Goose"
+          }
+        ]
+      }
+    }
+  ]
 }
