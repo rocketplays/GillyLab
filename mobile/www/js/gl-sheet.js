@@ -733,12 +733,19 @@
     return p.method + (p.round ? ' · R' + p.round : '');
   }
   function pkPossessive(name) { return name ? (name + (/s$/i.test(name) ? "'" : "'s")) : 'My'; }
-  function pkLegend(ctx, x, y) {
+  // Same fix as the site's copy of this function: the ring around each pick
+  // means confidence pre-grade but hit/miss/void once graded, so the legend
+  // has to switch with it -- a RESULTS sheet used to keep showing the
+  // CONFIDENCE key even though the ring no longer meant that, which is a
+  // big part of why results didn't read clearly.
+  function pkLegend(ctx, x, y, graded) {
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    var label = graded ? 'RESULT' : 'CONFIDENCE';
+    var items = graded ? [['Correct', ACC], ['Wrong', PK_RED], ['Void', MUT]] : [['High', ACC], ['Med', AMB], ['Low', MUT]];
     ctx.font = '700 21px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('CONFIDENCE', x, y);
-    var lx = x + ctx.measureText('CONFIDENCE').width + 28;
-    [['High', ACC], ['Med', AMB], ['Low', MUT]].forEach(function (pair) {
+    ctx.fillText(label, x, y);
+    var lx = x + ctx.measureText(label).width + 28;
+    items.forEach(function (pair) {
       var lab = pair[0], c = pair[1];
       roundRect(ctx, lx, y - 5, 26, 9, 4.5); ctx.fillStyle = c; ctx.fill();
       ctx.font = '600 24px ' + SANS; ctx.fillStyle = TXT;
@@ -798,12 +805,9 @@
       ctx.textAlign = 'center'; ctx.font = '700 ' + (20 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ACC;
       ctx.fillText(tag, x + w / 2, headY);
     }
-    if (graded) {
-      var pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
-      ctx.textAlign = 'right'; ctx.font = '800 ' + (26 * s).toFixed(1) + 'px ' + COND;
-      ctx.fillStyle = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
-      ctx.fillText(ptsStr, x + w, headY);
-    }
+    // Points moved into the result caption line (see the `else` branch
+    // below) instead of a bare number floating at the top-right corner of
+    // every tile -- same fix as the site's copy, see its comment for why.
     var cxA = x + w * 0.27, cxB = x + w * 0.73;
     var avY = headY + 15 * s + R;
     var hit = p.voided ? null : (graded ? !!p.winnerHit : true);
@@ -832,10 +836,13 @@
       ctx.textAlign = 'left';
     } else {
       var win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
+      var pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
+      var ptsCol = pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT);
       var seg = [
         { t: win, f: '700 ' + (24 * s).toFixed(1) + 'px ' + COND, c: TXT },
         { t: ' def. ', f: '400 ' + (19 * s).toFixed(1) + 'px ' + SANS, c: MUT },
         { t: los, f: '400 ' + (20 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: '   ' + ptsStr, f: '800 ' + (22 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
@@ -902,7 +909,7 @@
         : (n + ' pick' + (n === 1 ? '' : 's'));
       var sub = [data.eventName, data.eventDate, tail].filter(Boolean).join('   ·   ');
       ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
-      pkLegend(ctx, 64, legendY);
+      pkLegend(ctx, 64, legendY, graded);
       if (graded) {
         var total = data.totalPoints || 0;
         ctx.textBaseline = 'middle'; ctx.textAlign = 'right';

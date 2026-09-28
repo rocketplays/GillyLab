@@ -2160,7 +2160,28 @@ async function handlePickemHistory(request, env, url) {
     const ev = (results.events || []).find(e => e.slug === slug);
     const closing = await loadClosingOdds(env, url);
     const card = ev ? gradeCard(rec, withClosingOdds(ev.bouts, closing)) : { bouts: rec.picks.map(p => ({ ...p, pending: true, points: 0 })), total: 0, correct: 0 };
-    return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts: card.bouts }, 200, cors);
+    // Resolve fighter-profile slugs + the actual result names server-side so
+    // the app's Share results sheet can show real photos and the correct
+    // "X def. Y" line -- the raw gradeCard() bout only carries f1/f2/winner
+    // (the PICK) plus a `result` object; the app screen had neither a slug
+    // table nor the site's client-side nameToSlug() to resolve one itself,
+    // so it was sending winnerSlug/loserSlug: null (initials-only, no
+    // photos at all) and deriving actualWinner as "the pick, or nothing"
+    // (wrong on a miss -- it should be the opponent who actually won).
+    const profileSlugs = await loadProfileSlugs(env, url);
+    const bouts = card.bouts.map(b => {
+      const loser = namesMatch(b.winner, b.f1) ? b.f2 : b.f1;
+      const r = b.result && !b.voided ? b.result : null;
+      const aw = r ? r.winner : null;
+      const al = aw ? (namesMatch(aw, b.f1) ? b.f2 : b.f1) : null;
+      return {
+        ...b, loser,
+        winnerSlug: profileSlugFor(b.winner, profileSlugs) || null,
+        loserSlug: profileSlugFor(loser, profileSlugs) || null,
+        actualWinner: aw, actualLoser: al,
+      };
+    });
+    return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts }, 200, cors);
   }
   const { ordered, aggs } = await pickemBoardData(env, url);
   const ag = (await pkGet(env, "ag:" + s.email)) || { name: await getDisplayName(env, s.email), byEvent: {} };

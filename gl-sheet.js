@@ -612,12 +612,23 @@ const GL_SHEET = (function () {
   }
   function pkPossessive(name) { return name ? (name + (/s$/i.test(name) ? "'" : "'s")) : 'My'; }
   // Confidence colour legend: a short swatch (matching the row spine) + label ×3.
-  function pkLegend(ctx, x, y) {
+  // The ring around each picked fighter's photo means something different
+  // pre-grade vs. post-grade (see pkBoutCard's ringCol): before results,
+  // it's the confidence colour (High/Med/Low); once graded, that same ring
+  // switches to hit/miss/void instead. This legend used to hard-code the
+  // CONFIDENCE key regardless, so a RESULTS card showed a legend for a
+  // meaning the ring no longer had -- a viewer had no real way to read a
+  // green ring as "correct" vs. what the card told them it meant ("High
+  // confidence"), which is a big part of why results didn't read clearly.
+  // `graded` picks the matching legend instead.
+  function pkLegend(ctx, x, y, graded) {
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    const label = graded ? 'RESULT' : 'CONFIDENCE';
+    const items = graded ? [['Correct', ACC], ['Wrong', PK_RED], ['Void', MUT]] : [['High', ACC], ['Med', AMB], ['Low', MUT]];
     ctx.font = '700 21px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('CONFIDENCE', x, y);
-    let lx = x + ctx.measureText('CONFIDENCE').width + 28;
-    [['High', ACC], ['Med', AMB], ['Low', MUT]].forEach(([lab, c]) => {
+    ctx.fillText(label, x, y);
+    let lx = x + ctx.measureText(label).width + 28;
+    items.forEach(([lab, c]) => {
       roundRect(ctx, lx, y - 5, 26, 9, 4.5); ctx.fillStyle = c; ctx.fill();
       ctx.font = '600 24px ' + SANS; ctx.fillStyle = TXT;
       ctx.fillText(lab, lx + 36, y + 1);
@@ -716,12 +727,14 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'center'; ctx.font = '700 ' + (20 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ACC;
       ctx.fillText(tag, x + w / 2, headY);
     }
-    if (graded) {
-      const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
-      ctx.textAlign = 'right'; ctx.font = '800 ' + (26 * s).toFixed(1) + 'px ' + COND;
-      ctx.fillStyle = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
-      ctx.fillText(ptsStr, x + w, headY);
-    }
+    // Points used to print here, at the top-right corner of every tile, with
+    // nothing tying the bare number to the fight it belonged to -- across a
+    // full two-column grid of bouts that read as a scatter of "+2"s and
+    // "-1"s with no anchor, i.e. exactly the "points floating everywhere"
+    // complaint. Moved into the result caption line itself (see the `else`
+    // branch below, "X def. Y  +2") so each point value sits directly next
+    // to the result sentence that explains it, instead of hovering
+    // unlabeled above the whole card.
 
     const cxA = x + w * 0.27, cxB = x + w * 0.73;
     const avY = headY + 15 * s + R;
@@ -760,10 +773,13 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'left';
     } else {
       const win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
+      const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
+      const ptsCol = pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT);
       const seg = [
         { t: win, f: '700 ' + (24 * s).toFixed(1) + 'px ' + COND, c: TXT },
         { t: ' def. ', f: '400 ' + (19 * s).toFixed(1) + 'px ' + SANS, c: MUT },
         { t: los, f: '400 ' + (20 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: '   ' + ptsStr, f: '800 ' + (22 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
@@ -879,7 +895,7 @@ const GL_SHEET = (function () {
       : (n + ' pick' + (n === 1 ? '' : 's'));
     const sub = [data.eventName, data.eventDate, tail].filter(Boolean).join('   ·   ');
     ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
-    pkLegend(ctx, 64, legendY);
+    pkLegend(ctx, 64, legendY, graded);
     if (graded) {
       const total = data.totalPoints || 0;
       ctx.textBaseline = 'middle'; ctx.textAlign = 'right';

@@ -9265,7 +9265,12 @@
      const aw = (r && !voided) ? r.winner : null;
      const al = aw ? (eq(aw, b.f1) ? b.f2 : b.f1) : null;
      return {
-       winner: b.winner, loser, winnerSlug: slugOf(aw || b.winner),
+       // winnerSlug is always the PICKED fighter's own slug, never the
+       // actual winner's -- see sharePayload()'s comment on this same fix.
+       // pkBoutCard always draws this avatar at the pick position and
+       // labels it with the pick's name; swapping the photo for the actual
+       // winner's on a wrong pick put the wrong face under that name.
+       winner: b.winner, loser, winnerSlug: slugOf(b.winner),
        method: b.method || null,
        round: (b.method && b.method !== 'Decision') ? (b.round || null) : null,
        confidence: b.confidence || 'Med', label: '', isMain: false,
@@ -132295,12 +132300,23 @@ const GL_SHEET = (function () {
   }
   function pkPossessive(name) { return name ? (name + (/s$/i.test(name) ? "'" : "'s")) : 'My'; }
   // Confidence colour legend: a short swatch (matching the row spine) + label ×3.
-  function pkLegend(ctx, x, y) {
+  // The ring around each picked fighter's photo means something different
+  // pre-grade vs. post-grade (see pkBoutCard's ringCol): before results,
+  // it's the confidence colour (High/Med/Low); once graded, that same ring
+  // switches to hit/miss/void instead. This legend used to hard-code the
+  // CONFIDENCE key regardless, so a RESULTS card showed a legend for a
+  // meaning the ring no longer had -- a viewer had no real way to read a
+  // green ring as "correct" vs. what the card told them it meant ("High
+  // confidence"), which is a big part of why results didn't read clearly.
+  // `graded` picks the matching legend instead.
+  function pkLegend(ctx, x, y, graded) {
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    const label = graded ? 'RESULT' : 'CONFIDENCE';
+    const items = graded ? [['Correct', ACC], ['Wrong', PK_RED], ['Void', MUT]] : [['High', ACC], ['Med', AMB], ['Low', MUT]];
     ctx.font = '700 21px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('CONFIDENCE', x, y);
-    let lx = x + ctx.measureText('CONFIDENCE').width + 28;
-    [['High', ACC], ['Med', AMB], ['Low', MUT]].forEach(([lab, c]) => {
+    ctx.fillText(label, x, y);
+    let lx = x + ctx.measureText(label).width + 28;
+    items.forEach(([lab, c]) => {
       roundRect(ctx, lx, y - 5, 26, 9, 4.5); ctx.fillStyle = c; ctx.fill();
       ctx.font = '600 24px ' + SANS; ctx.fillStyle = TXT;
       ctx.fillText(lab, lx + 36, y + 1);
@@ -132399,12 +132415,14 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'center'; ctx.font = '700 ' + (20 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ACC;
       ctx.fillText(tag, x + w / 2, headY);
     }
-    if (graded) {
-      const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
-      ctx.textAlign = 'right'; ctx.font = '800 ' + (26 * s).toFixed(1) + 'px ' + COND;
-      ctx.fillStyle = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
-      ctx.fillText(ptsStr, x + w, headY);
-    }
+    // Points used to print here, at the top-right corner of every tile, with
+    // nothing tying the bare number to the fight it belonged to -- across a
+    // full two-column grid of bouts that read as a scatter of "+2"s and
+    // "-1"s with no anchor, i.e. exactly the "points floating everywhere"
+    // complaint. Moved into the result caption line itself (see the `else`
+    // branch below, "X def. Y  +2") so each point value sits directly next
+    // to the result sentence that explains it, instead of hovering
+    // unlabeled above the whole card.
 
     const cxA = x + w * 0.27, cxB = x + w * 0.73;
     const avY = headY + 15 * s + R;
@@ -132443,10 +132461,13 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'left';
     } else {
       const win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
+      const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
+      const ptsCol = pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT);
       const seg = [
         { t: win, f: '700 ' + (24 * s).toFixed(1) + 'px ' + COND, c: TXT },
         { t: ' def. ', f: '400 ' + (19 * s).toFixed(1) + 'px ' + SANS, c: MUT },
         { t: los, f: '400 ' + (20 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: '   ' + ptsStr, f: '800 ' + (22 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
@@ -132562,7 +132583,7 @@ const GL_SHEET = (function () {
       : (n + ' pick' + (n === 1 ? '' : 's'));
     const sub = [data.eventName, data.eventDate, tail].filter(Boolean).join('   ·   ');
     ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
-    pkLegend(ctx, 64, legendY);
+    pkLegend(ctx, 64, legendY, graded);
     if (graded) {
       const total = data.totalPoints || 0;
       ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
@@ -146521,8 +146542,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           const g = gradePick(p, f);
           const aw = g.winner || null;                        // who actually won
           const al = aw ? (aw === f.f1 ? f.f2 : f.f1) : null;  // who they beat
+          // winnerSlug stays the PICKED fighter's own slug (already set in
+          // `base` above) -- it used to get swapped for the actual winner's
+          // slug once graded ("avatar = actual winner"), but pkBoutCard
+          // always draws that avatar at the picked-fighter position (ring
+          // colour + check/X badge show right/wrong) and always labels it
+          // with p.winner's NAME, which is still the pick, win or lose. On
+          // a wrong pick that mismatch put the actual winner's FACE under
+          // the picked fighter's NAME -- reported as "shows the wrong
+          // pictures when you picked a fighter wrong". The true result is
+          // already conveyed by the ring/badge plus the "X def. Y" caption
+          // line below (actualWinner/actualLoser), so the avatar itself
+          // never needs to change photos.
           picks.push({ ...base,
-            winnerSlug: (typeof nameToSlug === 'function') ? nameToSlug(aw || p.winner) : null,  // avatar = actual winner
             actualWinner: aw, actualLoser: al,
             resultMethod: g.method || null, resultRound: g.round || null,
             points: g.points, winnerHit: !!g.winnerHit, methodHit: !!g.methodHit, roundHit: !!g.roundHit, voided: !!g.voided });

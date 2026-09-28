@@ -49,8 +49,13 @@ function mountPickem(container){
   // fighter with no photo on file just shows the name, not a broken-image icon.
   var FIGHTER_PHOTO_BASE = window.GL_API.BASE + '/photos/thumb/';
   var CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
+  // Cost of a wrong winner, by confidence -- mirrors index.html's own
+  // CONF_PENALTY and worker/pickem.mjs's gradeBout exactly, so a fight
+  // graded here matches what the leaderboard/profile eventually show.
+  var CONF_PENALTY = { High: 10, Med: 5, Low: 0 };
   var card = null, score = {}, picks = {}, name = null, locked = false;
   var submitted = false, dirty = false, inFlight = false;
+  var pkPollTimer = null;
 
   function sideOf(bout, winnerName){ return winnerName === bout.f1 ? 'f1' : 'f2'; }
   function partsFor(id, side, method, round){
@@ -68,6 +73,47 @@ function mountPickem(container){
     return Math.round((pt.wPts + pt.mPts + pt.rPts) * m);
   }
   function isComplete(p){ return !!(p && p.winner && p.method && p.confidence && (p.method === 'Decision' || p.round)); }
+
+  // A bout the API's already graded (see worker's loadUpcomingCard: b.res is
+  // attached the moment ESPN's live feed reports a result, well before the
+  // whole card is "final"). This screen used to never read b.res at all --
+  // it always showed the pre-fight pick UI and a "Total possible points"
+  // preview, fight after fight, card after card, even hours after the card
+  // ended -- while the site's /pickem page (a fresh page load re-fetches
+  // data/event.json, which is what carries the live result through to here)
+  // showed each fight's real result and a running "Scored so far" the whole
+  // time. Reading b.res is the fix; see gradeBoutPick below for the actual
+  // scoring, ported from index.html's gradePick / worker/pickem.mjs's
+  // gradeBout so the number shown here matches what lands on the profile.
+  function isDone(b){ return !!(b && b.res); }
+  // Same normalized-name / shared-surname tolerance as index.html's pkNameEq
+  // and the server's namesMatch, so a display-name change between pick time
+  // and the result ("Bobby Green" -> "King Green") still grades correctly.
+  function pkNameEq(a, b){
+    var nn = function(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\b(jr|sr|iv|iii|ii|v)\b/g, '').replace(/[^a-z0-9]+/g, ''); };
+    var na = nn(a), nb = nn(b);
+    if (!na || !nb) return false;
+    if (na === nb) return true;
+    if (na.length >= 5 && nb.length >= 5 && (na.indexOf(nb) === 0 || nb.indexOf(na) === 0)) return true;
+    var ln = function(s){ var t = String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\b(jr|sr|iv|iii|ii|v)\b/g, ' ').replace(/[^a-z0-9\s]/g, ' ').trim().split(/\s+/).filter(Boolean); return t.length ? t[t.length - 1] : ''; };
+    var la = ln(a), lb = ln(b);
+    return !!la && la === lb && la.length >= 3;
+  }
+  // Grade a user's pick against a finished bout's b.res. Mirrors gradePick
+  // (index.html) / gradeBout (worker/pickem.mjs): winner is base-or-nothing
+  // (a wrong pick COSTS confidence-scaled points, it isn't just zero), then
+  // method and round are scored independently once the winner is right.
+  function gradeBoutPick(p, b){
+    var res = b.res;
+    if (!p || !p.winner) return { points: 0, nopick: true };
+    if (res.voided) return { points: 0, voided: true };
+    if (!pkNameEq(p.winner, res.winner)) return { points: -(CONF_PENALTY[p.confidence] || 0), winnerHit: false };
+    var pt = partsFor(b.id, p.side, p.method, p.round);
+    var methodHit = !!p.method && p.method === res.method;
+    var roundHit = res.method !== 'Decision' && p.round != null && +p.round === +res.round;
+    var earned = pt.wPts + (methodHit ? pt.mPts : 0) + (roundHit ? pt.rPts : 0);
+    return { points: Math.round(earned * (CONF_MULT[p.confidence] || CONF_MULT.Med)), winnerHit: true, methodHit: methodHit, roundHit: roundHit };
+  }
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
 
@@ -97,6 +143,7 @@ function mountPickem(container){
         '<h2 class="gl-heading" style="margin:0 0 .2rem;font-size:1.1rem">' + esc(card.name) + '</h2>' +
         '<p class="gl-muted" style="margin:0">' + esc(card.date) + '</p>' +
         lockedNote +
+        '<p id="pkLiveSummary" style="margin:.5rem 0 0" hidden></p>' +
       '</div>' +
       (name ? '' :
         '<div class="gl-card" id="pkNameCard">' +
@@ -159,10 +206,53 @@ function mountPickem(container){
     }).catch(function(){});
   }
 
+  // Compact "Final" row for a bout the API has already graded -- mirrors
+  // index.html's resultBoutHTML: the actual result, plus whether the user's
+  // pick hit and the points it earned (or cost, on a miss).
+  function resultBoutHTML(b){
+    var p = picks[b.id];
+    var g = gradeBoutPick(p, b);
+    var res = b.res;
+    var methodStr = res.method + (res.method !== 'Decision' && res.round ? ' · R' + res.round : '');
+    var outcome = res.voided ? 'Draw / No Contest' : (esc(res.winner) + ' def. ' + esc(res.winner === b.f1 ? b.f2 : b.f1));
+    var cls, pickLine, pts;
+    if (g.nopick){ cls = 'void'; pickLine = 'No pick made'; pts = ''; }
+    else if (g.voided){ cls = 'void'; pickLine = 'You picked ' + esc(p.winner) + ' — bout voided'; pts = '<span class="pk-res-pts zero">0</span>'; }
+    else if (g.winnerHit){
+      cls = 'hit';
+      pickLine = 'You picked ' + esc(p.winner) + ' ✓' + (g.methodHit ? ' · method ✓' : '') + (g.roundHit ? ' · round ✓' : '');
+      pts = '<span class="pk-res-pts pos">+' + g.points + '</span>';
+    } else {
+      cls = 'miss';
+      pickLine = 'You picked ' + esc(p.winner) + ' ✗';
+      pts = '<span class="pk-res-pts neg">' + g.points + '</span>';
+    }
+    return (
+      '<div class="pk-bout gl-card pk-bout-result ' + cls + '" data-bout="' + b.id + '">' +
+        '<div class="pk-bout-head"><span class="gl-label" style="margin:0">' + esc(b.wc || '') + '</span><span class="pk-res-final">Final</span></div>' +
+        '<div class="pk-res-outcome">' + outcome + (!res.voided ? ' <span class="pk-res-method">· ' + esc(methodStr) + '</span>' : '') + '</div>' +
+        '<div class="pk-res-foot"><span class="pk-res-pick">' + pickLine + '</span>' + pts + '</div>' +
+      '</div>'
+    );
+  }
+  function summaryLine(){
+    var doneBouts = card.bouts.filter(isDone);
+    if (!doneBouts.length) return null;
+    var scored = doneBouts.reduce(function(t, b){ return t + gradeBoutPick(picks[b.id], b).points; }, 0);
+    var pending = card.bouts.filter(function(b){ return !isDone(b); });
+    var atStake = pending.reduce(function(t, b){ var p = picks[b.id]; return t + (p && p.winner ? potential(p) : 0); }, 0);
+    return '<span class="' + (scored >= 0 ? 'pk-pos' : 'pk-neg') + '">Scored so far: <strong>' + (scored > 0 ? '+' : '') + scored + '</strong> pts</span>' +
+      (pending.length ? ' · <span class="gl-muted">still at stake: <strong>' + atStake + '</strong></span>' : ' · <span class="gl-muted">card complete</span>');
+  }
   function renderBouts(){
     var host = container.querySelector('#pkBouts');
     if (!host) return;
+    var sum = summaryLine();
+    var sumEl = container.querySelector('#pkLiveSummary');
+    if (sumEl) sumEl.innerHTML = sum || '';
+    if (sumEl) sumEl.hidden = !sum;
     host.innerHTML = card.bouts.map(function(b){
+      if (isDone(b)) return resultBoutHTML(b);
       var p = picks[b.id];
       var winner = p && p.winner;
       var f1sel = winner === b.f1, f2sel = winner === b.f2;
@@ -568,13 +658,24 @@ function mountPickem(container){
       var histShareBtn = container.querySelector('#pkHistShareBtn');
       if (histShareBtn) histShareBtn.addEventListener('click', function(){
         window.GL_NATIVE.tap();
+        // winnerSlug/loserSlug and actualWinner/actualLoser now come straight
+        // off the API (see worker's handlePickemHistory) instead of being
+        // guessed here -- this used to send winnerSlug/loserSlug: null
+        // (no photos at all, initials-only, unlike the site's card) and
+        // actualWinner: b.winnerHit ? b.winner : null (wrong on a miss: a
+        // wrong pick showed no result name at all instead of who actually
+        // won). Mirrors the site's own drawPickem/pkBoutCard contract: the
+        // avatar and NAME at the pick position always stay the pick's own
+        // (winner/loser/winnerSlug/loserSlug), right or wrong -- the ring
+        // colour + badge show correctness, and actualWinner/actualLoser only
+        // drive the separate "X def. Y" result caption underneath.
         var picksOut = bouts.map(function(b){
           return {
-            winner: b.winner, loser: b.winner === b.f1 ? b.f2 : b.f1,
-            winnerSlug: null, loserSlug: null,
+            winner: b.winner, loser: b.loser,
+            winnerSlug: b.winnerSlug || null, loserSlug: b.loserSlug || null,
             method: b.method || null, round: b.round || null, confidence: b.confidence || 'Med',
             voided: !!b.voided, winnerHit: !!b.winnerHit, methodHit: !!b.methodHit, roundHit: !!b.roundHit,
-            actualWinner: b.winnerHit ? b.winner : null,
+            actualWinner: b.actualWinner || null, actualLoser: b.actualLoser || null,
             points: b.points || 0,
           };
         });
@@ -608,7 +709,37 @@ function mountPickem(container){
     if (mine && mine.locked) locked = true;
     renderShell();
     if (mine && mine.record) { submitted = true; updateBar(); updateShareBtn(); }
+    startPkLivePoll();
   }).catch(function(){
     container.innerHTML = '<p class="gl-error">Couldn’t load this week’s card -- check your connection and try again.</p>';
   });
+
+  // ── Live results poll --------------------------------------------------
+  // Same 45s convention as bettracker.js's pollLive: re-fetch the card while
+  // any bout is still undecided, and only re-render when a result actually
+  // landed (loadUpcomingCard attaches b.res the moment ESPN reports it, well
+  // before the whole card is final -- see isDone's comment above). Without
+  // this, a user who opened the tab before the card went live would sit on
+  // the pre-fight picker for every finished fight until they force-quit and
+  // reopened the app.
+  function pkResultSignature(bouts){
+    return (bouts || []).map(function(b){ return b.id + ':' + (b.res ? (b.res.winner || '') + '|' + b.res.method + '|' + b.res.round + '|' + (b.res.voided?1:0) : ''); }).join(';');
+  }
+  function startPkLivePoll(){
+    if (pkPollTimer) clearInterval(pkPollTimer);
+    if (!card || card.bouts.every(isDone)) return;   // nothing left to resolve
+    pkPollTimer = setInterval(function(){
+      if (!container.isConnected){ clearInterval(pkPollTimer); pkPollTimer = null; return; }
+      var prevSig = pkResultSignature(card.bouts);
+      window.GL_API.pickemCard().then(function(cardRes){
+        if (!container.isConnected) return;
+        card = cardRes.card; score = cardRes.score || {};
+        locked = !!card.locked;
+        if (pkResultSignature(card.bouts) === prevSig) return;
+        renderBouts();
+        updateBar();
+        if (card.bouts.every(isDone) && pkPollTimer){ clearInterval(pkPollTimer); pkPollTimer = null; }
+      }).catch(function(){});
+    }, 45000);
+  }
 }

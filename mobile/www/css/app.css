@@ -718,6 +718,21 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .pk-seg button.sel{ border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); }
 .pk-bout-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:.5rem; gap:.5rem; }
 .pk-clear{ background:none; border:none; color:var(--muted); font-size:.78rem; text-decoration:underline; cursor:pointer; padding:0; flex-shrink:0; }
+/* A finished bout's result card (pickem.js's resultBoutHTML) -- mirrors
+   index.html's own .pk-res-* rules exactly, added here because this view
+   didn't exist on the app before: the screen used to never check whether a
+   bout was decided (see pickem.js's isDone), so it kept showing the
+   pre-fight picker and a "Total possible points" preview for every fight,
+   live card or not. */
+.pk-res-final{ font-size:.6rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); border-radius:5px; padding:.1rem .4rem; }
+.pk-res-outcome{ font-size:1rem; color:var(--text); margin-bottom:.4rem; }
+.pk-res-method{ color:var(--muted); font-size:.82rem; font-weight:500; }
+.pk-res-foot{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+.pk-res-pick{ color:var(--muted); font-size:.8rem; }
+.pk-res-pts{ font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:1.25rem; flex:0 0 auto; }
+.pk-res-pts.pos, .pk-pos{ color:var(--accent); }
+.pk-res-pts.neg, .pk-neg{ color:#ff6a5e; }
+.pk-res-pts.zero{ color:var(--muted); }
 /* A real position:fixed bar pinned directly above the tab bar -- NOT
    position:sticky inside .gl-app's scrolling column. Sticky was leaving a
    visible gap: it sticks to the padding EDGE of its scrolling ancestor, but
