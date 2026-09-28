@@ -205,6 +205,7 @@ const ALIAS = {
   'Taner Trembley|Gabe Eurit': 'Gabriel Eurit',
   'Logan Paxton|Boris Novachov': 'Boris Novachkov',
   'Douglas Rodrigues|Rickson Pisani': 'Rickson Oliveira Pisani',
+  'Marc-André Barriault|JunYong Park': 'Park Jun-yong',
 };
 
 // Rows deliberately not placed, with the reason. Kept so a re-run of the same
