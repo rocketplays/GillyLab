@@ -163,12 +163,39 @@ function mountMatchup(container){
       : '<span>' + esc(name) + '</span>';
   }
 
+  // Colored W/L/D/NC form tile for a Last-5 result -- mirrors index.html's
+  // own lastFiveFormHTML() (FIGHT_RESULT_COLORS), just without the hover
+  // tooltip data-attrs the site attaches (no hover surface on a phone).
+  var FORM_TILE_COLORS = { W: '#00e668', L: '#ff3d00', D: '#ffb340', NC: 'rgba(255,255,255,0.45)', DQ: '#ff3d00' };
+  function formTileHTML(l5){
+    if (!l5 || !l5.length) return '<span style="color:var(--muted);font-size:.78rem">No data</span>';
+    return l5.map(function(r){
+      var color = FORM_TILE_COLORS[r.r] || 'rgba(255,255,255,0.45)';
+      return '<span class="mf-form-tile" style="background:' + color + '26;border-color:' + color + ';color:' + color + '">' + esc(r.r || '?') + '</span>';
+    }).join('');
+  }
   function tapeHTML(t){
     if (!t || !t.a || !t.b) return '';
     var rows = [['Age', t.a.age, t.b.age], ['Height', t.a.ht, t.b.ht], ['Reach', t.a.reach, t.b.reach], ['Stance', t.a.stance, t.b.stance]];
     var body = rows.map(function(r){
       return '<div class="sr-cmp-row"><div class="sr-cmp-lbl">' + r[0] + '</div><div class="sr-cmp-val">' + esc(r[1] || '—') + '</div><div class="sr-cmp-val">' + esc(r[2] || '—') + '</div></div>';
     }).join('');
+    // Layoff + Last 5 -- the site's Tale of the tape (renderScouting,
+    // index.html ~134111-134125) shows both of these too; this app's port
+    // dropped them originally. t.a.layoff/t.a.l5 already ride along in the
+    // same breakdown payload (buildMainTape's per-fighter _physOf()), so no
+    // worker/API change is needed here, just rendering what's already sent.
+    var loA = t.a.layoff, loB = t.b.layoff;
+    if (loA || loB){
+      body += '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Layoff</div>' +
+        '<div class="sr-cmp-val' + (loA && loA.long ? ' l' : '') + '">' + esc(loA ? loA.txt : '—') + '</div>' +
+        '<div class="sr-cmp-val' + (loB && loB.long ? ' l' : '') + '">' + esc(loB ? loB.txt : '—') + '</div></div>';
+    }
+    if ((t.a.l5 && t.a.l5.length) || (t.b.l5 && t.b.l5.length)){
+      body += '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Last 5</div>' +
+        '<div class="sr-cmp-val sr-form">' + formTileHTML(t.a.l5) + '</div>' +
+        '<div class="sr-cmp-val sr-form">' + formTileHTML(t.b.l5) + '</div></div>';
+    }
     return '<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>' + body + '</div>';
   }
 
@@ -187,7 +214,7 @@ function mountMatchup(container){
   // fight-tile + breakdown objects from a plain data attribute instead of
   // serializing all of t.stats/lean/path into the DOM.
   var shareMatchupCache = {};
-  function breakdownHTML(f, t, deepDive, eventSlug){
+  function breakdownHTML(f, t, deepDive, eventSlug, special){
     if (!t) return lockedTeaserHTML();
     shareMatchupCache[f.f1 + '::' + f.f2] = { f: f, breakdown: t };
     var sA = surname(f.f1), sB = surname(f.f2);
@@ -269,8 +296,14 @@ function mountMatchup(container){
       : '';
     // Mirrors the site's Fight Info "Generate matchup sheet" button
     // (index.html's ~133400-133436) -- a tale-of-the-tape/head-to-head/
-    // style/path share sheet built from this exact panel's own data.
-    var shareBtn = window.GL_SHEET
+    // style/path share sheet built from this exact panel's own data. Hidden
+    // for DWCS cards: a contestant fighting their UFC-audition bout has
+    // essentially none of that data yet (no fight-stats, thin/no tale of
+    // the tape, no style/pace/path breakdown) -- the sheet would just be a
+    // near-empty card, not a useful share. `special` is the same
+    // specialClassFor(event) classification ('mf-dwcs' for DWCS) the caller
+    // already computed once per event for the numbered/DWCS title styling.
+    var shareBtn = (window.GL_SHEET && special !== 'mf-dwcs')
       ? '<button type="button" class="gl-sheet-btn" data-share-mm="' + esc(f.f1 + '::' + f.f2) + '">Generate matchup sheet</button>'
       : '';
     return ddBtn + parts.join('') + shareBtn;
@@ -522,14 +555,14 @@ function mountMatchup(container){
     if (res) {
       panelBody = flagChip + completedPanelHTML(f, res);
     } else if (isMain) {
-      panelBody = flagChip + tapeHTML(f.tape) + breakdownHTML(f, breakdown, deepDive, eventSlug);
+      panelBody = flagChip + tapeHTML(f.tape) + breakdownHTML(f, breakdown, deepDive, eventSlug, special);
     } else if (subscribed) {
       // Deep Dive button sits right below Tale of the Tape, same spot as the
       // main event's own button (breakdownHTML prepends its ddBtn before the
       // Style/Pace/Path/etc. parts) -- this used to run AFTER the whole
       // breakdown instead, which put it in a different place on every other
       // bout than on the main event.
-      panelBody = flagChip + tapeHTML(f.tape) + (f.dd ? ddButtonHTML(f) : '') + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug) : noBreakdownHTML());
+      panelBody = flagChip + tapeHTML(f.tape) + (f.dd ? ddButtonHTML(f) : '') + (f.breakdown ? breakdownHTML(f, f.breakdown, null, eventSlug, special) : noBreakdownHTML());
     } else {
       panelBody = flagChip + tapeHTML(f.tape) + lockedTeaserHTML();
     }

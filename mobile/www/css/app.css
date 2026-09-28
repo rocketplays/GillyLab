@@ -1339,7 +1339,13 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sr-cmp-lbl{ color:var(--muted); font-size:.76rem; min-width:0; overflow-wrap:break-word; text-align:center; }
 .sr-cmp-val{ text-align:center; font-weight:700; min-width:0; overflow-wrap:break-word; }
 .sr-cmp-val.w{ color:var(--accent); }
+.sr-cmp-val.l{ color:#ff6a5e; }
 .sr-cmp-head{ color:var(--muted); font-weight:700; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; }
+/* Last-5 form tiles inside Tale of the tape -- mirrors the site's own
+   lastFiveFormHTML() tile sizing/coloring (index.html ~135912-135926),
+   minus the hover tooltip (no hover surface on a phone). */
+.sr-cmp-val.sr-form{ display:flex; justify-content:center; gap:.25rem; flex-wrap:wrap; }
+.mf-form-tile{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:4px; font-weight:800; font-size:.65rem; font-family:'Barlow Condensed',sans-serif; border:1px solid; }
 /* Site's own track color is a translucent WHITE overlay (rgba(255,255,255,
    .12), index.html:2850) rather than a flat dark var(--surface2) -- against
    ANY dark card background a white-based overlay reads as a visibly
