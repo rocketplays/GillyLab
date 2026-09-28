@@ -153,6 +153,27 @@ function isWithdrawalSubject(name, para) {
 }
 const nameRe = (name, flags) => new RegExp('\\b' + escapeRe(name).replace(/\s+/g, '\\s+') + '\\b', flags);
 
+// A withdrawal mentioned only because the CURRENT pairing was previously booked
+// for a different, already-resolved event -- "were initially scheduled to
+// compete at UFC 330 in August, but Blanchfield withdrew", "was originally
+// scheduled for UFC 324... but Harrison withdrew", "had been originally slated
+// for UFC Fight Night: Fiziev vs. Torres in June, but Vettori was forced to
+// withdraw, which resulted in the bout's cancellation". The bout already made
+// it onto the CURRENT card (that's why the paragraph exists at all) -- this is
+// closed history explaining how the pairing got here, not a live pullout risk.
+// A genuinely live, unresolved withdrawal (Cerminara/Horth-style: opponent
+// pulls out of THIS card with no replacement yet) carries no "originally/
+// initially/previously scheduled ... for/at" phrasing, so it is unaffected.
+// Checked paragraph-wide (like WITHDRAW itself) rather than sentence-by-sentence,
+// because the "originally scheduled elsewhere" clue and the withdrawal it
+// explains often land in different sentences of the same paragraph -- e.g. the
+// UFC 332 Background separates "...was initially scheduled to serve as the
+// co-main event..." from the later "However, Shevchenko withdrew..." sentence.
+const STALE_RESCHEDULE = /\b(?:originally|initially|previously)\b(?:\s+\w+){0,2}?\s+(?:scheduled|slated|booked)\b/i;
+function isStaleReschedule(para) {
+  return STALE_RESCHEDULE.test(para);
+}
+
 /**
  * @param {string} wikitext  Wikipedia article wikitext.
  * @param {string[]} currentNames  Exact fighter names on the live card.
@@ -198,8 +219,11 @@ function extractCardChanges(wikitext, currentNames) {
 
     // 2) A withdrawal with NO replacement yet — flag the fighter who STAYED
     // (the one still on the card whose opponent left). Skip the fighter who left,
-    // and skip a bout merely moved to another card (no withdrawal language).
-    if (WITHDRAW.test(para)) {
+    // skip a bout merely moved to another card (no withdrawal language), and skip
+    // a withdrawal that only explains how the CURRENT pairing got rebooked from a
+    // different, already-resolved event (isStaleReschedule) — that's closed
+    // history, not a live pullout risk.
+    if (WITHDRAW.test(para) && !isStaleReschedule(para)) {
       for (const { canonical: F, searchName } of present) {
         const key = normLoose(F);
         if (shortNotice.has(key) || mayChange.has(key)) continue;
