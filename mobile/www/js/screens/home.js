@@ -167,11 +167,6 @@ window.GL_ROUTER.register('home', {
       return (
         '<div class="he-tape he-bio-tape">' +
           '<div class="he-tape-title">Matchup Preview</div>' +
-          '<p class="gl-muted" style="margin:0 0 .55rem;font-size:.72rem">No fight-stats data yet — showing bio &amp; background instead.</p>' +
-          '<div class="he-tape-legend">' +
-            '<span class="he-tape-legend-item"><span class="he-tape-dot a"></span>' + esc(f1) + '</span>' +
-            '<span class="he-tape-legend-item"><span class="he-tape-dot b"></span>' + esc(f2) + '</span>' +
-          '</div>' +
           rows + l5 +
         '</div>'
       );

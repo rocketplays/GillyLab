@@ -571,8 +571,8 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .he-bio-tape .he-tape-title{ margin-bottom:.3rem; }
 .he-bio-row{ display:flex; align-items:baseline; justify-content:space-between; gap:.5rem; padding:.32rem 0; border-bottom:1px solid var(--border); }
 .he-bio-row:last-child{ border-bottom:none; }
-.he-bio-val{ flex:1 1 0; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.82rem; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.he-bio-val.a{ color:var(--accent); text-align:left; }
+.he-bio-val{ flex:1 1 0; font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:.82rem; min-width:0; white-space:normal; word-break:break-word; }
+.he-bio-val.a{ color:var(--text); text-align:left; }
 .he-bio-val.b{ color:var(--text); text-align:right; }
 .he-bio-label{ flex:0 0 auto; font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:center; padding:0 .4rem; }
 .he-l5-tile{ display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:4px; font-size:.6rem; font-weight:800; margin-left:2px; }
