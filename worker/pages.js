@@ -2860,6 +2860,16 @@ export function eventToCard(raw, liteBySlug, isPast, oddsData, newsData) {
     const slugB = resolveLiteSlug(rawSlugB, liteBySlug);
     const physA = liteBySlug && liteBySlug[slugA] && liteBySlug[slugA].phys;
     const physB = liteBySlug && liteBySlug[slugB] && liteBySlug[slugB].phys;
+    // Record: prefer our own fighter-lite snapshot (built from FIGHTERS/
+    // FIGHT_HISTORY, same source index.html's own computeRecord() trusts
+    // first) over ESPN's raw feed. ESPN's per-athlete record lags for a
+    // newly-added prospect -- Javad Mahjoub (5-0-0 in our data) sat at
+    // "0-0-0 (W-L-D)" in data/event.json's ESPN profile for weeks after
+    // his UFC debut was booked, which is what the app's matchup tiles were
+    // showing verbatim with no fallback. Desktop never had this bug because
+    // it always checks FIGHT_HISTORY before ESPN's recordText.
+    const liteRecA = liteBySlug && liteBySlug[slugA] && liteBySlug[slugA].record;
+    const liteRecB = liteBySlug && liteBySlug[slugB] && liteBySlug[slugB].record;
     // The DISPLAY name needs the same alias resolution as the slug above --
     // SLUG_ALIASES only ever patched s1/s2, so a fighter like "Jose Miguel
     // Delgado" (ESPN's feed name) kept showing that raw name everywhere on
@@ -2873,8 +2883,8 @@ export function eventToCard(raw, liteBySlug, isPast, oddsData, newsData) {
       f2: f2Name,
       s1: slugA, s2: slugB,
       rank1: fa.rankText || null, rank2: fb.rankText || null,
-      rec1: stripRec(fa.profile && fa.profile.record && fa.profile.record.text),
-      rec2: stripRec(fb.profile && fb.profile.record && fb.profile.record.text),
+      rec1: stripRec(liteRecA || (fa.profile && fa.profile.record && fa.profile.record.text)),
+      rec2: stripRec(liteRecB || (fb.profile && fb.profile.record && fb.profile.record.text)),
       o1: null, o2: null,
       weight: stripBout(b.weightClass),
       rounds: b.numberOfRounds || 3,
