@@ -11251,7 +11251,7 @@
   "Dalcha Lungiambula": { ht:"5'8\"", dob:"1987-07-31", reach:'76"', stance:"Orthodox", slpm:3.07, strAcc:"45%", sapm:3.93, strDef:"53%", kd:0.21, tdLanded:2.14, tdAcc:"45%", tdDef:"78%", subAvg:0.0, finRate:"55%", streak:0, gym:"Camp Fight" },
   "Carlos Mota": { ht:"5'6\"", dob:"1995-04-15", reach:'69"', stance:"Orthodox", slpm:0.8, strAcc:"41%", sapm:1.13, strDef:"54%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"50%", subAvg:1.0, finRate:"50%", streak:0, gym:"Pr1mera Fight" },
   "Benito Lopez": { ht:"5'10\"", dob:"1994-04-06", reach:'73"', stance:"Switch", slpm:4.39, strAcc:"45%", sapm:5.18, strDef:"56%", kd:0.28, tdLanded:0.0, tdAcc:null, tdDef:"73%", subAvg:0.28, finRate:"50%", streak:0, gym:"Team Alpha Male" },
-  "Steven Koslow": { ht:"5'7\"", dob:"1997-01-22", reach:'69"', stance:"Switch", slpm:0.77, strAcc:"38%", sapm:3.73, strDef:"40%", kd:0.0, tdLanded:5.28, tdAcc:"56%", tdDef:null, subAvg:1.06, finRate:"100%", streak:0, gym:"10th Planet Jiu Jitsu" },
+  "Steven Koslow": { ht:"5'7\"", dob:"1997-01-22", reach:'69"', stance:"Switch", slpm:0.77, strAcc:"38%", sapm:3.73, strDef:"40%", kd:0.0, tdLanded:5.28, tdAcc:"56%", tdDef:"0%", subAvg:1.06, finRate:"100%", streak:0, gym:"10th Planet Jiu Jitsu" },
   "Liudvik Sholinian": { ht:"5'10\"", dob:"1990-01-20", reach:'71"', stance:"Orthodox", slpm:2.5, strAcc:"31%", sapm:5.67, strDef:"55%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"67%", subAvg:0.0, finRate:"44%", streak:0, gym:"Aurum Sport Club" },
   "Cheyanne Vlismas": { ht:"5'3\"", dob:"1995-06-25", reach:'63"', stance:"Switch", slpm:4.93, strAcc:"51%", sapm:2.57, strDef:"65%", kd:0.25, tdLanded:0.25, tdAcc:"33%", tdDef:"67%", subAvg:0.25, finRate:"29%", streak:0, gym:"Xtreme Couture" },
   "Darren Till": { ht:"6'0\"", dob:"1992-12-24", reach:'74.5"', stance:"Southpaw", slpm:2.3, strAcc:"47%", sapm:3.31, strDef:"56%", kd:0.46, tdLanded:0.55, tdAcc:"46%", tdDef:"70%", subAvg:0.0, finRate:"67%", streak:0, gym:"Team Kaobon" },
@@ -38194,6 +38194,9 @@
  // closest to the bout being shown, so a rematch doesn't inherit the first fight's
  // line. Undated entries keep working as before.
  const ODDS_HISTORY = {
+  "Steven Koslow": [
+    { opponent: "Cameron Saaiman", odds: 275 }
+  ],
   "Pavel Andrusca": [
     { opponent: "Nathaniel Wood", odds: 250, date: "2026-09-05" },
     { opponent: "Pengchu Gexi", odds: -649 },
@@ -80686,12 +80689,12 @@ const FIGHT_HISTORY = {
   ],
   "Steven Koslow": [
     { date: "Dec 10, 2022", opponent: "Cameron Saaiman", result: "L", method: "KO/TKO", round: 3, time: "4:13", event: "UFC 282: Blachowicz vs. Ankalaev", org: "UFC" },
-    { date: "Jul 16, 2022", opponent: "James Dunn", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:05", event: "Combat Night: Orlando 2022" },
+    { date: "Jul 15, 2022", opponent: "James Dunn", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:05", event: "Combat Night: Orlando 2022" },
     { date: "Nov 6, 2021", opponent: "Marcelo Willian", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "2:29", event: "Combat Night Pro: Jacksonville 2021" },
     { date: "Mar 13, 2021", opponent: "Anthony Retic", result: "W", method: "Submission (Kimura)", round: 1, time: "1:34", event: "Combat Night Pro 20" },
-    { date: "Mar 21, 2020", opponent: "Ginseng Poit Du'Jour", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:01", event: "Combat Night: Combat Night Pro 18" },
+    { date: "Mar 20, 2020", opponent: "Ginseng Poit Du'Jour", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:01", event: "Combat Night: Combat Night Pro 18" },
     { date: "Jul 20, 2019", opponent: "Jonathan Ortiz", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "0:21", event: "Combat Night: Combat Night Pro 14" },
-    { date: "May 4, 2019", opponent: "Joshua Ciulla", result: "W", method: "Submission (Armbar)", round: 1, time: "2:12", event: "Combat Night Pro 12: May the 4th Be With You" },
+    { date: "May 3, 2019", opponent: "Joshua Ciulla", result: "W", method: "Submission (Armbar)", round: 1, time: "2:12", event: "Combat Night Pro 12: May the 4th Be With You" },
   ],
   "Liudvik Sholinian": [
     { date: "Nov 5, 2022", opponent: "Johnny Munoz", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Rodriguez vs. Lemos", org: "UFC" },
@@ -117758,6 +117761,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Steven Koslow": [
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🏅", title: "6 of 6 career wins by submission (100% finish rate) heading into his UFC debut", detail: null }
+  ],
   "Pavel Andrusca": [
     { icon: "🏆", title: "Vendetta Fight Nights (VFN) Bantamweight Champion — won the belt in his 4th pro fight (TKO of Ahmet Simsek, VFN 41, Oct 2024) and defended it twice before moving to UAE Warriors", detail: null },
     { icon: "🎯", title: "Signed on less than a week's notice to replace Mairon Santos and won his short-notice UFC debut by unanimous decision over Nathaniel Wood at UFC Fight Night: Hooker vs. Parnasse (Sep 5, 2026), moving up from bantamweight to featherweight and improving to 9-0", detail: null },
