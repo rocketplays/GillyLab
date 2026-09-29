@@ -603,6 +603,18 @@ window.GL_ODDS = (function(){
     if (!PARLAY.legs.length) return;
     var asset = plShareAsset;
     if (!asset) return;
+    // Route through Capacitor's Filesystem+Share plugins when running in the
+    // app (writes a real file:// image and hands it to the NATIVE share
+    // sheet via `files`, which is what makes "Save Image"/"Add to Photos"
+    // show up -- see native.js's saveImage()). The old navigator.share
+    // (files) call below only worked in a real Safari/Chrome tab; a
+    // Capacitor WKWebView doesn't tag that File as an image, so the sheet
+    // came up without a Save Image option.
+    if (window.GL_NATIVE && window.GL_NATIVE.isNative()){
+      var cv = plDrawSlip();
+      window.GL_NATIVE.saveImage(cv.toDataURL('image/png'), 'gillylab-parlay.png');
+      return;
+    }
     if (PL_IOS && plCanShareFiles(asset.file)){ navigator.share({ files: [asset.file] }).catch(function(){}); return; }
     plDownload(asset.blob);
   }

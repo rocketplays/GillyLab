@@ -72,7 +72,11 @@ window.GL_NATIVE = (function(){
       var base64 = String(dataUrl || '').split(',')[1] || '';
       return P.Filesystem.writeFile({ path: filename, data: base64, directory: 'CACHE' })
         .then(function(res){
-          return P.Share.share({ url: res.uri, dialogTitle: 'Save or share' });
+          // files (not url): only the files array gets tagged as an actual
+          // image by the native share sheet, which is what makes "Save
+          // Image"/"Add to Photos" show up. url is treated as a generic
+          // link/attachment and drops that option entirely.
+          return P.Share.share({ files: [res.uri], dialogTitle: 'Save or share' });
         })
         .catch(function(){});   // user cancelled the sheet, or a native error -- nothing more to do
     }
