@@ -69,15 +69,15 @@ window.GL_FIGHTER = (function(){
     return legend + body;
   }
 
-  // Full 8-item marketing list shown to logged-out/free users, with a "Go
-  // Premium" CTA. A subscribed user never sees this -- they get the real
-  // tabbed content instead (fightHistoryHTML/tapeStudyHTML/oddsHistoryHTML/
-  // accoladesHTML/newsHTML via tabsHTML()); the Fight Simulator entry here
-  // stays purely descriptive copy since that tool lives in the premium
-  // "More" tab-bar sheet, not on this profile.
+  // Marketing list shown to non-subscribed viewers, with a "Go Premium"
+  // CTA. "Full fight history" used to be in here, but Fight History itself
+  // is now a real, unlocked section on every profile (see
+  // /api/app/fighter-extras' own free-preview branch) -- everything else
+  // here is still genuinely Premium-only, ported unchanged. The Fight
+  // Simulator entry stays purely descriptive copy since that tool lives in
+  // the premium "More" tab-bar sheet, not on this profile.
   var ALL_LOCKED_ITEMS = [
     ['Fight simulator', 'Run this fighter against anyone on the roster.'],
-    ['Full fight history', 'Every pro bout — result, method, round &amp; opponent.'],
     ['Box scores', 'Full detailed statistics for every UFC bout in history, head-to-head.'],
     ['Tape study', 'Links to full video of each of their previous fights.'],
     ['Closing-line history', 'Their closing line for each fight — favorite or underdog.'],
@@ -92,13 +92,16 @@ window.GL_FIGHTER = (function(){
     }).join('');
   }
 
+  // Placed AFTER Fight History now (see renderHTML), not instead of it --
+  // "the rest of the profile" rather than "the full profile", since Fight
+  // History is no longer one of the things Premium unlocks.
   function lockedHTML(){
     return (
       '<div class="fp-lock">' +
-        '<div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The full profile &amp; tools</div></div>' +
-        '<div class="gl-muted" style="margin:.2rem 0 .8rem">Everything GillyLab Premium unlocks:</div>' +
+        '<div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The rest of the profile &amp; tools</div></div>' +
+        '<div class="gl-muted" style="margin:.2rem 0 .8rem">Everything else GillyLab Premium unlocks:</div>' +
         '<div class="fp-lock-grid">' + lockGridHTML(ALL_LOCKED_ITEMS) + '</div>' +
-        '<button type="button" class="gl-btn gl-btn-primary" data-goto="premium">Go Premium for the full profile &amp; tools</button>' +
+        '<button type="button" class="gl-btn gl-btn-primary" data-goto="premium">Go Premium for the rest of the profile &amp; tools</button>' +
       '</div>'
     );
   }
@@ -610,23 +613,28 @@ window.GL_FIGHTER = (function(){
   // Free-flowing, like the website's own /fighter/<slug> page (.fp-head,
   // .fsx-bio, .fsx-group) -- avatar/name header and stat bars are plain
   // content with thin divider lines, not boxed cards. The Premium lock
-  // block for free/logged-out viewers is the only thing that's ever boxed,
-  // same as the site's own paywall treatment.
+  // block is the only thing that's ever boxed, same as the site's own
+  // paywall treatment.
   //
-  // `subscribed` picks the tail: false gets the full 8-item locked list with
-  // a "Go Premium" CTA; true gets the real tabbed Fight History/Tape Study/
-  // Odds History/Accolades/News content (`extras`, possibly with nothing at
-  // all for this particular fighter, or null if that fetch itself failed --
-  // either way treated as "nothing to show yet", NOT as "not premium").
-  // Keeping this a separate flag from `extras` matters: a subscribed viewer
-  // whose extras fetch hiccups on a bad connection must never see the "Go
-  // Premium" upsell they've already paid for -- see load()'s comment on why
-  // account() and fighterExtras() are fetched/caught separately.
+  // `subscribed` no longer picks between "real content" and "just the lock
+  // block" -- /api/app/fighter-extras now hands back a real (if trimmed)
+  // `extras` to every caller: a non-subscribed viewer's `extras` has only
+  // `fightHistory` populated (tapeStudy/oddsHistory/accolades/news/
+  // recordBreakdown are simply absent, never fetched server-side), so
+  // tabsHTML(extras) naturally renders just that one section -- same single-
+  // tab-no-switcher path it already used for a subscribed fighter with only
+  // one non-empty tab. The lock block then follows, listing only what's
+  // STILL Premium, so "the rest of the profile" replaces "the full profile"
+  // without a second render path for the free case. A subscribed viewer
+  // whose extras fetch hiccups on a bad connection sees an empty tail
+  // (tabsHTML on `{}` returns ''), never the free lock block -- see load()'s
+  // comment on why account() and fighterExtras() are fetched/caught
+  // separately.
   function renderHTML(f, subscribed, extras){
     f = f || {};
     var rankLabel = f.rank && f.rank !== 'NR' ? (/C/.test(f.rank) ? 'Champion' : f.rank) : '';
     var metaBits = [f.record, f.division, f.country].filter(Boolean).join(' · ');
-    var tail = subscribed ? (tabsHTML(extras || {}) + statsModalHTML()) : lockedHTML();
+    var tail = tabsHTML(extras || {}) + (subscribed ? statsModalHTML() : lockedHTML());
     // Same placement as the site: right under the record, above everything
     // else -- only for a subscribed viewer with actual breakdown data (the
     // toggle simply doesn't render rather than opening onto an empty panel).
@@ -661,17 +669,20 @@ window.GL_FIGHTER = (function(){
   // call is allowed to touch the DOM.
   var loadSeq = 0;
 
-  // Renders straight into `container` (loading state, then result), and wires
-  // the profile's own "Go Premium" button plus (for subscribed viewers) the
-  // Accolades/Tape Study tab switcher and Watch buttons. Callers own the back
-  // button and list-vs-panel visibility around this -- see roster.js/matchup.js.
+  // Renders straight into `container` (loading state, then result), and
+  // wires the profile's own "Go Premium" button plus the Fight History row
+  // clicks/opponent links (and, for subscribed viewers, the Tape Study/Odds
+  // History/Accolades/News tab switcher and Watch buttons too). Callers own
+  // the back button and list-vs-panel visibility around this -- see
+  // roster.js/matchup.js.
   //
-  // account() is fetched alongside fighter() (both free/no-cost calls) purely
-  // to read `subscribed` -- a logged-out call resolves to null here (caught),
-  // same "not signed in = not premium" treatment as everywhere else in the
-  // app. Only a subscribed viewer triggers the extra fighterExtras() call;
-  // there's no point asking a free/logged-out viewer's device to hit an
-  // endpoint that will just 401/403.
+  // account() is fetched alongside fighter() (both free/no-cost calls)
+  // purely to read `subscribed` -- a logged-out call resolves to null here
+  // (caught), same "not signed in = not premium" treatment as everywhere
+  // else in the app. fighterExtras() is now fetched for every viewer, not
+  // just a subscribed one -- see /api/app/fighter-extras' own free-preview
+  // branch (worker/index.js), which hands back a trimmed { fightHistory }
+  // for anyone who isn't Premium instead of 401/403ing.
   function load(container, slug){
     var mySeq = ++loadSeq;
     activeContainer = container;
@@ -684,10 +695,7 @@ window.GL_FIGHTER = (function(){
       if (mySeq !== loadSeq) return; // a newer profile request already won
       var fighterRes = results[0], acct = results[1];
       var subscribed = !!(acct && acct.subscribed);
-      var extrasPromise = subscribed
-        ? window.GL_API.fighterExtras(slug).catch(function(){ return null; })
-        : Promise.resolve(null);
-      return extrasPromise.then(function(extras){
+      return window.GL_API.fighterExtras(slug).catch(function(){ return null; }).then(function(extras){
         if (mySeq !== loadSeq) return;
         container.innerHTML = renderHTML(fighterRes.fighter, subscribed, extras);
         var goPrem = container.querySelector('[data-goto="premium"]');
@@ -695,7 +703,7 @@ window.GL_FIGHTER = (function(){
           window.GL_NATIVE.tap();
           window.GL_ROUTER.go('premium');
         });
-        if (subscribed) wireExtras(container, fighterRes.fighter && fighterRes.fighter.name, extras || {});
+        wireExtras(container, fighterRes.fighter && fighterRes.fighter.name, extras || {});
       });
     }).catch(function(){
       if (mySeq !== loadSeq) return;

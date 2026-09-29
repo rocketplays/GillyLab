@@ -2980,11 +2980,21 @@ export default {
       if (path === "/api/stripe-webhook" && request.method === "POST") return handleWebhook(request, env);
       if (path === "/api/magic/start" && request.method === "POST") return handleMagicStart(request, env);
       if (path === "/api/magic/verify") return handleMagicVerify(request, env, url);
+      // Magic-link sign-in for the native app -- see handleAppMagicStart's
+      // own comment for why this needs its own device-flow-style pair of
+      // endpoints rather than just CORS-wrapping the two above.
+      if (path === "/api/app/magic/start" && request.method === "POST") return handleAppMagicStart(request, env);
+      if (path === "/api/app/magic/poll" && request.method === "POST") return handleAppMagicPoll(request, env);
       if (path === "/login/app-handoff") return handleAppHandoffConsume(request, env, url);
       if (path === "/api/change-password" && request.method === "POST") return handleChangePassword(request, env);
       if (path === "/api/delete-account" && request.method === "POST") return handleDeleteAccount(request, env);
-      if (path === "/api/reset/start" && request.method === "POST") return handleResetStart(request, env);
-      if (path === "/api/reset/complete" && request.method === "POST") return handleResetComplete(request, env);
+      // CORS-attached (not just handleChangePassword's own inline cors) so
+      // the app's forgot-password flow can read the response cross-origin --
+      // same "wrap an existing site-only handler" pattern as the /api/bets/*
+      // routes below, no separate /api/app/* route needed for a plain form
+      // post like this.
+      if (path === "/api/reset/start" && request.method === "POST") return appCorsAttach(request, handleResetStart(request, env));
+      if (path === "/api/reset/complete" && request.method === "POST") return appCorsAttach(request, handleResetComplete(request, env));
       if (path === "/api/contact" && request.method === "POST") return handleContact(request, env);
       if (path === "/api/unsubscribe") return handleUnsubscribe(request, env, url);
       if (path === "/api/admin/reminders") return handleAdminReminders(request, env, url);
@@ -3749,12 +3759,17 @@ export default {
       // request's slug into another's).
       if (path === "/api/app/fighter-extras" && request.method === "GET") {
         const cors = appCorsHeaders(request);
-        const s = await readSession(request, env);
-        if (!s) return json({ error: "Please log in to see this." }, 401, cors);
-        const u = await getUser(env, s.email);
-        if (!u || !u.subscribed) return json({ error: "This is a Premium feature." }, 403, cors);
         const slug = (url.searchParams.get("slug") || "").trim().toLowerCase();
         if (!slug) return json({ error: "missing slug" }, 400, cors);
+        // Free/logged-out callers now get a real (trimmed) response instead
+        // of a 401/403 -- see the `subscribed` branch at the end of this
+        // handler for what "trimmed" means. Everything between here and
+        // there is unchanged and still runs for both audiences, since Fight
+        // History's own live-card/upcoming-row merges benefit a free
+        // preview just as much as the full Premium view.
+        const s = await readSession(request, env);
+        const u = s ? await getUser(env, s.email) : null;
+        const subscribed = !!(u && u.subscribed);
         const fighterExtras = await getFighterExtras(env);
         const baseExtras = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug]) || {};
         const extras = Object.assign({}, baseExtras);
@@ -3810,7 +3825,13 @@ export default {
           }
         }
         if (extras.fightHistory && extras.fightHistory.length) {
-          const fightStats = fighterName ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
+          // Box scores stay Premium-only (still its own line in the lock
+          // grid on both the app and the site) -- skip the ~8MB
+          // fight-stats.json fetch entirely for a free/logged-out caller
+          // rather than fetching it just to strip `stats` back out below.
+          // oppSlug (the opponent-profile link) is cheap and free either
+          // way, so every viewer gets it.
+          const fightStats = subscribed && fighterName ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
           const arr = fightStats && fighterName ? fightStats[fighterName] : null;
           extras.fightHistory = extras.fightHistory.map(function (row) {
             const rec = arr ? fightStatsFor(arr, row.date) : null;
@@ -3831,7 +3852,8 @@ export default {
         // the reported bug (closing odds on the site, not on the app) for a
         // fight that "just happened." Done here, live, instead of waiting on
         // the bake, same reasoning as the live-card fightHistory merge above.
-        if (fighterName) {
+        // oddsHistory itself is Premium-only, so this whole merge is too.
+        if (subscribed && fighterName) {
           const closingOdds = await loadAssetJson(env, url, "/data/odds-closing.json");
           const closingFights = Array.isArray(closingOdds && closingOdds.fights) ? closingOdds.fights : [];
           const lastTok = (s) => String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/\s+/).pop().toLowerCase();
@@ -3922,6 +3944,14 @@ export default {
             }
           }
         }
+        // Free/logged-out preview: Fight History only, no box scores (see
+        // the `subscribed` guard above the stats attachment). Everything
+        // else this handler computed (tapeStudy/oddsHistory/accolades/news/
+        // recordBreakdown) is Premium and simply left out rather than sent
+        // and hidden client-side -- see fighter.js's/fighterLitePage's own
+        // "fight history unlocked, the rest stays behind the lock grid"
+        // split.
+        if (!subscribed) return json({ fightHistory: extras.fightHistory || [] }, 200, cors);
         return json(extras, 200, cors);
       }
       // Odds & Projections -- premium-only, an "identical copy" (per spec) of
@@ -4889,13 +4919,26 @@ export default {
       if (path.startsWith("/fighter/")) {
         const slug = decodeURIComponent(path.slice("/fighter/".length)).replace(/\/+$/, "").toLowerCase();
         const s = await readSession(request, env);
-        const [u, lite] = await Promise.all([
+        const [u, lite, fighterExtras] = await Promise.all([
           s ? getUser(env, s.email) : null,
           loadAssetJson(env, url, "/data/fighter-lite.json"),
+          getFighterExtras(env),
         ]);
         const fighter = lite && lite.bySlug && lite.bySlug[slug];
         if (!fighter) return html('<!doctype html><meta charset="utf-8"><title>Fighter not found · GillyLab</title><meta name="viewport" content="width=device-width, initial-scale=1"><body style="margin:0;background:#0a0a0b;color:#f4f5f7;font:15px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center"><div><h1 style="font-size:1.3rem;margin:0 0 .5rem">Fighter not found</h1><p style="color:#8a8f99;margin:0 0 1.2rem">We don\'t have a profile at that address.</p><a href="/matchup" style="color:#00e668;font-weight:700;text-decoration:none">See the upcoming card →</a></div></body>', 404, pubHeaders(s));
-        return html(fighterLitePage({ fighter, subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
+        // Fight History is now a real, unlocked section on this free page
+        // too (see /api/app/fighter-extras' matching free-preview branch) --
+        // the app's version also live-merges tonight's card and closing
+        // odds; this page sticks to the plain twice-daily baked bundle
+        // (scripts/gen-app-fighter-extras.cjs), same tradeoff loadAssetJson
+        // already makes for fighter-lite.json itself on this unlinked,
+        // SEO-only page. Box scores stay Premium-only, so `.stats` is never
+        // attached here regardless -- getFighterExtras' baked bundle
+        // doesn't carry it either way (see worker/index.js's own comment on
+        // /api/app/fighter-extras for why box scores are excluded from the
+        // bake).
+        const fightHistory = (fighterExtras && fighterExtras.bySlug && fighterExtras.bySlug[slug] && fighterExtras.bySlug[slug].fightHistory) || [];
+        return html(fighterLitePage({ fighter, subscribed: !!u?.subscribed, loggedIn: !!s, fightHistory }), 200, pubHeaders(s));
       }
 
       // Partner/affiliate dashboard — the token in the URL is the credential (no
@@ -5586,8 +5629,73 @@ async function handleMagicVerify(request, env, url) {
   if (!e) return html(notePage("Link expired", "That sign-in link has expired or was already used. Request a new one from the login page."), 400);
   await env.MAGIC.delete("m:" + token);
   const u = await getUser(env, e);
+  // If this token came from the APP's own magic-link request (see
+  // handleAppMagicStart), a poll record is sitting under "mpr:"+token
+  // pointing at the pollId the app is holding -- resolve it with a fresh
+  // bearer token now, in the SAME click that just proved this person owns
+  // the email, so the app (still polling in the background) picks it up
+  // and signs itself in without ever seeing this token directly. A plain
+  // web /login magic-link request never wrote an "mpr:" entry, so this is a
+  // no-op for that case -- the rest of this function is unchanged either way.
+  const pollId = await env.MAGIC.get("mpr:" + token);
+  if (pollId) {
+    await env.MAGIC.delete("mpr:" + token);
+    const bearer = await makeSessionToken(env, e, !!u?.subscribed);
+    await env.MAGIC.put("mp:" + pollId, JSON.stringify({ status: "done", token: bearer }), { expirationTtl: 120 });
+  }
   const cookie = await makeSessionCookie(env, e, !!u?.subscribed);
   return redirect(env.SITE_URL + authDest(safeNext(url.searchParams.get("next")), !!u?.subscribed), cookie);
+}
+
+// Magic-link sign-in for the native app -- device-flow-shaped (the same
+// pattern as OAuth's device authorization grant), because the app has no
+// deep-linking/universal-links set up (see capacitor.config.json): tapping
+// the emailed link opens it in the system browser, which can prove email
+// ownership and mint a session there, but can't hand anything back to the
+// app directly. So the app never sees the real magic token (that would let
+// anyone who can call this endpoint with a REGISTERED email instantly sign
+// in as them, skipping the "click the email" step entirely, since knowing
+// the token is all handleMagicVerify checks) -- it gets back an opaque
+// `pollId` instead, and polls handleAppMagicPoll with THAT. pollId and the
+// real authToken are linked only server-side ("mpr:"+authToken ->
+// pollId), and handleMagicVerify (unchanged for the website's own /login
+// flow) is what actually resolves the poll once the email link is clicked.
+// 128 bits of entropy on both token and pollId, 900s/120s TTLs -- the same
+// security margin the existing magic-link flow already relies on.
+async function handleAppMagicStart(request, env) {
+  const cors = appCorsHeaders(request);
+  const { email } = await readBody(request);
+  const e = normEmail(email);
+  if (!e) return json({ error: "Enter your email." }, 400, cors);
+  const pollId = randHex(32);
+  // Always create a poll record and respond identically, whether or not the
+  // account exists -- same no-enumeration shape as handleMagicStart. A poll
+  // for an email with no account just times out to "expired" 15 minutes
+  // later, never resolving, same observable behavior as a real account that
+  // never clicks its link.
+  await env.MAGIC.put("mp:" + pollId, JSON.stringify({ status: "pending" }), { expirationTtl: 900 });
+  const u = await getUser(env, e);
+  if (u) {
+    const authToken = randHex(32);
+    await env.MAGIC.put("m:" + authToken, e, { expirationTtl: 900 });
+    await env.MAGIC.put("mpr:" + authToken, pollId, { expirationTtl: 900 });
+    const link = `${env.SITE_URL}/api/magic/verify?token=${authToken}`;
+    await sendEmail(env, e, "Your GillyLab sign-in link", magicLinkEmailHtml(link));
+  }
+  return json({ ok: true, pollId }, 200, cors);
+}
+
+async function handleAppMagicPoll(request, env) {
+  const cors = appCorsHeaders(request);
+  const { pollId } = await readBody(request);
+  if (!pollId) return json({ status: "expired" }, 200, cors);
+  const raw = await env.MAGIC.get("mp:" + pollId);
+  if (!raw) return json({ status: "expired" }, 200, cors);
+  let rec;
+  try { rec = JSON.parse(raw); } catch { return json({ status: "expired" }, 200, cors); }
+  if (rec.status !== "done") return json({ status: "pending" }, 200, cors);
+  await env.MAGIC.delete("mp:" + pollId); // one-time hand-off
+  return json({ status: "done", token: rec.token }, 200, cors);
 }
 
 /* ── App -> web SSO handoff ──────────────────────────────────────────────

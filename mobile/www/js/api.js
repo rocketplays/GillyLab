@@ -34,6 +34,22 @@ window.GL_API = (function(){
   return {
     login: function(email, password){ return request('/api/login', { method:'POST', body:{ email:email, password:password } }); },
     signup: function(email, password){ return request('/api/signup', { method:'POST', body:{ email:email, password:password } }); },
+    // Forgot password -- same /api/reset/start the website's /forgot page
+    // posts to, now CORS-attached for the app (see worker/index.js). The
+    // app has no deep-linking set up (see capacitor.config.json), so the
+    // emailed reset link is completed on the website in the system browser,
+    // same as checkout/the billing portal already are -- there's no
+    // resetComplete call here because the app never has the reset token,
+    // only the website's own /reset?token=... page does. The user just logs
+    // in normally afterward with the password they set there.
+    resetStart: function(email){ return request('/api/reset/start', { method:'POST', body:{ email:email } }); },
+    // Magic-link sign-in -- device-flow-shaped (see worker/index.js's
+    // handleAppMagicStart for why): start() hands back a pollId, never the
+    // real emailed token; poll() is called repeatedly with that pollId
+    // until the emailed link has been tapped (status 'done', with a bearer
+    // token to complete sign-in) or the request expires (status 'expired').
+    magicStart: function(email){ return request('/api/app/magic/start', { method:'POST', body:{ email:email } }); },
+    magicPoll: function(pollId){ return request('/api/app/magic/poll', { method:'POST', body:{ pollId:pollId } }); },
     rankings: function(source){ return request('/api/app/rankings' + (source ? '?source=' + encodeURIComponent(source) : '')); },
     leaders: function(){ return request('/api/app/leaders'); },
     refresh: function(){ return request('/api/app/refresh'); },

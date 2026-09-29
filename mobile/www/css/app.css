@@ -2083,6 +2083,26 @@ body #mh-box{
 }
 .pl-toast.show{ opacity:1; }
 
+/* ---- GL_DIALOG (js/dialog.js) -- native-feeling alert()/confirm()
+   replacement, shared across every screen. Same centered-card-over-dimmed-
+   backdrop shape as .fp-modal-*, but its own classes/z-index (95/96, above
+   .pl-toast's 90) since a blocking dialog should sit above anything else
+   already on screen, share sheet included. ---- */
+.gl-confirm-overlay{ position:fixed; inset:0; z-index:95; background:rgba(0,0,0,.6); }
+.gl-confirm-overlay[hidden]{ display:none; }
+.gl-confirm-box{
+  position:fixed; z-index:96; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:min(88vw, 360px);
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:1.1rem 1.1rem 1rem; box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.gl-confirm-box[hidden]{ display:none; }
+.gl-confirm-title{ font-weight:800; font-size:1rem; margin-bottom:.35rem; }
+.gl-confirm-msg{ color:var(--text); font-size:.9rem; line-height:1.45; }
+.gl-confirm-actions{ display:flex; gap:.6rem; margin-top:1.1rem; }
+.gl-confirm-actions .gl-btn{ flex:1; width:auto; }
+.gl-confirm-destructive{ background:color-mix(in srgb, var(--bad) 14%, transparent); border-color:var(--bad); color:var(--bad); }
+
 /* GL_SHEET overlay (mobile/www/js/gl-sheet.js) -- reuses .pl-share/.pl-act
    from the parlay slip above (same overlay chrome, same buttons), adding
    only the scrollable canvas-preview frame the parlay slip doesn't need

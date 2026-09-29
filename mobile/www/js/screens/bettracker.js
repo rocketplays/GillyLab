@@ -551,7 +551,7 @@ window.GL_BETTRACKER = (function(){
     var files = Array.prototype.slice.call(fileList || []);
     if (!files.length) return;
     if (files.length > BT_SCAN_MAX_BATCH){
-      alert('Max ' + BT_SCAN_MAX_BATCH + ' screenshots at once — taking the first ' + BT_SCAN_MAX_BATCH + '.');
+      window.GL_DIALOG.alert('Max ' + BT_SCAN_MAX_BATCH + ' screenshots at once — taking the first ' + BT_SCAN_MAX_BATCH + '.');
       files = files.slice(0, BT_SCAN_MAX_BATCH);
     }
     scanQueue = files.map(function(f){ return { name: f.name, file: f, status: 'reading', draft: null, matches: null, error: null }; });
@@ -636,11 +636,11 @@ window.GL_BETTRACKER = (function(){
     var odds = parseInt(host.querySelector('[data-scan-odds]').value, 10);
     var stake = parseFloat(host.querySelector('[data-scan-stake]').value) || 1;
     var book = (host.querySelector('[data-scan-book]') || {}).value || '';
-    if (!match || !pick || !isFinite(odds)){ alert('Fill in the matchup, your pick and the odds.'); return; }
+    if (!match || !pick || !isFinite(odds)){ window.GL_DIALOG.alert('Fill in the matchup, your pick and the odds.'); return; }
     window.GL_API.betAdd({ kind: 'manual', match: match, pick: pick, odds: odds, stake: stake, book: book })
       .then(function(){ return reloadBets(); })
       .then(function(){ item.status = 'done'; scanIdx++; renderView(); })
-      .catch(function(err){ alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
+      .catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
   }
   // A matched, trackable, undecided leg (or set of legs, for a parlay) --
   // posts through the exact same request shape submitCard()/submitParlay()
@@ -660,7 +660,7 @@ window.GL_BETTRACKER = (function(){
       var match = scanLegs.map(function(l){ return l.matchup; }).join(' + ');
       var pick = scanLegs.map(function(l){ return l.pick + ' (' + l.market + ')'; }).join(' | ') + (d.kind === 'parlay' ? ' — ' + scanLegs.length + '-leg parlay' : '');
       var odds = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
-      if (!isFinite(odds)){ alert('Missing odds on this one — enter it manually instead.'); return; }
+      if (!isFinite(odds)){ window.GL_DIALOG.alert('Missing odds on this one — enter it manually instead.'); return; }
       body = { kind: 'manual', match: match, pick: pick, odds: odds, stake: stake, book: book };
     } else if (d.kind === 'parlay'){
       body = {
@@ -682,7 +682,7 @@ window.GL_BETTRACKER = (function(){
     window.GL_API.betAdd(body)
       .then(function(){ return reloadBets(); })
       .then(function(){ item.status = 'done'; scanIdx++; renderView(); })
-      .catch(function(err){ alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
+      .catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
   }
   function scanSkip(){
     var item = scanQueue[scanIdx]; if (!item) return;
@@ -763,7 +763,7 @@ window.GL_BETTRACKER = (function(){
     var f = logFight; if (!f) return;
     var odds = parseInt(host.querySelector('[data-odds]').value, 10);
     var stake = parseFloat(host.querySelector('[data-stake]').value) || 1;
-    if (!isFinite(odds) || !odds){ window.GL_NATIVE && window.GL_NATIVE.toast && window.GL_NATIVE.toast('Enter the odds you got.'); alert('Enter the odds you got.'); return; }
+    if (!isFinite(odds) || !odds){ window.GL_DIALOG.alert('Enter the odds you got.'); return; }
     var p = buildPick(f, host);
     var ev = eventBySlug(f.evSlug);
     window.GL_API.betAdd({
@@ -772,25 +772,25 @@ window.GL_BETTRACKER = (function(){
       params: p.p, priced: p.priced, closeSide: p.closeSide, odds: odds, stake: stake,
       book: (host.querySelector('[data-book]') || {}).value || '',
     }).then(function(){ return reloadBets(); }).then(function(){ setView('history'); })
-      .catch(function(err){ alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
+      .catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
   }
   function submitCustom(host){
     var m = host.querySelector('[data-cmatch]').value.trim(), pk = host.querySelector('[data-csel]').value.trim();
     var odds = parseInt(host.querySelector('[data-codds]').value, 10), stake = parseFloat(host.querySelector('[data-cstake]').value) || 1;
-    if (!m || !pk || !isFinite(odds)){ alert('Fill in the matchup, your pick and the odds.'); return; }
+    if (!m || !pk || !isFinite(odds)){ window.GL_DIALOG.alert('Fill in the matchup, your pick and the odds.'); return; }
     window.GL_API.betAdd({ kind: 'manual', match: m, pick: pk, odds: odds, stake: stake, book: (host.querySelector('[data-cbook]')||{}).value || '' })
       .then(function(){ return reloadBets(); }).then(function(){ setView('history'); })
-      .catch(function(err){ alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
+      .catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not log that bet.'); });
   }
   function submitParlay(host){
     if (legs.length < 2) return;
     var odds = parseInt(host.querySelector('[data-p-odds]').value, 10);
     var stake = parseFloat(host.querySelector('[data-p-stake]').value) || 1;
-    if (!isFinite(odds)){ alert('Enter the combined odds.'); return; }
+    if (!isFinite(odds)){ window.GL_DIALOG.alert('Enter the combined odds.'); return; }
     var ev = eventBySlug(legs[0].evSlug);
     window.GL_API.betAdd({ kind: 'tracked', market: 'PARLAY', legs: legs, match: ev ? ev.label : '', odds: odds, stake: stake, book: (host.querySelector('[data-p-book]')||{}).value || '' })
       .then(function(){ legs = []; return reloadBets(); }).then(function(){ setView('history'); })
-      .catch(function(err){ alert((err && err.data && err.data.error) || 'Could not log that parlay.'); });
+      .catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not log that parlay.'); });
   }
 
   // ── Leaderboard + player profile -----------------------------------------
@@ -949,7 +949,7 @@ window.GL_BETTRACKER = (function(){
     var out = [];
     for (var i = 0; i < rawLegs.length; i++){
       var b = legToBet(rawLegs[i]);
-      if (!b){ alert("Couldn't match one of those picks to a trackable fight."); return; }
+      if (!b){ window.GL_DIALOG.alert("Couldn't match one of those picks to a trackable fight."); return; }
       out.push(b);
     }
     if (!out.length) return;
@@ -991,19 +991,21 @@ window.GL_BETTRACKER = (function(){
       if ((t = hit(e, '[data-card]'))){ hCard = t.getAttribute('data-card'); renderView(); return; }
       if ((t = hit(e, '[data-share-card]'))){ shareBetCard(t.getAttribute('data-share-card')); return; }
       if ((t = hit(e, '[data-settle]'))){ var id = t.getAttribute('data-settle'), st = t.getAttribute('data-status');
-        window.GL_API.betSettle(id, st).then(function(){ return reloadBets(); }).then(renderView).catch(function(err){ alert((err && err.data && err.data.error) || 'Could not settle that bet.'); }); return; }
+        window.GL_API.betSettle(id, st).then(function(){ return reloadBets(); }).then(renderView).catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not settle that bet.'); }); return; }
       if ((t = hit(e, '[data-edit-open]'))){ editId = t.getAttribute('data-edit-open'); renderView(); return; }
       if (hit(e, '[data-edit-cancel]')){ editId = null; renderView(); return; }
       if ((t = hit(e, '[data-edit-save]'))){
         var id2 = t.getAttribute('data-edit-save'), row = t.closest('.bt-bet');
         var odds = parseInt(row.querySelector('[data-e-odds]').value, 10), stake = parseFloat(row.querySelector('[data-e-stake]').value), book = row.querySelector('[data-e-book]').value;
-        if (!isFinite(odds) || !odds){ alert('Enter the odds you got.'); return; }
-        window.GL_API.betEdit(id2, odds, stake, book).then(function(){ editId = null; return reloadBets(); }).then(renderView).catch(function(err){ alert((err && err.data && err.data.error) || 'Could not edit that bet.'); });
+        if (!isFinite(odds) || !odds){ window.GL_DIALOG.alert('Enter the odds you got.'); return; }
+        window.GL_API.betEdit(id2, odds, stake, book).then(function(){ editId = null; return reloadBets(); }).then(renderView).catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not edit that bet.'); });
         return;
       }
       if ((t = hit(e, '[data-delete]'))){
-        if (!confirm('Delete this bet?')) return;
-        window.GL_API.betDelete(t.getAttribute('data-delete')).then(function(){ return reloadBets(); }).then(renderView).catch(function(err){ alert((err && err.data && err.data.error) || 'Could not delete that bet.'); });
+        window.GL_DIALOG.confirm('Delete this bet? This can’t be undone.', { confirmLabel: 'Delete', destructive: true }).then(function(ok){
+          if (!ok) return;
+          window.GL_API.betDelete(t.getAttribute('data-delete')).then(function(){ return reloadBets(); }).then(renderView).catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not delete that bet.'); });
+        });
         return;
       }
       if ((t = hit(e, '[data-card-select]'))) return; // handled by change listener
@@ -1014,10 +1016,10 @@ window.GL_BETTRACKER = (function(){
         var f = logFight; if (!f) return;
         var host = activeContainer.querySelector('#bt-body');
         var odds = parseInt(host.querySelector('[data-odds]').value, 10);
-        if (!isFinite(odds) || !odds){ alert('Enter the odds you got for this leg.'); return; }
+        if (!isFinite(odds) || !odds){ window.GL_DIALOG.alert('Enter the odds you got for this leg.'); return; }
         var p = buildPick(f, host);
         var leg = { fightId: f.id, evSlug: f.evSlug, market: logMarket, params: p.p, pick: p.pick, match: surname(f.f1) + ' vs ' + surname(f.f2), odds: odds };
-        var err = legErr(leg); if (err){ alert(err); return; }
+        var err = legErr(leg); if (err){ window.GL_DIALOG.alert(err); return; }
         legs.push(leg); logFight = null; logMarket = 'ML'; renderView(); return;
       }
       if (hit(e, '[data-submit-card]')){ submitCard(activeContainer.querySelector('#bt-body')); return; }

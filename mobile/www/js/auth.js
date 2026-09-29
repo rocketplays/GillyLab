@@ -114,6 +114,21 @@ window.GL_AUTH = (function(){
         return save();
       }).then(notify);
     },
+    // Completes a magic-link sign-in from the bearer token
+    // handleAppMagicPoll hands back once the emailed link has been tapped
+    // (see login.js's magic-link view) -- there's no password here, just
+    // the token itself, whose payload already carries the email (same
+    // decode decodeExp uses for the `exp` claim, just reading `e` too).
+    completeWithToken: function(token){
+      var email = null;
+      try {
+        var payload = token.split('.')[0].replace(/-/g,'+').replace(/_/g,'/');
+        while (payload.length % 4) payload += '=';
+        email = JSON.parse(decodeURIComponent(escape(atob(payload)))).e || null;
+      } catch(e){}
+      state = { loggedIn:true, email:email, token:token };
+      return save().then(notify);
+    },
     logout: function(){
       state = { loggedIn:false, email:null, token:null };
       return save().then(notify);

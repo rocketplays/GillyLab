@@ -4193,7 +4193,7 @@ ${AURORA_CSS}
 // division-relative stat bars the app uses; the deep stuff (full fight history,
 // tape study, odds/closing-line history, accolades, scouting report, simulator)
 // is locked behind a Go-Premium CTA.
-export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
+export const fighterLitePage = ({ fighter, loggedIn, subscribed, fightHistory }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const f = fighter || {};
   const ini = String(f.name || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
@@ -4221,11 +4221,40 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
     : "";
   const statsBlock = groupsHTML ? `${legend}${groupsHTML}` : "";
 
-  // The paywalled depth — locked.
+  // Fight History -- unlocked for every visitor now (see the /fighter/
+  // route's own comment in worker/index.js for where `fightHistory` comes
+  // from: the same twice-daily baked bundle the in-app profile's Premium
+  // tab starts from, no box scores attached). Same column shape as the
+  // app's own fp-hist-table (fighter.js's fightHistoryHTML) -- date/
+  // opponent/result/method(+round·time)/event, with a regional-promotion
+  // tier pill next to a non-UFC event name.
+  const PROMO_TIER_COLORS = { 1: "#00e668", 2: "#3ecbff", 3: "var(--accent)", 4: "#ffb020", 5: "#ff5c5c" };
+  const tierBadge = (tier) => {
+    if (!tier) return "";
+    const c = PROMO_TIER_COLORS[tier.tier] || PROMO_TIER_COLORS[5];
+    return `<span class="fp-tier-badge" style="border-color:${c};color:${c}">${esc(tier.label)}</span>`;
+  };
+  const histResultClass = (r) => (r === "W" ? "good" : r === "L" ? "bad" : "");
+  const fhRows = (fightHistory || []).map((h) => {
+    const subLine = [h.round ? "R" + h.round : "", h.time || ""].filter(Boolean).join(" · ");
+    return `<tr class="fp-hist-row">
+      <td class="fp-hist-td fp-hist-date">${esc(h.date || "")}</td>
+      <td class="fp-hist-td fp-hist-opp">${esc(h.opponent || "")}</td>
+      <td class="fp-hist-td fp-hist-result ${histResultClass(h.result)}">${esc(h.result || "—")}</td>
+      <td class="fp-hist-td fp-hist-method">${esc(h.method || "")}${subLine ? `<div class="fp-hist-sub">${esc(subLine)}</div>` : ""}</td>
+      <td class="fp-hist-td fp-hist-event">${esc(h.event || "")}${tierBadge(h.orgTier)}</td>
+    </tr>`;
+  }).join("");
+  const historyBlock = (fightHistory && fightHistory.length)
+    ? `<div class="fp-hist-section"><div class="fp-hist-title">Fight History</div><div class="fp-hist-wrap"><table class="fp-hist-table"><thead><tr><th>Date</th><th>Opponent</th><th style="text-align:center">Result</th><th>Method</th><th>Event</th></tr></thead><tbody>${fhRows}</tbody></table></div></div>`
+    : "";
+
+  // The paywalled depth — locked. "Full fight history" is no longer in this
+  // list (it's `historyBlock` above now); everything else here is still
+  // genuinely Premium-only, unchanged.
   const lockItem = (t, d) => `<div class="fp-lock-i"><div class="fp-lock-it">${t}</div><div class="fp-lock-id">${d}</div></div>`;
   const lockGrid = [
     lockItem("Fight simulator", "Run this fighter against anyone on the roster."),
-    lockItem("Full fight history", "Every pro bout — result, method, round &amp; opponent."),
     lockItem("Box scores", "Full detailed statistics for every UFC bout in history, head-to-head."),
     lockItem("Tape study", "Links to full video of each of their previous fights."),
     lockItem("Closing-line history", "Their closing line for each fight — favorite or underdog."),
@@ -4238,8 +4267,8 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   ].join("");
   const cta = subscribed
     ? `<a class="fp-lock-btn" href="/">Open the full profile in GillyLab →</a>`
-    : `<a class="fp-lock-btn" href="/subscribe">Go Premium for the full profile &amp; tools →</a>`;
-  const lockBlock = `<div class="fp-lock"><div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The full profile &amp; tools</div></div><div class="fp-lock-sub">Everything GillyLab Premium unlocks:</div><div class="fp-lock-grid">${lockGrid}</div>${cta}</div>`;
+    : `<a class="fp-lock-btn" href="/subscribe">Go Premium for the rest of the profile &amp; tools →</a>`;
+  const lockBlock = `<div class="fp-lock"><div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The rest of the profile &amp; tools</div></div><div class="fp-lock-sub">Everything else GillyLab Premium unlocks:</div><div class="fp-lock-grid">${lockGrid}</div>${cta}</div>`;
 
   // SEO.
   const metaBits = [f.record ? f.record : "", f.division || "", f.country || ""].filter(Boolean);
@@ -4330,6 +4359,24 @@ ${ldScript}
   .fsx-val{flex:0 0 56px;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;color:var(--text)}
   .fsx-val.good{color:var(--accent)}.fsx-val.bad{color:#c76a54}
   @media (max-width:520px){.fsx-label{flex-basis:148px;font-size:.76rem}.fsx-val{flex-basis:48px;font-size:1.05rem}.fsx-row{gap:.6rem}.fsx-bio{gap:1rem}}
+  /* Fight History -- same column shape as the in-app profile's .fp-hist-* */
+  .fp-hist-section{margin-top:1.6rem}
+  .fp-hist-title{font-size:.95rem;font-weight:800;margin-bottom:.6rem}
+  .fp-hist-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .fp-hist-table{width:100%;min-width:480px;border-collapse:collapse;font-size:.85rem}
+  .fp-hist-table thead tr{border-bottom:1px solid var(--border);text-align:left}
+  .fp-hist-table th{padding:.5rem .6rem;font-weight:600;font-size:.7rem;letter-spacing:.04em;color:var(--muted)}
+  .fp-hist-td{padding:.6rem .6rem;border-top:1px solid var(--border);vertical-align:top}
+  .fp-hist-row:first-child .fp-hist-td{border-top:none}
+  .fp-hist-date{white-space:nowrap;color:var(--muted)}
+  .fp-hist-opp{font-weight:600}
+  .fp-hist-result{text-align:center;font-weight:800}
+  .fp-hist-result.good{color:var(--accent)}
+  .fp-hist-result.bad{color:#c76a54}
+  .fp-hist-sub{color:var(--muted);font-size:.74rem;margin-top:2px}
+  .fp-hist-event{color:var(--muted);font-size:.78rem}
+  .fp-tier-badge{display:inline-flex;align-items:center;margin-left:5px;padding:1px 7px;border:1px solid currentColor;border-radius:999px;font-size:.6rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+  @media (max-width:600px){.fp-hist-td{padding:.5rem .4rem}}
   /* locked block */
   .fp-lock{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem 1.15rem;margin-top:1.6rem}
   .fp-lock-h{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
@@ -4363,6 +4410,7 @@ ${AURORA_CSS}
     </div>
     ${physHTML}
     ${statsBlock}
+    ${historyBlock}
     ${lockBlock}
   </main>
   ${FREE_FOOTER}
