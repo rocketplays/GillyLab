@@ -2436,6 +2436,13 @@ body #mh-box{
 .br-recap-mark{ flex:none; font-weight:800; font-size:.78rem; }
 .br-recap-mark.good{ color:var(--accent); }
 .br-recap-mark.bad{ color:var(--bad); }
+/* "New bracket in xD xH" -- sits below the picks recap, above the
+   Leaderboard section (see renderResults' own brScore markup). */
+.br-next-week{
+  margin:1rem auto 0; max-width:22rem; text-align:center;
+  font-size:.8rem; font-weight:700; color:var(--muted);
+  border-top:1px solid var(--border); padding-top:.8rem;
+}
 /* Fixed at the bottom (same treatment as Pick'em's .pk-submitbar) -- used to
    be plain scrolling content at the end of the picker, which meant the
    Submit button wasn't visible without scrolling down once all 7 picks

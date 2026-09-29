@@ -49,6 +49,8 @@ function mountBracket(container){
   var consensus = [null, null, null, null];
   var picks = { qf: [null, null, null, null], sf: [null, null], final: null };
   var alreadySubmitted = false, lifetimePts = 0, submitting = false;
+  var nextWeekAt = null; // ISO timestamp -- when this week's bracket rotates to a new one
+  var nextWeekTimer = null;
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
 
@@ -82,6 +84,28 @@ function mountBracket(container){
           '<div class="gl-muted" style="font-size:.7rem;margin-top:.25rem">' + lifetimePts + ' lifetime pts · ' + esc(nextText) + '</div>' +
         '</div>' +
       '</div>';
+  }
+
+  // "xD xH" until this week's bracket rotates -- same shape home.js's own
+  // countdown helpers use (bracketCountdown/pickemLockCountdown), just
+  // computed here instead of shared, per this app's per-screen-self-
+  // contained convention. Ticks on an interval rather than rendering once,
+  // since a visitor who leaves this screen open across the boundary should
+  // see it flip to the new week's numbers (and eventually a fresh bracket)
+  // without needing to navigate away and back.
+  function nextWeekCountdownStr(){
+    if (!nextWeekAt) return null;
+    var ms = Date.parse(nextWeekAt) - Date.now();
+    if (!isFinite(ms) || ms <= 0) return null;
+    var totalHours = Math.floor(ms / 3600000);
+    var d = Math.floor(totalHours / 24), h = totalHours % 24;
+    return d + 'D ' + h + 'H';
+  }
+  function tickNextWeekCountdown(){
+    var el = document.getElementById('brNextWeek');
+    if (!el || !el.isConnected){ if (nextWeekTimer){ clearInterval(nextWeekTimer); nextWeekTimer = null; } return; }
+    var c = nextWeekCountdownStr();
+    el.textContent = c ? ('New bracket in ' + c) : 'A new bracket is on its way — check back soon.';
   }
 
   function fighterRowHTML(f, opts){
@@ -327,8 +351,12 @@ function mountBracket(container){
     document.getElementById('brProgress').textContent = '';
     document.getElementById('brScore').innerHTML =
       '<span class="br-score-big">' + score + '</span><span class="gl-muted"> / 12 — pts added to your lifetime belt progress</span>' +
-      recapHTML();
+      recapHTML() +
+      '<div class="br-next-week" id="brNextWeek"></div>';
     document.getElementById('brScore').hidden = false;
+    tickNextWeekCountdown();
+    if (nextWeekTimer) clearInterval(nextWeekTimer);
+    nextWeekTimer = setInterval(tickNextWeekCountdown, 60000);
   }
 
   // ---- leaderboard (week + season), same .pk-board-* classes the Pick'em
@@ -473,6 +501,7 @@ function mountBracket(container){
       return c ? { a: bySeed[c.seedA], b: bySeed[c.seedB], pctA: c.pctA, pctB: c.pctB } : null;
     });
     lifetimePts = res.lifetimePts || 0;
+    nextWeekAt = res.nextWeekAt || null;
 
     if (res.submitted && res.mine && res.real){
       alreadySubmitted = true;

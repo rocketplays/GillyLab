@@ -2428,6 +2428,12 @@ async function handleBracketCurrent(request, env, url) {
   }
   return json({
     weekId: state.weekId, division: state.division, divisionName: state.divisionName,
+    // When the NEXT week's bracket opens (this week's boundary + 7 days) --
+    // sent precomputed rather than making the client re-derive
+    // BRACKET_EPOCH_MONDAY's own math, same reasoning every other "next
+    // X" timestamp in this app is server-computed. Powers the "come back
+    // in xD xH for a new bracket" countdown shown once you've submitted.
+    nextWeekAt: new Date(BRACKET_EPOCH_MONDAY + (state.weekIndex + 1) * 7 * 24 * 3600 * 1000).toISOString(),
     // power is deliberately left out of the client payload -- the prototype
     // only ever surfaces seed numbers, never the raw score behind them.
     fighters: state.fighters.map((f) => ({ seed: f.seed, name: f.name, slug: f.slug, legacy: f.legacy, photo: f.photo })),
