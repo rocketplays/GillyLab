@@ -46,12 +46,13 @@
                             <constraint firstItem="snD-IY-ifK" firstAttribute="trailing" secondItem="Gxr-0V-1cJ" secondAttribute="trailing" id="c02-tr-ai1"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="top" secondItem="Gxr-0V-1cJ" secondAttribute="top" id="c03-to-p02"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="bottom" secondItem="Gxr-0V-1cJ" secondAttribute="bottom" id="c04-bo-t03"/>
-                            <!-- Pair of labels centered as a unit: label1's trailing sits 1pt left
-                                 of view.centerX, label2's leading sits 1pt right of it, reading
+                            <!-- Pair of labels centered as a unit: label1's trailing sits 5pt left
+                                 of view.centerX, label2's leading sits 5pt right of it, reading
                                  as one centered "Know the fight before it starts" line with a
-                                 2pt gap, same visual effect a single centered label had, without
-                                 needing a UIStackView (see the label comment above for why not). -->
-                            <constraint firstItem="slG-an-tag" firstAttribute="trailing" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="-1" id="c05-cx-04"/>
+                                 10pt gap (was 2pt, too tight: read as one run-on phrase) between
+                                 the two words, without needing a UIStackView (see the label
+                                 comment above for why not). -->
+                            <constraint firstItem="slG-an-tag" firstAttribute="trailing" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="-5" id="c05-cx-04"/>
                             <!-- 1.36, not the old 1.46 or this rework's first pass at 1.26: 1.26
                                  (63% down) put the label's CENTER right at the wordmark's own
                                  bottom edge, so the label's top half overlapped the wordmark text
@@ -62,7 +63,7 @@
                                  view.centerY * multiplier = viewHeight * multiplier/2). -->
                             <constraint firstItem="slG-an-tag" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.36" constant="0.0" id="c06-cy-05"/>
                             <constraint firstItem="slG-an-tag" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="leadingMargin" constant="16" id="c07-lm-06"/>
-                            <constraint firstItem="slG-an-tg2" firstAttribute="leading" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="1" id="c09-cx-08"/>
+                            <constraint firstItem="slG-an-tg2" firstAttribute="leading" secondItem="Gxr-0V-1cJ" secondAttribute="centerX" constant="5" id="c09-cx-08"/>
                             <constraint firstItem="slG-an-tg2" firstAttribute="centerY" secondItem="Gxr-0V-1cJ" secondAttribute="centerY" multiplier="1.36" constant="0.0" id="c10-cy-09"/>
                             <constraint firstItem="slG-an-tg2" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="Gxr-0V-1cJ" secondAttribute="trailingMargin" constant="-16" id="c11-tm-10"/>
                         </constraints>

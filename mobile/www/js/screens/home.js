@@ -130,7 +130,11 @@ window.GL_ROUTER.register('home', {
     }
     function promoRow(pa, pb){
       if (!pa && !pb) return '';
-      var fmt = function(p){ return p ? p.label : '—'; };
+      // "T3", not the full label ("Regional"/"Mid-tier"/etc.) -- this row's
+      // narrow he-bio-val column fits every OTHER stat here fine (age/
+      // height/a number), but a multi-word tier label was the one value in
+      // this whole panel that wrapped onto a second line.
+      var fmt = function(p){ return p ? ('T' + p.tier) : '—'; };
       return (
         '<div class="he-bio-row">' +
           '<span class="he-bio-val a">' + esc(fmt(pa)) + '</span>' +

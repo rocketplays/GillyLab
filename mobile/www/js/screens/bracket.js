@@ -152,7 +152,11 @@ function mountBracket(container){
           '<div class="br-champ-cap">Your Pick</div>' +
           (picks.final ? fighterRowHTML(picks.final) : '<div class="br-fcard br-fcard--empty">TBD</div>') +
         '</div>' +
-      '</div>';
+      '</div>' +
+      // Bare trailing grid column, not decorative -- see .br-spacer's own
+      // CSS comment for why the Champion column can never scroll flush
+      // left without it.
+      '<div class="br-col br-spacer" aria-hidden="true"></div>';
 
     var matches = document.getElementById('brBracket').querySelectorAll('.br-match');
     // QF matches are the first 4 .br-match nodes, SF the next 2, Final the last --
@@ -173,19 +177,28 @@ function mountBracket(container){
     updateProgress();
   }
 
-  // Horizontal auto-advance -- same idea as the site's own scrollToPending,
-  // but scrolls #brScroll's own scrollLeft directly (via the target column's
-  // offsetLeft) rather than scrollIntoView, so the OUTER page's vertical
-  // scroll position is never touched, just the bracket strip itself.
+  // Horizontal auto-advance -- was scroller.scrollTo({left: target.offsetLeft})
+  // (see git history), which left a sliver of the PREVIOUS column visible on
+  // the left edge after landing: offsetLeft is measured against target's
+  // nearest POSITIONED ancestor, which is neither #brScroll nor #brBracket
+  // (neither sets `position`) -- it's some further-up ancestor, so the value
+  // never actually matched #brScroll's own content geometry, and the manual
+  // scrollLeft it produced landed a few pixels short of this column's real
+  // left edge every time. scrollIntoView measures the element's REAL
+  // rendered box directly against its scroll container instead of walking
+  // offsetParent, so it always lands exactly at the column's edge --
+  // inline:'start' is the horizontal axis (this strip only scrolls
+  // sideways), block:'nearest' so it never also nudges the page's own
+  // vertical scroll (the "nearest" edge of a horizontally-scrolling row is
+  // already satisfied without moving vertically at all).
   var pendingScrollTarget = null; // 'sf' | 'final' | 'champion' | null
   function scrollToPending(){
     if (!pendingScrollTarget) return;
     var idx = { sf: 1, final: 2, champion: 3 }[pendingScrollTarget];
     pendingScrollTarget = null;
-    var scroller = document.getElementById('brScroll');
     var cols = document.querySelectorAll('#brBracket .br-col');
     var target = cols[idx];
-    if (scroller && target) scroller.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
+    if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
   }
 
   function pickQf(i, f){
@@ -242,6 +255,27 @@ function mountBracket(container){
       '</div>'
     );
   }
+  // "Your Picks" recap -- every round's result at a glance, right next to
+  // the score number, so it's visible the moment you submit without
+  // scrolling back up through each column to see which ones hit. Same
+  // ✓/✗ language the QF/SF/Final match rows already use (modelCallHTML).
+  function pickResultRowHTML(label, pick, correct, pts){
+    return (
+      '<div class="br-recap-row">' +
+        '<span class="br-recap-lbl">' + label + '</span>' +
+        '<span class="br-recap-pick">' + esc(pick ? pick.name : '—') + '</span>' +
+        '<span class="br-recap-mark ' + (correct ? 'good' : 'bad') + '">' + (correct ? '✓ +' + pts : '✗') + '</span>' +
+      '</div>'
+    );
+  }
+  function recapHTML(){
+    var rows = [];
+    for (var i = 0; i < 4; i++) rows.push(pickResultRowHTML('QF' + (i + 1), picks.qf[i], picks.qf[i] && real.qf[i] === picks.qf[i], 1));
+    for (var j = 0; j < 2; j++) rows.push(pickResultRowHTML('SF' + (j + 1), picks.sf[j], picks.sf[j] && real.sf[j] === picks.sf[j], 2));
+    rows.push(pickResultRowHTML('Final', picks.final, !!(picks.final && real.final === picks.final), 4));
+    return '<div class="br-recap"><div class="br-recap-title">Your Picks</div>' + rows.join('') + '</div>';
+  }
+
   function renderResults(score){
     // real.qf/sf/final are already resolved FIGHTER OBJECTS (see resolveReal
     // below), not seed numbers -- bySeed[] is keyed by seed, so wrapping any
@@ -269,8 +303,17 @@ function mountBracket(container){
         '<div class="br-champcard">' +
           fighterRowHTML(finalWinner, { yourPick: picks.final === finalWinner }) +
         '</div>' +
+        // yourPick above only ever shows a badge when you had it RIGHT (see
+        // fighterRowHTML) -- picking wrong left this column with zero trace
+        // of what you'd actually picked. This line always states it either way.
+        (picks.final
+          ? (picks.final === finalWinner
+              ? '<div class="br-champ-result good">✓ You picked it right</div>'
+              : '<div class="br-champ-result bad">✗ You had <strong>' + esc(picks.final.name) + '</strong></div>')
+          : '') +
         '<button type="button" class="gl-btn gl-btn-outline" id="brViewLbBtn" style="margin-top:.9rem">View Leaderboard ↓</button>' +
-      '</div>';
+      '</div>' +
+      '<div class="br-col br-spacer" aria-hidden="true"></div>';
 
     var viewLbBtn = document.getElementById('brViewLbBtn');
     if (viewLbBtn) viewLbBtn.addEventListener('click', function(){
@@ -282,7 +325,9 @@ function mountBracket(container){
     document.getElementById('brSubmitBtn').disabled = true;
     document.getElementById('brSubmitBtn').textContent = 'Bracket Submitted';
     document.getElementById('brProgress').textContent = '';
-    document.getElementById('brScore').innerHTML = '<span class="br-score-big">' + score + '</span><span class="gl-muted"> / 12 — pts added to your lifetime belt progress</span>';
+    document.getElementById('brScore').innerHTML =
+      '<span class="br-score-big">' + score + '</span><span class="gl-muted"> / 12 — pts added to your lifetime belt progress</span>' +
+      recapHTML();
     document.getElementById('brScore').hidden = false;
   }
 
@@ -325,10 +370,16 @@ function mountBracket(container){
         '<p class="gl-muted" style="margin:0">Fill out every round, then submit once. 1 pt per quarterfinal · 2 pts per semifinal · 4 pts for the final — 12 pts possible.</p>' +
       '</div>' +
       '<div class="gl-sec"><div class="br-scroll" id="brScroll"><div class="br-bracket" id="brBracket"></div></div></div>' +
-      '<div class="gl-sec br-submitrow" id="brSubmitRow">' +
+      // Fixed to the bottom of the screen (see .br-submitrow's own CSS
+      // comment) -- no longer plain in-flow content, so this spacer reserves
+      // the vertical space it used to occupy in the page's normal flow,
+      // otherwise the fixed bar would permanently sit on top of whatever's
+      // rendered right after it (the score/leaderboard below).
+      '<div class="br-submitrow" id="brSubmitRow">' +
         '<button type="button" class="gl-btn gl-btn-primary" id="brSubmitBtn" disabled>Submit Bracket</button>' +
         '<p class="gl-muted" id="brProgress" style="margin:0">0 of 7 picks made</p>' +
       '</div>' +
+      '<div style="height:4.6rem"></div>' +
       '<div class="gl-error" id="brSubmitErr"></div>' +
       '<div class="gl-sec br-score" id="brScore" hidden></div>' +
       '<div class="gl-sec" id="brLbSection">' +
