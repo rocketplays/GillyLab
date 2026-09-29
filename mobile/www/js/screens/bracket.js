@@ -211,36 +211,29 @@ function mountBracket(container){
     updateProgress();
   }
 
-  // Horizontal auto-advance -- was scroller.scrollTo({left: target.offsetLeft})
-  // (see git history), which never matched #brScroll's own content geometry
-  // (offsetLeft walks to the nearest POSITIONED ancestor, neither #brScroll
-  // nor #brBracket), then target.scrollIntoView({inline:'start'}), which
-  // fixed the offset math but landed the column flush against the true
-  // viewport edge -- ignoring #brScroll's own 1.1rem padding entirely
-  // (confirmed: measured 0px left inset, not the ~18px the padding should
-  // leave). The SITE's own version (prototypes/legends-bracket.html) gets
-  // this right for free: it relies on CSS scroll-snap-align:start to
-  // resolve the final rest position (its own scrollIntoView call asks for
-  // inline:'center', which the mandatory snap simply overrides once
-  // scrolling settles) -- confirmed by measuring its real rendered
-  // position after a full round's auto-scroll, which lands with a clean,
-  // consistent gutter matching the scroll container's own padding, not
-  // flush against the edge. This does the same thing more directly:
-  // compute the container's own padding-left and land the column exactly
-  // that far from the container's edge, rather than trusting
-  // scrollIntoView's edge detection to already account for it.
+  // Horizontal auto-advance. Earlier passes at this (see git history) tried
+  // scroller.scrollTo({left: target.offsetLeft}), then
+  // target.scrollIntoView({inline:'start'}) paired with CSS
+  // scroll-snap-align:start -- both left the settled column sitting flush
+  // against the true edge with the next round peeking in on a real device,
+  // even after correcting for the scroll container's own padding. The root
+  // cause was a mismatch, not a math error: CSS said align:start while this
+  // function (and showResults' own jump to the champion card) asked for
+  // inline:'center' -- two different engines resolve that disagreement
+  // differently, which is exactly why this looked fine in one browser and
+  // peeked in another. align:center (see .br-col) now agrees with what's
+  // asked for here, so there's nothing left to arbitrate: a plain
+  // scrollIntoView reliably centers the target with even space on both
+  // sides, and overscrolling past it snaps back to center instead of
+  // drifting to an engine-specific resting point.
   var pendingScrollTarget = null; // 'sf' | 'final' | 'champion' | null
   function scrollToPending(){
     if (!pendingScrollTarget) return;
     var idx = { sf: 1, final: 2, champion: 3 }[pendingScrollTarget];
     pendingScrollTarget = null;
-    var scroller = document.getElementById('brScroll');
     var cols = document.querySelectorAll('#brBracket .br-col');
     var target = cols[idx];
-    if (!scroller || !target) return;
-    var gutter = parseFloat(getComputedStyle(scroller).paddingLeft) || 0;
-    var delta = target.getBoundingClientRect().left - scroller.getBoundingClientRect().left - gutter;
-    scroller.scrollTo({ left: scroller.scrollLeft + delta, behavior: 'smooth' });
+    if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
 
   function pickQf(i, f){

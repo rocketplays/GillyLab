@@ -2349,15 +2349,6 @@ body #mh-box{
    is built from directly, not a new design. Swiping right moves QF -> SF ->
    Final -> Champion; pickQf/pickSf/pickFinal below auto-scroll to the next
    column once a round is fully picked, same as the site's scrollToPending. */
-/* scroll-padding-left, not just a bare reliance on the container's own
-   `padding` -- CSS Scroll Snap resolves scroll-snap-align against
-   scroll-padding specifically (defaulting to 0), a genuinely separate
-   property from regular padding. Without this, the mandatory snap
-   silently overrode every JS-computed scroll position (confirmed:
-   disabling scroll-snap-type made the exact same JS math land at the
-   correct ~18px gutter; re-enabling it snapped straight back to 0px,
-   flush against the true edge) -- the bug behind every round looking
-   "flush left, no padding" after auto-scrolling to it. */
 /* Belt panel -- same layout as the site's own .belt-panel/.belt-swatch/
    .belt-stripes/.belt-progress (prototypes/legends-bracket.html). */
 .br-belt-row{ display:flex; align-items:center; gap:.7rem; }
@@ -2372,7 +2363,7 @@ body #mh-box{
 .br-belt-fill{ height:100%; border-radius:4px; }
 .br-belt-meta{ font-size:.7rem; color:var(--muted); margin-top:.3rem; }
 
-.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; scroll-padding-left:1.2rem; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
+.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
 /* 5th grid column is a bare trailing spacer (.br-spacer, rendered as the
    last child by renderPicker/renderResults), not cosmetic padding -- a
    scroll container's own trailing PADDING is excluded from scrollWidth in
@@ -2401,7 +2392,7 @@ body #mh-box{
    just the one viewport this was first verified against. */
 .br-bracket{ display:grid; grid-template-columns:repeat(4, 80vw) 20vw; gap:0 2.6rem; --br-gap:2.6rem; --br-stub:.6rem; }
 .br-spacer{ pointer-events:none; }
-.br-col{ display:flex; flex-direction:column; position:relative; scroll-snap-align:start; min-width:0; }
+.br-col{ display:flex; flex-direction:column; position:relative; scroll-snap-align:center; min-width:0; }
 .br-collabel{ font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .9rem; }
 /* Gold once the real result is in, mirroring the site's own
    .round-label.is-final{ color:var(--accent-2) } -- the champion card
