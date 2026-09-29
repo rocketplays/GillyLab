@@ -804,7 +804,7 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 #pkBouts{ padding-bottom:4.5rem; }
 
 /* ---- Pick'em: leaderboard scope tabs / live board / player profile ----
-   Mirrors index.html's .pk-tabs/.pk-board-*/.pk-hist-* (site ~L4018-4118),
+   Mirrors index.html's .pk-tabs, .pk-board-*, .pk-hist-* (site ~L4018-4118),
    translated to this app's CSS variables instead of the site's literal
    greens/reds. */
 /* gap/padding brought in line with the same fix already applied to .rk-tabs

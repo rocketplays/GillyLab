@@ -370,26 +370,30 @@ function mountBracket(container){
         '<p class="gl-muted" style="margin:0">Fill out every round, then submit once. 1 pt per quarterfinal · 2 pts per semifinal · 4 pts for the final — 12 pts possible.</p>' +
       '</div>' +
       '<div class="gl-sec"><div class="br-scroll" id="brScroll"><div class="br-bracket" id="brBracket"></div></div></div>' +
-      // Fixed to the bottom of the screen (see .br-submitrow's own CSS
-      // comment) -- no longer plain in-flow content, so this spacer reserves
-      // the vertical space it used to occupy in the page's normal flow,
-      // otherwise the fixed bar would permanently sit on top of whatever's
-      // rendered right after it (the score/leaderboard below).
+      // position:fixed (see .br-submitrow's own CSS comment) -- no longer
+      // plain in-flow content, so it never reserves its own space in the
+      // page's normal flow. The fixed bar always covers exactly its own
+      // height of whatever content is at the TRUE bottom of the page once
+      // fully scrolled, regardless of where a spacer sits in between -- the
+      // Leaderboard is the last thing on this page, so #brSubmitSpacer has
+      // to go AFTER it (not right here, where it only leaves a gap between
+      // the button and the score/leaderboard that follows) to actually push
+      // the bar's cover-height past the leaderboard's own last rows.
       '<div class="br-submitrow" id="brSubmitRow">' +
         '<button type="button" class="gl-btn gl-btn-primary" id="brSubmitBtn" disabled>Submit Bracket</button>' +
         '<p class="gl-muted" id="brProgress" style="margin:0">0 of 7 picks made</p>' +
       '</div>' +
-      '<div style="height:4.6rem"></div>' +
       '<div class="gl-error" id="brSubmitErr"></div>' +
       '<div class="gl-sec br-score" id="brScore" hidden></div>' +
       '<div class="gl-sec" id="brLbSection">' +
-        '<div class="gl-dash-head"><h2 class="gl-dash-title">Leaderboard</h2></div>' +
+        '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title">Leaderboard</h2></div>' +
         '<div class="pk-tabs" id="brLbTabs">' +
           '<button type="button" class="pk-tab sel" data-lb-scope="week">This Week</button>' +
           '<button type="button" class="pk-tab" data-lb-scope="season">Season</button>' +
         '</div>' +
         '<div class="pk-board-list" id="brLbList"><div class="pk-board-empty">Loading…</div></div>' +
-      '</div>';
+      '</div>' +
+      '<div id="brSubmitSpacer"></div>';
 
     document.getElementById('brLbTabs').addEventListener('click', function(e){
       var btn = e.target.closest('[data-lb-scope]');
@@ -441,6 +445,24 @@ function mountBracket(container){
     } else {
       renderPicker();
     }
+    syncSubmitSpacer();
+  }
+
+  // #brSubmitRow is position:fixed (see its own CSS comment), so it no
+  // longer reserves its own space in the page's normal flow -- without
+  // this, it permanently floats on top of whatever renders right after it
+  // (the score/recap/leaderboard), which is exactly what was reported: the
+  // bar covering the last leaderboard rows once you'd scrolled all the way
+  // down. A guessed fixed rem height here previously wasn't quite tall
+  // enough on a real device (its real height varies with the safe-area
+  // inset this bar itself sits above) -- measuring the actual rendered bar
+  // and matching the spacer to it exactly is the only way to guarantee
+  // there's never a gap OR an overlap, on any device.
+  function syncSubmitSpacer(){
+    var bar = document.getElementById('brSubmitRow');
+    var spacer = document.getElementById('brSubmitSpacer');
+    if (!bar || !spacer) return;
+    spacer.style.height = bar.offsetHeight + 'px';
   }
 
   window.GL_API.bracketCurrent().then(function(res){
