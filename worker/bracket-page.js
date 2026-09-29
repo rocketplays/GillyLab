@@ -783,9 +783,15 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     el.textContent = 'New bracket in ' + d + 'D ' + h + 'H';
   }
 
-  function showResults(score, label){
+  // label param dropped -- both call sites used to pass different copy (a
+  // fresh submit said "X pts added...", a reload of an already-submitted
+  // week said "Every correct pick locked in above -- here's the real
+  // bracket." instead), which read as two different features depending on
+  // how you got here. Same "X pts added to your lifetime belt progress"
+  // line either way now, matching the app's own score banner exactly.
+  function showResults(score){
     document.getElementById('scoreBig').textContent = score;
-    document.getElementById('scoreLabel').textContent = label;
+    document.getElementById('scoreLabel').textContent = score + ' pts added to your lifetime belt progress.';
     document.getElementById('results').classList.add('show');
     renderPicksRecap();
     tickNextWeek();
@@ -843,7 +849,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       lifetimePts = res.data.lifetimePts || 0;
       renderBeltPanel();
       markCardStates();
-      showResults(res.data.score, res.data.score + ' pts added to your lifetime belt progress.');
+      showResults(res.data.score);
       Promise.all([loadLeaderboard('week'), loadLeaderboard('season')]).then(function(){ renderLeaderboard('week'); });
     }).catch(function(){
       btn.disabled = false;
@@ -936,7 +942,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       real = resolveReal(res.real);
       render();
       markCardStates();
-      showResults(res.mine.score, "Every correct pick locked in above — here's the real bracket.");
+      showResults(res.mine.score);
       Promise.all([loadLeaderboard('week'), loadLeaderboard('season')]).then(function(){ renderLeaderboard('week'); });
     } else {
       render();

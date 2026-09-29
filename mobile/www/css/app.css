@@ -2372,23 +2372,34 @@ body #mh-box{
 .br-belt-fill{ height:100%; border-radius:4px; }
 .br-belt-meta{ font-size:.7rem; color:var(--muted); margin-top:.3rem; }
 
-.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; scroll-padding-left:1.1rem; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
+.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; scroll-padding-left:1.2rem; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
 /* 5th grid column is a bare trailing spacer (.br-spacer, rendered as the
    last child by renderPicker/renderResults), not cosmetic padding -- a
    scroll container's own trailing PADDING is excluded from scrollWidth in
-   every engine tested (confirmed empirically: adding 14vw of padding-right
-   to .br-scroll changed computed style but left scrollWidth byte-for-byte
+   every engine tested (confirmed empirically: adding padding-right to
+   .br-scroll changed computed style but left scrollWidth byte-for-byte
    unchanged), so it can never provide real scroll room no matter how large
    it is. A real grid item does count, because it genuinely occupies space
    in the content the container has to scroll through. Without it, the
-   Champion column (86vw, same as every other column) could never scroll
-   far enough to reach flush-left -- confirmed by forcing scrollLeft to
-   scrollWidth (its true max) and finding the column still sitting ~54px
-   short, not a scroll-snap/JS-timing issue at all. 14vw closes that gap
-   (86vw column + 14vw spacer = 100vw, a full screen of real scroll room
-   past it). The left side never needed this: scrollLeft:0 already
-   satisfies the FIRST column's own start-alignment trivially. */
-.br-bracket{ display:grid; grid-template-columns:repeat(4, 86vw) 14vw; gap:0 2.2rem; --br-gap:2.2rem; --br-stub:.55rem; }
+   Champion column could never scroll far enough to reach a settled
+   position -- confirmed by forcing scrollLeft to scrollWidth (its true
+   max) and finding the column still sitting short, not a scroll-snap/JS-
+   timing issue at all. 20vw comfortably covers the column width below
+   plus the scroll-padding gutter above, with real margin to spare. The
+   left side never needed this: scrollLeft:0 already satisfies the FIRST
+   column's own start-alignment trivially.
+
+   Column width dropped from 86vw to 80vw, and the gap widened from 2.2rem
+   to 2.6rem (matching the SITE'S OWN prototypes/legends-bracket.html
+   exactly) -- 86vw left only ~14vw of slack per side, which the gap alone
+   didn't reliably cover once you added the scroll-padding gutter on top:
+   a settled column's right edge could sit within single digits of
+   pixels of the next column's own left edge, letting real fighter NAMES
+   peek into view at the edge instead of just an ambiguous sliver. 80vw
+   plus a wider gap leaves a real double-digit-pixel margin of clean,
+   contentless space at rest, checked at 375px/390px/430px widths, not
+   just the one viewport this was first verified against. */
+.br-bracket{ display:grid; grid-template-columns:repeat(4, 80vw) 20vw; gap:0 2.6rem; --br-gap:2.6rem; --br-stub:.6rem; }
 .br-spacer{ pointer-events:none; }
 .br-col{ display:flex; flex-direction:column; position:relative; scroll-snap-align:start; min-width:0; }
 .br-collabel{ font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .9rem; }
