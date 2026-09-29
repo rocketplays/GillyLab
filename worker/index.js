@@ -1237,14 +1237,27 @@ function btStripFences(text) {
 function btValidateScanDraft(d) {
   if (!d || typeof d !== "object") return "Couldn't read this screenshot.";
   if (d.kind !== "manual" && d.kind !== "parlay") return "Couldn't read this screenshot.";
-  const leg = (l) => l && typeof l === "object" && typeof l.matchup === "string" && l.matchup.trim()
-    && typeof l.pick === "string" && l.pick.trim() && typeof l.market === "string" && l.market.trim()
-    && Number.isFinite(l.odds) && l.odds !== 0;
+  // matchup/pick/market are required on every leg either way. Odds are
+  // required on a MANUAL (single) bet's own leg -- that number IS the
+  // bet's odds, always printed. A PARLAY leg's own odds are a different
+  // story: plenty of real slips (seen: Fanatics Sportsbook) print only the
+  // combined price and never break out a per-leg number at all. Requiring
+  // every leg to carry its own odds rejected the whole screenshot outright
+  // on exactly that kind of slip -- "couldn't read this screenshot" for a
+  // perfectly readable one. Self-reported logging only ever needs the
+  // combined parlayOdds (checked separately below); legTrackable() in the
+  // client already independently excludes an odds-less leg from the
+  // "tracked" upgrade path, so relaxing this here can't let a leg silently
+  // get tracked without a real price.
+  const legCore = (l) => l && typeof l === "object" && typeof l.matchup === "string" && l.matchup.trim()
+    && typeof l.pick === "string" && l.pick.trim() && typeof l.market === "string" && l.market.trim();
   if (d.kind === "manual") {
-    if (!leg(d.manual)) return "Couldn't read this screenshot clearly enough.";
+    const m = d.manual;
+    if (!legCore(m) || !Number.isFinite(m.odds) || m.odds === 0) return "Couldn't read this screenshot clearly enough.";
   } else {
     const legs = d.parlay && Array.isArray(d.parlay.legs) ? d.parlay.legs : null;
-    if (!legs || legs.length < 2 || !legs.every(leg)) return "Couldn't read this screenshot clearly enough.";
+    if (!legs || legs.length < 2 || !legs.every(legCore)) return "Couldn't read this screenshot clearly enough.";
+    if (!Number.isFinite(d.parlay.parlayOdds) || d.parlay.parlayOdds === 0) return "Couldn't read this screenshot clearly enough — missing the combined odds.";
   }
   return null;
 }
@@ -2147,7 +2160,28 @@ async function handlePickemHistory(request, env, url) {
     const ev = (results.events || []).find(e => e.slug === slug);
     const closing = await loadClosingOdds(env, url);
     const card = ev ? gradeCard(rec, withClosingOdds(ev.bouts, closing)) : { bouts: rec.picks.map(p => ({ ...p, pending: true, points: 0 })), total: 0, correct: 0 };
-    return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts: card.bouts }, 200, cors);
+    // Resolve fighter-profile slugs + the actual result names server-side so
+    // the app's Share results sheet can show real photos and the correct
+    // "X def. Y" line -- the raw gradeCard() bout only carries f1/f2/winner
+    // (the PICK) plus a `result` object; the app screen had neither a slug
+    // table nor the site's client-side nameToSlug() to resolve one itself,
+    // so it was sending winnerSlug/loserSlug: null (initials-only, no
+    // photos at all) and deriving actualWinner as "the pick, or nothing"
+    // (wrong on a miss -- it should be the opponent who actually won).
+    const profileSlugs = await loadProfileSlugs(env, url);
+    const bouts = card.bouts.map(b => {
+      const loser = namesMatch(b.winner, b.f1) ? b.f2 : b.f1;
+      const r = b.result && !b.voided ? b.result : null;
+      const aw = r ? r.winner : null;
+      const al = aw ? (namesMatch(aw, b.f1) ? b.f2 : b.f1) : null;
+      return {
+        ...b, loser,
+        winnerSlug: profileSlugFor(b.winner, profileSlugs) || null,
+        loserSlug: profileSlugFor(loser, profileSlugs) || null,
+        actualWinner: aw, actualLoser: al,
+      };
+    });
+    return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts }, 200, cors);
   }
   const { ordered, aggs } = await pickemBoardData(env, url);
   const ag = (await pkGet(env, "ag:" + s.email)) || { name: await getDisplayName(env, s.email), byEvent: {} };
@@ -2657,6 +2691,101 @@ const DEFAULT_NOTIF_PREFS = {
 };
 function getNotifPrefs(u) { return Object.assign({}, DEFAULT_NOTIF_PREFS, (u && u.notifPrefs) || {}); }
 
+/* ── Push delivery (Firebase Cloud Messaging, v1 HTTP API) ───────────────────
+ * Three env secrets, all from one Firebase service-account JSON (Firebase
+ * console -> Project settings -> Service accounts -> Generate new private
+ * key): FCM_PROJECT_ID (the JSON's project_id), FCM_CLIENT_EMAIL (its
+ * client_email), FCM_PRIVATE_KEY (its private_key, PEM, newlines intact --
+ * wrangler secret put handles a multi-line value fine).
+ *
+ * FCM's v1 send API needs an OAuth2 access token, not the service-account
+ * key directly -- that means self-signing a short-lived JWT (RS256, scope
+ * https://www.googleapis.com/auth/firebase.messaging) and exchanging it at
+ * Google's token endpoint. Cached in-memory (module scope) for its ~1hr
+ * life since a Worker instance handles many requests; a cold start just
+ * re-mints one. Not persisted to KV -- losing the cache on a restart costs
+ * one extra token exchange, not a correctness issue.
+ *
+ * fcmConfigured() gates every call site: until the user has actually done
+ * the Firebase setup, this is silently a no-op (matches the "ships dark"
+ * pattern EMAIL_REMINDERS_ENABLED uses) rather than throwing on every
+ * reminder run.
+ */
+function fcmConfigured(env) { return !!(env.FCM_PROJECT_ID && env.FCM_CLIENT_EMAIL && env.FCM_PRIVATE_KEY); }
+let _fcmTokenCache = null;   // { token, exp } — module scope, best-effort reuse across requests
+async function fcmImportPrivateKey(pem) {
+  // Standard (not url-safe) base64, padding and all -- decode directly with
+  // atob rather than the b64url helpers above, which assume no padding.
+  const body = pem.replace(/\\n/g, "\n").replace(/-----BEGIN PRIVATE KEY-----/, "").replace(/-----END PRIVATE KEY-----/, "").replace(/\s+/g, "");
+  const der = Uint8Array.from(atob(body), (c) => c.charCodeAt(0));
+  return crypto.subtle.importKey("pkcs8", der, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
+}
+async function fcmAccessToken(env) {
+  const now = Math.floor(Date.now() / 1000);
+  if (_fcmTokenCache && _fcmTokenCache.exp > now + 60) return _fcmTokenCache.token;
+  const key = await fcmImportPrivateKey(env.FCM_PRIVATE_KEY);
+  const header = { alg: "RS256", typ: "JWT" };
+  const claims = {
+    iss: env.FCM_CLIENT_EMAIL,
+    scope: "https://www.googleapis.com/auth/firebase.messaging",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600,
+  };
+  const unsigned = b64url(enc.encode(JSON.stringify(header))) + "." + b64url(enc.encode(JSON.stringify(claims)));
+  const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, enc.encode(unsigned));
+  const jwt = unsigned + "." + b64url(sig);
+  const res = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "grant_type=" + encodeURIComponent("urn:ietf:params:oauth:grant-type:jwt-bearer") + "&assertion=" + encodeURIComponent(jwt),
+  });
+  if (!res.ok) throw new Error("FCM token exchange failed: " + res.status + " " + (await res.text().catch(() => "")));
+  const data = await res.json();
+  _fcmTokenCache = { token: data.access_token, exp: now + (data.expires_in || 3600) };
+  return data.access_token;
+}
+// Sends to one device token. Returns "ok", "invalid" (token is dead --
+// unregistered/not-found/invalid-argument, caller should drop it from the
+// user's list), or "error" (transient — leave the token alone, try again
+// next time).
+async function fcmSendOne(env, token, { title, body, data }) {
+  const accessToken = await fcmAccessToken(env);
+  const message = { token, notification: { title, body } };
+  if (data) message.data = Object.fromEntries(Object.entries(data).map(([k, v]) => [k, String(v)]));
+  const res = await fetch("https://fcm.googleapis.com/v1/projects/" + env.FCM_PROJECT_ID + "/messages:send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + accessToken },
+    body: JSON.stringify({ message }),
+  });
+  if (res.ok) return "ok";
+  const errBody = await res.json().catch(() => null);
+  const status = errBody && errBody.error && errBody.error.status;
+  if (status === "UNREGISTERED" || status === "NOT_FOUND" || status === "INVALID_ARGUMENT") return "invalid";
+  return "error";
+}
+// Sends to every device token on a user's account, dropping any that come
+// back invalid (uninstalled app, expired token, etc.) so the list doesn't
+// grow stale forever. Best-effort: a send failure here must never break the
+// reminder/recap run it rode in on.
+async function fcmSendToUser(env, u, email, payload) {
+  if (!fcmConfigured(env) || !u || !Array.isArray(u.pushTokens) || !u.pushTokens.length) return { sent: 0 };
+  let sent = 0;
+  const keep = [];
+  for (const token of u.pushTokens) {
+    try {
+      const result = await fcmSendOne(env, token, payload);
+      if (result === "ok") { sent++; keep.push(token); }
+      else if (result === "error") keep.push(token);   // transient — don't drop
+      // "invalid" — drop silently (not pushed to `keep`)
+    } catch (e) { keep.push(token); }   // network hiccup etc. — don't punish the token for our own error
+  }
+  if (keep.length !== u.pushTokens.length) {
+    try { u.pushTokens = keep; await putUser(env, email, u); } catch (e) { /* best-effort */ }
+  }
+  return { sent };
+}
+
 /* ── Internal usage activity (founder-only /admin/activity) ────────────────────
  * First-party, no third-party service, no ad/cross-site tracking — logs which
  * of our OWN features a logged-in account touches, so /admin/activity can show
@@ -2759,20 +2888,39 @@ async function runLockReminders(env, base, opts = {}) {
   let sent = 0, targeted = 0, capped = false;
   for (const email of await listAllUserEmails(env)) {
     if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
-    if (await env.PICKS.get("em:l:" + card.slug + ":" + email)) continue;   // already emailed
+    // Email and push are independent channels with independent "already
+    // sent" markers now (used to be one shared check that skipped push
+    // entirely once email went out, or vice versa) -- someone with email
+    // off and push on still needs their own send + their own marker.
+    const emailedKey = "em:l:" + card.slug + ":" + email;
+    const pushedKey = "em:lp:" + card.slug + ":" + email;
+    const [alreadyEmailed, alreadyPushed] = await Promise.all([env.PICKS.get(emailedKey), env.PICKS.get(pushedKey)]);
+    if (alreadyEmailed && alreadyPushed) continue;
     if (await pkGet(env, "pk:" + card.slug + ":" + email)) continue;        // already picked
     const u = await getUser(env, email);
-    if (u && u.emailOptOut) continue;                                      // unsubscribed (global)
-    if (u && getNotifPrefs(u).emailPickemReminders === false) continue;    // opted out of this category in Settings
+    const prefs = getNotifPrefs(u);
+    const wantEmail = !alreadyEmailed && !(u && u.emailOptOut) && prefs.emailPickemReminders !== false;
+    const wantPush = !alreadyPushed && prefs.pushPickemReminders !== false && !!(u && Array.isArray(u.pushTokens) && u.pushTokens.length) && fcmConfigured(env);
+    if (!wantEmail && !wantPush) continue;
     targeted++;
     if (dry) continue;
-    try {
-      const unsub = await unsubUrl(env, email);
-      const cta = pickemLink(env, !!(u && u.subscribed));
-      await sendEmail(env, email, "Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub, cta), null, listUnsubHeaders(unsub));
-      await env.PICKS.put("em:l:" + card.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
-      sent++;
-    } catch (e) { /* bad address — skip, keep going */ }
+    let didSend = false;
+    if (wantEmail) {
+      try {
+        const unsub = await unsubUrl(env, email);
+        const cta = pickemLink(env, !!(u && u.subscribed));
+        await sendEmail(env, email, "Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub, cta), null, listUnsubHeaders(unsub));
+        await env.PICKS.put(emailedKey, "1", { expirationTtl: REMINDER_MARK_TTL });
+        didSend = true;
+      } catch (e) { /* bad address — skip, keep going */ }
+    }
+    if (wantPush) {
+      try {
+        const r = await fcmSendToUser(env, u, email, { title: "Picks lock soon", body: card.name + " — get your picks in before lock.", data: { type: "pickem_reminder", event: card.slug } });
+        if (r.sent) { await env.PICKS.put(pushedKey, "1", { expirationTtl: REMINDER_MARK_TTL }); didSend = true; }
+      } catch (e) { /* best-effort — never break the run over a push failure */ }
+    }
+    if (didSend) sent++;
   }
   if (!dry && !capped) await env.PICKS.put("em:ldone:" + card.slug, "1", { expirationTtl: REMINDER_MARK_TTL });
   return { type: "lock", event: card.slug, targeted, sent, capped, dry };
@@ -2794,32 +2942,49 @@ async function runResultRecaps(env, base, opts = {}) {
     for (const key of await listAllKeys(env, prefix)) {
       if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
       const email = key.slice(prefix.length);
-      if (await env.PICKS.get("em:r:" + ev.slug + ":" + email)) continue;
+      const emailedKey = "em:r:" + ev.slug + ":" + email;
+      const pushedKey = "em:rp:" + ev.slug + ":" + email;
+      const [alreadyEmailed, alreadyPushed] = await Promise.all([env.PICKS.get(emailedKey), env.PICKS.get(pushedKey)]);
+      if (alreadyEmailed && alreadyPushed) continue;
       const u = await getUser(env, email);
-      if (u && u.emailOptOut) continue;                                    // unsubscribed (global)
-      if (u && getNotifPrefs(u).emailPickemResults === false) continue;    // opted out of this category in Settings
       const ag = await pkGet(env, "ag:" + email);
       const score = ag && ag.byEvent && ag.byEvent[ev.slug];
       if (!score) continue;   // not graded for this user yet
+      const prefs = getNotifPrefs(u);
+      const wantEmail = !alreadyEmailed && !(u && u.emailOptOut) && prefs.emailPickemResults !== false;
+      const wantPush = !alreadyPushed && prefs.pushPickemResults !== false && !!(u && Array.isArray(u.pushTokens) && u.pushTokens.length) && fcmConfigured(env);
+      if (!wantEmail && !wantPush) continue;
       targeted++;
       if (dry) continue;
-      try {
-        const unsub = await unsubUrl(env, email);
-        const cta = pickemLink(env, !!(u && u.subscribed));
-        // Free users get the "pick with the numbers" upsell showing the model's take
-        // on one of their own picks; subscribers get the plain recap (no sell).
-        let sell = "";
-        if (!(u && u.subscribed)) {
-          const rec = await pkGet(env, "pk:" + ev.slug + ":" + email);
-          for (const p of (rec && rec.picks) || []) {
-            const pct = p && p.winner ? modelPctFor(p.winner) : null;
-            if (pct) { sell = recapSellHtml(env, p.winner, pct); break; }
+      let didSend = false;
+      if (wantEmail) {
+        try {
+          const unsub = await unsubUrl(env, email);
+          const cta = pickemLink(env, !!(u && u.subscribed));
+          // Free users get the "pick with the numbers" upsell showing the model's take
+          // on one of their own picks; subscribers get the plain recap (no sell).
+          let sell = "";
+          if (!(u && u.subscribed)) {
+            const rec = await pkGet(env, "pk:" + ev.slug + ":" + email);
+            for (const p of (rec && rec.picks) || []) {
+              const pct = p && p.winner ? modelPctFor(p.winner) : null;
+              if (pct) { sell = recapSellHtml(env, p.winner, pct); break; }
+            }
           }
-        }
-        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, unsub, cta, sell), null, listUnsubHeaders(unsub));
-        await env.PICKS.put("em:r:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
-        sent++;
-      } catch (e) { /* skip, keep going */ }
+          await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, unsub, cta, sell), null, listUnsubHeaders(unsub));
+          await env.PICKS.put(emailedKey, "1", { expirationTtl: REMINDER_MARK_TTL });
+          didSend = true;
+        } catch (e) { /* skip, keep going */ }
+      }
+      if (wantPush) {
+        try {
+          const pts = typeof score.points === "number" ? score.points : null;
+          const body = pts != null ? "You scored " + pts + " point" + (pts === 1 ? "" : "s") + " on " + ev.name + "." : "Your " + ev.name + " picks are graded.";
+          const r = await fcmSendToUser(env, u, email, { title: "Pick'em results are in", body, data: { type: "pickem_results", event: ev.slug } });
+          if (r.sent) { await env.PICKS.put(pushedKey, "1", { expirationTtl: REMINDER_MARK_TTL }); didSend = true; }
+        } catch (e) { /* best-effort */ }
+      }
+      if (didSend) sent++;
     }
     if (!dry && !capped) await env.PICKS.put("em:rdone:" + ev.slug, "1", { expirationTtl: REMINDER_MARK_TTL });
     out.push({ event: ev.slug, targeted, sent, capped });
@@ -2864,6 +3029,58 @@ async function runMissedNudges(env, base, opts = {}) {
   }
   return { type: "missed", events: out, dry };
 }
+// "Bet graded" — push-only (Settings never offers an email toggle for this,
+// see settings.js's own comment: Bet Tracker is Premium-only, so a free
+// account has nothing to ever grade), to subscribed accounts with a tracked
+// bet that just settled. Unlike the Pick'em jobs above there's no single
+// "upcoming card"/"recent events" list to scope this to — a bet's fight can
+// be on any card, live-graded via btEffectiveGrade the same way the Bet
+// Tracker screen and leaderboard already do — so this scans every bettor's
+// own log each run and checks each bet's current effective grade against
+// its own per-bet "already notified" marker (em:btr:<id>), same idea as the
+// event-level em:r:/em:l: markers but keyed to the bet instead of the event
+// since a user's bets don't share one settle time.
+async function runBetResultPushes(env, base, opts = {}) {
+  const dry = !!opts.dry;
+  if (!fcmConfigured(env)) return { type: "betResults", skipped: "FCM not configured" };
+  const [events, closing, keys] = await Promise.all([
+    btLoadResultEvents(env, base), loadClosingOdds(env, base), listAllKeys(env, "bt:"),
+  ]);
+  let sent = 0, targeted = 0, capped = false;
+  for (const key of keys) {
+    if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
+    const email = key.slice(3);   // strip "bt:"
+    const u = await getUser(env, email);
+    if (!u || !u.subscribed) continue;                                        // Bet Tracker is Premium-only
+    const prefs = getNotifPrefs(u);
+    if (prefs.pushBetResults === false) continue;
+    if (!Array.isArray(u.pushTokens) || !u.pushTokens.length) continue;
+    let bets;
+    try { bets = await btGetBets(env, email); } catch (e) { continue; }
+    for (const b of bets) {
+      if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
+      if (!b || !b.id) continue;
+      const markerKey = "em:btr:" + b.id;
+      if (await env.PICKS.get(markerKey)) continue;   // already notified for this bet
+      let grade;
+      try { grade = btEffectiveGrade(b, events, closing); } catch (e) { continue; }
+      if (!grade || ["won", "lost", "push", "void"].indexOf(grade.status) === -1) continue;   // still pending
+      targeted++;
+      if (dry) continue;
+      try {
+        const label = b.match || b.market || "Your bet";
+        const verb = grade.status === "won" ? "won" : grade.status === "lost" ? "lost" : grade.status === "push" ? "pushed" : "voided";
+        const r = await fcmSendToUser(env, u, email, { title: "Bet graded: " + verb, body: label, data: { type: "bet_result", betId: b.id } });
+        // No TTL on this marker (unlike the event-scoped em:l:/em:r: ones
+        // above): btLoadResultEvents keeps grading old bets indefinitely, so
+        // a 45-day expiry here would silently re-fire the same push for the
+        // same settled bet every ~45 days forever.
+        if (r.sent) { await env.PICKS.put(markerKey, "1"); sent++; }
+      } catch (e) { /* best-effort */ }
+    }
+  }
+  return { type: "betResults", targeted, sent, capped, dry };
+}
 async function runReminders(env, opts = {}) {
   const base = new URL(env.SITE_URL);
   return {
@@ -2872,6 +3089,7 @@ async function runReminders(env, opts = {}) {
     lock: await runLockReminders(env, base, opts),
     recap: await runResultRecaps(env, base, opts),
     missed: await runMissedNudges(env, base, opts),
+    betResults: await runBetResultPushes(env, base, opts),
   };
 }
 
@@ -3704,12 +3922,40 @@ export default {
           ? taleOfTapeFor(card.fights[0].s1, card.fights[0].s2)
           : null;
 
+        // Fallback for Home's matchup preview when taleOfTapeFor() above came
+        // back null -- a debuting or very short-notice fighter (a DWCS card,
+        // mainly) has no fight-stats coverage yet, so there's nothing for the
+        // stat-bar comparison to show. fighter-lite.json's own `.phys` object
+        // (age/ht/reach/stance/layoff/l5/promoTier) is what the site's own
+        // free "Tale of the tape" widget (mf-tape in pages.js) and the free
+        // /matchup main-event tape (buildMainTape's `promo` field) already
+        // draw from -- promoTier itself is gen-landing-data.cjs's per-fighter
+        // "regional promotion strength" (highest pre-UFC tier reached), baked
+        // into fighter-lite.json so it's free and already loaded here, no new
+        // endpoint or premium gate needed. Only built when taleOfTape is
+        // empty -- when there IS real stat coverage, that stays the featured
+        // comparison and this stays unused.
+        function bioTapeFor(slugA, slugB) {
+          if (!slugA || !slugB) return null;
+          const a = fighterLiteBySlug[slugA], b = fighterLiteBySlug[slugB];
+          if (!a || !b || !a.phys || !b.phys) return null;
+          const pa = a.phys, pb = b.phys;
+          const has = (p) => p.age != null || p.ht || p.reach || p.stance || (p.l5 && p.l5.length) || p.promoTier;
+          if (!has(pa) && !has(pb)) return null;
+          const pick = (p) => ({ age: p.age, ht: p.ht, reach: p.reach, stance: p.stance, layoff: p.layoff || null, l5: p.l5 || [], promoTier: p.promoTier || null });
+          return { a: pick(pa), b: pick(pb) };
+        }
+        const bioTape = !taleOfTape && card && card.fights && card.fights[0]
+          ? bioTapeFor(card.fights[0].s1, card.fights[0].s2)
+          : null;
+
         return json({
           card,
           isPast: isPastView,
           deepDive,
           breakdown,
           taleOfTape,
+          bioTape,
           hub,
           carousel,
           past: pastFiltered.map(liteEvent),
@@ -4476,6 +4722,13 @@ export default {
           const status = g ? g.status : "pending";
           const names = btBetNames(eventsBySlug, b);
           const slugs = names.map((n) => profileSlugFor(n, profileSlugs) || null).filter(Boolean);
+          // Positionally aligned with `names` (unlike `slugs` above, which
+          // drops unresolved entries for gl-sheet.js's own use and so can't
+          // be safely zipped back with names) -- the app's bet row avatars
+          // need name[i]/photo[i] to line up so a two-fighter bet doesn't
+          // silently show the wrong face. null where no profile slug
+          // resolves; the avatar just falls back to initials for that seat.
+          const photos = names.map((n) => profileSlugFor(n, profileSlugs) || null);
           const legs = b.market === "PARLAY" && b.legs
             ? b.legs.map((l) => {
                 const ln = btBetNames(eventsBySlug, { market: l.market, fightId: l.fightId, params: l.params });
@@ -4488,7 +4741,7 @@ export default {
             market: b.market, pick: b.pick, match: b.match,
             fightId: b.fightId || null, evSlug: b.evSlug || null,
             params: b.params || null,
-            names, slugs,
+            names, slugs, photos,
             legs,
             legStatuses: (g && g.legStatuses) || null,
             legsIn: (g && g.legsIn) || null, legsLive: (g && g.legsLive) || null,
@@ -4611,12 +4864,10 @@ export default {
       // (Manage Subscription, Go Premium checkout) instead of opening that
       // URL directly with no session at all.
       if (path === "/api/app/web-handoff" && request.method === "GET") return handleAppWebHandoff(request, env, url);
-      // App Settings screen: notification preferences. Push has no delivery
-      // pipeline yet (no Capacitor push plugin, no device-token registration,
-      // no APNs/FCM config on this Worker) -- these toggles just persist the
-      // user's choice on their KV record now, ready for whenever that native
-      // infra gets built, same shape as the email flags below which ARE live
-      // (see getNotifPrefs/DEFAULT_NOTIF_PREFS and the pk*Email send sites).
+      // App Settings screen: notification preferences. Both push and email
+      // are live sends -- push via FCM (see registerPushToken in api.js,
+      // /api/app/push-token below, and fcmSendToUser/runBetResultPushes),
+      // email via the pk*Email send sites (see getNotifPrefs/DEFAULT_NOTIF_PREFS).
       if (path === "/api/app/notification-prefs" && request.method === "GET") {
         const cors = appCorsHeaders(request);
         const s = await readSession(request, env);
@@ -4638,6 +4889,42 @@ export default {
         u.notifPrefs = next;
         await putUser(env, s.email, u);
         return json(next, 200, cors);
+      }
+      // Push device-token registration -- account-tied (see native.js's own
+      // comment: a logged-out visitor has nothing to register), so this is
+      // session-gated like notification-prefs above. u.pushTokens is a plain
+      // array of raw FCM/APNs token strings; POST adds (de-duped) on login/
+      // launch (tokens can rotate, so this fires every launch, not just
+      // once), DELETE removes on logout. Capped at 20 so a device that never
+      // properly logs out (reinstalls, etc.) can't grow this unbounded --
+      // oldest dropped first.
+      if (path === "/api/app/push-token" && request.method === "POST") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Not signed in" }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u) return json({ error: "Not signed in" }, 401, cors);
+        const body = await readBody(request);
+        const token = typeof body.token === "string" ? body.token.trim() : "";
+        if (!token) return json({ error: "Missing token" }, 400, cors);
+        const tokens = Array.isArray(u.pushTokens) ? u.pushTokens.filter((t) => t !== token) : [];
+        tokens.push(token);
+        while (tokens.length > 20) tokens.shift();
+        u.pushTokens = tokens;
+        await putUser(env, s.email, u);
+        return json({ ok: true }, 200, cors);
+      }
+      if (path === "/api/app/push-token" && request.method === "DELETE") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Not signed in" }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u) return json({ error: "Not signed in" }, 401, cors);
+        const body = await readBody(request);
+        const token = typeof body.token === "string" ? body.token.trim() : "";
+        u.pushTokens = (Array.isArray(u.pushTokens) ? u.pushTokens : []).filter((t) => t !== token);
+        await putUser(env, s.email, u);
+        return json({ ok: true }, 200, cors);
       }
       // The exact CSS/markup/script the website's own /subscribe page drops
       // in for its feature-tile carousel (mockup graphics, colors, the

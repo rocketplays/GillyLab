@@ -35,6 +35,14 @@ window.GL_ROUTER.register('settings', {
       );
     }
 
+    // Notification prefs are per-account (server-side): there is nothing a
+    // logged-out visitor could ever turn on or off (no email on file, no
+    // device token registered), so the entire Notifications block -- push
+    // AND email -- only renders when logged in. It used to render these
+    // toggles regardless and just let the save POST 401 and silently revert
+    // the switch, which is confusing (the toggle visibly flips back with no
+    // explanation) rather than simply not offering a setting that can't do
+    // anything yet.
     function notificationsHTML(subscribed){
       // Bet Results only makes sense for Premium -- the Bet & CLV Tracker
       // itself (bettracker.js) is a subscribed-only feature, so a free user
@@ -55,9 +63,9 @@ window.GL_ROUTER.register('settings', {
       );
     }
 
-    function supportHTML(){
+    function supportHTML(isFirst){
       return (
-        '<div class="gl-sec">' +
+        '<div class="gl-sec' + (isFirst ? ' gl-sec--first' : '') + '">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Support</h2></div>' +
           '<p class="gl-muted" style="margin:0 0 .6rem">Questions, bugs, feature ideas -- we read every email.</p>' +
           '<div class="gl-list-row"><div class="gl-list-label">Support Email</div><div class="gl-list-value">' + esc(SUPPORT_EMAIL) + '</div></div>' +
@@ -91,10 +99,13 @@ window.GL_ROUTER.register('settings', {
       );
     }
 
-    function render(prefs, subscribed){
+    function render(prefs, subscribed, loggedIn){
+      // supportHTML() picks up gl-sec--first when Notifications is absent
+      // (logged out) so the first section on screen still gets the no-
+      // top-border treatment instead of a stray line right under the title.
       container.innerHTML =
-        notificationsHTML(subscribed) +
-        supportHTML() +
+        (loggedIn ? notificationsHTML(subscribed) : '') +
+        supportHTML(!loggedIn) +
         socialsHTML() +
         appInfoHTML();
       wire(prefs);
@@ -143,22 +154,24 @@ window.GL_ROUTER.register('settings', {
       if (termsBtn) termsBtn.addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_NATIVE.openExternal('https://gillylab.com/terms'); });
     }
 
-    // Notification prefs are per-account (server-side), so a logged-out
-    // visitor gets the defaults shown but can't actually save a change --
-    // Support/Socials/App Info don't need an account at all, so the whole
-    // screen still renders for them; only the toggle POSTs will 401 (caught
-    // above, no-op besides reverting the switch). window.GL_AUTH.ready is
-    // the same gate account.js waits on before trusting isLoggedIn().
+    // Notification prefs are per-account (server-side) -- there's no email
+    // on file and no device token registered for a logged-out visitor, so
+    // there's genuinely nothing for a Notifications toggle to do yet.
+    // notificationsHTML() is skipped entirely for them (see render()) rather
+    // than shown with switches that silently revert on every tap.
+    // Support/Socials/App Info don't need an account at all, so the rest of
+    // the screen still renders either way. window.GL_AUTH.ready is the same
+    // gate account.js waits on before trusting isLoggedIn().
     window.GL_AUTH.ready.then(function(){
       if (window.GL_AUTH.isLoggedIn()){
         Promise.all([
           window.GL_API.notificationPrefs().catch(function(){ return {}; }),
           window.GL_API.account().catch(function(){ return null; }),
         ]).then(function(results){
-          render(results[0], !!(results[1] && results[1].subscribed));
+          render(results[0], !!(results[1] && results[1].subscribed), true);
         });
       } else {
-        render({}, false);
+        render({}, false, false);
       }
     });
   }

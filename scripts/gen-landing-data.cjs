@@ -870,7 +870,17 @@ function buildMatchup(recMap, evOverride) {
 function _physOf(name) {
   const st = fighterStat(name) || {};
   const lo = _layoff(name);
-  return { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "", gym: st.gym || "", layoff: lo, l5: _lastFive(name) };
+  // promoTier: the same "regional promotion strength" the free /matchup main-
+  // event tape already carries via _promoStrength() (buildMainTape's `promo`
+  // field, ~L883) -- but computed per FIGHTER here, not per PAIR, so it can
+  // ride along in fighter-lite.json's own `phys` object and reach every free
+  // consumer of it (the app's Home matchup preview included), not just the
+  // one real current main event buildMainTape() runs for. _bestPromoTierOf
+  // already returns null for a fighter with no gradeable pre-UFC bout, so a
+  // UFC veteran with a clean record just carries promoTier:null -- no "thin
+  // resume" gate needed here the way _promoStrength's pairwise version has
+  // one, since a null value already renders as nothing downstream.
+  return { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "", gym: st.gym || "", layoff: lo, l5: _lastFive(name), promoTier: _bestPromoTierOf(_fhReal(name)) };
 }
 function buildMainTape(m) {
   const ins = breakdownFor(m.f1, m.f2) || {};

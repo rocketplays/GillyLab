@@ -612,12 +612,23 @@ const GL_SHEET = (function () {
   }
   function pkPossessive(name) { return name ? (name + (/s$/i.test(name) ? "'" : "'s")) : 'My'; }
   // Confidence colour legend: a short swatch (matching the row spine) + label ×3.
-  function pkLegend(ctx, x, y) {
+  // The ring around each picked fighter's photo means something different
+  // pre-grade vs. post-grade (see pkBoutCard's ringCol): before results,
+  // it's the confidence colour (High/Med/Low); once graded, that same ring
+  // switches to hit/miss/void instead. This legend used to hard-code the
+  // CONFIDENCE key regardless, so a RESULTS card showed a legend for a
+  // meaning the ring no longer had -- a viewer had no real way to read a
+  // green ring as "correct" vs. what the card told them it meant ("High
+  // confidence"), which is a big part of why results didn't read clearly.
+  // `graded` picks the matching legend instead.
+  function pkLegend(ctx, x, y, graded) {
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    const label = graded ? 'RESULT' : 'CONFIDENCE';
+    const items = graded ? [['Correct', ACC], ['Wrong', PK_RED], ['Void', MUT]] : [['High', ACC], ['Med', AMB], ['Low', MUT]];
     ctx.font = '700 21px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('CONFIDENCE', x, y);
-    let lx = x + ctx.measureText('CONFIDENCE').width + 28;
-    [['High', ACC], ['Med', AMB], ['Low', MUT]].forEach(([lab, c]) => {
+    ctx.fillText(label, x, y);
+    let lx = x + ctx.measureText(label).width + 28;
+    items.forEach(([lab, c]) => {
       roundRect(ctx, lx, y - 5, 26, 9, 4.5); ctx.fillStyle = c; ctx.fill();
       ctx.font = '600 24px ' + SANS; ctx.fillStyle = TXT;
       ctx.fillText(lab, lx + 36, y + 1);
@@ -716,12 +727,14 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'center'; ctx.font = '700 ' + (20 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ACC;
       ctx.fillText(tag, x + w / 2, headY);
     }
-    if (graded) {
-      const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
-      ctx.textAlign = 'right'; ctx.font = '800 ' + (26 * s).toFixed(1) + 'px ' + COND;
-      ctx.fillStyle = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
-      ctx.fillText(ptsStr, x + w, headY);
-    }
+    // Points used to print here, at the top-right corner of every tile, with
+    // nothing tying the bare number to the fight it belonged to -- across a
+    // full two-column grid of bouts that read as a scatter of "+2"s and
+    // "-1"s with no anchor, i.e. exactly the "points floating everywhere"
+    // complaint. Moved into the result caption line itself (see the `else`
+    // branch below, "X def. Y  +2") so each point value sits directly next
+    // to the result sentence that explains it, instead of hovering
+    // unlabeled above the whole card.
 
     const cxA = x + w * 0.27, cxB = x + w * 0.73;
     const avY = headY + 15 * s + R;
@@ -733,9 +746,14 @@ const GL_SHEET = (function () {
     ctx.textAlign = 'center'; ctx.font = '800 ' + (31 * s).toFixed(1) + 'px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('VS', x + w / 2, avY + 10 * s);
 
-    const nameY = avY + R + 41 * s;
+    // Names and the result/method caption line bumped up (fighter names
+    // ~20%, the caption line ~25-30%) -- reported as reading too small next
+    // to the avatars, especially in the two-column grid where `s` already
+    // shrinks everything further. The nameY/lineY gaps grow along with the
+    // fonts so the bigger text doesn't crowd the row above or below it.
+    const nameY = avY + R + 44 * s;
     const nameMax = w * 0.4;
-    ctx.font = '700 ' + (28 * s).toFixed(1) + 'px ' + COND;
+    ctx.font = '700 ' + (34 * s).toFixed(1) + 'px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText(clip(ctx, (p.winner || '').toUpperCase(), nameMax), cxA, nameY);
     ctx.fillStyle = '#c8ccd2'; ctx.fillText(clip(ctx, (p.loser || '').toUpperCase(), nameMax), cxB, nameY);
 
@@ -745,25 +763,28 @@ const GL_SHEET = (function () {
     // under both names made it read as unattached to either side. Once
     // graded it becomes the actual result, which genuinely is about both
     // fighters, so that line stays centred on the whole bout.
-    const lineY = nameY + 33 * s;
+    const lineY = nameY + 40 * s;
     ctx.textAlign = 'left';   // drawSegs positions from a fixed x, so undo the centring above
     if (!graded) {
       // Confidence is already shown by the ring around the picked fighter's
       // photo, so this line is just the method — no need to repeat "High/Med/
       // Low pick" in text too.
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (23 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (29 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = ringCol;
       ctx.fillText(clip(ctx, pkMethodLabel(p), nameMax), cxA, lineY);
       ctx.textAlign = 'left';
     } else if (p.voided) {
-      ctx.textAlign = 'center'; ctx.font = '600 ' + (23 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (29 * s).toFixed(1) + 'px ' + SANS; ctx.fillStyle = MUT;
       ctx.fillText('Draw / No Contest', x + w / 2, lineY);
       ctx.textAlign = 'left';
     } else {
       const win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
+      const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
+      const ptsCol = pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT);
       const seg = [
-        { t: win, f: '700 ' + (24 * s).toFixed(1) + 'px ' + COND, c: TXT },
-        { t: ' def. ', f: '400 ' + (19 * s).toFixed(1) + 'px ' + SANS, c: MUT },
-        { t: los, f: '400 ' + (20 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: win, f: '700 ' + (30 * s).toFixed(1) + 'px ' + COND, c: TXT },
+        { t: ' def. ', f: '400 ' + (24 * s).toFixed(1) + 'px ' + SANS, c: MUT },
+        { t: los, f: '400 ' + (25 * s).toFixed(1) + 'px ' + SANS, c: '#c8ccd2' },
+        { t: '   ' + ptsStr, f: '800 ' + (28 * s).toFixed(1) + 'px ' + COND, c: ptsCol },
       ];
       drawSegsCentered(ctx, seg, x + w / 2, lineY, x + w - 4);
     }
@@ -775,8 +796,11 @@ const GL_SHEET = (function () {
   // pick or the result, never both, so it never needs extra room post-grade.
   // 225 (down from 240) — the header/avatar gap in pkBoutCard tightened now
   // that most rows draw no header text at all (division/rounds is gone, and
-  // only the main event still shows MAIN EVENT up there).
-  const ROW_H = 225;
+  // only the main event still shows MAIN EVENT up there). Bumped back up to
+  // 248 when the name/caption fonts grew (see pkBoutCard) -- at 225 the
+  // caption line's baseline landed just 2px above the next row, effectively
+  // zero clearance, versus ~12px before the font bump.
+  const ROW_H = 248;
   async function drawPickem(data) {
     await fontsReady();
     const logo = await loadBrandLogo();
@@ -879,7 +903,7 @@ const GL_SHEET = (function () {
       : (n + ' pick' + (n === 1 ? '' : 's'));
     const sub = [data.eventName, data.eventDate, tail].filter(Boolean).join('   ·   ');
     ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
-    pkLegend(ctx, 64, legendY);
+    pkLegend(ctx, 64, legendY, graded);
     if (graded) {
       const total = data.totalPoints || 0;
       ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
@@ -1402,7 +1426,26 @@ const GL_SHEET = (function () {
     // out of the click — the PNG is already rendered by the time the buttons enable.
     ov.querySelector('#glSheetSave').addEventListener('click', () => {
       if (!asset) return;
-      if (IOS && canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
+      // This block (GL_SHEET) is generated verbatim into the app's
+      // gl-sheet.js by scripts/gen-gl-sheet.cjs -- window.GL_NATIVE only
+      // ever exists there (native.js, inside the Capacitor shell), so on
+      // the plain website this check is always false and falls straight
+      // through to the browser logic below unchanged. In the app it routes
+      // through Capacitor's real Filesystem+Share plugins instead of the
+      // raw Web Share API, because navigator.share inside that app's
+      // WKWebView doesn't reliably get recognized as an image by iOS --
+      // "Save Image" was missing from the sheet that came up there.
+      if (window.GL_NATIVE && window.GL_NATIVE.isNative()) {
+        window.GL_NATIVE.saveImage(img.src, filename);
+        return;
+      }
+      // Was gated `IOS &&` -- so on Android (and any desktop browser that
+      // also supports the File Share API) this never even tried
+      // navigator.share and went straight to the silent download() below,
+      // with no share/save sheet shown at all. The Share button just below
+      // already only checks canShareFiles() with no platform gate; Save
+      // photo should use the same capability check, not a platform guess.
+      if (canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
       download(asset.blob, filename);
     });
     // Absent on the paywalled sheets — see canShare above. Save photo still routes

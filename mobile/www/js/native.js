@@ -50,5 +50,112 @@ window.GL_NATIVE = (function(){
     }
   }
 
-  return { init: init, tap: tap, openExternal: openExternal, isNative: isNative };
+  // ── Save/share a generated image (share sheets -- gl-sheet.js's "Save
+  // photo" button, used by every fight-card/pick'em/bet-tracker sheet in
+  // the app) ────────────────────────────────────────────────────────────
+  // Previously this used the raw Web Share API (navigator.share/canShare)
+  // straight from gl-sheet.js -- works in Safari, but a Capacitor app's
+  // WKWebView doesn't reliably tag a shared File as an actual image to the
+  // OS, so the native sheet that comes up is missing "Save Image" (iOS)
+  // entirely, and on Android there's no navigator.share(files) path here at
+  // all -- it silently fell through to a plain <a download> click, which
+  // does nothing in an embedded WebView (no download manager attached).
+  // The real fix is to go through Capacitor's own Filesystem + Share
+  // plugins instead of the web-layer API: write the PNG to a real file in
+  // the app's cache dir, then hand that file:// URI to the NATIVE share
+  // sheet (UIActivityViewController on iOS / Intent.ACTION_SEND on
+  // Android) -- that's what actually recognizes it as an image and offers
+  // Save Image, same as sharing a photo out of any other app.
+  function saveImage(dataUrl, filename){
+    var P = plugins();
+    if (isNative() && P.Filesystem && P.Share){
+      var base64 = String(dataUrl || '').split(',')[1] || '';
+      return P.Filesystem.writeFile({ path: filename, data: base64, directory: 'CACHE' })
+        .then(function(res){
+          // files (not url): only the files array gets tagged as an actual
+          // image by the native share sheet, which is what makes "Save
+          // Image"/"Add to Photos" show up. url is treated as a generic
+          // link/attachment and drops that option entirely.
+          return P.Share.share({ files: [res.uri], dialogTitle: 'Save or share' });
+        })
+        .catch(function(){});   // user cancelled the sheet, or a native error -- nothing more to do
+    }
+    // Web preview fallback (no Capacitor plugins available) -- plain
+    // browser download, same as before.
+    return fetch(dataUrl).then(function(r){ return r.blob(); }).then(function(blob){
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url; link.download = filename;
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+    }).catch(function(){});
+  }
+
+  // ── Push notifications (Pick'em Reminders/Results, Bet Results -- see
+  // Settings' Notifications section and worker/index.js's runLockReminders/
+  // runResultRecaps/runBetResultPushes) ──────────────────────────────────
+  // Account-tied, not device-tied: a logged-out visitor has no email/device
+  // record to send to at all (see settings.js's own reasoning for hiding
+  // the toggles entirely for them), so registration only ever happens once
+  // logged in, and is torn down again on logout. Wired off GL_AUTH's own
+  // onChange/ready rather than from account.js's login/signup screen, so it
+  // fires the same way whether the session came from a fresh login or was
+  // just restored from Preferences on app launch.
+  var lastPushToken = null;
+  function registerPush(){
+    var P = plugins();
+    if (!P.PushNotifications || !isNative()) return;
+    P.PushNotifications.checkPermissions().then(function(perm){
+      if (perm && perm.receive === 'granted') return perm;
+      return P.PushNotifications.requestPermissions();
+    }).then(function(perm){
+      if (!perm || perm.receive !== 'granted') return;   // denied -- nothing more to do here
+      return P.PushNotifications.register();
+    }).catch(function(){});
+  }
+  function unregisterPush(){
+    var P = plugins();
+    if (!P.PushNotifications || !isNative()) return;
+    if (lastPushToken){
+      window.GL_API.unregisterPushToken(lastPushToken).catch(function(){});
+      lastPushToken = null;
+    }
+  }
+  function wirePushListeners(){
+    var P = plugins();
+    if (!P.PushNotifications) return;
+    // Fires once register() above succeeds, with the actual APNs/FCM device
+    // token -- this is the "device record" Settings' toggles otherwise have
+    // nothing to attach to. Re-fires on every app launch even for an
+    // already-registered device (APNs/FCM tokens can rotate), so this POSTs
+    // every time rather than only the first time.
+    P.PushNotifications.addListener('registration', function(token){
+      lastPushToken = token && token.value;
+      if (lastPushToken && window.GL_AUTH.isLoggedIn()){
+        window.GL_API.registerPushToken(lastPushToken).catch(function(){});
+      }
+    });
+    P.PushNotifications.addListener('registrationError', function(){
+      // Denied permission or a native registration failure -- Settings'
+      // toggles simply won't do anything for this device until it
+      // succeeds; no separate UI for this yet.
+    });
+    // Tapping a delivered notification (app backgrounded or closed) -- no
+    // per-notification deep link built yet (which card, which bet), so this
+    // just brings the app to Home rather than doing nothing.
+    P.PushNotifications.addListener('pushNotificationActionPerformed', function(){
+      try { window.GL_ROUTER.go('home'); } catch(e){}
+    });
+  }
+  wirePushListeners();
+  if (window.GL_AUTH){
+    window.GL_AUTH.ready.then(function(){
+      if (window.GL_AUTH.isLoggedIn()) registerPush();
+    });
+    window.GL_AUTH.onChange(function(state){
+      if (state.loggedIn) registerPush(); else unregisterPush();
+    });
+  }
+
+  return { init: init, tap: tap, openExternal: openExternal, isNative: isNative, saveImage: saveImage };
 })();

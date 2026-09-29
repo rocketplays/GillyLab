@@ -1,2638 +1,6 @@
 {
- "generatedAt": "2026-09-23T01:41:01.634Z",
+ "generatedAt": "2026-09-27T02:52:42.346Z",
  "fighters": {
-  "Delphine Benouaich": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Sofia Montenegro",
-     "result": "W",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 2,
-     "time": "4:22",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Sofia Montenegro",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 146,
-      "sigA": 249,
-      "totL": 154,
-      "totA": 262,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:41",
-      "head": [
-       104,
-       200
-      ],
-      "body": [
-       29,
-       36
-      ],
-      "leg": [
-       13,
-       13
-      ],
-      "dist": [
-       106,
-       199
-      ],
-      "clinch": [
-       10,
-       12
-      ],
-      "ground": [
-       30,
-       38
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 72,
-      "sigA": 197,
-      "totL": 72,
-      "totA": 199,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       52,
-       170
-      ],
-      "body": [
-       11,
-       16
-      ],
-      "leg": [
-       9,
-       11
-      ],
-      "dist": [
-       68,
-       190
-      ],
-      "clinch": [
-       4,
-       7
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T16:21:48.509Z"
-    }
-   ]
-  },
-  "Sofia Montenegro": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Delphine Benouaich",
-     "result": "L",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 2,
-     "time": "4:22",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Delphine Benouaich",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 72,
-      "sigA": 197,
-      "totL": 72,
-      "totA": 199,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       52,
-       170
-      ],
-      "body": [
-       11,
-       16
-      ],
-      "leg": [
-       9,
-       11
-      ],
-      "dist": [
-       68,
-       190
-      ],
-      "clinch": [
-       4,
-       7
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 146,
-      "sigA": 249,
-      "totL": 154,
-      "totA": 262,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:41",
-      "head": [
-       104,
-       200
-      ],
-      "body": [
-       29,
-       36
-      ],
-      "leg": [
-       13,
-       13
-      ],
-      "dist": [
-       106,
-       199
-      ],
-      "clinch": [
-       10,
-       12
-      ],
-      "ground": [
-       30,
-       38
-      ]
-     },
-     "capturedAt": "2026-09-05T16:21:48.509Z"
-    }
-   ]
-  },
-  "Matthieu Letho Duclos": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Luis Felipe Dias",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "4:35",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Luis Felipe Dias",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 18,
-      "sigA": 43,
-      "totL": 20,
-      "totA": 47,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:05",
-      "head": [
-       13,
-       38
-      ],
-      "body": [
-       4,
-       4
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       16,
-       41
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 22,
-      "sigA": 50,
-      "totL": 23,
-      "totA": 51,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:33",
-      "head": [
-       15,
-       38
-      ],
-      "body": [
-       4,
-       6
-      ],
-      "leg": [
-       3,
-       6
-      ],
-      "dist": [
-       19,
-       45
-      ],
-      "clinch": [
-       3,
-       5
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T16:37:11.872Z"
-    }
-   ]
-  },
-  "Luis Felipe Dias": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Matthieu Letho Duclos",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "4:35",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Matthieu Letho Duclos",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 22,
-      "sigA": 50,
-      "totL": 23,
-      "totA": 51,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:33",
-      "head": [
-       15,
-       38
-      ],
-      "body": [
-       4,
-       6
-      ],
-      "leg": [
-       3,
-       6
-      ],
-      "dist": [
-       19,
-       45
-      ],
-      "clinch": [
-       3,
-       5
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 18,
-      "sigA": 43,
-      "totL": 20,
-      "totA": 47,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:05",
-      "head": [
-       13,
-       38
-      ],
-      "body": [
-       4,
-       4
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       16,
-       41
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "capturedAt": "2026-09-05T16:37:11.872Z"
-    }
-   ]
-  },
-  "Nora Cornolle": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Klaudia Syguła",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Klaudia Syguła",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 34,
-      "sigA": 63,
-      "totL": 60,
-      "totA": 93,
-      "tdL": 4,
-      "tdA": 7,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "8:59",
-      "head": [
-       16,
-       38
-      ],
-      "body": [
-       16,
-       20
-      ],
-      "leg": [
-       2,
-       5
-      ],
-      "dist": [
-       13,
-       30
-      ],
-      "clinch": [
-       19,
-       29
-      ],
-      "ground": [
-       2,
-       4
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 23,
-      "sigA": 64,
-      "totL": 103,
-      "totA": 151,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 1,
-      "ctrl": "3:15",
-      "head": [
-       16,
-       55
-      ],
-      "body": [
-       7,
-       9
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       13,
-       50
-      ],
-      "clinch": [
-       9,
-       11
-      ],
-      "ground": [
-       1,
-       3
-      ]
-     },
-     "capturedAt": "2026-09-05T17:07:38.037Z"
-    }
-   ]
-  },
-  "Klaudia Syguła": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Nora Cornolle",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Nora Cornolle",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 23,
-      "sigA": 64,
-      "totL": 103,
-      "totA": 151,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 1,
-      "ctrl": "3:15",
-      "head": [
-       16,
-       55
-      ],
-      "body": [
-       7,
-       9
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       13,
-       50
-      ],
-      "clinch": [
-       9,
-       11
-      ],
-      "ground": [
-       1,
-       3
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 34,
-      "sigA": 63,
-      "totL": 60,
-      "totA": 93,
-      "tdL": 4,
-      "tdA": 7,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "8:59",
-      "head": [
-       16,
-       38
-      ],
-      "body": [
-       16,
-       20
-      ],
-      "leg": [
-       2,
-       5
-      ],
-      "dist": [
-       13,
-       30
-      ],
-      "clinch": [
-       19,
-       29
-      ],
-      "ground": [
-       2,
-       4
-      ]
-     },
-     "capturedAt": "2026-09-05T17:07:38.037Z"
-    }
-   ]
-  },
-  "Michael Aljarouj": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Fabia Sintes",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Fabia Sintes",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 10,
-      "sigA": 32,
-      "totL": 70,
-      "totA": 99,
-      "tdL": 0,
-      "tdA": 3,
-      "sub": 1,
-      "rev": 1,
-      "ctrl": "4:24",
-      "head": [
-       5,
-       23
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       4,
-       7
-      ],
-      "dist": [
-       5,
-       24
-      ],
-      "clinch": [
-       2,
-       4
-      ],
-      "ground": [
-       3,
-       4
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 28,
-      "sigA": 49,
-      "totL": 61,
-      "totA": 88,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 3,
-      "rev": 0,
-      "ctrl": "6:19",
-      "head": [
-       15,
-       32
-      ],
-      "body": [
-       11,
-       12
-      ],
-      "leg": [
-       2,
-       5
-      ],
-      "dist": [
-       10,
-       26
-      ],
-      "clinch": [
-       6,
-       6
-      ],
-      "ground": [
-       12,
-       17
-      ]
-     },
-     "capturedAt": "2026-09-05T17:38:04.617Z"
-    }
-   ]
-  },
-  "Fabia Sintes": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Michael Aljarouj",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Michael Aljarouj",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 28,
-      "sigA": 49,
-      "totL": 61,
-      "totA": 88,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 3,
-      "rev": 0,
-      "ctrl": "6:19",
-      "head": [
-       15,
-       32
-      ],
-      "body": [
-       11,
-       12
-      ],
-      "leg": [
-       2,
-       5
-      ],
-      "dist": [
-       10,
-       26
-      ],
-      "clinch": [
-       6,
-       6
-      ],
-      "ground": [
-       12,
-       17
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 10,
-      "sigA": 32,
-      "totL": 70,
-      "totA": 99,
-      "tdL": 0,
-      "tdA": 3,
-      "sub": 1,
-      "rev": 1,
-      "ctrl": "4:24",
-      "head": [
-       5,
-       23
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       4,
-       7
-      ],
-      "dist": [
-       5,
-       24
-      ],
-      "clinch": [
-       2,
-       4
-      ],
-      "ground": [
-       3,
-       4
-      ]
-     },
-     "capturedAt": "2026-09-05T17:38:04.617Z"
-    }
-   ]
-  },
-  "Nathaniel Wood": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Pavel Andrusca",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Pavel Andrusca",
-     "result": "L",
-     "f": {
-      "kd": 1,
-      "sigL": 28,
-      "sigA": 86,
-      "totL": 57,
-      "totA": 118,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:09",
-      "head": [
-       17,
-       63
-      ],
-      "body": [
-       7,
-       13
-      ],
-      "leg": [
-       4,
-       10
-      ],
-      "dist": [
-       26,
-       79
-      ],
-      "clinch": [
-       2,
-       6
-      ],
-      "ground": [
-       0,
-       1
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 50,
-      "sigA": 105,
-      "totL": 69,
-      "totA": 131,
-      "tdL": 4,
-      "tdA": 19,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "6:06",
-      "head": [
-       44,
-       92
-      ],
-      "body": [
-       4,
-       11
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       33,
-       82
-      ],
-      "clinch": [
-       9,
-       13
-      ],
-      "ground": [
-       8,
-       10
-      ]
-     },
-     "capturedAt": "2026-09-05T18:08:30.678Z"
-    }
-   ]
-  },
-  "Pavel Andrusca": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Nathaniel Wood",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Nathaniel Wood",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 50,
-      "sigA": 105,
-      "totL": 69,
-      "totA": 131,
-      "tdL": 4,
-      "tdA": 19,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "6:06",
-      "head": [
-       44,
-       92
-      ],
-      "body": [
-       4,
-       11
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       33,
-       82
-      ],
-      "clinch": [
-       9,
-       13
-      ],
-      "ground": [
-       8,
-       10
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 28,
-      "sigA": 86,
-      "totL": 57,
-      "totA": 118,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:09",
-      "head": [
-       17,
-       63
-      ],
-      "body": [
-       7,
-       13
-      ],
-      "leg": [
-       4,
-       10
-      ],
-      "dist": [
-       26,
-       79
-      ],
-      "clinch": [
-       2,
-       6
-      ],
-      "ground": [
-       0,
-       1
-      ]
-     },
-     "capturedAt": "2026-09-05T18:08:30.678Z"
-    }
-   ]
-  },
-  "Oumar Sy": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Modestas Bukauskas",
-     "result": "L",
-     "method": "KO/TKO (Knee)",
-     "round": 2,
-     "time": "3:57",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Modestas Bukauskas",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 39,
-      "sigA": 59,
-      "totL": 48,
-      "totA": 71,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "5:08",
-      "head": [
-       27,
-       45
-      ],
-      "body": [
-       5,
-       7
-      ],
-      "leg": [
-       7,
-       7
-      ],
-      "dist": [
-       11,
-       23
-      ],
-      "clinch": [
-       3,
-       4
-      ],
-      "ground": [
-       25,
-       32
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 22,
-      "sigA": 46,
-      "totL": 29,
-      "totA": 56,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:35",
-      "head": [
-       22,
-       46
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       1,
-       19
-      ],
-      "clinch": [
-       6,
-       8
-      ],
-      "ground": [
-       15,
-       19
-      ]
-     },
-     "capturedAt": "2026-09-05T18:23:53.533Z"
-    }
-   ]
-  },
-  "Modestas Bukauskas": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Oumar Sy",
-     "result": "W",
-     "method": "KO/TKO (Knee)",
-     "round": 2,
-     "time": "3:57",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Oumar Sy",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 22,
-      "sigA": 46,
-      "totL": 29,
-      "totA": 56,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:35",
-      "head": [
-       22,
-       46
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       1,
-       19
-      ],
-      "clinch": [
-       6,
-       8
-      ],
-      "ground": [
-       15,
-       19
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 39,
-      "sigA": 59,
-      "totL": 48,
-      "totA": 71,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "5:08",
-      "head": [
-       27,
-       45
-      ],
-      "body": [
-       5,
-       7
-      ],
-      "leg": [
-       7,
-       7
-      ],
-      "dist": [
-       11,
-       23
-      ],
-      "clinch": [
-       3,
-       4
-      ],
-      "ground": [
-       25,
-       32
-      ]
-     },
-     "capturedAt": "2026-09-05T18:23:53.533Z"
-    }
-   ]
-  },
-  "Mario Pinto": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Ryan Spann",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 2,
-     "time": "0:55",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Ryan Spann",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 48,
-      "sigA": 67,
-      "totL": 114,
-      "totA": 137,
-      "tdL": 6,
-      "tdA": 7,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "3:33",
-      "head": [
-       47,
-       66
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       10,
-       24
-      ],
-      "clinch": [
-       6,
-       9
-      ],
-      "ground": [
-       32,
-       34
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 13,
-      "sigA": 34,
-      "totL": 16,
-      "totA": 37,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:20",
-      "head": [
-       10,
-       31
-      ],
-      "body": [
-       3,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       6,
-       24
-      ],
-      "clinch": [
-       7,
-       10
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T18:39:15.565Z"
-    }
-   ]
-  },
-  "Ryan Spann": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Mario Pinto",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 2,
-     "time": "0:55",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Mario Pinto",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 13,
-      "sigA": 34,
-      "totL": 16,
-      "totA": 37,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:20",
-      "head": [
-       10,
-       31
-      ],
-      "body": [
-       3,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       6,
-       24
-      ],
-      "clinch": [
-       7,
-       10
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 48,
-      "sigA": 67,
-      "totL": 114,
-      "totA": 137,
-      "tdL": 6,
-      "tdA": 7,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "3:33",
-      "head": [
-       47,
-       66
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       10,
-       24
-      ],
-      "clinch": [
-       6,
-       9
-      ],
-      "ground": [
-       32,
-       34
-      ]
-     },
-     "capturedAt": "2026-09-05T18:39:15.565Z"
-    }
-   ]
-  },
-  "Morgan Charrière": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Felipe Lima",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Felipe Lima",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 36,
-      "sigA": 146,
-      "totL": 38,
-      "totA": 148,
-      "tdL": 0,
-      "tdA": 3,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:31",
-      "head": [
-       24,
-       122
-      ],
-      "body": [
-       11,
-       22
-      ],
-      "leg": [
-       1,
-       2
-      ],
-      "dist": [
-       36,
-       144
-      ],
-      "clinch": [
-       0,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 112,
-      "sigA": 218,
-      "totL": 115,
-      "totA": 221,
-      "tdL": 2,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:13",
-      "head": [
-       82,
-       174
-      ],
-      "body": [
-       18,
-       25
-      ],
-      "leg": [
-       12,
-       19
-      ],
-      "dist": [
-       107,
-       212
-      ],
-      "clinch": [
-       5,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T19:09:40.087Z"
-    }
-   ]
-  },
-  "Felipe Lima": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Morgan Charrière",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Morgan Charrière",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 112,
-      "sigA": 218,
-      "totL": 115,
-      "totA": 221,
-      "tdL": 2,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:13",
-      "head": [
-       82,
-       174
-      ],
-      "body": [
-       18,
-       25
-      ],
-      "leg": [
-       12,
-       19
-      ],
-      "dist": [
-       107,
-       212
-      ],
-      "clinch": [
-       5,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 36,
-      "sigA": 146,
-      "totL": 38,
-      "totA": 148,
-      "tdL": 0,
-      "tdA": 3,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:31",
-      "head": [
-       24,
-       122
-      ],
-      "body": [
-       11,
-       22
-      ],
-      "leg": [
-       1,
-       2
-      ],
-      "dist": [
-       36,
-       144
-      ],
-      "clinch": [
-       0,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T19:09:40.087Z"
-    }
-   ]
-  },
-  "Losene Keita": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Muhammad Naimov",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "2:54",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Muhammad Naimov",
-     "result": "W",
-     "f": {
-      "kd": 2,
-      "sigL": 18,
-      "sigA": 30,
-      "totL": 19,
-      "totA": 31,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:20",
-      "head": [
-       16,
-       27
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       10,
-       21
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       8,
-       9
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 4,
-      "sigA": 24,
-      "totL": 4,
-      "totA": 24,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       2,
-       21
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       4,
-       24
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T19:40:07.362Z"
-    }
-   ]
-  },
-  "Muhammad Naimov": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Losene Keita",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "2:54",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Losene Keita",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 4,
-      "sigA": 24,
-      "totL": 4,
-      "totA": 24,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       2,
-       21
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       4,
-       24
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 2,
-      "sigL": 18,
-      "sigA": 30,
-      "totL": 19,
-      "totA": 31,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:20",
-      "head": [
-       16,
-       27
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       10,
-       21
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       8,
-       9
-      ]
-     },
-     "capturedAt": "2026-09-05T19:40:07.362Z"
-    }
-   ]
-  },
-  "Kurtis Campbell": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Trevor Peek",
-     "result": "W",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 3,
-     "time": "3:07",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Trevor Peek",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 44,
-      "sigA": 61,
-      "totL": 79,
-      "totA": 108,
-      "tdL": 13,
-      "tdA": 24,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "10:20",
-      "head": [
-       36,
-       48
-      ],
-      "body": [
-       7,
-       11
-      ],
-      "leg": [
-       1,
-       2
-      ],
-      "dist": [
-       17,
-       28
-      ],
-      "clinch": [
-       1,
-       3
-      ],
-      "ground": [
-       26,
-       30
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 12,
-      "sigA": 35,
-      "totL": 17,
-      "totA": 40,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       5,
-       25
-      ],
-      "body": [
-       4,
-       4
-      ],
-      "leg": [
-       3,
-       6
-      ],
-      "dist": [
-       10,
-       32
-      ],
-      "clinch": [
-       2,
-       3
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T20:10:32.746Z"
-    }
-   ]
-  },
-  "Trevor Peek": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Kurtis Campbell",
-     "result": "L",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 3,
-     "time": "3:07",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Kurtis Campbell",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 12,
-      "sigA": 35,
-      "totL": 17,
-      "totA": 40,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       5,
-       25
-      ],
-      "body": [
-       4,
-       4
-      ],
-      "leg": [
-       3,
-       6
-      ],
-      "dist": [
-       10,
-       32
-      ],
-      "clinch": [
-       2,
-       3
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 44,
-      "sigA": 61,
-      "totL": 79,
-      "totA": 108,
-      "tdL": 13,
-      "tdA": 24,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "10:20",
-      "head": [
-       36,
-       48
-      ],
-      "body": [
-       7,
-       11
-      ],
-      "leg": [
-       1,
-       2
-      ],
-      "dist": [
-       17,
-       28
-      ],
-      "clinch": [
-       1,
-       3
-      ],
-      "ground": [
-       26,
-       30
-      ]
-     },
-     "capturedAt": "2026-09-05T20:10:32.746Z"
-    }
-   ]
-  },
-  "Daniil Donchenko": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Punahele Soriano",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Punahele Soriano",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 83,
-      "sigA": 137,
-      "totL": 120,
-      "totA": 180,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:41",
-      "head": [
-       46,
-       94
-      ],
-      "body": [
-       21,
-       27
-      ],
-      "leg": [
-       16,
-       16
-      ],
-      "dist": [
-       64,
-       116
-      ],
-      "clinch": [
-       11,
-       13
-      ],
-      "ground": [
-       8,
-       8
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 15,
-      "sigA": 84,
-      "totL": 43,
-      "totA": 115,
-      "tdL": 4,
-      "tdA": 11,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "3:32",
-      "head": [
-       12,
-       68
-      ],
-      "body": [
-       3,
-       16
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       11,
-       78
-      ],
-      "clinch": [
-       4,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T20:40:48.799Z"
-    }
-   ]
-  },
-  "Punahele Soriano": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Daniil Donchenko",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Daniil Donchenko",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 15,
-      "sigA": 84,
-      "totL": 43,
-      "totA": 115,
-      "tdL": 4,
-      "tdA": 11,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "3:32",
-      "head": [
-       12,
-       68
-      ],
-      "body": [
-       3,
-       16
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       11,
-       78
-      ],
-      "clinch": [
-       4,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 83,
-      "sigA": 137,
-      "totL": 120,
-      "totA": 180,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:41",
-      "head": [
-       46,
-       94
-      ],
-      "body": [
-       21,
-       27
-      ],
-      "leg": [
-       16,
-       16
-      ],
-      "dist": [
-       64,
-       116
-      ],
-      "clinch": [
-       11,
-       13
-      ],
-      "ground": [
-       8,
-       8
-      ]
-     },
-     "capturedAt": "2026-09-05T20:40:48.799Z"
-    }
-   ]
-  },
-  "Michael Page": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Nursulton Ruziboev",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Nursulton Ruziboev",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 12,
-      "sigA": 28,
-      "totL": 49,
-      "totA": 66,
-      "tdL": 0,
-      "tdA": 2,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:06",
-      "head": [
-       7,
-       19
-      ],
-      "body": [
-       2,
-       5
-      ],
-      "leg": [
-       3,
-       4
-      ],
-      "dist": [
-       11,
-       27
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 8,
-      "sigA": 29,
-      "totL": 21,
-      "totA": 42,
-      "tdL": 2,
-      "tdA": 3,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "5:28",
-      "head": [
-       5,
-       26
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       3,
-       23
-      ],
-      "clinch": [
-       1,
-       2
-      ],
-      "ground": [
-       4,
-       4
-      ]
-     },
-     "capturedAt": "2026-09-05T21:16:14.370Z"
-    }
-   ]
-  },
-  "Nursulton Ruziboev": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Michael Page",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Michael Page",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 8,
-      "sigA": 29,
-      "totL": 21,
-      "totA": 42,
-      "tdL": 2,
-      "tdA": 3,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "5:28",
-      "head": [
-       5,
-       26
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       3,
-       23
-      ],
-      "clinch": [
-       1,
-       2
-      ],
-      "ground": [
-       4,
-       4
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 12,
-      "sigA": 28,
-      "totL": 49,
-      "totA": 66,
-      "tdL": 0,
-      "tdA": 2,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:06",
-      "head": [
-       7,
-       19
-      ],
-      "body": [
-       2,
-       5
-      ],
-      "leg": [
-       3,
-       4
-      ],
-      "dist": [
-       11,
-       27
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T21:16:14.370Z"
-    }
-   ]
-  },
-  "Farés Ziam": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Axel Sola",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "1:40",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Axel Sola",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 7,
-      "sigA": 13,
-      "totL": 7,
-      "totA": 13,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       5
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       5,
-       6
-      ],
-      "dist": [
-       7,
-       13
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 9,
-      "sigA": 13,
-      "totL": 9,
-      "totA": 13,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       7,
-       10
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       6,
-       10
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "capturedAt": "2026-09-05T21:31:37.970Z"
-    }
-   ]
-  },
-  "Axel Sola": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Farés Ziam",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "1:40",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Farés Ziam",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 9,
-      "sigA": 13,
-      "totL": 9,
-      "totA": 13,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       7,
-       10
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       6,
-       10
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 7,
-      "sigA": 13,
-      "totL": 7,
-      "totA": 13,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       5
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       5,
-       6
-      ],
-      "dist": [
-       7,
-       13
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T21:31:37.970Z"
-    }
-   ]
-  },
-  "Dan Hooker": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Salahdine Parnasse",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "2:35",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Salahdine Parnasse",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 14,
-      "sigA": 31,
-      "totL": 14,
-      "totA": 31,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       9
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       12,
-       19
-      ],
-      "dist": [
-       14,
-       31
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 12,
-      "sigA": 17,
-      "totL": 12,
-      "totA": 17,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       7,
-       12
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       3,
-       3
-      ],
-      "dist": [
-       9,
-       14
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "capturedAt": "2026-09-05T22:03:04.493Z"
-    }
-   ]
-  },
-  "Salahdine Parnasse": {
-   "history": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Dan Hooker",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "2:35",
-     "event": "UFC Fight Night: Hooker vs. Parnasse",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 5, 2026",
-     "opponent": "Dan Hooker",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 12,
-      "sigA": 17,
-      "totL": 12,
-      "totA": 17,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       7,
-       12
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       3,
-       3
-      ],
-      "dist": [
-       9,
-       14
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 14,
-      "sigA": 31,
-      "totL": 14,
-      "totA": 31,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       9
-      ],
-      "body": [
-       2,
-       3
-      ],
-      "leg": [
-       12,
-       19
-      ],
-      "dist": [
-       14,
-       31
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-05T22:03:04.493Z"
-    }
-   ]
-  },
   "Colton Loud": {
    "history": [
     {
@@ -6208,6 +3576,16 @@
   "Luis Hernandez": {
    "history": [
     {
+     "date": "Sep 26, 2026",
+     "opponent": "Sedriques Dumas",
+     "result": "W",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "0:57",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    },
+    {
      "date": "Sep 15, 2026",
      "opponent": "Hugo Guillon",
      "result": "W",
@@ -6219,6 +3597,84 @@
     }
    ],
    "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Sedriques Dumas",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 6,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:24",
+      "head": [
+       2,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 3,
+      "totL": 0,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T01:30:11.999Z"
+    },
     {
      "date": "Sep 15, 2026",
      "opponent": "Hugo Guillon",
@@ -10150,6 +7606,2168 @@
       ]
      },
      "capturedAt": "2026-09-23T01:41:01.494Z"
+    }
+   ]
+  },
+  "Vanessa Demopoulos": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Yazmin Jauregui",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:02",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Yazmin Jauregui",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 19,
+      "totL": 7,
+      "totA": 19,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       16
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       7,
+       19
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 56,
+      "totL": 34,
+      "totA": 56,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       33,
+       55
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       28,
+       48
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-09-26T21:35:26.723Z"
+    }
+   ]
+  },
+  "Yazmin Jauregui": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Vanessa Demopoulos",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:02",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Vanessa Demopoulos",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 56,
+      "totL": 34,
+      "totA": 56,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       33,
+       55
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       28,
+       48
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 19,
+      "totL": 7,
+      "totA": 19,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       16
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       7,
+       19
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-26T21:35:26.723Z"
+    }
+   ]
+  },
+  "John Castaneda": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Alatengheili",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Alatengheili",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 55,
+      "sigA": 101,
+      "totL": 59,
+      "totA": 105,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "0:25",
+      "head": [
+       22,
+       60
+      ],
+      "body": [
+       8,
+       15
+      ],
+      "leg": [
+       25,
+       26
+      ],
+      "dist": [
+       55,
+       101
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 115,
+      "totL": 63,
+      "totA": 151,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:02",
+      "head": [
+       19,
+       103
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       27,
+       113
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-26T21:51:05.908Z"
+    }
+   ]
+  },
+  "Alatengheili": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "John Castaneda",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "John Castaneda",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 115,
+      "totL": 63,
+      "totA": 151,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:02",
+      "head": [
+       19,
+       103
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       27,
+       113
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 55,
+      "sigA": 101,
+      "totL": 59,
+      "totA": 105,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "0:25",
+      "head": [
+       22,
+       60
+      ],
+      "body": [
+       8,
+       15
+      ],
+      "leg": [
+       25,
+       26
+      ],
+      "dist": [
+       55,
+       101
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-26T21:51:05.908Z"
+    }
+   ]
+  },
+  "Montel Jackson": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ricky Simon",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "2:39",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ricky Simon",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 31,
+      "sigA": 56,
+      "totL": 33,
+      "totA": 59,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       28,
+       50
+      ],
+      "body": [
+       3,
+       6
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       25,
+       46
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       6,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 43,
+      "totL": 14,
+      "totA": 44,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:42",
+      "head": [
+       2,
+       29
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       11,
+       40
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "capturedAt": "2026-09-26T22:22:47.949Z"
+    }
+   ]
+  },
+  "Ricky Simon": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Montel Jackson",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "2:39",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Montel Jackson",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 43,
+      "totL": 14,
+      "totA": 44,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:42",
+      "head": [
+       2,
+       29
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       11,
+       40
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 31,
+      "sigA": 56,
+      "totL": 33,
+      "totA": 59,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       28,
+       50
+      ],
+      "body": [
+       3,
+       6
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       25,
+       46
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       6,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-26T22:22:47.949Z"
+    }
+   ]
+  },
+  "Elves Brener": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Josiah Harrell",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "4:14",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Josiah Harrell",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 25,
+      "sigA": 36,
+      "totL": 28,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       11,
+       22
+      ],
+      "body": [
+       5,
+       5
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       21,
+       32
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 21,
+      "totL": 9,
+      "totA": 21,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       5,
+       14
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       9,
+       21
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-26T22:39:01.674Z"
+    }
+   ]
+  },
+  "Josiah Harrell": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Elves Brener",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "4:14",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Elves Brener",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 21,
+      "totL": 9,
+      "totA": 21,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       5,
+       14
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       9,
+       21
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 25,
+      "sigA": 36,
+      "totL": 28,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       11,
+       22
+      ],
+      "body": [
+       5,
+       5
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       21,
+       32
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-09-26T22:39:01.674Z"
+    }
+   ]
+  },
+  "Rodolfo Bellato": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Christian Edwards",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "1:47",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Christian Edwards",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 30,
+      "sigA": 57,
+      "totL": 73,
+      "totA": 104,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:12",
+      "head": [
+       18,
+       45
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       17,
+       39
+      ],
+      "clinch": [
+       13,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 59,
+      "sigA": 94,
+      "totL": 85,
+      "totA": 120,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:42",
+      "head": [
+       37,
+       67
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       32,
+       64
+      ],
+      "clinch": [
+       23,
+       25
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "capturedAt": "2026-09-26T23:10:10.487Z"
+    }
+   ]
+  },
+  "Christian Edwards": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Bellato",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "1:47",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Bellato",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 59,
+      "sigA": 94,
+      "totL": 85,
+      "totA": 120,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:42",
+      "head": [
+       37,
+       67
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       32,
+       64
+      ],
+      "clinch": [
+       23,
+       25
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 30,
+      "sigA": 57,
+      "totL": 73,
+      "totA": 104,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:12",
+      "head": [
+       18,
+       45
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       17,
+       39
+      ],
+      "clinch": [
+       13,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-26T23:10:10.487Z"
+    }
+   ]
+  },
+  "Rodolfo Vieira": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Robert Bryczek",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Robert Bryczek",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 43,
+      "totL": 91,
+      "totA": 128,
+      "tdL": 2,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "10:52",
+      "head": [
+       12,
+       30
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       11,
+       12
+      ],
+      "dist": [
+       18,
+       36
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 76,
+      "totL": 47,
+      "totA": 86,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       31,
+       68
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       34,
+       73
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-26T23:40:50.414Z"
+    }
+   ]
+  },
+  "Robert Bryczek": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Vieira",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rodolfo Vieira",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 76,
+      "totL": 47,
+      "totA": 86,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       31,
+       68
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       34,
+       73
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 43,
+      "totL": 91,
+      "totA": 128,
+      "tdL": 2,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "10:52",
+      "head": [
+       12,
+       30
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       11,
+       12
+      ],
+      "dist": [
+       18,
+       36
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-26T23:40:50.414Z"
+    }
+   ]
+  },
+  "Brady Hiestand": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rinya Nakamura",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:07",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Rinya Nakamura",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 55,
+      "totL": 50,
+      "totA": 80,
+      "tdL": 0,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "1:51",
+      "head": [
+       21,
+       49
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       21,
+       48
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 65,
+      "totL": 40,
+      "totA": 79,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:32",
+      "head": [
+       11,
+       47
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       18,
+       49
+      ],
+      "clinch": [
+       11,
+       16
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:12:06.451Z"
+    }
+   ]
+  },
+  "Rinya Nakamura": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Brady Hiestand",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:07",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Brady Hiestand",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 65,
+      "totL": 40,
+      "totA": 79,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:32",
+      "head": [
+       11,
+       47
+      ],
+      "body": [
+       10,
+       10
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       18,
+       49
+      ],
+      "clinch": [
+       11,
+       16
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 55,
+      "totL": 50,
+      "totA": 80,
+      "tdL": 0,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "1:51",
+      "head": [
+       21,
+       49
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       21,
+       48
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:12:06.451Z"
+    }
+   ]
+  },
+  "Melissa Amaya": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Valesca Machado",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Valesca Machado",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 58,
+      "totL": 29,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       15,
+       49
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       19,
+       54
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 50,
+      "sigA": 105,
+      "totL": 57,
+      "totA": 113,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       44,
+       97
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       39,
+       88
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       1,
+       4
+      ]
+     },
+     "capturedAt": "2026-09-27T00:43:17.028Z"
+    }
+   ]
+  },
+  "Valesca Machado": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Melissa Amaya",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Melissa Amaya",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 50,
+      "sigA": 105,
+      "totL": 57,
+      "totA": 113,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       44,
+       97
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       39,
+       88
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       1,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 58,
+      "totL": 29,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       15,
+       49
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       19,
+       54
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:43:17.028Z"
+    }
+   ]
+  },
+  "Mehemmedeli Osmanli": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ilimbek Akylbek Uulu",
+     "result": "L",
+     "method": "DQ",
+     "round": 1,
+     "time": "2:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ilimbek Akylbek Uulu",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 13,
+      "totL": 46,
+      "totA": 53,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       10
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       12
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 12,
+      "totL": 18,
+      "totA": 29,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:55",
+      "head": [
+       2,
+       8
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T00:58:57.852Z"
+    }
+   ]
+  },
+  "Ilimbek Akylbek Uulu": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Mehemmedeli Osmanli",
+     "result": "W",
+     "method": "DQ",
+     "round": 1,
+     "time": "2:19",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Mehemmedeli Osmanli",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 12,
+      "totL": 18,
+      "totA": 29,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:55",
+      "head": [
+       2,
+       8
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 13,
+      "totL": 46,
+      "totA": 53,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       10
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       12
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-27T00:58:57.852Z"
+    }
+   ]
+  },
+  "Sedriques Dumas": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Luis Hernandez",
+     "result": "L",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "0:57",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Luis Hernandez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 3,
+      "totL": 0,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 6,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:24",
+      "head": [
+       2,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T01:30:11.999Z"
+    }
+   ]
+  },
+  "Norma Dumont": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ailin Perez",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Ailin Perez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 106,
+      "totL": 102,
+      "totA": 166,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       17,
+       67
+      ],
+      "body": [
+       14,
+       20
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       42,
+       100
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 85,
+      "totL": 47,
+      "totA": 99,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:41",
+      "head": [
+       13,
+       47
+      ],
+      "body": [
+       13,
+       17
+      ],
+      "leg": [
+       11,
+       21
+      ],
+      "dist": [
+       29,
+       77
+      ],
+      "clinch": [
+       8,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T02:01:25.059Z"
+    }
+   ]
+  },
+  "Ailin Perez": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Norma Dumont",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Norma Dumont",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 85,
+      "totL": 47,
+      "totA": 99,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:41",
+      "head": [
+       13,
+       47
+      ],
+      "body": [
+       13,
+       17
+      ],
+      "leg": [
+       11,
+       21
+      ],
+      "dist": [
+       29,
+       77
+      ],
+      "clinch": [
+       8,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 106,
+      "totL": 102,
+      "totA": 166,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       17,
+       67
+      ],
+      "body": [
+       14,
+       20
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       42,
+       100
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-27T02:01:25.059Z"
+    }
+   ]
+  },
+  "Raul Rosas Jr.": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raoni Barcelos",
+     "result": "W",
+     "method": "KO/TKO",
+     "round": 5,
+     "time": "1:38",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raoni Barcelos",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 113,
+      "sigA": 251,
+      "totL": 179,
+      "totA": 327,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:54",
+      "head": [
+       89,
+       223
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       92,
+       224
+      ],
+      "clinch": [
+       17,
+       21
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 127,
+      "sigA": 223,
+      "totL": 198,
+      "totA": 303,
+      "tdL": 9,
+      "tdA": 22,
+      "sub": 5,
+      "rev": 0,
+      "ctrl": "6:21",
+      "head": [
+       90,
+       180
+      ],
+      "body": [
+       34,
+       40
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       117,
+       209
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-27T02:52:42.254Z"
+    }
+   ]
+  },
+  "Raoni Barcelos": {
+   "history": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raul Rosas Jr.",
+     "result": "L",
+     "method": "KO/TKO",
+     "round": 5,
+     "time": "1:38",
+     "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 26, 2026",
+     "opponent": "Raul Rosas Jr.",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 127,
+      "sigA": 223,
+      "totL": 198,
+      "totA": 303,
+      "tdL": 9,
+      "tdA": 22,
+      "sub": 5,
+      "rev": 0,
+      "ctrl": "6:21",
+      "head": [
+       90,
+       180
+      ],
+      "body": [
+       34,
+       40
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       117,
+       209
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 113,
+      "sigA": 251,
+      "totL": 179,
+      "totA": 327,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:54",
+      "head": [
+       89,
+       223
+      ],
+      "body": [
+       14,
+       18
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       92,
+       224
+      ],
+      "clinch": [
+       17,
+       21
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-09-27T02:52:42.254Z"
     }
    ]
   }

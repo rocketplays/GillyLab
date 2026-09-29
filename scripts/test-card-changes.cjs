@@ -151,6 +151,38 @@ run('legal-name alias + acronym-laden descriptor ("...LFA flyweight champion Edu
   [],                     // may-change: NOT Johnson — the replacement is already booked
   ['Charles Johnson']);
 
+// Verbatim (trimmed) from the UFC 332 page. The bout is CONFIRMED for the
+// current card, but the paragraph also narrates how it got there: the original
+// pairing (Shevchenko vs Silva) fell through when Shevchenko withdrew, and Wang
+// Cong stepped in as the new opponent -- no "replaced by" phrasing names Wang
+// Cong, so this used to fall through to the withdrawal branch and flag him
+// "may change" on an already-settled title fight. Neither Silva nor Wang Cong
+// should be flagged: the withdrawal is closed history (an "originally/initially
+// scheduled ... for/at" reference to the prior, already-cancelled pairing).
+const STALE_TITLE_SWAP = `
+== Background ==
+A [[UFC Women's Flyweight Championship]] bout for the vacant title between [[Natália Silva (fighter)|Natália Silva]] and [[Wang Cong]] is scheduled to headline the event.<ref/> The original championship bout was supposed to be between current two-time champion [[Valentina Shevchenko]] and Silva, which was initially scheduled to serve as the co-main event and later moved to the main event.<ref/> However, Shevchenko withdrew due to a ligament injury to her back and shoulder that will leave her sidelined for a year, which led to the cancellation of the bout and the title being vacated.<ref/>
+`;
+run('stale reschedule: title fight rebooked after a different champion withdrew', STALE_TITLE_SWAP,
+  ['Natália Silva', 'Wang Cong'],
+  [],
+  [],
+  ['Natália Silva', 'Wang Cong']);
+
+// Verbatim (trimmed) from the UFC 332 page. Vettori vs. Naurdiev is confirmed
+// for the CURRENT card; the paragraph explains it was originally slated for a
+// different (already-cancelled) event before Vettori's injury, and it has since
+// been rebooked here. Naurdiev must not be flagged "may change".
+const STALE_RESCHEDULE_PAIR = `
+== Background ==
+A middleweight bout between former [[UFC Middleweight Championship]] challenger [[Marvin Vettori]] and [[Ismail Naurdiev]] was scheduled for this event.<ref/> The pairing had been originally slated for [[UFC Fight Night: Fiziev vs. Torres]] in June, but Vettori was forced to withdraw due to a broken rib, which resulted in the bout's cancellation.<ref/>
+`;
+run('stale reschedule: pairing rebooked after a prior injury withdrawal', STALE_RESCHEDULE_PAIR,
+  ['Marvin Vettori', 'Ismail Naurdiev'],
+  [],
+  [],
+  ['Marvin Vettori', 'Ismail Naurdiev']);
+
 // Negative: a card with no replacements at all — nothing should be flagged.
 const CLEAN = `
 == Background ==

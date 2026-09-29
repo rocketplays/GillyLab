@@ -66,6 +66,34 @@ window.GL_BETTRACKER = (function(){
     while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--;
     return p[i] || n;
   }
+  // ── fighter avatars -- mirrors the site's own .bt-av/.bt-avs (index.html's
+  // btAvHTML/btAvsHTML), just resolved server-side instead of client-side:
+  // this screen never had the site's local nameToSlug/BOUTS to figure out
+  // whose face belongs on a bet, so every row always fell back to no photo
+  // at all. GET /api/app/bets now sends names[]/photos[] per bet (worker/
+  // index.js), positionally aligned (photos[i] is null, not dropped, when
+  // no profile slug resolves) so a two-fighter bet can't show the wrong
+  // face in the wrong seat -- reuses GL_FIGHTER's own initials()/PHOTO_BASE
+  // rather than re-deriving them here.
+  function betAvHTML(name, photo){
+    var ini = window.GL_FIGHTER.initials(name);
+    return '<div class="bt-av"><span class="bt-av-initials">' + esc(ini) + '</span>' +
+      (photo ? '<img class="bt-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(photo) + '.png" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+      '</div>';
+  }
+  function betAvsHTML(names, photos){
+    names = names || []; photos = photos || [];
+    if (!names.length) return '';
+    if (names.length === 1) return '<div class="bt-avs">' + betAvHTML(names[0], photos[0]) + '</div>';
+    return '<div class="bt-avs bt-avs-2">' + betAvHTML(names[0], photos[0]) + '<span class="bt-vs">v</span>' + betAvHTML(names[1], photos[1]) + '</div>';
+  }
+  // Mini version for parlay legs -- mirrors the site's btLegAvHTML.
+  function legAvHTML(name, photo){
+    var ini = window.GL_FIGHTER.initials(name);
+    return '<div class="bt-leg-av"><span class="bt-leg-av-initials">' + esc(ini) + '</span>' +
+      (photo ? '<img class="bt-leg-av-photo" src="' + window.GL_FIGHTER.PHOTO_BASE + esc(photo) + '.png" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') +
+      '</div>';
+  }
   var RANGE_DAYS = { '7d': 7, '30d': 30, '6m': 182, '12m': 365, all: null };
   var BT_SCAN_MAX_BATCH = 12;   // mirrors the site's own cap -- an accidental "select all" from a camera roll
   var BT_SCAN_CONCURRENCY = 3;
@@ -272,7 +300,11 @@ window.GL_BETTRACKER = (function(){
     return '<div class="bt-legs">' + b.legs.map(function(l, i){
       var st = statuses[i] || 'pending';
       var ico = st === 'won' ? '✓' : st === 'lost' ? '✗' : st === 'void' ? '·' : '…';
-      return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' +
+      // l.name/l.slug resolved server-side (worker/index.js's /api/app/bets)
+      // the same way the row-level avatar above is -- null for a fight-level
+      // leg (a total, the distance, etc.) that has no single fighter to show.
+      var av = l.name ? legAvHTML(l.name, l.slug) : '';
+      return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' + av +
         '<span class="bt-leg-p">' + esc(l.pick) + '</span><span class="bt-leg-o">' + fmtOdds(l.odds) + '</span></div>';
     }).join('') + '</div>';
   }
@@ -314,7 +346,7 @@ window.GL_BETTRACKER = (function(){
           '<div class="bt-acts"><button class="win" data-edit-save="' + esc(b.id) + '">Save</button><button data-edit-cancel>Cancel</button></div></div>';
       }
     }
-    return '<div class="bt-bet"><div class="bt-bet-top">' +
+    return '<div class="bt-bet"><div class="bt-bet-top">' + betAvsHTML(b.names, b.photos) +
       '<div class="bt-bet-txt"><div class="bt-nm">' + esc(b.pick) + '</div><div class="bt-mk">' + esc(b.match) + '</div></div>' + res + '</div>' +
       legsHTML(b) + '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
   }
@@ -597,15 +629,25 @@ window.GL_BETTRACKER = (function(){
       if (unc.length) h += '<div class="bt-note">Couldn\'t read clearly: ' + esc(unc.join(', ')) + ' — check before confirming.</div>';
       if (canTrack){
         var allPriced = matches.every(function(m){ return m.priced; });
-        var rows = scanLegs.map(function(l, i){
-          var m = matches[i], pickTxt = scanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
-          return '<div class="bt-row2"><div>' + esc(pickTxt) + '</div><div style="text-align:right">' + esc(String(l.odds)) + '</div></div>';
-        }).join('');
+        // Same "What we read" boxed-row treatment as the self-reported
+        // branch below, instead of a bare pick-text/odds pair in a plain
+        // .bt-row2 -- this branch is the one that's actually FULLY read
+        // (every leg matched and priced), so it deserves at least as clean
+        // a summary as a bet that only partially read. Uses the matched
+        // bout's own f1/f2 (from the live feed) rather than the model's
+        // raw OCR'd matchup text, since this is the one place we know for
+        // certain which real fight each leg landed on.
+        var rows = '<div class="bt-stage-t" style="margin-bottom:.4rem">What we read</div>' +
+          scanLegs.map(function(l, i){
+            var m = matches[i], pickTxt = scanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
+            return '<div class="bt-scan-row"><div style="font-weight:700">' + esc(pickTxt) + '</div>' +
+              '<div class="bt-leg-m" style="margin-top:2px;white-space:normal">' + esc(m.f1) + ' vs ' + esc(m.f2) + ' · ' + esc(fmtOdds(l.odds)) + '</div></div>';
+          }).join('');
         h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (scanLegs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
           ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>' +
           (allPriced ? ', and CLV-eligible until that segment starts.' : '. Not CLV-scored (this market doesn\'t carry a trustworthy closing line), same as picking it manually.') + '</div>' +
           rows +
-          '<div class="bt-row2" style="margin-top:.4rem"><div><label>Stake (units)</label><input type="number" data-scan-stake value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
+          '<div class="bt-row2" style="margin-top:.9rem"><div><label>Stake (units)</label><input type="number" data-scan-stake value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
           '<div><label>Sportsbook (optional)</label><input maxlength="40" data-scan-book value="' + esc(d.book || '') + '"></div></div>' +
           '<label style="display:flex;align-items:center;gap:.4rem;font-weight:400;text-transform:none;letter-spacing:0"><input type="checkbox" data-scan-track checked style="width:auto"> Track this bet (verified) — uncheck to log as self-reported instead</label>' +
           '<button type="button" class="bt-btn" data-scan-confirm-tracked>Log this bet</button> ' +
@@ -616,6 +658,20 @@ window.GL_BETTRACKER = (function(){
         var oddsVal = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
         var anyMatch = matches.some(Boolean);
         if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card, but not cleanly enough to auto-track (missing a leg\'s odds, a market this can\'t classify confidently, or an unclear winner) — logging as self-reported. You can log it again under Upcoming fights if you\'d rather have it tracked.</div>';
+        // A clean, read-only preview of what was actually read off the
+        // screenshot -- one boxed row per leg -- shown ABOVE the editable
+        // matchText/pickText fields below (which is what actually gets
+        // submitted, unchanged). Previously a multi-leg parlay had no
+        // per-leg view at all here: everything got jammed into those two
+        // combined single-line inputs ("Fighter A vs B + Fighter C vs D",
+        // "Pick 1 (MARKET) | Pick 2 (MARKET)"), unreadable past 2 legs.
+        if (scanLegs.length > 1){
+          h += '<div class="bt-stage-t" style="margin-bottom:.4rem">What we read</div>' +
+            scanLegs.map(function(l){
+              return '<div class="bt-scan-row"><div style="font-weight:700">' + esc(l.pick) + '</div>' +
+                '<div class="bt-leg-m" style="margin-top:2px;white-space:normal">' + esc(l.matchup) + ' · ' + esc(l.market) + '</div></div>';
+            }).join('');
+        }
         h += '<label>Matchup / event</label><input data-scan-match value="' + esc(matchText) + '">' +
           '<label>Your pick + market</label><input data-scan-pick value="' + esc(pickText) + '">' +
           '<div class="bt-row2"><div><label>Your odds</label><input type="number" data-scan-odds value="' + (isFinite(oddsVal) ? oddsVal : '') + '" placeholder="-150"></div>' +
