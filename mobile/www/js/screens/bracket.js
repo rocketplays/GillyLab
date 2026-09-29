@@ -334,7 +334,7 @@ function mountBracket(container){
       '<div class="br-col"><div class="br-collabel">Quarterfinals</div><div class="br-pairgroup">' + qfPairsHTML + '</div></div>' +
       '<div class="br-col"><div class="br-collabel">Semifinals</div><div class="br-pairgroup">' + sfPairHTML + '</div></div>' +
       '<div class="br-col"><div class="br-collabel">Final</div>' + finalMatchHTML + '</div>' +
-      '<div class="br-col br-champcol"><div class="br-collabel is-final">Champion</div>' +
+      '<div class="br-col br-champcol" id="brColChamp"><div class="br-collabel is-final">Champion</div>' +
         '<div class="br-champcard">' +
           fighterRowHTML(finalWinner, { yourPick: picks.final === finalWinner }) +
         '</div>' +
@@ -368,6 +368,13 @@ function mountBracket(container){
     tickNextWeekCountdown();
     if (nextWeekTimer) clearInterval(nextWeekTimer);
     nextWeekTimer = setInterval(tickNextWeekCountdown, 60000);
+    // Mirrors the site's showResults(): land on the champion card whether
+    // this is a fresh submit or a reload of a week you already played --
+    // renderResults() always rebuilds #brBracket from scratch (scrollLeft
+    // resets to 0), so without this the reload path silently stayed on the
+    // quarterfinals column instead of showing the result you came back for.
+    var champCol = document.getElementById('brColChamp');
+    if (champCol) champCol.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }
 
   // ---- leaderboard (week + season), same .pk-board-* classes the Pick'em

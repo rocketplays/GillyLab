@@ -825,6 +825,22 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     };
   }
+
+  // Exposed for the premium SPA shell (index.html only -- harmless, unused
+  // global on this standalone page): the boot fetch below runs immediately
+  // on script load regardless of which SPA tab is currently active, so its
+  // showResults() scrollIntoView call is a no-op if this page is still
+  // display:none at that moment -- scrolling a hidden element doesn't queue
+  // up for later, it just does nothing. The SPA's page-switch handler calls
+  // this once the bracket tab actually becomes visible, so returning
+  // visitors who already submitted this week still land on their champion
+  // card instead of the quarterfinals column.
+  function rescrollToChampionIfSubmitted(){
+    if (!alreadySubmitted) return;
+    var champCard = document.getElementById('col-champ');
+    if (champCard) champCard.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+  }
+  window.glBracketOnShown = rescrollToChampionIfSubmitted;
   function showSubmitError(msg){
     var row = document.getElementById('submit-row');
     var el = document.getElementById('submitMsg');

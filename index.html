@@ -5518,6 +5518,22 @@
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     };
   }
+
+  // Exposed for the premium SPA shell (index.html only -- harmless, unused
+  // global on this standalone page): the boot fetch below runs immediately
+  // on script load regardless of which SPA tab is currently active, so its
+  // showResults() scrollIntoView call is a no-op if this page is still
+  // display:none at that moment -- scrolling a hidden element doesn't queue
+  // up for later, it just does nothing. The SPA's page-switch handler calls
+  // this once the bracket tab actually becomes visible, so returning
+  // visitors who already submitted this week still land on their champion
+  // card instead of the quarterfinals column.
+  function rescrollToChampionIfSubmitted(){
+    if (!alreadySubmitted) return;
+    var champCard = document.getElementById('col-champ');
+    if (champCard) champCard.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+  }
+  window.glBracketOnShown = rescrollToChampionIfSubmitted;
   function showSubmitError(msg){
     var row = document.getElementById('submit-row');
     var el = document.getElementById('submitMsg');
@@ -9193,6 +9209,13 @@
  if ((page === 'pickem' || climbRoute) && typeof pcSwitch === 'function') pcSwitch(climbRoute ? 'climb' : 'pickem');
  if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 0);
  if (page === 'bets' && typeof btRender === 'function') btRender();
+ // The bracket embed's own boot fetch runs at script-load time regardless of
+ // which SPA tab is active, so its scroll-to-champion-card call is a no-op
+ // if #page-bracket was still display:none at that moment (see
+ // rescrollToChampionIfSubmitted's own comment in the prototype). Re-fire it
+ // now that the page is actually visible, so returning visitors who already
+ // submitted this week's bracket still land on their result.
+ if (page === 'bracket' && typeof glBracketOnShown === 'function') setTimeout(glBracketOnShown, 0);
  // One-time "how scoring works" explainer, the first time a user opens Pick'em.
  // The flag is burned WHEN THE MODAL ACTUALLY OPENS, not when we decide to open it.
  // Marking it seen up-front spends the user's single showing on a modal they may never
