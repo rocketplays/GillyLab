@@ -677,6 +677,22 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .hm-tile-sub{ font-size:.68rem; color:var(--muted); line-height:1.2; }
 
 /* ---- Pick'em: bout cards, winner/method/round/confidence pickers ---- */
+.pk-hero{ padding:1rem 1.1rem; }
+.pk-hero-top{ display:flex; align-items:center; gap:.8rem; }
+.pk-hero-badge{
+  flex:0 0 auto; width:2.5rem; height:2.5rem; border-radius:50%;
+  background:color-mix(in srgb, var(--accent) 14%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+}
+.pk-hero-meta{ min-width:0; flex:1; }
+.pk-hero-date{ color:var(--accent); font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; margin-bottom:.1rem; }
+.pk-hero-title{ margin:0; font-size:1.28rem; line-height:1.15; color:var(--text); }
+.pk-hero-lock{
+  flex:0 0 auto; text-align:center; font-size:.66rem; font-weight:700; line-height:1.35;
+  color:var(--muted); text-transform:uppercase; letter-spacing:.03em;
+  border:1px solid var(--border); border-radius:9px; padding:.35rem .5rem;
+}
 .pk-subnav{ display:flex; gap:.6rem; margin-bottom:.9rem; }
 /* Same [hidden]-vs-class-selector specificity bug already fixed for
    .gl-back-inline/.gl-avatar-menu/.gl-tab above: .pk-subnav's own

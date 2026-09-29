@@ -71,6 +71,17 @@ function mountPickem(container){
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
 
+  // card.date off the wire is a bare "YYYY-MM-DD" (loadUpcomingCard slices
+  // it straight off ev.startsAt), never anything display-ready -- shown
+  // nicely here instead of raw ISO text. Parsed as UTC noon (not midnight)
+  // so a US-timezone reader never sees it roll back a day.
+  function niceDate(d){
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(d || ''));
+    if (!m) return String(d || '');
+    var dt = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12));
+    return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  }
+
   // Two-letter initials fallback (e.g. "Quentin Pasley" -> "QP") for a
   // fighter with no photo on file. The initials sit underneath the <img> the
   // whole time; onerror just hides the image so they show through, rather
@@ -90,12 +101,32 @@ function mountPickem(container){
     );
   }
 
+  // "xD xH" until prelims start, same countdown shape home.js's Pick'em
+  // tile subtext uses -- computed fresh here since pickem.js has never
+  // shared code with home.js and this is the only spot in this screen that
+  // needs it.
+  function lockCountdown(card){
+    if (!card || !card.prelimsAt || locked) return null;
+    var ms = Date.parse(card.prelimsAt) - Date.now();
+    if (!isFinite(ms) || ms <= 0) return null;
+    var totalHours = Math.floor(ms / 3600000);
+    var d = Math.floor(totalHours / 24), h = totalHours % 24;
+    return d + 'D ' + h + 'H';
+  }
+
   function renderShell(){
     var lockedNote = locked ? '<p class="gl-error" style="margin-top:.3rem">Picks are locked -- prelims have started.</p>' : '';
+    var countdown = lockCountdown(card);
     container.innerHTML =
-      '<div class="gl-card" style="margin-bottom:.7rem">' +
-        '<h2 class="gl-heading" style="margin:0 0 .2rem;font-size:1.1rem">' + esc(card.name) + '</h2>' +
-        '<p class="gl-muted" style="margin:0">' + esc(card.date) + '</p>' +
+      '<div class="gl-card pk-hero" style="margin-bottom:.7rem">' +
+        '<div class="pk-hero-top">' +
+          '<span class="pk-hero-badge">🥊</span>' +
+          '<div class="pk-hero-meta">' +
+            '<div class="pk-hero-date">' + esc(niceDate(card.date)) + '</div>' +
+            '<h2 class="pk-hero-title">' + esc(card.name) + '</h2>' +
+          '</div>' +
+          (countdown ? '<span class="pk-hero-lock">Locks in<br>' + countdown + '</span>' : '') +
+        '</div>' +
         lockedNote +
       '</div>' +
       (name ? '' :
