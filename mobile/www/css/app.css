@@ -2349,7 +2349,30 @@ body #mh-box{
    is built from directly, not a new design. Swiping right moves QF -> SF ->
    Final -> Champion; pickQf/pickSf/pickFinal below auto-scroll to the next
    column once a round is fully picked, same as the site's scrollToPending. */
-.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
+/* scroll-padding-left, not just a bare reliance on the container's own
+   `padding` -- CSS Scroll Snap resolves scroll-snap-align against
+   scroll-padding specifically (defaulting to 0), a genuinely separate
+   property from regular padding. Without this, the mandatory snap
+   silently overrode every JS-computed scroll position (confirmed:
+   disabling scroll-snap-type made the exact same JS math land at the
+   correct ~18px gutter; re-enabling it snapped straight back to 0px,
+   flush against the true edge) -- the bug behind every round looking
+   "flush left, no padding" after auto-scrolling to it. */
+/* Belt panel -- same layout as the site's own .belt-panel/.belt-swatch/
+   .belt-stripes/.belt-progress (prototypes/legends-bracket.html). */
+.br-belt-row{ display:flex; align-items:center; gap:.7rem; }
+.br-belt-swatch{ width:2.3rem; height:1.15rem; border-radius:3px; flex:none; }
+.br-belt-info{ flex:none; }
+.br-belt-name{ font-weight:800; font-size:.85rem; text-transform:uppercase; letter-spacing:.02em; }
+.br-belt-stripes{ display:flex; gap:.2rem; margin-top:.3rem; }
+.br-belt-stripe{ width:.6rem; height:.3rem; border-radius:1px; background:var(--border); }
+.br-belt-stripe.filled{ background:#ffb340; }
+.br-belt-progress{ flex:1; min-width:140px; }
+.br-belt-track{ height:6px; border-radius:4px; background:var(--surface2); overflow:hidden; }
+.br-belt-fill{ height:100%; border-radius:4px; }
+.br-belt-meta{ font-size:.7rem; color:var(--muted); margin-top:.3rem; }
+
+.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; scroll-padding-left:1.1rem; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
 /* 5th grid column is a bare trailing spacer (.br-spacer, rendered as the
    last child by renderPicker/renderResults), not cosmetic padding -- a
    scroll container's own trailing PADDING is excluded from scrollWidth in
@@ -2369,15 +2392,20 @@ body #mh-box{
 .br-spacer{ pointer-events:none; }
 .br-col{ display:flex; flex-direction:column; position:relative; scroll-snap-align:start; min-width:0; }
 .br-collabel{ font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .9rem; }
-.br-collabel.is-final{ color:var(--accent); }
+/* Gold once the real result is in, mirroring the site's own
+   .round-label.is-final{ color:var(--accent-2) } -- the champion card
+   itself stays accent-green (its "featured" treatment, matching /subscribe's
+   .plan.featured elsewhere on the site), it's specifically the label above
+   it that goes gold. */
+.br-collabel.is-final{ color:#ffb340; }
 .br-pairgroup{ display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.3rem; }
 .br-pair{ position:relative; display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.3rem; }
 .br-champcol{ align-items:center; text-align:center; }
-.br-champcard{ width:100%; padding:1rem .9rem; background:var(--card); border:1px solid var(--accent); border-radius:10px; }
+.br-champcard{ width:100%; padding:1.1rem 1rem; background:var(--card); border:1px solid var(--accent); box-shadow:inset 0 0 0 1px var(--accent); border-radius:8px; }
 .br-champcard .br-champ-cap{ font-weight:800; font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:.7rem; }
 .br-champcard .br-fcard{ background:none; border:none; padding:0; flex-direction:column; text-align:center; }
 .br-champcard .br-photo{ width:3.4rem; height:3.4rem; margin:0 auto .5rem; }
-.br-champcard .br-name{ font-size:1.05rem; white-space:normal; }
+.br-champcard .br-name{ font-size:1.3rem; white-space:normal; }
 .br-champcard .br-legacy{ white-space:normal; }
 .br-champcard .br-badge{ margin:.6rem auto 0; }
 /* connector lines between rounds -- an elbow per pair (bracket-pair::before/
@@ -2395,10 +2423,10 @@ body #mh-box{
   max-width:1.7rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
   font-weight:700; font-size:.56rem; letter-spacing:.01em; text-transform:uppercase; color:var(--muted); z-index:1;
 }
-.br-connector-name.picked{ color:#d4af37; }
+.br-connector-name.picked{ color:#ffb340; }
 .br-connector-name.winner{ color:var(--accent); }
 .br-vs{ font-weight:700; font-size:.62rem; color:var(--muted); text-align:center; letter-spacing:.1em; text-transform:uppercase; }
-.br-fcard{ display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:8px; }
+.br-fcard{ display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:6px; }
 .br-fcard[role="button"]{ cursor:pointer; }
 .br-fcard.picked{ border-color:var(--accent); }
 .br-fcard.picked .br-name{ color:var(--accent); }
@@ -2408,11 +2436,16 @@ body #mh-box{
 .br-fcard.loser .br-photo{ opacity:.5; filter:grayscale(.4); }
 .br-fcard.loser .br-legacy{ opacity:.4; }
 .br-fcard--empty{ opacity:.4; border-style:dashed; justify-content:center; font-size:.85rem; color:var(--muted); }
-.br-seed{ font-size:.78rem; font-weight:800; color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, transparent); border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); width:1.5rem; height:1.5rem; border-radius:5px; display:flex; align-items:center; justify-content:center; flex:none; }
-.br-photo{ width:2.4rem; height:2.4rem; border-radius:6px; object-fit:cover; flex:none; background:var(--surface); border:1px solid var(--border); }
+/* Gold, matching the site's own .seed exactly -- not accent-green. The site
+   reserves gold for "model/data layer" (seeds, connector lines, the
+   in-progress Champion label) and green for "correct/positive" (a real
+   winner, your hit pick) -- this app's bracket had been using its one shared
+   accent color for both, which lost that distinction entirely. */
+.br-seed{ font-size:.78rem; font-weight:800; color:#ffb340; background:color-mix(in srgb, #ffb340 14%, transparent); border:1px solid color-mix(in srgb, #ffb340 35%, transparent); width:1.5rem; height:1.5rem; border-radius:5px; display:flex; align-items:center; justify-content:center; flex:none; }
+.br-photo{ width:2.5rem; height:2.5rem; border-radius:5px; object-fit:cover; flex:none; background:var(--surface); border:1px solid var(--border); }
 .br-meta{ min-width:0; flex:1; display:flex; flex-direction:column; }
-.br-name{ font-weight:800; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.br-legacy{ font-size:.72rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.br-name{ font-weight:800; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.br-legacy{ font-size:.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .br-badge{ font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:4px; padding:.1rem .4rem; margin-left:auto; flex:none; }
 .br-modelcall{ font-size:.78rem; color:var(--muted); padding-top:.4rem; border-top:1px dashed var(--border); }
 /* Always shows what YOU picked for the final, whether or not it hit --

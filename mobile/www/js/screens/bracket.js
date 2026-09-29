@@ -55,33 +55,43 @@ function mountBracket(container){
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
 
   // ---- belts: lifetime progression, not weekly -- mirrors the site's own
-  // ladder exactly (prototypes/legends-bracket.html's BELTS).
+  // ladder exactly (prototypes/legends-bracket.html's BELTS), stripes and
+  // all: `outline` on Black is the same reason the site adds one -- an
+  // all-black swatch is otherwise invisible against this app's own near-
+  // black background.
   var BELTS = [
     { name: 'White', min: 0, color: '#e8e8ea' },
     { name: 'Blue', min: 20, color: '#2f6fed' },
     { name: 'Purple', min: 50, color: '#8b5cf6' },
     { name: 'Brown', min: 100, color: '#8a5a2b' },
-    { name: 'Black', min: 180, color: '#1a1a1a' },
+    { name: 'Black', min: 180, color: '#1a1a1a', outline: true },
   ];
   function beltInfo(pts){
     var idx = 0;
     for (var i = 0; i < BELTS.length; i++){ if (pts >= BELTS[i].min) idx = i; }
     var belt = BELTS[idx], next = BELTS[idx + 1];
-    var pct = next ? Math.max(0, Math.min(1, (pts - belt.min) / (next.min - belt.min))) : 1;
-    return { belt: belt, next: next, pct: pct };
+    var pct, stripes;
+    if (next){
+      pct = Math.max(0, Math.min(1, (pts - belt.min) / (next.min - belt.min)));
+      stripes = Math.min(4, Math.floor(pct * 4));
+    } else { pct = 1; stripes = 4; }
+    return { belt: belt, next: next, pct: pct, stripes: stripes };
   }
   function renderBeltPanel(){
     var info = beltInfo(lifetimePts);
+    var stripesHTML = '';
+    for (var s = 0; s < 4; s++) stripesHTML += '<span class="br-belt-stripe' + (s < info.stripes ? ' filled' : '') + '"></span>';
     var nextText = info.next ? (info.next.min - lifetimePts) + ' pts to ' + info.next.name + ' Belt' : 'Top belt reached';
     document.getElementById('brBelt').innerHTML =
-      '<div style="display:flex;align-items:center;gap:.7rem">' +
-        '<div style="width:2rem;height:1rem;border-radius:3px;flex:none;background:' + info.belt.color + '"></div>' +
-        '<div style="flex:1;min-width:0">' +
-          '<div style="font-weight:800;font-size:.85rem">' + esc(info.belt.name) + ' Belt</div>' +
-          '<div style="height:5px;border-radius:3px;background:var(--border);overflow:hidden;margin-top:.3rem">' +
-            '<div style="height:100%;border-radius:3px;background:' + info.belt.color + ';width:' + (info.pct * 100) + '%"></div>' +
-          '</div>' +
-          '<div class="gl-muted" style="font-size:.7rem;margin-top:.25rem">' + lifetimePts + ' lifetime pts · ' + esc(nextText) + '</div>' +
+      '<div class="br-belt-row">' +
+        '<div class="br-belt-swatch" style="background:' + info.belt.color + (info.belt.outline ? ';border:1px solid #ffb340' : '') + '"></div>' +
+        '<div class="br-belt-info">' +
+          '<div class="br-belt-name">' + esc(info.belt.name) + ' Belt</div>' +
+          '<div class="br-belt-stripes">' + stripesHTML + '</div>' +
+        '</div>' +
+        '<div class="br-belt-progress">' +
+          '<div class="br-belt-track"><div class="br-belt-fill" style="width:' + (info.pct * 100) + '%;background:' + info.belt.color + '"></div></div>' +
+          '<div class="br-belt-meta">' + lifetimePts + ' lifetime pts · ' + esc(nextText) + '</div>' +
         '</div>' +
       '</div>';
   }
@@ -202,27 +212,35 @@ function mountBracket(container){
   }
 
   // Horizontal auto-advance -- was scroller.scrollTo({left: target.offsetLeft})
-  // (see git history), which left a sliver of the PREVIOUS column visible on
-  // the left edge after landing: offsetLeft is measured against target's
-  // nearest POSITIONED ancestor, which is neither #brScroll nor #brBracket
-  // (neither sets `position`) -- it's some further-up ancestor, so the value
-  // never actually matched #brScroll's own content geometry, and the manual
-  // scrollLeft it produced landed a few pixels short of this column's real
-  // left edge every time. scrollIntoView measures the element's REAL
-  // rendered box directly against its scroll container instead of walking
-  // offsetParent, so it always lands exactly at the column's edge --
-  // inline:'start' is the horizontal axis (this strip only scrolls
-  // sideways), block:'nearest' so it never also nudges the page's own
-  // vertical scroll (the "nearest" edge of a horizontally-scrolling row is
-  // already satisfied without moving vertically at all).
+  // (see git history), which never matched #brScroll's own content geometry
+  // (offsetLeft walks to the nearest POSITIONED ancestor, neither #brScroll
+  // nor #brBracket), then target.scrollIntoView({inline:'start'}), which
+  // fixed the offset math but landed the column flush against the true
+  // viewport edge -- ignoring #brScroll's own 1.1rem padding entirely
+  // (confirmed: measured 0px left inset, not the ~18px the padding should
+  // leave). The SITE's own version (prototypes/legends-bracket.html) gets
+  // this right for free: it relies on CSS scroll-snap-align:start to
+  // resolve the final rest position (its own scrollIntoView call asks for
+  // inline:'center', which the mandatory snap simply overrides once
+  // scrolling settles) -- confirmed by measuring its real rendered
+  // position after a full round's auto-scroll, which lands with a clean,
+  // consistent gutter matching the scroll container's own padding, not
+  // flush against the edge. This does the same thing more directly:
+  // compute the container's own padding-left and land the column exactly
+  // that far from the container's edge, rather than trusting
+  // scrollIntoView's edge detection to already account for it.
   var pendingScrollTarget = null; // 'sf' | 'final' | 'champion' | null
   function scrollToPending(){
     if (!pendingScrollTarget) return;
     var idx = { sf: 1, final: 2, champion: 3 }[pendingScrollTarget];
     pendingScrollTarget = null;
+    var scroller = document.getElementById('brScroll');
     var cols = document.querySelectorAll('#brBracket .br-col');
     var target = cols[idx];
-    if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    if (!scroller || !target) return;
+    var gutter = parseFloat(getComputedStyle(scroller).paddingLeft) || 0;
+    var delta = target.getBoundingClientRect().left - scroller.getBoundingClientRect().left - gutter;
+    scroller.scrollTo({ left: scroller.scrollLeft + delta, behavior: 'smooth' });
   }
 
   function pickQf(i, f){

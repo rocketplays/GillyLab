@@ -293,6 +293,28 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   .score-banner .of{ font-family:'Barlow Condensed', sans-serif; font-weight:600; color:var(--muted); font-size:1rem; }
   .score-banner .label{ font-size:0.85rem; color:var(--muted); margin-left:auto; max-width:32ch; text-align:right; }
 
+  /* "Your Picks" recap -- every round's pick and hit/miss right under the
+     score banner, so the result reads at a glance instead of scrolling back
+     up through the bracket itself to check each round. */
+  .picks-recap{ margin:0 0 2rem; padding:0.3rem 0; background:var(--card); border:1px solid var(--line); border-radius:8px; }
+  .recap-title{
+    font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.68rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted); text-align:center; padding:0.7rem 1rem 0.3rem;
+  }
+  .recap-row{ display:flex; align-items:center; gap:0.7rem; padding:0.5rem 1rem; border-top:1px solid var(--line); }
+  .recap-row:first-of-type{ border-top:none; }
+  .recap-lbl{ flex:0 0 2.8rem; font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.7rem; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted); }
+  .recap-pick{ flex:1; min-width:0; font-weight:700; font-size:0.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .recap-mark{ flex:none; font-weight:800; font-size:0.82rem; }
+  .recap-mark.good{ color:var(--good); }
+  .recap-mark.bad{ color:var(--bad); }
+
+  /* "New bracket in xD xH" -- sits below the recap, above the Leaderboard. */
+  .next-week{
+    margin:0 0 2rem; text-align:center; font-size:0.85rem; font-weight:700; color:var(--muted);
+    border-top:1px solid var(--line); padding-top:1rem;
+  }
+
   .lb-tabs{ display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
   .lbtab{
     font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.76rem; letter-spacing:0.03em; text-transform:uppercase;
@@ -405,6 +427,9 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       <span class="label" id="scoreLabel">Every correct pick locked in above &mdash; here's the real bracket.</span>
     </div>
 
+    <div class="picks-recap" id="picksRecap"></div>
+    <div class="next-week" id="nextWeek"></div>
+
     <h2 class="section">Leaderboard</h2>
     <div class="lb-tabs" id="lbTabs">
       <button type="button" class="lbtab active" data-tab="week">This Week</button>
@@ -440,6 +465,8 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   var bySeed = {};
   var QF_PAIRS = [];
   var weekId = null;
+  var nextWeekAt = null; // ISO timestamp -- when this week's bracket rotates
+  var nextWeekTimer = null;
 
   // ---- the ACTUAL bracket outcome. Decided ONCE server-side at rotation
   // time (see bracketBuildWeek in worker/index.js) -- this stays null (a
@@ -722,10 +749,48 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   // scroll down deliberately -- unchanged from the prototype, just factored
   // out so both the submit handler and the "already submitted" load path
   // below can call it.
+  // "Your Picks" recap -- every round's pick and hit/miss in one glance,
+  // same ✓/✗ language modelCallEl already uses elsewhere on this page.
+  function recapRow(label, pick, correct, pts){
+    var row = document.createElement('div'); row.className = 'recap-row';
+    row.innerHTML =
+      '<span class="recap-lbl">'+label+'</span>' +
+      '<span class="recap-pick">'+(pick ? pick.name : '&mdash;')+'</span>' +
+      '<span class="recap-mark '+(correct?'good':'bad')+'">'+(correct?'&#10003; +'+pts:'&#10007;')+'</span>';
+    return row;
+  }
+  function renderPicksRecap(){
+    var el = document.getElementById('picksRecap');
+    if (!el) return;
+    el.innerHTML = '<div class="recap-title">Your Picks</div>';
+    for (var i=0; i<4; i++) el.appendChild(recapRow('QF'+(i+1), picks.qf[i], !!(picks.qf[i] && real.qf[i]===picks.qf[i]), 1));
+    for (var j=0; j<2; j++) el.appendChild(recapRow('SF'+(j+1), picks.sf[j], !!(picks.sf[j] && real.sf[j]===picks.sf[j]), 2));
+    el.appendChild(recapRow('Final', picks.final, !!(picks.final && real.final===picks.final), 4));
+  }
+
+  // "New bracket in xD xH" -- ticks every 60s while the results panel is on
+  // screen; nextWeekAt comes straight from /api/bracket/current (see
+  // worker/index.js's handleBracketCurrent), computed off the same
+  // BRACKET_EPOCH_MONDAY math bracketWeekIndex already uses, so this page
+  // never has to re-derive it.
+  function tickNextWeek(){
+    var el = document.getElementById('nextWeek');
+    if (!el || !nextWeekAt){ if (nextWeekTimer){ clearInterval(nextWeekTimer); nextWeekTimer = null; } return; }
+    var ms = Date.parse(nextWeekAt) - Date.now();
+    if (!isFinite(ms) || ms <= 0){ el.textContent = 'A new bracket is on its way — check back soon.'; return; }
+    var totalHours = Math.floor(ms / 3600000);
+    var d = Math.floor(totalHours / 24), h = totalHours % 24;
+    el.textContent = 'New bracket in ' + d + 'D ' + h + 'H';
+  }
+
   function showResults(score, label){
     document.getElementById('scoreBig').textContent = score;
     document.getElementById('scoreLabel').textContent = label;
     document.getElementById('results').classList.add('show');
+    renderPicksRecap();
+    tickNextWeek();
+    if (nextWeekTimer) clearInterval(nextWeekTimer);
+    nextWeekTimer = setInterval(tickNextWeek, 60000);
     var champCard = document.getElementById('col-champ');
     champCard.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
     var viewLbBtn = document.getElementById('viewLbBtn');
@@ -860,6 +925,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       return c ? { a: bySeed[c.seedA], b: bySeed[c.seedB], pctA: c.pctA, pctB: c.pctB } : null;
     });
     lifetimePts = res.lifetimePts || 0;
+    nextWeekAt = res.nextWeekAt || null;
     renderBeltPanel();
 
     if (res.submitted && res.mine && res.real){
