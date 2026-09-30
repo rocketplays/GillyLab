@@ -2384,22 +2384,24 @@ body #mh-box{
    Champion column could never scroll far enough to reach a settled
    position -- confirmed by forcing scrollLeft to scrollWidth (its true
    max) and finding the column still sitting short, not a scroll-snap/JS-
-   timing issue at all. 20vw comfortably covers the column width below
+   timing issue at all. 14vw comfortably covers the column width below
    plus the scroll-padding gutter above, with real margin to spare. The
    left side never needed this: scrollLeft:0 already satisfies the FIRST
    column's own start-alignment trivially.
 
-   Column width dropped from 86vw to 80vw, and the gap widened from 2.2rem
-   to 2.6rem (matching the SITE'S OWN prototypes/legends-bracket.html
-   exactly) -- 86vw left only ~14vw of slack per side, which the gap alone
-   didn't reliably cover once you added the scroll-padding gutter on top:
-   a settled column's right edge could sit within single digits of
-   pixels of the next column's own left edge, letting real fighter NAMES
-   peek into view at the edge instead of just an ambiguous sliver. 80vw
-   plus a wider gap leaves a real double-digit-pixel margin of clean,
-   contentless space at rest, checked at 375px/390px/430px widths, not
-   just the one viewport this was first verified against. */
-.br-bracket{ display:grid; grid-template-columns:repeat(4, 80vw) 20vw; gap:0 2.6rem; --br-gap:2.6rem; --br-stub:.6rem; }
+   Column width is 86vw, matching the SITE'S OWN prototypes/legends-
+   bracket.html exactly -- an earlier pass here widened it to 80vw on the
+   theory that MORE margin (a bigger gap between viewport edge and column
+   edge) could only be safer, but margin scales with viewport width
+   (margin = (1 - colWidth%) / 2 * viewportWidth) while the gap between
+   columns is a fixed rem value that doesn't. At 80vw, margin overtakes
+   the 2.6rem gap above ~416px wide -- confirmed via Playwright, the
+   PREVIOUS (Final) column's real box edge measured at +1.6px past the
+   viewport's own edge at 430px width, genuine card content peeking, not
+   just an ambiguous sliver -- which covers the whole iPhone Pro Max
+   class of devices. 86vw's margin never catches up to a 2.6rem gap below
+   ~594px of viewport width, comfortably covering every real phone. */
+.br-bracket{ display:grid; grid-template-columns:repeat(4, 86vw) 14vw; gap:0 2.6rem; --br-gap:2.6rem; --br-stub:.6rem; }
 /* scroll-snap-align:none -- .br-spacer is still a .br-col (see the comment
    above), which otherwise hands it the same scroll-snap-align:center every
    real column gets. That makes it a second valid mandatory-snap target
