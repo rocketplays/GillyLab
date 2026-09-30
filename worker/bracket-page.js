@@ -195,7 +195,12 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   .fmeta{ min-width:0; flex:1; }
   .fname{ font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.95rem; letter-spacing:0.01em;
     text-transform:uppercase; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .flegacy{ font-size:0.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* white-space:normal, not nowrap+ellipsis -- a longer blurb ("Former
+     Strikeforce and K-1 champion" vs. a short one like "UFC 155 champion")
+     used to just get cut off mid-word behind an ellipsis instead of
+     wrapping. .fmeta's own min-width:0 (flex child) already lets this wrap
+     without pushing the card wider. */
+  .flegacy{ font-size:0.68rem; color:var(--muted); line-height:1.25; }
 
   .vs{ font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.66rem; color:var(--muted);
     text-align:center; letter-spacing:0.1em; text-transform:uppercase; }

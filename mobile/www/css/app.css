@@ -2469,7 +2469,6 @@ body #mh-box{
 .br-champcard .br-fcard{ background:none; border:none; padding:0; flex-direction:column; text-align:center; }
 .br-champcard .br-photo{ width:3.4rem; height:3.4rem; margin:0 auto .5rem; }
 .br-champcard .br-name{ font-size:1.3rem; white-space:normal; }
-.br-champcard .br-legacy{ white-space:normal; }
 .br-champcard .br-badge{ margin:.6rem auto 0; }
 /* connector lines between rounds -- an elbow per pair (bracket-pair::before/
    ::after), a short stub off every matchup (br-match::after), the advancing
@@ -2501,7 +2500,11 @@ body #mh-box{
 .br-photo{ width:2.5rem; height:2.5rem; border-radius:5px; object-fit:cover; flex:none; background:var(--surface); border:1px solid var(--border); }
 .br-meta{ min-width:0; flex:1; display:flex; flex-direction:column; }
 .br-name{ font-weight:800; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.br-legacy{ font-size:.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* white-space:normal, not nowrap+ellipsis -- a longer blurb used to just
+   get cut off mid-word behind an ellipsis instead of wrapping. .br-meta's
+   own min-width:0 (flex child) already lets this wrap without pushing the
+   card wider. Same fix as the site's own .flegacy. */
+.br-legacy{ font-size:.68rem; color:var(--muted); line-height:1.25; }
 .br-badge{ font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:4px; padding:.1rem .4rem; margin-left:auto; flex:none; }
 /* realMatchHTML renders this badge on whichever fighter you picked in a
    QF/SF/Final matchup, win or lose -- .br-fcard.loser only ever coincides
