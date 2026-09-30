@@ -142,6 +142,22 @@
       },
       "reason": "Mickey Gall was pulled from his bout with Sedriques Dumas at UFC Vegas 121 due to a medical issue (UFC announced Sep 24, 2026). Luis Hernandez — who won a UFC contract via Dana White's Contender Series Season 10, Episode 6 (2nd-round submission of Hugo Guillon) earlier that same month — steps in on short notice for his UFC debut. The bout also moves out of middleweight to light heavyweight per UFC.com's official update; the bout-level weightClass field and both fighters' profile.division were corrected by hand in the same pass since apply-fighter-overrides.cjs only swaps the fighter record, not the weight class. Confirmed via UFC.com (\"Updates To UFC Fight Night: Rosas Jr. vs Barcelos\"), MMA News, and MiddleEasy (Sep 24, 2026). ESPN's feed still listed Gall as of this writing.",
       "addedOn": "2026-09-24"
+    },
+    {
+      "eventSlug": "ufc-332",
+      "eventStartsAt": "2026-10-04T00:00:00.000Z",
+      "matchFighterName": "Bernardo Sopaj",
+      "replacement": {
+        "fighterSlug": "anthony-romero",
+        "fighterName": "Anthony Romero",
+        "country": "USA",
+        "flag": "🇺🇸",
+        "nickname": "The Bully",
+        "recordText": "7-2-0 (W-L-D)",
+        "shortNotice": true
+      },
+      "reason": "Bernardo Sopaj withdrew from his UFC 332 bantamweight bout with Marcus McGhee three days before the event; UNF bantamweight champion Anthony Romero (7-2, 1 NC, Black House MMA) steps in on short notice for his UFC debut. Not the Canadian lightweight of the same name (DB key 'Anthony Romero (Canada)'). Confirmed via UFC.com prelims page, Heavy, Yahoo Sports and BoxingNews (Sep 30, 2026). ESPN's feed still listed Sopaj as of this writing.",
+      "addedOn": "2026-09-30"
     }
   ]
 }
