@@ -167,36 +167,43 @@ const STAT_ALIASES = (() => {
   while ((x = re.exec(m[1]))) o[x[1]] = x[2];
   return o;
 })();
-// Does FIGHTER_STATS have an exact (case-insensitive) entry for this name?
-function _statMatch(name) {
-  return idx.match(new RegExp('"' + String(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '":\\s*\\{([^}]*)\\}', 'i'));
-}
+// Parsed once (it's a multi-thousand-entry object literal -- re-parsing it
+// per fighter lookup, as the previous regex-per-call approach effectively
+// did, would be wasteful). Real JS object, so its keys are the exact Unicode
+// strings written in index.html (e.g. "Natália Silva"), unlike a regex
+// scrape which can't distinguish "confirm this substring exists" from
+// "confirm this is really the whole key".
+const _FIGHTER_STATS = parseConst('FIGHTER_STATS') || {};
+// normalizeNameKey-keyed index for the last-resort fallback in
+// canonStatName below -- built once alongside _FIGHTER_STATS itself.
+const _FIGHTER_STATS_NORM = (() => {
+  const o = {};
+  for (const k of Object.keys(_FIGHTER_STATS)) o[normalizeNameKey(k)] = k;
+  return o;
+})();
 // Resolve a feed name to the DB's canonical name: exact match, else alias, else a
-// first+last fallback (drops a middle name like "Jose Miguel Delgado" -> "Jose Delgado")
-// when THAT resolves. Used for every stat/history/division lookup.
+// first+last fallback (drops a middle name like "Jose Miguel Delgado" -> "Jose Delgado"),
+// else a diacritic/case-insensitive match (the live feed and index.html's FIGHTER_STATS
+// don't always agree on accents for the same fighter -- feed sent plain "Natalia Silva",
+// FIGHTER_STATS had "Natália Silva"; either direction is possible per-fighter, which is
+// why this has to be a real fallback rather than a one-off alias). Used for every
+// stat/history/division lookup.
 function canonStatName(name) {
   if (!name) return name;
-  if (_statMatch(name)) return name;
-  if (STAT_ALIASES[name] && _statMatch(STAT_ALIASES[name])) return STAT_ALIASES[name];
+  if (_FIGHTER_STATS[name] != null) return name;
+  if (STAT_ALIASES[name] && _FIGHTER_STATS[STAT_ALIASES[name]] != null) return STAT_ALIASES[name];
   const p = String(name).trim().split(/\s+/);
-  if (p.length >= 3) { const fl = p[0] + ' ' + p[p.length - 1]; if (_statMatch(fl)) return fl; }
+  if (p.length >= 3) { const fl = p[0] + ' ' + p[p.length - 1]; if (_FIGHTER_STATS[fl] != null) return fl; }
+  const normKey = _FIGHTER_STATS_NORM[normalizeNameKey(name)];
+  if (normKey) return normKey;
   return STAT_ALIASES[name] || name;
 }
 // A single fighter's stat object from the FIGHTER_STATS map in index.html.
-// Case-insensitive + alias-resolved so feed spellings ("Dricus Du Plessis",
-// "Jose Miguel Delgado") still find the DB entry.
+// Case-insensitive + accent-insensitive + alias-resolved (via canonStatName)
+// so feed spellings ("Dricus Du Plessis", "Jose Miguel Delgado", "Natalia
+// Silva") still find the DB entry.
 function fighterStat(name) {
-  const m = _statMatch(canonStatName(name));
-  if (!m) return null;
-  const o = {};
-  m[1].replace(/(\w+):\s*("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|-?[\d.]+)/g, (_, k, v) => {
-    // Strip the surrounding quotes AND unescape inner backslash-escapes, so a source
-    // value like ht:"5'10\"" (or single-quoted ht:'5\'11"') yields 5'10" / 5'11".
-    o[k] = v[0] === '"' ? v.slice(1, -1).replace(/\\(["\\])/g, '$1')
-         : v[0] === "'" ? v.slice(1, -1).replace(/\\(['\\])/g, '$1')
-         : v;
-  });
-  return o;
+  return _FIGHTER_STATS[canonStatName(name)] || null;
 }
 const initialsOf = (name) => String(name || '').trim().split(/\s+/).map(w => w[0] || '').filter(Boolean);
 
@@ -206,7 +213,7 @@ function buildRankings(rk, recMap) {
   const champ = grp.find(x => x.isChampion);
   const top = grp.filter(x => !x.isChampion).sort((a, b) => a.rank - b.rank).slice(0, 5);
   const row = (x, n) => ({
-    n, name: x.fighterName, record: recMap[x.fighterName] || '', champ: !!x.isChampion,
+    n, name: x.fighterName, record: ciLookup(recMap, x.fighterName), champ: !!x.isChampion,
     slug: photoExists(x.fighterSlug) ? x.fighterSlug : (photoExists(nameToSlug(x.fighterName)) ? nameToSlug(x.fighterName) : ''),
     initials: initials2(x.fighterName),
   });
@@ -328,7 +335,7 @@ function buildFeatured(rk, recMap) {
     name: champ.fighterName,
     slug: photoExists(champ.fighterSlug) ? champ.fighterSlug : (photoExists(nameToSlug(champ.fighterName)) ? nameToSlug(champ.fighterName) : ''),
     division: FEATURED_DIVISION,
-    record: recMap[champ.fighterName] || '',
+    record: ciLookup(recMap, champ.fighterName),
     initials: ((ini[0] || '') + (ini[ini.length - 1] || '')).toUpperCase(),
     bio, groups, hasBars: groups.some(g => g.rows.some(r => r.bar)),
   };
@@ -495,13 +502,30 @@ function rankMap() {
   let x; while ((x = re.exec(idx))) m[x[1]] = x[2];
   return m;
 }
-// Case-insensitive map lookup — the feed and roster disagree on capitalization for
-// some names ("Dricus Du Plessis" vs "Dricus du Plessis").
+// Strips diacritics and folds case, e.g. "Natália" / "Soldić" -> "natalia" /
+// "soldic" — same normalization worker/index.js's normalizeNameForRank uses
+// for rank badges, applied here too since recMap/ranks have the identical
+// class of bug: the live ESPN feed and the FIGHTERS roster in index.html
+// don't consistently agree on accents for the same fighter (roster had
+// "Natália Silva", the feed sent plain "Natalia Silva"; roster had plain
+// "Roberto Soldic", the feed sent "Roberto Soldić") — either direction is
+// possible per-fighter, so this has to be normalized on BOTH sides, not
+// special-cased for one name.
+function normalizeNameKey(name) {
+  return String(name || '').trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+// Case- and accent-insensitive map lookup — the feed and roster disagree on
+// capitalization for some names ("Dricus Du Plessis" vs "Dricus du Plessis")
+// and on diacritics for others (see normalizeNameKey above).
 function ciLookup(map, name) {
   if (map[name] != null) return map[name];
   const low = String(name || '').toLowerCase();
   const k = Object.keys(map).find((key) => key.toLowerCase() === low);
-  return k ? map[k] : '';
+  if (k) return map[k];
+  const norm = normalizeNameKey(name);
+  const nk = Object.keys(map).find((key) => normalizeNameKey(key) === norm);
+  return nk ? map[nk] : '';
 }
 // Striker-vs-grappler lean, 0..100. Identical to index.html's lean() — the 0.3
 // grappling floor stops a fighter with no recorded takedowns pinning to 100.
