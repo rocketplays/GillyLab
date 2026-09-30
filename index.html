@@ -4892,7 +4892,15 @@
   #page-bracket .rules strong { font-family:'Barlow Condensed', sans-serif; color:var(--paper); font-weight:700; }
 
   /* ---- bracket ---- */
-  #page-bracket .bracket-scroll { overflow-x:auto; padding-bottom:0.5rem; margin:0 -0.25rem 2.5rem; }
+  /* overflow-anchor:none -- render()/markCardStates() rebuild every column
+     at once, including fresh <img> tags whose intrinsic size isn't known
+     until they load; without this, the browser's scroll anchoring
+     "helpfully" nudges scrollLeft to compensate for whichever image
+     finishes loading and reflows first, which is exactly what could drift
+     the champion card off-center a moment after scrollIntoView had already
+     centered it. Removing the ambiguity here instead of timing around it,
+     same approach as the scroll-snap-align fix elsewhere on this page. */
+  #page-bracket .bracket-scroll { overflow-x:auto; overflow-anchor:none; padding-bottom:0.5rem; margin:0 -0.25rem 2.5rem; }
   #page-bracket .bracket {
     display:grid; grid-template-columns: repeat(4, minmax(200px,1fr)); gap:0 3.6rem;
     min-width:980px; padding:0.25rem;
@@ -5010,7 +5018,23 @@
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
     font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.58rem;
     letter-spacing:0.01em; text-transform:uppercase; color:var(--muted); z-index:1;
+    /* Hidden until its own round-col is IntersectionObserver-confirmed
+       "current" (see initRoundColVisibility below) -- fitting this label
+       under --gap only keeps it off the NEXT round's card on a static
+       desktop layout where every column is visible side by side. On the
+       mobile scroll-snap layout, once you've scrolled past a column, the
+       viewport's OWN empty margin around the now-centered column eats into
+       this same gap -- at some device widths that margin is narrower than
+       the gap, so a chunk of this label (a real fighter's name, in --good
+       green once results are in) sits inside that visible margin instead
+       of the hidden part of the gap. Rather than chase the exact margin-
+       vs-gap crossover across every phone width, hide the label itself
+       once you're not looking at the column it belongs to -- it only ever
+       needs to be seen while you're deciding/reviewing that one round.
+       Also see mobile/www/css/app.css's .br-connector-name, same fix. */
+    opacity:0; transition:opacity 0.15s;
   }
+  #page-bracket .round-col.is-current .connector-name { opacity:1; }
   #page-bracket .connector-name.picked { color:var(--accent-2); }
   #page-bracket .connector-name.winner { color:var(--good); }
 
@@ -5404,6 +5428,29 @@
     document.getElementById('progress').innerHTML = '<strong>'+made+'</strong> of 7 picks made';
     document.getElementById('submitBtn').disabled = made < 7;
     positionRoundLabels();
+    initRoundColVisibility();
+  }
+
+  // See .connector-name's own CSS comment for why this exists: a round-col's
+  // connector-name is opacity:0 by default and only revealed while that
+  // round-col is the one currently centered/visible (or, on a wide desktop
+  // layout with no scrolling, effectively always -- every column sits at
+  // ~100% visible there, so this never hides anything). The .round-col
+  // elements themselves are static markup (render()/markCardStates() only
+  // replace their .slot-group children), so this only needs to run once;
+  // the guard makes repeat calls from both functions harmless.
+  var roundColObserver = null;
+  function initRoundColVisibility(){
+    if (roundColObserver) return;
+    var scroller = document.querySelector('.bracket-scroll');
+    var cols = document.querySelectorAll('.round-col');
+    if (!scroller || !cols.length) return;
+    roundColObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        entry.target.classList.toggle('is-current', entry.intersectionRatio > 0.5);
+      });
+    }, { root: scroller, threshold: [0, 0.5, 1] });
+    cols.forEach(function(col){ roundColObserver.observe(col); });
   }
 
   // Scroll forward once the WHOLE round is done, not just the one matchup

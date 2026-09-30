@@ -2363,7 +2363,16 @@ body #mh-box{
 .br-belt-fill{ height:100%; border-radius:4px; }
 .br-belt-meta{ font-size:.7rem; color:var(--muted); margin-top:.3rem; }
 
-.br-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
+/* overflow-anchor:none -- renderResults()/renderPicker() rebuild every
+   column at once, including fresh <img> tags whose intrinsic size isn't
+   known until they load; without this, the browser's scroll anchoring
+   "helpfully" nudges scrollLeft to compensate for whichever image finishes
+   loading and reflows first, which is exactly what made the champion card
+   drift off-center a moment after scrollIntoView had already centered it
+   (JS was right the whole time -- something else kept moving the target
+   afterward). Removing the ambiguity here instead of timing around it,
+   same approach as the scroll-snap-align fix above. */
+.br-scroll{ overflow-x:auto; overflow-anchor:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
 /* 5th grid column is a bare trailing spacer (.br-spacer, rendered as the
    last child by renderPicker/renderResults), not cosmetic padding -- a
    scroll container's own trailing PADDING is excluded from scrollWidth in
@@ -2424,7 +2433,21 @@ body #mh-box{
   position:absolute; left:calc(100% + var(--br-stub) + .15rem); top:50%; transform:translateY(-50%);
   max-width:1.7rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
   font-weight:700; font-size:.56rem; letter-spacing:.01em; text-transform:uppercase; color:var(--muted); z-index:1;
+  /* Hidden until its own .br-col is IntersectionObserver-confirmed current
+     (see scrollObserver in bracket.js). Sizing this to fit under --br-gap
+     only keeps it off the NEXT column's card while every column sits still
+     -- once you've scrolled past a column, the empty margin the viewport
+     leaves around the now-centered column eats into that same gap, and at
+     some phone widths that margin is narrower than the gap, letting a real
+     fighter's name (--accent green once results are in) sit inside the
+     visible margin instead of the hidden part of the gap. Hide the label
+     once you're not looking at the column it belongs to instead of chasing
+     the margin-vs-gap crossover across every device width -- it only ever
+     needs to be seen while you're deciding/reviewing that one round. Same
+     fix as the site's own .connector-name, see its CSS comment. */
+  opacity:0; transition:opacity .15s;
 }
+.br-col.is-current .br-connector-name{ opacity:1; }
 .br-connector-name.picked{ color:#ffb340; }
 .br-connector-name.winner{ color:var(--accent); }
 .br-vs{ font-weight:700; font-size:.62rem; color:var(--muted); text-align:center; letter-spacing:.1em; text-transform:uppercase; }

@@ -209,6 +209,28 @@ function mountBracket(container){
       });
     });
     updateProgress();
+    initColVisibility();
+  }
+
+  // See .br-connector-name's own CSS comment for why this exists: a
+  // connector-name is opacity:0 by default and only revealed while its own
+  // .br-col is the one currently centered/visible. Unlike the site's
+  // .round-col nodes (which stay put across re-renders), renderPicker() and
+  // renderResults() both replace #brBracket's .br-col elements outright, so
+  // any previous observer would be watching detached nodes -- disconnect
+  // and re-observe the fresh ones every time either function runs.
+  var colObserver = null;
+  function initColVisibility(){
+    if (colObserver) colObserver.disconnect();
+    var scroller = document.getElementById('brScroll');
+    var cols = document.querySelectorAll('#brBracket .br-col');
+    if (!scroller || !cols.length) return;
+    colObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        entry.target.classList.toggle('is-current', entry.intersectionRatio > 0.5);
+      });
+    }, { root: scroller, threshold: [0, 0.5, 1] });
+    cols.forEach(function(col){ colObserver.observe(col); });
   }
 
   // Horizontal auto-advance. Earlier passes at this (see git history) tried
@@ -375,6 +397,7 @@ function mountBracket(container){
     // quarterfinals column instead of showing the result you came back for.
     var champCol = document.getElementById('brColChamp');
     if (champCol) champCol.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    initColVisibility();
   }
 
   // ---- leaderboard (week + season), same .pk-board-* classes the Pick'em
