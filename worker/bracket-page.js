@@ -379,7 +379,21 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
      scrolling, so it reads as "one round in focus" rather than four thin
      slivers. */
   @media (max-width:820px){
-    .bracket-scroll{ scroll-snap-type:x mandatory; }
+    /* mask-image fades the outer ~28px of each edge to transparent instead
+       of relying on the column-width/gap arithmetic alone to keep the
+       next/previous round's real content fully offscreen at rest -- that
+       math has been wrong before under real-device conditions a synthetic
+       viewport test didn't reproduce (see the mobile app's own .br-scroll,
+       same fix), and a soft fade hides a stray sliver regardless of why
+       it's there (a few px of margin error, or a brief mid-swipe overshoot
+       before scroll-snap settles) rather than needing the number to be
+       exact. Scoped to this breakpoint only -- the desktop layout shows
+       every round at once with no scrolling, so there's nothing to mask. */
+    .bracket-scroll{
+      scroll-snap-type:x mandatory;
+      -webkit-mask-image:linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+      mask-image:linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+    }
     .bracket{ grid-template-columns:repeat(4, 86vw); min-width:0; gap:0 2.6rem; --gap:2.6rem; --stub:0.6rem; }
     /* center, not start: every scrollIntoView call on this page already asks
        for inline:'center' (pickQf/pickSf/pickFinal's auto-advance, and

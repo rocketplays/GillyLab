@@ -2371,8 +2371,29 @@ body #mh-box{
    drift off-center a moment after scrollIntoView had already centered it
    (JS was right the whole time -- something else kept moving the target
    afterward). Removing the ambiguity here instead of timing around it,
-   same approach as the scroll-snap-align fix above. */
-.br-scroll{ overflow-x:auto; overflow-anchor:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem; }
+   same approach as the scroll-snap-align fix above.
+
+   No -webkit-overflow-scrolling:touch (the site's own .bracket-scroll never
+   had it either) -- that legacy property predates iOS's native momentum
+   scrolling and is a well-documented source of janky, abrupt re-snapping
+   specifically when paired with scroll-snap-type on iOS: it's what made
+   the champion column's snap-back read as a glitch instead of a smooth
+   glide once overscrolling past it stopped being possible.
+
+   mask-image fades the outer ~28px of each edge to transparent instead of
+   relying on the column-width/gap arithmetic alone to keep the next/
+   previous column's real content fully offscreen -- that math (see
+   .br-bracket's own comment) has already been wrong twice under slightly
+   different real-device conditions than whatever a synthetic viewport
+   test could reproduce, and a soft fade hides a stray sliver regardless of
+   why it's there (a few px of margin error, or a brief mid-swipe
+   overshoot before scroll-snap settles) rather than needing the
+   underlying number to be exactly right. */
+.br-scroll{
+  overflow-x:auto; overflow-anchor:none; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  mask-image:linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+}
 /* 5th grid column is a bare trailing spacer (.br-spacer, rendered as the
    last child by renderPicker/renderResults), not cosmetic padding -- a
    scroll container's own trailing PADDING is excluded from scrollWidth in
