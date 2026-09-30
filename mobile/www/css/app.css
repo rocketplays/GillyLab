@@ -2413,10 +2413,24 @@ body #mh-box{
    Champion column could never scroll far enough to reach a settled
    position -- confirmed by forcing scrollLeft to scrollWidth (its true
    max) and finding the column still sitting short, not a scroll-snap/JS-
-   timing issue at all. 14vw comfortably covers the column width below
-   plus the scroll-padding gutter above, with real margin to spare. The
-   left side never needed this: scrollLeft:0 already satisfies the FIRST
-   column's own start-alignment trivially.
+   timing issue at all. The left side never needed this: scrollLeft:0
+   already satisfies the FIRST column's own start-alignment trivially.
+
+   1vw, not the 14vw an earlier pass here used -- 14vw comfortably covered
+   the needed room "with real margin to spare", but that spare margin was
+   itself the bug: it's genuine extra scrollable distance PAST champion's
+   centered position (confirmed empirically: settledScrollLeft sat 71px
+   short of scrollWidth's true max at 430px wide), and iOS's overscroll
+   correction has to travel that whole 71px back on release, which is what
+   read as an abrupt glitch instead of a gentle bounce -- the site, which
+   has zero such slack (settledScrollLeft === true max there), only ever
+   has to correct a couple of px. Any grid item wider than ~0px pulls in
+   one full 2.6rem gap regardless of the item's own width (confirmed by
+   sweeping 0.1vw-15vw: slack floors out around 12-19px the moment the
+   item exists at all, then barely moves with its width), so there's no
+   way to shrink this all the way to the site's zero -- 1vw is the
+   practical floor, keeping the true max within ~15-19px of centered
+   (verified at 375/390/414/428/430px) instead of ~70-100px.
 
    Column width is 86vw, matching the SITE'S OWN prototypes/legends-
    bracket.html exactly -- an earlier pass here widened it to 80vw on the
@@ -2430,7 +2444,7 @@ body #mh-box{
    just an ambiguous sliver -- which covers the whole iPhone Pro Max
    class of devices. 86vw's margin never catches up to a 2.6rem gap below
    ~594px of viewport width, comfortably covering every real phone. */
-.br-bracket{ display:grid; grid-template-columns:repeat(4, 86vw) 14vw; gap:0 2.6rem; --br-gap:2.6rem; --br-stub:.6rem; }
+.br-bracket{ display:grid; grid-template-columns:repeat(4, 86vw) 1vw; gap:0 2.6rem; --br-gap:2.6rem; --br-stub:.6rem; }
 /* scroll-snap-align:none -- .br-spacer is still a .br-col (see the comment
    above), which otherwise hands it the same scroll-snap-align:center every
    real column gets. That makes it a second valid mandatory-snap target
