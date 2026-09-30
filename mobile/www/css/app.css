@@ -2400,7 +2400,28 @@ body #mh-box{
    contentless space at rest, checked at 375px/390px/430px widths, not
    just the one viewport this was first verified against. */
 .br-bracket{ display:grid; grid-template-columns:repeat(4, 80vw) 20vw; gap:0 2.6rem; --br-gap:2.6rem; --br-stub:.6rem; }
+/* scroll-snap-align:none -- .br-spacer is still a .br-col (see the comment
+   above), which otherwise hands it the same scroll-snap-align:center every
+   real column gets. That makes it a second valid mandatory-snap target
+   sitting right next to the champion column, and gives the browser's own
+   post-scroll snap settling a real candidate to land on INSTEAD of
+   champion once real content (actual photos, not this test's placeholders)
+   shifts the exact geometry after scrollIntoView's initial jump -- which
+   reads as the champion card "overshooting" further right and settling
+   flush against the left edge with a dead gap on the right, rather than
+   staying centered. The site never has this because it has no spacer at
+   all (a real scroll container is required to let scroll-snap reach the
+   LAST item's own center natively, without one); this keeps the spacer for
+   the real scroll-room it provides while taking it out of the snap
+   candidate pool entirely. */
 .br-spacer{ pointer-events:none; }
+/* .br-col.br-spacer (two classes) beats the plain .br-col rule below on
+   specificity regardless of source order -- scroll-snap-align:none here
+   was previously being silently overridden by .br-col's own
+   scroll-snap-align:center (same specificity, .br-col simply comes later
+   in the cascade), which is exactly why the spacer kept acting as a live
+   snap target even after this override was first added. */
+.br-col.br-spacer{ scroll-snap-align:none; }
 .br-col{ display:flex; flex-direction:column; position:relative; scroll-snap-align:center; min-width:0; }
 .br-collabel{ font-weight:800; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 .9rem; }
 /* Gold once the real result is in, mirroring the site's own
