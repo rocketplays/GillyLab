@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T17:28:56.349Z",
+  "generatedAt": "2026-09-30T02:37:47.178Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
@@ -237,51 +237,6 @@
       "theyCallHim": "Jan Blachowicz",
       "note": "alias"
     },
-    "Katlyn Chookagian|Mar 9, 2024|Maycee Barber": {
-      "real": "Maycee Barber",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Nov 21, 2020|Cynthia Calvillo": {
-      "real": "Cynthia Calvillo",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Jun 8, 2019|Joanne Wood": {
-      "real": "Joanne Wood",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Dec 8, 2018|Jessica Eye": {
-      "real": "Jessica Eye",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Jul 28, 2018|Alexis Davis": {
-      "real": "Alexis Davis",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Jan 27, 2018|Mara Romero Borella": {
-      "real": "Mara Romero Borella",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Nov 12, 2016|Liz Carmouche": {
-      "real": "Liz Carmouche",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Jul 13, 2016|Lauren Murphy": {
-      "real": "Lauren Murphy",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
-    "Katlyn Chookagian|Oct 31, 2015|Sijara Eubanks": {
-      "real": "Sijara Eubanks",
-      "theyCallHim": "Katlyn Cerminara",
-      "note": "alias"
-    },
     "Joanne Wood|Aug 1, 2020|Jennifer Maia": {
       "real": "Jennifer Maia",
       "theyCallHim": "Joanne Calderwood",
@@ -289,11 +244,6 @@
     },
     "Joanne Wood|Sep 7, 2019|Andrea Lee": {
       "real": "Andrea Lee",
-      "theyCallHim": "Joanne Calderwood",
-      "note": "alias"
-    },
-    "Joanne Wood|Jun 8, 2019|Katlyn Cerminara": {
-      "real": "Katlyn Cerminara",
       "theyCallHim": "Joanne Calderwood",
       "note": "alias"
     },
@@ -1000,51 +950,6 @@
     "Montserrat Ruiz|Dec 15, 2018|Danielle Taylor": {
       "real": "Danielle Taylor",
       "theyCallHim": "Montserrat Conejo Ruiz",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|Oct 22, 2022|Manon Fiorot": {
-      "real": "Manon Fiorot",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|May 14, 2022|Amanda Ribas": {
-      "real": "Amanda Ribas",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|Jan 15, 2022|Jennifer Maia": {
-      "real": "Jennifer Maia",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|May 15, 2021|Viviane Araújo": {
-      "real": "Viviane Araújo",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|Oct 18, 2020|Jéssica Andrade": {
-      "real": "Jéssica Andrade",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|May 30, 2020|Antonina Shevchenko": {
-      "real": "Antonina Shevchenko",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|Feb 8, 2020|Valentina Shevchenko": {
-      "real": "Valentina Shevchenko",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|Nov 2, 2019|Jennifer Maia": {
-      "real": "Jennifer Maia",
-      "theyCallHim": "Katlyn Chookagian",
-      "note": "alias"
-    },
-    "Katlyn Cerminara|Apr 8, 2017|Irene Aldana": {
-      "real": "Irene Aldana",
-      "theyCallHim": "Katlyn Chookagian",
       "note": "alias"
     },
     "Jun Yong Park|Oct 25, 2025|Ikram Aliskerov": {
