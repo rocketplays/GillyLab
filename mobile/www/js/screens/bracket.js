@@ -438,7 +438,11 @@ function mountBracket(container){
       '<div class="gl-sec">' +
         '<p class="gl-muted" style="margin:0">Fill out every round, then submit once. 1 pt per quarterfinal · 2 pts per semifinal · 4 pts for the final — 12 pts possible.</p>' +
       '</div>' +
-      '<div class="gl-sec"><div class="br-scroll" id="brScroll"><div class="br-bracket" id="brBracket"></div></div></div>' +
+      '<div class="gl-sec"><div class="br-scroll-wrap">' +
+        '<div class="br-scroll" id="brScroll"><div class="br-bracket" id="brBracket"></div></div>' +
+        '<div class="br-fade br-fade-l" aria-hidden="true"></div>' +
+        '<div class="br-fade br-fade-r" aria-hidden="true"></div>' +
+      '</div></div>' +
       // position:fixed (see .br-submitrow's own CSS comment) -- no longer
       // plain in-flow content, so it never reserves its own space in the
       // page's normal flow. The fixed bar always covers exactly its own

@@ -2376,24 +2376,32 @@ body #mh-box{
    No -webkit-overflow-scrolling:touch (the site's own .bracket-scroll never
    had it either) -- that legacy property predates iOS's native momentum
    scrolling and is a well-documented source of janky, abrupt re-snapping
-   specifically when paired with scroll-snap-type on iOS: it's what made
-   the champion column's snap-back read as a glitch instead of a smooth
-   glide once overscrolling past it stopped being possible.
+   specifically when paired with scroll-snap-type on iOS.
 
-   mask-image fades the outer ~28px of each edge to transparent instead of
-   relying on the column-width/gap arithmetic alone to keep the next/
-   previous column's real content fully offscreen -- that math (see
-   .br-bracket's own comment) has already been wrong twice under slightly
-   different real-device conditions than whatever a synthetic viewport
-   test could reproduce, and a soft fade hides a stray sliver regardless of
-   why it's there (a few px of margin error, or a brief mid-swipe
-   overshoot before scroll-snap settles) rather than needing the
-   underlying number to be exactly right. */
-.br-scroll{
-  overflow-x:auto; overflow-anchor:none; scroll-snap-type:x mandatory; margin:0 -1.1rem 1.4rem; padding:0 1.1rem .4rem;
-  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
-  mask-image:linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
-}
+   No mask-image either (a previous pass here tried one, fading the outer
+   ~28px of each edge instead of relying on the column-width/gap
+   arithmetic alone) -- mask-image on an actively momentum-scrolling
+   element is ITSELF a known source of compositing jank on iOS (it can
+   force per-frame recompositing instead of letting the scroll stay on its
+   own GPU layer), which lines up with the champion snap-back starting to
+   read as abrupt/glitchy right around when this was added, and it still
+   didn't reliably hide the next-round bleed either. See .br-fade below
+   instead: two plain, non-scrolling overlay divs painted on top of
+   .br-scroll (not part of it), which can't introduce scroll jank because
+   they're never themselves scrolled, and hide a stray sliver the same way
+   regardless of why it's there. */
+/* The negative horizontal margin that used to live on .br-scroll (bleeding
+   it past .gl-sec's own padding to the true screen edge, with the matching
+   positive padding re-indenting its content back to the page's normal
+   alignment) now lives on .br-scroll-wrap instead -- .br-fade positions
+   itself against ITS parent's edges, so the wrap needs to be the one doing
+   the bleeding, or the fades would sit inset from .br-scroll's real
+   (bled) edges instead of covering them. */
+.br-scroll-wrap{ position:relative; margin:0 -1.1rem 1.4rem; }
+.br-fade{ position:absolute; top:0; bottom:0; width:28px; pointer-events:none; z-index:2; }
+.br-fade-l{ left:0; background:linear-gradient(to right, var(--bg) 0%, transparent 100%); }
+.br-fade-r{ right:0; background:linear-gradient(to left, var(--bg) 0%, transparent 100%); }
+.br-scroll{ overflow-x:auto; overflow-anchor:none; scroll-snap-type:x mandatory; padding:0 1.1rem .4rem; }
 /* 5th grid column is a bare trailing spacer (.br-spacer, rendered as the
    last child by renderPicker/renderResults), not cosmetic padding -- a
    scroll container's own trailing PADDING is excluded from scrollWidth in
@@ -2516,6 +2524,12 @@ body #mh-box{
 .br-name{ font-weight:800; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .br-legacy{ font-size:.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .br-badge{ font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:4px; padding:.1rem .4rem; margin-left:auto; flex:none; }
+/* realMatchHTML renders this badge on whichever fighter you picked in a
+   QF/SF/Final matchup, win or lose -- .br-fcard.loser only ever coincides
+   with it when your pick didn't advance (fighterRowHTML's yourPick is set
+   independently of winner/loser), so this one selector is enough to flip
+   the badge red exactly then, without needing a separate JS-passed flag. */
+.br-fcard.loser .br-badge{ color:var(--bad); border-color:var(--bad); }
 .br-modelcall{ font-size:.78rem; color:var(--muted); padding-top:.4rem; border-top:1px dashed var(--border); }
 /* Always shows what YOU picked for the final, whether or not it hit --
    fighterRowHTML's yourPick badge only ever appears on a correct pick, so a
