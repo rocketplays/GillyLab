@@ -240,32 +240,6 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   .round-col:last-child .bracket-pair::before,
   .round-col:last-child .bracket-pair::after{ display:none; }
 
-  .connector-name{
-    position:absolute; left:calc(100% + var(--stub) + 0.2rem); top:50%; transform:translateY(-50%);
-    width:calc(var(--gap) - var(--stub) - 0.6rem); max-width:2.6rem;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
-    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.58rem;
-    letter-spacing:0.01em; text-transform:uppercase; color:var(--muted); z-index:1;
-    /* Hidden until its own round-col is IntersectionObserver-confirmed
-       "current" (see initRoundColVisibility below) -- fitting this label
-       under --gap only keeps it off the NEXT round's card on a static
-       desktop layout where every column is visible side by side. On the
-       mobile scroll-snap layout, once you've scrolled past a column, the
-       viewport's OWN empty margin around the now-centered column eats into
-       this same gap -- at some device widths that margin is narrower than
-       the gap, so a chunk of this label (a real fighter's name, in --good
-       green once results are in) sits inside that visible margin instead
-       of the hidden part of the gap. Rather than chase the exact margin-
-       vs-gap crossover across every phone width, hide the label itself
-       once you're not looking at the column it belongs to -- it only ever
-       needs to be seen while you're deciding/reviewing that one round.
-       Also see mobile/www/css/app.css's .br-connector-name, same fix. */
-    opacity:0; transition:opacity 0.15s;
-  }
-  .round-col.is-current .connector-name{ opacity:1; }
-  .connector-name.picked{ color:var(--accent-2); }
-  .connector-name.winner{ color:var(--good); }
-
   .champion-col{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
   /* Same "featured" treatment as the rest of the site (see .plan.featured on
      /subscribe) — accent green border + inset glow — instead of the gold
@@ -418,7 +392,6 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
        past it snaps back to center instead of drifting to whatever a given
        engine's snap resolution happens to prefer. */
     .round-col{ scroll-snap-align:center; }
-    .connector-name{ max-width:1.6rem; font-size:0.54rem; }
   }
 </style>
 </head>
@@ -673,18 +646,6 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     p.appendChild(m1); p.appendChild(m2);
     return p;
   }
-  // The name that rides along a connector line. "picked" = your hypothetical
-  // pick, pre-submit; "winner" = the real result, post-submit.
-  function connectorLabel(fighter, kind){
-    var s = document.createElement('span'); s.className='connector-name';
-    if (fighter){
-      s.classList.add(kind);
-      var parts = fighter.name.trim().split(' ');
-      s.textContent = parts[parts.length-1];
-    }
-    return s;
-  }
-
   // Semifinals/Final (and champion, which is already handled by its own
   // centered column) have fewer tiles than quarterfinals, so the round-col's
   // reserved top space for the label leaves a big gap above the actual top
@@ -717,7 +678,6 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
       m.appendChild(vs);
       m.appendChild(fcard(b, { picked: picks.qf[i]===b, onClick:function(){ pickQf(i, b); } }));
-      m.appendChild(connectorLabel(picks.qf[i], 'picked'));
       return m;
     });
     colQF.appendChild(bracketPair(qfMatchups[0], qfMatchups[1]));
@@ -732,7 +692,6 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       m.appendChild(vs);
       if (b) m.appendChild(fcard(b, { picked: picks.sf[i]===b, onClick:function(){ pickSf(i, b); } }));
       else m.appendChild(fcard(null, {empty:true}));
-      m.appendChild(connectorLabel(picks.sf[i], 'picked'));
       return m;
     });
     colSF.appendChild(bracketPair(sfMatchups[0], sfMatchups[1]));
@@ -746,7 +705,6 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       m.appendChild(vs);
       if (b) m.appendChild(fcard(b, { picked: picks.final===b, onClick:function(){ pickFinal(b); } }));
       else m.appendChild(fcard(null, {empty:true}));
-      m.appendChild(connectorLabel(picks.final, 'picked'));
       colF.appendChild(m);
     })();
 
@@ -764,29 +722,6 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     document.getElementById('progress').innerHTML = '<strong>'+made+'</strong> of 7 picks made';
     document.getElementById('submitBtn').disabled = made < 7;
     positionRoundLabels();
-    initRoundColVisibility();
-  }
-
-  // See .connector-name's own CSS comment for why this exists: a round-col's
-  // connector-name is opacity:0 by default and only revealed while that
-  // round-col is the one currently centered/visible (or, on a wide desktop
-  // layout with no scrolling, effectively always -- every column sits at
-  // ~100% visible there, so this never hides anything). The .round-col
-  // elements themselves are static markup (render()/markCardStates() only
-  // replace their .slot-group children), so this only needs to run once;
-  // the guard makes repeat calls from both functions harmless.
-  var roundColObserver = null;
-  function initRoundColVisibility(){
-    if (roundColObserver) return;
-    var scroller = document.querySelector('.bracket-scroll');
-    var cols = document.querySelectorAll('.round-col');
-    if (!scroller || !cols.length) return;
-    roundColObserver = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        entry.target.classList.toggle('is-current', entry.intersectionRatio > 0.5);
-      });
-    }, { root: scroller, threshold: [0, 0.5, 1] });
-    cols.forEach(function(col){ roundColObserver.observe(col); });
   }
 
   // Scroll forward once the WHOLE round is done, not just the one matchup
@@ -982,9 +917,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   function markCardStates(){
     var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
     var qfBlocks = QF_PAIRS.map(function(pair,i){
-      var block = realMatchupBlock(bySeed[pair[0]], bySeed[pair[1]], real.qf[i], picks.qf[i], consensus[i]);
-      block.appendChild(connectorLabel(real.qf[i], 'winner'));
-      return block;
+      return realMatchupBlock(bySeed[pair[0]], bySeed[pair[1]], real.qf[i], picks.qf[i], consensus[i]);
     });
     colQF.appendChild(bracketPair(qfBlocks[0], qfBlocks[1]));
     colQF.appendChild(bracketPair(qfBlocks[2], qfBlocks[3]));
@@ -994,13 +927,10 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       realMatchupBlock(real.qf[0], real.qf[1], real.sf[0], picks.sf[0]),
       realMatchupBlock(real.qf[2], real.qf[3], real.sf[1], picks.sf[1])
     ];
-    sfBlocks[0].appendChild(connectorLabel(real.sf[0], 'winner'));
-    sfBlocks[1].appendChild(connectorLabel(real.sf[1], 'winner'));
     colSF.appendChild(bracketPair(sfBlocks[0], sfBlocks[1]));
 
     var colF = document.getElementById('col-f'); colF.innerHTML='';
     var fBlock = realMatchupBlock(real.sf[0], real.sf[1], real.final, picks.final);
-    fBlock.appendChild(connectorLabel(real.final, 'winner'));
     colF.appendChild(fBlock);
 
     document.getElementById('champ-label').classList.add('is-final');

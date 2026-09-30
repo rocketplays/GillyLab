@@ -2481,27 +2481,6 @@ body #mh-box{
 .br-pair::before{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:25%; bottom:25%; width:1px; background:var(--border); }
 .br-pair::after{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:50%; height:1px; width:calc(var(--br-gap) - var(--br-stub)); background:var(--border); }
 .br-col:last-child .br-match::after, .br-col:last-child .br-pair::before, .br-col:last-child .br-pair::after{ display:none; }
-.br-connector-name{
-  position:absolute; left:calc(100% + var(--br-stub) + .15rem); top:50%; transform:translateY(-50%);
-  max-width:1.7rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
-  font-weight:700; font-size:.56rem; letter-spacing:.01em; text-transform:uppercase; color:var(--muted); z-index:1;
-  /* Hidden until its own .br-col is IntersectionObserver-confirmed current
-     (see scrollObserver in bracket.js). Sizing this to fit under --br-gap
-     only keeps it off the NEXT column's card while every column sits still
-     -- once you've scrolled past a column, the empty margin the viewport
-     leaves around the now-centered column eats into that same gap, and at
-     some phone widths that margin is narrower than the gap, letting a real
-     fighter's name (--accent green once results are in) sit inside the
-     visible margin instead of the hidden part of the gap. Hide the label
-     once you're not looking at the column it belongs to instead of chasing
-     the margin-vs-gap crossover across every device width -- it only ever
-     needs to be seen while you're deciding/reviewing that one round. Same
-     fix as the site's own .connector-name, see its CSS comment. */
-  opacity:0; transition:opacity .15s;
-}
-.br-col.is-current .br-connector-name{ opacity:1; }
-.br-connector-name.picked{ color:#ffb340; }
-.br-connector-name.winner{ color:var(--accent); }
 .br-vs{ font-weight:700; font-size:.62rem; color:var(--muted); text-align:center; letter-spacing:.1em; text-transform:uppercase; }
 .br-fcard{ display:flex; align-items:center; gap:.6rem; padding:.55rem .7rem; background:var(--card); border:1px solid var(--border); border-radius:6px; }
 .br-fcard[role="button"]{ cursor:pointer; }
