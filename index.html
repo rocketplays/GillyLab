@@ -140348,6 +140348,383 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '2.5': { betonlineag: { over: -210, under: 177 }, bovada: { over: -230, under: 175 }, draftkings: { over: -220, under: 170 }, fanduel: { over: -230, under: 186 } },
       },
     },
+    // UFC 332 (Oct 3, 2026) — sourced from fightodds.io per-fight /odds pages,
+    // current prices, read Oct 1 2026. Props-grid cells were read by DOM column
+    // index against the book header row (blank cells preserved, no flattening),
+    // and every fight's grid ML row was checked against the sportsbook table
+    // before use. ML only fills books data/odds.json was missing at read time.
+    // McGhee's opponent changed (Sopaj -> Anthony Romero); the live feed still
+    // lists Sopaj, so 'mcghee|romero' only renders once the feed catches up.
+    // Romero/Armand are short-notice: few or no props posted on their side.
+    // UFC 332 — Natalia Silva vs Wang Cong (5 rounds). f1 = Cong, f2 = Silva.
+    'cong|silva': {
+      rounds: 5,
+      method: {
+        betonlineag: { f1: { ko: 700, sub: 2200, dec: 235 }, f2: { ko: 475, sub: 900, dec: 100 } },
+        bovada:      { f1: { ko: 800, sub: 2200, dec: 275 }, f2: { ko: 550, sub: 1000, dec: -110 } },
+        draftkings:  { f1: { ko: 800, sub: 2200, dec: 275 }, f2: { ko: 550, sub: 1000, dec: -110 } },
+        fanduel:     { f1: { ko: 850, sub: 2500, dec: 270 }, f2: { ko: 700, sub: 1000, dec: -105 } },
+        betmgm:      { f1: { ko: 700, sub: 2200, dec: 275 }, f2: { ko: 500, sub: 800, dec: -110 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 185, subDec: 215 }, f2: { koDec: -165, subDec: -125 } },
+        bovada:      { f1: { koDec: 175, koSub: 600, subDec: 225 }, f2: { koDec: -190, koSub: 380, subDec: -160 } },
+        draftkings:  { f1: { koDec: 175, koSub: 600, subDec: 225 }, f2: { koDec: -190, koSub: 380, subDec: -160 } },
+        fanduel:     { f1: { koDec: 175, koSub: 600, subDec: 230 }, f2: { koDec: -160, koSub: 390, subDec: -145 } },
+        betmgm:      { f1: { koSub: 600 }, f2: { koSub: 375 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1200, r2: 1500, r3: 1800, r4: 2200, r5: 2800 }, f2: { r1: 1200, r2: 1500, r3: 1800, r4: 2200, r5: 2800 } },
+        draftkings:  { f1: { r1: 2000, r2: 2500, r3: 3000, r4: 3500, r5: 4000 }, f2: { r1: 1200, r2: 1600, r3: 1800, r4: 2200, r5: 2800 } },
+        fanduel:     { f1: { r1: 2200, r2: 2500, r3: 3000, r4: 3500, r5: 4000 }, f2: { r1: 1400, r2: 1800, r3: 2200, r4: 2500, r5: 3000 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -3300, under: 1200 }, draftkings: { over: -20000, under: 1200 } },
+        '1.5': { bovada: { over: -1100, under: 600 } },
+        '2.5': { bovada: { over: -650, under: 400 } },
+        '3.5': { bovada: { over: -400, under: 275 } },
+        '4.5': { betonlineag: { over: -300, under: 247 }, bovada: { over: -310, under: 225 }, draftkings: { over: -298, under: 220 }, fanduel: { over: -320, under: 230 } },
+      },
+    },
+    // UFC 332 — Payton Talbott vs Deiveson Figueiredo (3 rounds). f1 = Figueiredo, f2 = Talbott.
+    'figueiredo|talbott': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1500, sub: 1500, dec: 900 }, f2: { ko: 105, sub: 600, dec: 160 } },
+        bovada:      { f1: { ko: 2500, sub: 1600, dec: 1100 }, f2: { ko: 100, sub: 800, dec: 155 } },
+        draftkings:  { f1: { ko: 2000, sub: 1600, dec: 900 }, f2: { ko: 110, sub: 850, dec: 140 } },
+        fanduel:     { f1: { ko: 2200, sub: 1800, dec: 1000 }, f2: { ko: 115, sub: 850, dec: 160 } },
+        betmgm:      { f1: { ko: 2000, sub: 1600, dec: 800 }, f2: { ko: -105, sub: 800, dec: 150 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 600, subDec: 600 }, f2: { koDec: -400, subDec: 110 } },
+        bovada:      { f1: { koDec: 750, koSub: 1000, subDec: 700 }, f2: { koDec: -550, koSub: -120, subDec: 110 } },
+        draftkings:  { f1: { koDec: 650, koSub: 1000, subDec: 600 }, f2: { koDec: -600, koSub: -110, subDec: -105 } },
+        fanduel:     { f1: { koDec: 700, koSub: 1000, subDec: 650 }, f2: { koDec: -390, koSub: -125, subDec: 110 } },
+        betmgm:      { f1: { koSub: 900 }, f2: { koSub: -115 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 2000, r2: 2800, r3: 3300 }, f2: { r1: 250, r2: 340, r3: 450 } },
+        draftkings:  { f1: { r1: 2000, r2: 3000, r3: 3500 }, f2: { r1: 300, r2: 400, r3: 500 } },
+        fanduel:     { f1: { r1: 2200, r2: 3000, r3: 3500 }, f2: { r1: 340, r2: 430, r3: 550 } },
+        betmgm:      { f1: { r1: 1800, r2: 2500, r3: 4000 }, f2: { r1: 200, r2: 375, r3: 575 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1400, under: 700 }, draftkings: { over: -1800, under: 700 } },
+        '1.5': { bovada: { over: -240, under: 180 } },
+        '2.5': { betonlineag: { over: -115, under: -101 }, bovada: { over: -130, under: 100 }, draftkings: { over: -125, under: -105 }, fanduel: { over: -116, under: -110 }, betmgm: { over: -125, under: -105 } },
+      },
+    },
+    // UFC 332 — King Green vs Esteban Ribovics (3 rounds). f1 = Green, f2 = Ribovics.
+    'green|ribovics': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 750, sub: 1200, dec: 365 }, f2: { ko: 110, sub: 750, dec: 325 } },
+        bovada:      { f1: { ko: 800, sub: 1100, dec: 400 }, f2: { ko: 105, sub: 750, dec: 300 } },
+        draftkings:  { f1: { ko: 800, sub: 1100, dec: 400 }, f2: { ko: 120, sub: 750, dec: 300 } },
+        fanduel:     { f1: { ko: 750, sub: 1300, dec: 390 }, f2: { ko: 130, sub: 900, dec: 350 } },
+        betmgm:      { f1: { ko: 650, sub: 1000, dec: 400 }, f2: { ko: 125, sub: 700, dec: 300 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 235, subDec: 275 }, f2: { koDec: -200, subDec: 195 } },
+        bovada:      { f1: { koDec: 250, koSub: 500, subDec: 255 }, f2: { koDec: -225, koSub: -105, subDec: 180 } },
+        draftkings:  { f1: { koDec: 240, koSub: 500, subDec: 255 }, f2: { koDec: -225, koSub: -105, subDec: 180 } },
+        fanduel:     { f1: { koDec: 220, koSub: 500, subDec: 290 }, f2: { koDec: -180, koSub: -110, subDec: 220 } },
+        betmgm:      { f1: { koSub: 450 }, f2: { koSub: -105 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1100, r2: 1600, r3: 2200 }, f2: { r1: 250, r2: 350, r3: 575 } },
+        draftkings:  { f1: { r1: 1000, r2: 1400, r3: 2000 }, f2: { r1: 275, r2: 380, r3: 550 } },
+        fanduel:     { f1: { r1: 1200, r2: 1600, r3: 2200 }, f2: { r1: 300, r2: 470, r3: 750 } },
+        betmgm:      { f1: { r1: 750, r2: 1300, r3: 1900 }, f2: { r1: 225, r2: 425, r3: 700 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1100, under: 600 }, draftkings: { over: -1400, under: 600 } },
+        '1.5': { betonlineag: { over: -215, under: 183 }, bovada: { over: -210, under: 160 }, draftkings: { over: -210, under: 160 } },
+        '2.5': { fanduel: { over: 112, under: -136 }, betmgm: { over: 100, under: -135 } },
+      },
+    },
+    // UFC 332 — Khaos Williams vs Roberto Soldic (3 rounds). f1 = Soldic, f2 = Williams.
+    'soldic|williams': {
+      rounds: 3,
+      ml: {
+        bovada:      { f1: -235, f2: 195 },
+      },
+      method: {
+        betonlineag: { f1: { ko: -155, sub: 1000, dec: 550 }, f2: { ko: 350, sub: 2500, dec: 700 } },
+        bovada:      { f1: { ko: -150, sub: 1100, dec: 550 }, f2: { ko: 400, sub: 2000, dec: 800 } },
+        draftkings:  { f1: { ko: -150, sub: 1200, dec: 600 }, f2: { ko: 350, sub: 2000, dec: 750 } },
+        fanduel:     { f1: { ko: -130, sub: 1200, dec: 600 }, f2: { ko: 440, sub: 1800, dec: 650 } },
+        betmgm:      { f1: { ko: -185, sub: 1100, dec: 550 }, f2: { ko: 400, sub: 2000, dec: 800 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -245, subDec: 350 }, f2: { koDec: 250, subDec: 600 } },
+        bovada:      { f1: { koDec: -260, koSub: -160, subDec: 330 }, f2: { koDec: 240, koSub: 350, subDec: 550 } },
+        draftkings:  { f1: { koDec: -225, koSub: -160, subDec: 370 }, f2: { koDec: 205, koSub: 320, subDec: 500 } },
+        fanduel:     { f1: { koDec: -220, koSub: -170, subDec: 430 }, f2: { koDec: 230, koSub: 340, subDec: 500 } },
+        betmgm:      { f1: { koSub: -190 }, f2: { koSub: 350 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 170, r2: 325, r3: 550 }, f2: { r1: 700, r2: 1100, r3: 2000 } },
+        draftkings:  { f1: { r1: 185, r2: 350, r3: 700 }, f2: { r1: 600, r2: 900, r3: 1800 } },
+        fanduel:     { f1: { r1: 195, r2: 430, r3: 700 }, f2: { r1: 750, r2: 1200, r3: 2000 } },
+        betmgm:      { f1: { r1: 125, r2: 325, r3: 775 }, f2: { r1: 550, r2: 1150, r3: 2500 } },
+      },
+      totals: {
+        '0.5': { draftkings: { over: -575, under: 350 } },
+        '1.5': { betonlineag: { over: 104, under: -124 }, bovada: { over: 100, under: -130 }, draftkings: { over: -105, under: -125 }, fanduel: { over: -102, under: -118 }, betmgm: { over: -105, under: -125 } },
+        '2.5': { bovada: { over: 220, under: -300 } },
+      },
+    },
+    // UFC 332 — Roman Kopylov vs Ateba Gautier (3 rounds). f1 = Gautier, f2 = Kopylov.
+    'gautier|kopylov': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 100, sub: 2200, dec: 315 }, f2: { ko: 385, sub: 2200, dec: 375 } },
+        bovada:      { f1: { ko: -115, sub: 2500, dec: 385 }, f2: { ko: 450, sub: 3000, dec: 400 } },
+        draftkings:  { f1: { ko: -110, sub: 2000, dec: 330 }, f2: { ko: 450, sub: 3000, dec: 500 } },
+        fanduel:     { f1: { ko: 110, sub: 1800, dec: 390 }, f2: { ko: 470, sub: 2700, dec: 430 } },
+        betmgm:      { f1: { ko: -130, sub: 2000, dec: 400 }, f2: { ko: 400, sub: 3000, dec: 400 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -200, subDec: 285 }, f2: { koDec: 185, subDec: 350 } },
+        bovada:      { f1: { koDec: -190, koSub: -115, subDec: 350 }, f2: { koDec: 190, koSub: 425, subDec: 330 } },
+        draftkings:  { f1: { koDec: -225, koSub: -115, subDec: 255 }, f2: { koDec: 215, koSub: 425, subDec: 400 } },
+        fanduel:     { f1: { koDec: -200, koSub: -115, subDec: 310 }, f2: { koDec: 185, koSub: 410, subDec: 380 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 250, r2: 450, r3: 800 }, f2: { r1: 800, r2: 1100, r3: 1500 } },
+        draftkings:  { f1: { r1: 240, r2: 400, r3: 800 }, f2: { r1: 850, r2: 1200, r3: 1800 } },
+        fanduel:     { f1: { r1: 280, r2: 500, r3: 750 }, f2: { r1: 1000, r2: 1400, r3: 1800 } },
+        betmgm:      { f1: { r1: 225, r2: 375, r3: 675 }, f2: { r1: 750, r2: 1100, r3: 2000 } },
+      },
+      totals: {
+        '0.5': { draftkings: { over: -900, under: 475 } },
+        '1.5': { betonlineag: { over: -170, under: 149 }, bovada: { over: -175, under: 135 }, draftkings: { over: -175, under: 135 }, betmgm: { over: -165, under: 125 } },
+        '2.5': { bovada: { over: 125, under: -165 }, fanduel: { over: 124, under: -150 } },
+      },
+    },
+    // UFC 332 — Alden Coria vs Imanol Rodriguez (3 rounds). f1 = Coria, f2 = Rodriguez.
+    'coria|rodriguez': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 650, sub: 1000, dec: 235 }, f2: { ko: 215, sub: 900, dec: 235 } },
+        draftkings:  { f1: { ko: 800, sub: 1200, dec: 225 }, f2: { ko: 225, sub: 900, dec: 225 } },
+        fanduel:     { f1: { ko: 850, sub: 1200, dec: 230 }, f2: { ko: 250, sub: 950, dec: 250 } },
+        betmgm:      { f1: { ko: 800, sub: 1200, dec: 225 }, f2: { ko: 200, sub: 900, dec: 225 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 175, subDec: 200 }, f2: { koDec: -130, subDec: 160 } },
+        draftkings:  { f1: { koDec: 150, koSub: 500, subDec: 165 }, f2: { koDec: -150, koSub: 175, subDec: 175 } },
+        fanduel:     { f1: { koDec: 155, koSub: 550, subDec: 175 }, f2: { koDec: -135, koSub: 175, subDec: 175 } },
+        betmgm:      { f1: { koSub: 500 }, f2: { koSub: 175 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1000, r2: 1300, r3: 1800 }, f2: { r1: 350, r2: 575, r3: 800 } },
+        draftkings:  { f1: { r1: 1000, r2: 1400, r3: 2200 }, f2: { r1: 400, r2: 650, r3: 850 } },
+        fanduel:     { f1: { r1: 1200, r2: 1600, r3: 2200 }, f2: { r1: 500, r2: 750, r3: 950 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1600, under: 750 }, draftkings: { over: -2000, under: 750 } },
+        '1.5': { bovada: { over: -325, under: 230 } },
+        '2.5': { betonlineag: { over: -155, under: 135 }, bovada: { over: -165, under: 125 }, draftkings: { over: -160, under: 124 }, fanduel: { over: -164, under: 136 }, betmgm: { over: -165, under: 125 } },
+      },
+    },
+    // UFC 332 — Damian Pinas vs Andrey Pulyaev (3 rounds). f1 = Pinas, f2 = Pulyaev.
+    'pinas|pulyaev': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -195, sub: 900, dec: 400 }, f2: { ko: 1000, sub: 1600, dec: 650 } },
+        draftkings:  { f1: { ko: -200, sub: 900, dec: 450 }, f2: { ko: 1100, sub: 1800, dec: 900 } },
+        fanduel:     { f1: { ko: -175, sub: 900, dec: 480 }, f2: { ko: 1100, sub: 1800, dec: 900 } },
+        betmgm:      { f1: { ko: -250, sub: 900, dec: 450 }, f2: { ko: 1000, sub: 1800, dec: 900 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -400, subDec: 250 }, f2: { koDec: 425, subDec: 550 } },
+        draftkings:  { f1: { koDec: -500, koSub: -250, subDec: 270 }, f2: { koDec: 475, koSub: 750, subDec: 550 } },
+        fanduel:     { f1: { koDec: -360, koSub: -250, subDec: 290 }, f2: { koDec: 500, koSub: 750, subDec: 650 } },
+        betmgm:      { f1: { koSub: -295 }, f2: { koSub: 750 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 115, r2: 335, r3: 700 }, f2: { r1: 1600, r2: 2200, r3: 2800 } },
+        draftkings:  { f1: { r1: 130, r2: 380, r3: 700 }, f2: { r1: 1400, r2: 2000, r3: 3000 } },
+        fanduel:     { f1: { r1: 130, r2: 380, r3: 750 }, f2: { r1: 1600, r2: 2200, r3: 3000 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -410, under: 280 }, draftkings: { over: -425, under: 275 } },
+        '1.5': { betonlineag: { over: 105, under: -125 }, bovada: { over: 100, under: -130 }, draftkings: { over: 105, under: -135 }, fanduel: { over: 106, under: -128 }, betmgm: { over: 105, under: -140 } },
+        '2.5': { bovada: { over: 200, under: -275 } },
+      },
+    },
+    // UFC 332 — Marcus McGhee vs Anthony Romero (3 rounds). f1 = McGhee, f2 = Romero.
+    'mcghee|romero': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: -480, f2: 374 },
+        draftkings:  { f1: -500, f2: 380 },
+        fanduel:     { f1: -480, f2: 330 },
+        betmgm:      { f1: -500, f2: 360 },
+      },
+      totals: {
+        '1.5': { betonlineag: { over: -210, under: 177 }, draftkings: { over: -215, under: 165 } },
+        '2.5': { betonlineag: { over: -185, under: 151 } },
+      },
+    },
+    // UFC 332 — Anthony Wint vs Lucas Armand (3 rounds). f1 = Armand, f2 = Wint.
+    'armand|wint': {
+      rounds: 3,
+      method: {
+        betonlineag: { f2: { ko: -110, sub: 215, dec: 550 } },
+        draftkings:  { f2: { ko: -105, sub: 215, dec: 650 } },
+        fanduel:     { f2: { ko: 110, sub: 230, dec: 650 } },
+        betmgm:      { f2: { ko: -115, sub: 200, dec: 650 } },
+      },
+      doubleChance: {
+        betonlineag: { f2: { koDec: -165, subDec: 150 } },
+        draftkings:  { f2: { koDec: -175, koSub: -310, subDec: 125 } },
+        fanduel:     { f2: { koDec: -150, koSub: -300, subDec: 140 } },
+        betmgm:      { f2: { koSub: -350 } },
+      },
+      roundProps: {
+        betonlineag: { f2: { r1: -135, r2: 335, r3: 1200 } },
+        draftkings:  { f2: { r1: -140, r2: 450, r3: 1100 } },
+        fanduel:     { f2: { r1: -125, r2: 500, r3: 1200 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -325, under: 230 }, draftkings: { over: -330, under: 230 } },
+        '1.5': { betonlineag: { over: 186, under: -220 }, bovada: { over: 180, under: -240 }, draftkings: { over: 175, under: -230 }, fanduel: { over: 180, under: -225 }, betmgm: { over: 165, under: -225 } },
+        '2.5': { bovada: { over: 325, under: -500 } },
+      },
+    },
+    // UFC 332 — Michael Parkin vs Johnny Walker (3 rounds). f1 = Parkin, f2 = Walker.
+    'parkin|walker': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 110, f2: -135 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 325, sub: 600, dec: 400 }, f2: { ko: 215, sub: 2000, dec: 235 } },
+        draftkings:  { f1: { ko: 300, sub: 900, dec: 400 }, f2: { ko: 200, sub: 1800, dec: 275 } },
+        fanduel:     { f1: { ko: 330, sub: 850, dec: 430 }, f2: { ko: 220, sub: 1900, dec: 300 } },
+        betmgm:      { f1: { ko: 250, sub: 900, dec: 400 }, f2: { ko: 200, sub: 1800, dec: 275 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 160, subDec: 215 }, f2: { koDec: -125, subDec: 200 } },
+        draftkings:  { f1: { koDec: 130, koSub: 225, subDec: 245 }, f2: { koDec: -130, koSub: 180, subDec: 215 } },
+        fanduel:     { f1: { koDec: 145, koSub: 210, subDec: 260 }, f2: { koDec: -130, koSub: 185, subDec: 240 } },
+        betmgm:      { f1: { koSub: 225 }, f2: { koSub: 175 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 485, r2: 700, r3: 900 }, f2: { r1: 485, r2: 700, r3: 900 } },
+        draftkings:  { f1: { r1: 500, r2: 700, r3: 1200 }, f2: { r1: 400, r2: 600, r3: 1000 } },
+        fanduel:     { f1: { r1: 550, r2: 800, r3: 1300 }, f2: { r1: 490, r2: 750, r3: 1100 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1000, under: 550 }, draftkings: { over: -1200, under: 550 } },
+        '1.5': { betonlineag: { over: -190, under: 165 }, bovada: { over: -205, under: 155 }, draftkings: { over: -200, under: 154 } },
+        '2.5': { fanduel: { over: 106, under: -130 }, betmgm: { over: 100, under: -135 } },
+      },
+    },
+    // UFC 332 — Rafael dos Anjos vs Alex Hernandez (3 rounds). f1 = Anjos, f2 = Hernandez.
+    'anjos|hernandez': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1200, sub: 850, dec: 350 }, f2: { ko: 120, sub: 2000, dec: 200 } },
+        draftkings:  { f1: { ko: 1600, sub: 1000, dec: 400 }, f2: { ko: 130, sub: 2000, dec: 185 } },
+        fanduel:     { f1: { ko: 1400, sub: 950, dec: 430 }, f2: { ko: 155, sub: 1800, dec: 185 } },
+        betmgm:      { f1: { ko: 1500, sub: 800, dec: 400 }, f2: { ko: 125, sub: 1700, dec: 175 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 265, subDec: 235 }, f2: { koDec: -225, subDec: 175 } },
+        draftkings:  { f1: { koDec: 290, koSub: 650, subDec: 250 }, f2: { koDec: -280, koSub: 120, subDec: 150 } },
+        fanduel:     { f1: { koDec: 320, koSub: 650, subDec: 280 }, f2: { koDec: -260, koSub: 130, subDec: 155 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1400, r2: 1800, r3: 2500 }, f2: { r1: 210, r2: 550, r3: 900 } },
+        draftkings:  { f1: { r1: 1400, r2: 1800, r3: 2500 }, f2: { r1: 285, r2: 450, r3: 950 } },
+        fanduel:     { f1: { r1: 1600, r2: 1900, r3: 2200 }, f2: { r1: 480, r2: 550, r3: 700 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1200, under: 650 }, draftkings: { over: -1600, under: 650 } },
+        '1.5': { bovada: { over: -240, under: 180 } },
+        '2.5': { betonlineag: { over: -145, under: 125 }, bovada: { over: -155, under: 120 }, draftkings: { over: -154, under: 120 }, fanduel: { over: -140, under: 116 }, betmgm: { over: -150, under: 115 } },
+      },
+    },
+    // UFC 332 — Ismail Naurdiev vs Marvin Vettori (3 rounds). f1 = Naurdiev, f2 = Vettori.
+    'naurdiev|vettori': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 290, sub: 2000, dec: 175 }, f2: { ko: 800, sub: 800, dec: 185 } },
+        bovada:      { f1: { ko: 250, sub: 2000, dec: 185 }, f2: { ko: 1000, sub: 850, dec: 210 } },
+        draftkings:  { f1: { ko: 250, sub: 2000, dec: 185 }, f2: { ko: 1000, sub: 850, dec: 200 } },
+        fanduel:     { f1: { ko: 330, sub: 2000, dec: 190 }, f2: { ko: 1000, sub: 800, dec: 210 } },
+        betmgm:      { f1: { ko: 225, sub: 1900, dec: 175 }, f2: { ko: 1000, sub: 850, dec: 200 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -125, subDec: 150 }, f2: { koDec: 150, subDec: 150 } },
+        bovada:      { f1: { koDec: -130, koSub: 240, subDec: 165 }, f2: { koDec: 155, koSub: 550, subDec: 140 } },
+        draftkings:  { f1: { koDec: -135, koSub: 235, subDec: 155 }, f2: { koDec: 140, koSub: 500, subDec: 130 } },
+        fanduel:     { f1: { koDec: -135, koSub: 270, subDec: 160 }, f2: { koDec: 150, koSub: 480, subDec: 140 } },
+        betmgm:      { f1: { koSub: 225 }, f2: { koSub: 500 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 525, r2: 800, r3: 1600 }, f2: { r1: 900, r2: 1100, r3: 1500 } },
+        draftkings:  { f1: { r1: 500, r2: 800, r3: 1200 }, f2: { r1: 1000, r2: 1400, r3: 2000 } },
+        fanduel:     { f1: { r1: 700, r2: 1000, r3: 1400 }, f2: { r1: 1100, r2: 1500, r3: 2000 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -2000, under: 900 }, draftkings: { over: -3000, under: 850 } },
+        '1.5': { bovada: { over: -385, under: 265 } },
+        '2.5': { betonlineag: { over: -215, under: 183 }, bovada: { over: -230, under: 175 }, draftkings: { over: -238, under: 180 }, fanduel: { over: -215, under: 174 } },
+      },
+    },
+    // UFC 332 — Jacobe Smith vs Bruce Whitehead (3 rounds). f1 = Smith, f2 = Whitehead.
+    'smith|whitehead': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -425, sub: 600, dec: 800 }, f2: { ko: 1600, sub: 1600, dec: 1600 } },
+        draftkings:  { f1: { ko: -300, sub: 400, dec: 900 }, f2: { ko: 1600, sub: 2200, dec: 2000 } },
+        fanduel:     { f1: { ko: -250, sub: 500, dec: 1100 }, f2: { ko: 1300, sub: 1800, dec: 1800 } },
+      },
+      doubleChance: {
+        draftkings:  { f1: { koDec: -500, koSub: -650, subDec: 255 }, f2: { koDec: 900, koSub: 1000, subDec: 1100 } },
+        fanduel:     { f1: { koDec: -340, koSub: -550, subDec: 350 }, f2: { koDec: 850, koSub: 850, subDec: 1000 } },
+      },
+      roundProps: {
+        draftkings:  { f1: { r1: -160, r2: 400, r3: 1000 }, f2: { r1: 1800, r2: 3000, r3: 4500 } },
+        fanduel:     { f1: { r1: -140, r2: 320, r3: 1100 }, f2: { r1: 1800, r2: 2500, r3: 3300 } },
+      },
+      totals: {
+        '0.5': { draftkings: { over: -240, under: 175 } },
+        '1.5': { betonlineag: { over: 234, under: -285 }, bovada: { over: 220, under: -300 }, draftkings: { over: 210, under: -280 }, fanduel: { over: 198, under: -245 } },
+        '2.5': { bovada: { over: 425, under: -700 } },
+      },
+    },
+    // UFC 332 — Court McGee vs Eric Nolan (3 rounds). f1 = McGee, f2 = Nolan.
+    'mcgee|nolan': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1600, sub: 650, dec: 350 }, f2: { ko: 110, sub: 1600, dec: 240 } },
+        bovada:      { f1: { ko: 2000, sub: 950, dec: 365 }, f2: { ko: 105, sub: 1800, dec: 265 } },
+        draftkings:  { f1: { ko: 1900, sub: 900, dec: 350 }, f2: { ko: 100, sub: 1600, dec: 250 } },
+        betmgm:      { f1: { ko: 1900, sub: 900, dec: 350 }, f2: { ko: -105, sub: 1500, dec: 250 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 285, subDec: 200 }, f2: { koDec: -200, subDec: 200 } },
+        bovada:      { f1: { koDec: 325, koSub: 650, subDec: 210 }, f2: { koDec: -225, koSub: -105, subDec: 250 } },
+        draftkings:  { f1: { koDec: 270, koSub: 650, subDec: 220 }, f2: { koDec: -250, koSub: -110, subDec: 190 } },
+        betmgm:      { f1: { koSub: 650 }, f2: { koSub: -110 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1200, r2: 1500, r3: 2000 }, f2: { r1: 235, r2: 500, r3: 750 } },
+        draftkings:  { f1: { r1: 1400, r2: 1900, r3: 2500 }, f2: { r1: 260, r2: 425, r3: 800 } },
+      },
+      totals: {
+        '0.5': { bovada: { over: -1000, under: 550 }, draftkings: { over: -1200, under: 550 } },
+        '1.5': { bovada: { over: -210, under: 160 } },
+        '2.5': { betonlineag: { over: -110, under: -110 }, bovada: { over: -115, under: -115 }, draftkings: { over: -115, under: -115 }, betmgm: { over: -115, under: -115 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
