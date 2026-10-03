@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-03T22:30:46.627Z",
+ "generatedAt": "2026-10-03T22:46:12.610Z",
  "fighters": {
   "Tyshawn Williams": {
    "history": [
@@ -8264,6 +8264,194 @@
       ]
      },
      "capturedAt": "2026-10-03T22:30:46.533Z"
+    }
+   ]
+  },
+  "Marcus McGhee": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Anthony Romero",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:58",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Anthony Romero",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 34,
+      "sigA": 75,
+      "totL": 35,
+      "totA": 76,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:01",
+      "head": [
+       24,
+       63
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       14,
+       43
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       20,
+       32
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 37,
+      "totL": 13,
+      "totA": 37,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       8,
+       31
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       13,
+       35
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "capturedAt": "2026-10-03T22:46:12.513Z"
+    }
+   ]
+  },
+  "Anthony Romero": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Marcus McGhee",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:58",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Marcus McGhee",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 37,
+      "totL": 13,
+      "totA": 37,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       8,
+       31
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       13,
+       35
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 34,
+      "sigA": 75,
+      "totL": 35,
+      "totA": 76,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:01",
+      "head": [
+       24,
+       63
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       14,
+       43
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       20,
+       32
+      ]
+     },
+     "capturedAt": "2026-10-03T22:46:12.513Z"
     }
    ]
   }
