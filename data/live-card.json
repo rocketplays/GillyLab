@@ -1,2450 +1,6 @@
 {
- "generatedAt": "2026-09-30T00:33:19.263Z",
+ "generatedAt": "2026-10-03T21:13:11.820Z",
  "fighters": {
-  "JJ Aldrich": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Regina Tarin",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Regina Tarin",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 63,
-      "sigA": 118,
-      "totL": 74,
-      "totA": 129,
-      "tdL": 0,
-      "tdA": 4,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:41",
-      "head": [
-       39,
-       91
-      ],
-      "body": [
-       14,
-       17
-      ],
-      "leg": [
-       10,
-       10
-      ],
-      "dist": [
-       46,
-       98
-      ],
-      "clinch": [
-       17,
-       20
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 77,
-      "sigA": 190,
-      "totL": 87,
-      "totA": 200,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:09",
-      "head": [
-       45,
-       146
-      ],
-      "body": [
-       20,
-       29
-      ],
-      "leg": [
-       12,
-       15
-      ],
-      "dist": [
-       57,
-       164
-      ],
-      "clinch": [
-       20,
-       26
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T18:46:36.085Z"
-    }
-   ]
-  },
-  "Regina Tarin": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "JJ Aldrich",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "JJ Aldrich",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 77,
-      "sigA": 190,
-      "totL": 87,
-      "totA": 200,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:09",
-      "head": [
-       45,
-       146
-      ],
-      "body": [
-       20,
-       29
-      ],
-      "leg": [
-       12,
-       15
-      ],
-      "dist": [
-       57,
-       164
-      ],
-      "clinch": [
-       20,
-       26
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 63,
-      "sigA": 118,
-      "totL": 74,
-      "totA": 129,
-      "tdL": 0,
-      "tdA": 4,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:41",
-      "head": [
-       39,
-       91
-      ],
-      "body": [
-       14,
-       17
-      ],
-      "leg": [
-       10,
-       10
-      ],
-      "dist": [
-       46,
-       98
-      ],
-      "clinch": [
-       17,
-       20
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T18:46:36.085Z"
-    }
-   ]
-  },
-  "Sean King": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Jessie Rosas",
-     "result": "W",
-     "method": "KO/TKO (Slam)",
-     "round": 1,
-     "time": "0:36",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Jessie Rosas",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 7,
-      "sigA": 13,
-      "totL": 7,
-      "totA": 13,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       4,
-       8
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       2,
-       3
-      ],
-      "dist": [
-       4,
-       10
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 3,
-      "sigA": 6,
-      "totL": 3,
-      "totA": 6,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       2
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       3,
-       6
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T19:02:15.047Z"
-    }
-   ]
-  },
-  "Jessie Rosas": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Sean King",
-     "result": "L",
-     "method": "KO/TKO (Slam)",
-     "round": 1,
-     "time": "0:36",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Sean King",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 3,
-      "sigA": 6,
-      "totL": 3,
-      "totA": 6,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       2
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       3,
-       6
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 7,
-      "sigA": 13,
-      "totL": 7,
-      "totA": 13,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       4,
-       8
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       2,
-       3
-      ],
-      "dist": [
-       4,
-       10
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "capturedAt": "2026-09-12T19:02:15.047Z"
-    }
-   ]
-  },
-  "Rafa Garcia": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Rongzhu",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Rongzhu",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 73,
-      "sigA": 189,
-      "totL": 77,
-      "totA": 193,
-      "tdL": 1,
-      "tdA": 9,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:15",
-      "head": [
-       64,
-       178
-      ],
-      "body": [
-       4,
-       6
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       60,
-       171
-      ],
-      "clinch": [
-       12,
-       17
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 109,
-      "sigA": 247,
-      "totL": 110,
-      "totA": 248,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       78,
-       210
-      ],
-      "body": [
-       9,
-       13
-      ],
-      "leg": [
-       22,
-       24
-      ],
-      "dist": [
-       108,
-       245
-      ],
-      "clinch": [
-       1,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T19:33:00.926Z"
-    }
-   ]
-  },
-  "Rongzhu": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Rafa Garcia",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Rafa Garcia",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 109,
-      "sigA": 247,
-      "totL": 110,
-      "totA": 248,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       78,
-       210
-      ],
-      "body": [
-       9,
-       13
-      ],
-      "leg": [
-       22,
-       24
-      ],
-      "dist": [
-       108,
-       245
-      ],
-      "clinch": [
-       1,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 73,
-      "sigA": 189,
-      "totL": 77,
-      "totA": 193,
-      "tdL": 1,
-      "tdA": 9,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:15",
-      "head": [
-       64,
-       178
-      ],
-      "body": [
-       4,
-       6
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       60,
-       171
-      ],
-      "clinch": [
-       12,
-       17
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "capturedAt": "2026-09-12T19:33:00.926Z"
-    }
-   ]
-  },
-  "Drakkar Klose": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Tommy Gantt",
-     "result": "L",
-     "method": "Submission (Triangle Choke)",
-     "round": 3,
-     "time": "2:46",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Tommy Gantt",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 15,
-      "sigA": 30,
-      "totL": 87,
-      "totA": 108,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 1,
-      "ctrl": "0:21",
-      "head": [
-       6,
-       17
-      ],
-      "body": [
-       7,
-       10
-      ],
-      "leg": [
-       2,
-       3
-      ],
-      "dist": [
-       5,
-       12
-      ],
-      "clinch": [
-       10,
-       18
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 56,
-      "sigA": 82,
-      "totL": 95,
-      "totA": 126,
-      "tdL": 2,
-      "tdA": 8,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "9:55",
-      "head": [
-       24,
-       45
-      ],
-      "body": [
-       28,
-       32
-      ],
-      "leg": [
-       4,
-       5
-      ],
-      "dist": [
-       7,
-       27
-      ],
-      "clinch": [
-       35,
-       39
-      ],
-      "ground": [
-       14,
-       16
-      ]
-     },
-     "capturedAt": "2026-09-12T19:48:39.034Z"
-    }
-   ]
-  },
-  "Tommy Gantt": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Drakkar Klose",
-     "result": "W",
-     "method": "Submission (Triangle Choke)",
-     "round": 3,
-     "time": "2:46",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Drakkar Klose",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 56,
-      "sigA": 82,
-      "totL": 95,
-      "totA": 126,
-      "tdL": 2,
-      "tdA": 8,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "9:55",
-      "head": [
-       24,
-       45
-      ],
-      "body": [
-       28,
-       32
-      ],
-      "leg": [
-       4,
-       5
-      ],
-      "dist": [
-       7,
-       27
-      ],
-      "clinch": [
-       35,
-       39
-      ],
-      "ground": [
-       14,
-       16
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 15,
-      "sigA": 30,
-      "totL": 87,
-      "totA": 108,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 1,
-      "ctrl": "0:21",
-      "head": [
-       6,
-       17
-      ],
-      "body": [
-       7,
-       10
-      ],
-      "leg": [
-       2,
-       3
-      ],
-      "dist": [
-       5,
-       12
-      ],
-      "clinch": [
-       10,
-       18
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T19:48:39.034Z"
-    }
-   ]
-  },
-  "Yousri Belgaroui": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Djorden Santos",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "4:25",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Djorden Santos",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 46,
-      "sigA": 81,
-      "totL": 46,
-      "totA": 81,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       16,
-       43
-      ],
-      "body": [
-       18,
-       26
-      ],
-      "leg": [
-       12,
-       12
-      ],
-      "dist": [
-       45,
-       80
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 16,
-      "sigA": 48,
-      "totL": 16,
-      "totA": 48,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       13,
-       44
-      ],
-      "body": [
-       0,
-       1
-      ],
-      "leg": [
-       3,
-       3
-      ],
-      "dist": [
-       16,
-       48
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T20:04:02.202Z"
-    }
-   ]
-  },
-  "Djorden Santos": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Yousri Belgaroui",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "4:25",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Yousri Belgaroui",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 16,
-      "sigA": 48,
-      "totL": 16,
-      "totA": 48,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       13,
-       44
-      ],
-      "body": [
-       0,
-       1
-      ],
-      "leg": [
-       3,
-       3
-      ],
-      "dist": [
-       16,
-       48
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 46,
-      "sigA": 81,
-      "totL": 46,
-      "totA": 81,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       16,
-       43
-      ],
-      "body": [
-       18,
-       26
-      ],
-      "leg": [
-       12,
-       12
-      ],
-      "dist": [
-       45,
-       80
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T20:04:02.202Z"
-    }
-   ]
-  },
-  "Ignacio Bahamondes": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Muslim Salikhov",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Muslim Salikhov",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 78,
-      "sigA": 160,
-      "totL": 91,
-      "totA": 175,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       39,
-       104
-      ],
-      "body": [
-       17,
-       26
-      ],
-      "leg": [
-       22,
-       30
-      ],
-      "dist": [
-       66,
-       143
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       10,
-       15
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 42,
-      "sigA": 97,
-      "totL": 44,
-      "totA": 102,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:16",
-      "head": [
-       12,
-       57
-      ],
-      "body": [
-       10,
-       17
-      ],
-      "leg": [
-       20,
-       23
-      ],
-      "dist": [
-       38,
-       87
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       4,
-       10
-      ]
-     },
-     "capturedAt": "2026-09-12T20:34:28.624Z"
-    }
-   ]
-  },
-  "Muslim Salikhov": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Ignacio Bahamondes",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Ignacio Bahamondes",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 42,
-      "sigA": 97,
-      "totL": 44,
-      "totA": 102,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:16",
-      "head": [
-       12,
-       57
-      ],
-      "body": [
-       10,
-       17
-      ],
-      "leg": [
-       20,
-       23
-      ],
-      "dist": [
-       38,
-       87
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       4,
-       10
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 78,
-      "sigA": 160,
-      "totL": 91,
-      "totA": 175,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       39,
-       104
-      ],
-      "body": [
-       17,
-       26
-      ],
-      "leg": [
-       22,
-       30
-      ],
-      "dist": [
-       66,
-       143
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       10,
-       15
-      ]
-     },
-     "capturedAt": "2026-09-12T20:34:28.624Z"
-    }
-   ]
-  },
-  "Tim Elliott": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Édgar Cháirez",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Édgar Cháirez",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 64,
-      "sigA": 204,
-      "totL": 142,
-      "totA": 309,
-      "tdL": 5,
-      "tdA": 11,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "5:54",
-      "head": [
-       52,
-       176
-      ],
-      "body": [
-       6,
-       19
-      ],
-      "leg": [
-       6,
-       9
-      ],
-      "dist": [
-       43,
-       161
-      ],
-      "clinch": [
-       5,
-       8
-      ],
-      "ground": [
-       16,
-       35
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 58,
-      "sigA": 124,
-      "totL": 70,
-      "totA": 136,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       41,
-       106
-      ],
-      "body": [
-       11,
-       12
-      ],
-      "leg": [
-       6,
-       6
-      ],
-      "dist": [
-       56,
-       121
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       1,
-       2
-      ]
-     },
-     "capturedAt": "2026-09-12T21:04:55.064Z"
-    }
-   ]
-  },
-  "Édgar Cháirez": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Tim Elliott",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Tim Elliott",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 58,
-      "sigA": 124,
-      "totL": 70,
-      "totA": 136,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       41,
-       106
-      ],
-      "body": [
-       11,
-       12
-      ],
-      "leg": [
-       6,
-       6
-      ],
-      "dist": [
-       56,
-       121
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       1,
-       2
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 64,
-      "sigA": 204,
-      "totL": 142,
-      "totA": 309,
-      "tdL": 5,
-      "tdA": 11,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "5:54",
-      "head": [
-       52,
-       176
-      ],
-      "body": [
-       6,
-       19
-      ],
-      "leg": [
-       6,
-       9
-      ],
-      "dist": [
-       43,
-       161
-      ],
-      "clinch": [
-       5,
-       8
-      ],
-      "ground": [
-       16,
-       35
-      ]
-     },
-     "capturedAt": "2026-09-12T21:04:55.064Z"
-    }
-   ]
-  },
-  "David Martinez": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Dan Ige",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Dan Ige",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 52,
-      "sigA": 139,
-      "totL": 58,
-      "totA": 146,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:19",
-      "head": [
-       25,
-       100
-      ],
-      "body": [
-       10,
-       19
-      ],
-      "leg": [
-       17,
-       20
-      ],
-      "dist": [
-       52,
-       138
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 27,
-      "sigA": 124,
-      "totL": 27,
-      "totA": 124,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:05",
-      "head": [
-       19,
-       101
-      ],
-      "body": [
-       4,
-       15
-      ],
-      "leg": [
-       4,
-       8
-      ],
-      "dist": [
-       26,
-       123
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T21:50:47.970Z"
-    }
-   ]
-  },
-  "Dan Ige": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "David Martinez",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "David Martinez",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 27,
-      "sigA": 124,
-      "totL": 27,
-      "totA": 124,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:05",
-      "head": [
-       19,
-       101
-      ],
-      "body": [
-       4,
-       15
-      ],
-      "leg": [
-       4,
-       8
-      ],
-      "dist": [
-       26,
-       123
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 52,
-      "sigA": 139,
-      "totL": 58,
-      "totA": 146,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:19",
-      "head": [
-       25,
-       100
-      ],
-      "body": [
-       10,
-       19
-      ],
-      "leg": [
-       17,
-       20
-      ],
-      "dist": [
-       52,
-       138
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T21:50:47.970Z"
-    }
-   ]
-  },
-  "Waldo Cortes Acosta": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Curtis Blaydes",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Curtis Blaydes",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 28,
-      "sigA": 95,
-      "totL": 30,
-      "totA": 97,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       21,
-       87
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       7,
-       8
-      ],
-      "dist": [
-       28,
-       95
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 24,
-      "sigA": 74,
-      "totL": 32,
-      "totA": 82,
-      "tdL": 4,
-      "tdA": 10,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "3:38",
-      "head": [
-       5,
-       50
-      ],
-      "body": [
-       4,
-       5
-      ],
-      "leg": [
-       15,
-       19
-      ],
-      "dist": [
-       23,
-       73
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "capturedAt": "2026-09-12T22:21:30.966Z"
-    }
-   ]
-  },
-  "Curtis Blaydes": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Waldo Cortes Acosta",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Waldo Cortes Acosta",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 24,
-      "sigA": 74,
-      "totL": 32,
-      "totA": 82,
-      "tdL": 4,
-      "tdA": 10,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "3:38",
-      "head": [
-       5,
-       50
-      ],
-      "body": [
-       4,
-       5
-      ],
-      "leg": [
-       15,
-       19
-      ],
-      "dist": [
-       23,
-       73
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 28,
-      "sigA": 95,
-      "totL": 30,
-      "totA": 97,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       21,
-       87
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       7,
-       8
-      ],
-      "dist": [
-       28,
-       95
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T22:21:30.966Z"
-    }
-   ]
-  },
-  "Manon Fiorot": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Alexa Grasso",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Alexa Grasso",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 72,
-      "sigA": 226,
-      "totL": 73,
-      "totA": 227,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       51,
-       196
-      ],
-      "body": [
-       19,
-       26
-      ],
-      "leg": [
-       2,
-       4
-      ],
-      "dist": [
-       70,
-       223
-      ],
-      "clinch": [
-       2,
-       3
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 80,
-      "sigA": 196,
-      "totL": 96,
-      "totA": 213,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:57",
-      "head": [
-       63,
-       170
-      ],
-      "body": [
-       5,
-       8
-      ],
-      "leg": [
-       12,
-       18
-      ],
-      "dist": [
-       69,
-       181
-      ],
-      "clinch": [
-       8,
-       11
-      ],
-      "ground": [
-       3,
-       4
-      ]
-     },
-     "capturedAt": "2026-09-12T22:52:13.745Z"
-    }
-   ]
-  },
-  "Alexa Grasso": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Manon Fiorot",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Manon Fiorot",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 80,
-      "sigA": 196,
-      "totL": 96,
-      "totA": 213,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:57",
-      "head": [
-       63,
-       170
-      ],
-      "body": [
-       5,
-       8
-      ],
-      "leg": [
-       12,
-       18
-      ],
-      "dist": [
-       69,
-       181
-      ],
-      "clinch": [
-       8,
-       11
-      ],
-      "ground": [
-       3,
-       4
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 72,
-      "sigA": 226,
-      "totL": 73,
-      "totA": 227,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       51,
-       196
-      ],
-      "body": [
-       19,
-       26
-      ],
-      "leg": [
-       2,
-       4
-      ],
-      "dist": [
-       70,
-       223
-      ],
-      "clinch": [
-       2,
-       3
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T22:52:13.745Z"
-    }
-   ]
-  },
-  "Tommy McMillen": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Marwan Rahiki",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Marwan Rahiki",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 89,
-      "sigA": 237,
-      "totL": 128,
-      "totA": 280,
-      "tdL": 5,
-      "tdA": 5,
-      "sub": 3,
-      "rev": 0,
-      "ctrl": "4:53",
-      "head": [
-       56,
-       192
-      ],
-      "body": [
-       21,
-       30
-      ],
-      "leg": [
-       12,
-       15
-      ],
-      "dist": [
-       78,
-       220
-      ],
-      "clinch": [
-       9,
-       14
-      ],
-      "ground": [
-       2,
-       3
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 79,
-      "sigA": 178,
-      "totL": 80,
-      "totA": 179,
-      "tdL": 1,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:07",
-      "head": [
-       46,
-       135
-      ],
-      "body": [
-       24,
-       32
-      ],
-      "leg": [
-       9,
-       11
-      ],
-      "dist": [
-       69,
-       168
-      ],
-      "clinch": [
-       10,
-       10
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-12T23:22:56.839Z"
-    }
-   ]
-  },
-  "Marwan Rahiki": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Tommy McMillen",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Tommy McMillen",
-     "result": "L",
-     "f": {
-      "kd": 1,
-      "sigL": 79,
-      "sigA": 178,
-      "totL": 80,
-      "totA": 179,
-      "tdL": 1,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:07",
-      "head": [
-       46,
-       135
-      ],
-      "body": [
-       24,
-       32
-      ],
-      "leg": [
-       9,
-       11
-      ],
-      "dist": [
-       69,
-       168
-      ],
-      "clinch": [
-       10,
-       10
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 89,
-      "sigA": 237,
-      "totL": 128,
-      "totA": 280,
-      "tdL": 5,
-      "tdA": 5,
-      "sub": 3,
-      "rev": 0,
-      "ctrl": "4:53",
-      "head": [
-       56,
-       192
-      ],
-      "body": [
-       21,
-       30
-      ],
-      "leg": [
-       12,
-       15
-      ],
-      "dist": [
-       78,
-       220
-      ],
-      "clinch": [
-       9,
-       14
-      ],
-      "ground": [
-       2,
-       3
-      ]
-     },
-     "capturedAt": "2026-09-12T23:22:56.839Z"
-    }
-   ]
-  },
-  "Brandon Moreno": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Joseph Morales",
-     "result": "W",
-     "method": "Decision (Split)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Joseph Morales",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 67,
-      "sigA": 180,
-      "totL": 71,
-      "totA": 184,
-      "tdL": 2,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "2:34",
-      "head": [
-       35,
-       144
-      ],
-      "body": [
-       22,
-       26
-      ],
-      "leg": [
-       10,
-       10
-      ],
-      "dist": [
-       61,
-       171
-      ],
-      "clinch": [
-       4,
-       4
-      ],
-      "ground": [
-       2,
-       5
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 71,
-      "sigA": 183,
-      "totL": 77,
-      "totA": 189,
-      "tdL": 1,
-      "tdA": 8,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:35",
-      "head": [
-       58,
-       163
-      ],
-      "body": [
-       9,
-       14
-      ],
-      "leg": [
-       4,
-       6
-      ],
-      "dist": [
-       61,
-       170
-      ],
-      "clinch": [
-       7,
-       10
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "capturedAt": "2026-09-12T23:53:24.241Z"
-    }
-   ]
-  },
-  "Joseph Morales": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Brandon Moreno",
-     "result": "L",
-     "method": "Decision (Split)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Brandon Moreno",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 71,
-      "sigA": 183,
-      "totL": 77,
-      "totA": 189,
-      "tdL": 1,
-      "tdA": 8,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:35",
-      "head": [
-       58,
-       163
-      ],
-      "body": [
-       9,
-       14
-      ],
-      "leg": [
-       4,
-       6
-      ],
-      "dist": [
-       61,
-       170
-      ],
-      "clinch": [
-       7,
-       10
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 67,
-      "sigA": 180,
-      "totL": 71,
-      "totA": 184,
-      "tdL": 2,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "2:34",
-      "head": [
-       35,
-       144
-      ],
-      "body": [
-       22,
-       26
-      ],
-      "leg": [
-       10,
-       10
-      ],
-      "dist": [
-       61,
-       171
-      ],
-      "clinch": [
-       4,
-       4
-      ],
-      "ground": [
-       2,
-       5
-      ]
-     },
-     "capturedAt": "2026-09-12T23:53:24.241Z"
-    }
-   ]
-  },
-  "Jean Silva": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Jose Miguel Delgado",
-     "result": "W",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 3,
-     "time": "2:57",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Jose Miguel Delgado",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 39,
-      "sigA": 77,
-      "totL": 40,
-      "totA": 78,
-      "tdL": 1,
-      "tdA": 2,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:37",
-      "head": [
-       27,
-       60
-      ],
-      "body": [
-       10,
-       15
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       32,
-       66
-      ],
-      "clinch": [
-       3,
-       5
-      ],
-      "ground": [
-       4,
-       6
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 40,
-      "sigA": 108,
-      "totL": 41,
-      "totA": 109,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:21",
-      "head": [
-       17,
-       79
-      ],
-      "body": [
-       5,
-       7
-      ],
-      "leg": [
-       18,
-       22
-      ],
-      "dist": [
-       35,
-       98
-      ],
-      "clinch": [
-       5,
-       9
-      ],
-      "ground": [
-       0,
-       1
-      ]
-     },
-     "capturedAt": "2026-09-13T00:35:21.477Z"
-    }
-   ]
-  },
-  "Jose Miguel Delgado": {
-   "history": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Jean Silva",
-     "result": "L",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 3,
-     "time": "2:57",
-     "event": "Noche UFC: Silva vs. Delgado",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 12, 2026",
-     "opponent": "Jean Silva",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 40,
-      "sigA": 108,
-      "totL": 41,
-      "totA": 109,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:21",
-      "head": [
-       17,
-       79
-      ],
-      "body": [
-       5,
-       7
-      ],
-      "leg": [
-       18,
-       22
-      ],
-      "dist": [
-       35,
-       98
-      ],
-      "clinch": [
-       5,
-       9
-      ],
-      "ground": [
-       0,
-       1
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 39,
-      "sigA": 77,
-      "totL": 40,
-      "totA": 78,
-      "tdL": 1,
-      "tdA": 2,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:37",
-      "head": [
-       27,
-       60
-      ],
-      "body": [
-       10,
-       15
-      ],
-      "leg": [
-       2,
-       2
-      ],
-      "dist": [
-       32,
-       66
-      ],
-      "clinch": [
-       3,
-       5
-      ],
-      "ground": [
-       4,
-       6
-      ]
-     },
-     "capturedAt": "2026-09-13T00:35:21.477Z"
-    }
-   ]
-  },
   "Tyshawn Williams": {
    "history": [
     {
@@ -9580,6 +7136,570 @@
       ]
      },
      "capturedAt": "2026-09-30T00:33:19.126Z"
+    }
+   ]
+  },
+  "Court McGee": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Eric Nolan",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "3:26",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Eric Nolan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 98,
+      "sigA": 273,
+      "totL": 127,
+      "totA": 304,
+      "tdL": 0,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:42",
+      "head": [
+       64,
+       227
+      ],
+      "body": [
+       18,
+       30
+      ],
+      "leg": [
+       16,
+       16
+      ],
+      "dist": [
+       88,
+       258
+      ],
+      "clinch": [
+       10,
+       15
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 121,
+      "sigA": 246,
+      "totL": 125,
+      "totA": 250,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:21",
+      "head": [
+       105,
+       222
+      ],
+      "body": [
+       15,
+       23
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       100,
+       222
+      ],
+      "clinch": [
+       21,
+       24
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-03T21:13:11.665Z"
+    }
+   ]
+  },
+  "Eric Nolan": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Court McGee",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "3:26",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Court McGee",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 121,
+      "sigA": 246,
+      "totL": 125,
+      "totA": 250,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:21",
+      "head": [
+       105,
+       222
+      ],
+      "body": [
+       15,
+       23
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       100,
+       222
+      ],
+      "clinch": [
+       21,
+       24
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 98,
+      "sigA": 273,
+      "totL": 127,
+      "totA": 304,
+      "tdL": 0,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:42",
+      "head": [
+       64,
+       227
+      ],
+      "body": [
+       18,
+       30
+      ],
+      "leg": [
+       16,
+       16
+      ],
+      "dist": [
+       88,
+       258
+      ],
+      "clinch": [
+       10,
+       15
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-03T21:13:11.665Z"
+    }
+   ]
+  },
+  "Marvin Vettori": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Ismail Naurdiev",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Ismail Naurdiev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 201,
+      "totL": 77,
+      "totA": 202,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       62,
+       182
+      ],
+      "body": [
+       7,
+       9
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       76,
+       201
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 190,
+      "totL": 74,
+      "totA": 190,
+      "tdL": 3,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:10",
+      "head": [
+       37,
+       141
+      ],
+      "body": [
+       9,
+       16
+      ],
+      "leg": [
+       28,
+       33
+      ],
+      "dist": [
+       72,
+       187
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-03T21:13:11.703Z"
+    }
+   ]
+  },
+  "Ismail Naurdiev": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Marvin Vettori",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Marvin Vettori",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 190,
+      "totL": 74,
+      "totA": 190,
+      "tdL": 3,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:10",
+      "head": [
+       37,
+       141
+      ],
+      "body": [
+       9,
+       16
+      ],
+      "leg": [
+       28,
+       33
+      ],
+      "dist": [
+       72,
+       187
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 201,
+      "totL": 77,
+      "totA": 202,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       62,
+       182
+      ],
+      "body": [
+       7,
+       9
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       76,
+       201
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-03T21:13:11.703Z"
+    }
+   ]
+  },
+  "Rafael Dos Anjos": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Alexander Hernandez",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "3:12",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Alexander Hernandez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 59,
+      "totL": 32,
+      "totA": 65,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       20,
+       49
+      ],
+      "body": [
+       6,
+       10
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       25,
+       58
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 36,
+      "sigA": 86,
+      "totL": 47,
+      "totA": 97,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:44",
+      "head": [
+       27,
+       76
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       25,
+       63
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       11,
+       22
+      ]
+     },
+     "capturedAt": "2026-10-03T21:13:11.741Z"
+    }
+   ]
+  },
+  "Alexander Hernandez": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Rafael Dos Anjos",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "3:12",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Rafael Dos Anjos",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 36,
+      "sigA": 86,
+      "totL": 47,
+      "totA": 97,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:44",
+      "head": [
+       27,
+       76
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       25,
+       63
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       11,
+       22
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 59,
+      "totL": 32,
+      "totA": 65,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       20,
+       49
+      ],
+      "body": [
+       6,
+       10
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       25,
+       58
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-03T21:13:11.741Z"
     }
    ]
   }
