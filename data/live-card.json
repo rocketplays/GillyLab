@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-03T23:17:04.680Z",
+ "generatedAt": "2026-10-03T23:47:33.110Z",
  "fighters": {
   "Tyshawn Williams": {
    "history": [
@@ -8640,6 +8640,194 @@
       ]
      },
      "capturedAt": "2026-10-03T23:17:04.602Z"
+    }
+   ]
+  },
+  "Imanol Rodriguez": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Alden Coria",
+     "result": "W",
+     "method": "KO/TKO (Kick)",
+     "round": 1,
+     "time": "3:11",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Alden Coria",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 20,
+      "sigA": 46,
+      "totL": 20,
+      "totA": 46,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       12,
+       35
+      ],
+      "body": [
+       8,
+       10
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       18,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 17,
+      "totL": 4,
+      "totA": 17,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       15
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       4,
+       17
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-03T23:47:33.015Z"
+    }
+   ]
+  },
+  "Alden Coria": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Imanol Rodriguez",
+     "result": "L",
+     "method": "KO/TKO (Kick)",
+     "round": 1,
+     "time": "3:11",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Imanol Rodriguez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 17,
+      "totL": 4,
+      "totA": 17,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       15
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       4,
+       17
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 20,
+      "sigA": 46,
+      "totL": 20,
+      "totA": 46,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       12,
+       35
+      ],
+      "body": [
+       8,
+       10
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       18,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       5
+      ]
+     },
+     "capturedAt": "2026-10-03T23:47:33.015Z"
     }
    ]
   }
