@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-03T22:46:12.610Z",
+ "generatedAt": "2026-10-03T23:17:04.680Z",
  "fighters": {
   "Tyshawn Williams": {
    "history": [
@@ -8452,6 +8452,194 @@
       ]
      },
      "capturedAt": "2026-10-03T22:46:12.513Z"
+    }
+   ]
+  },
+  "Damian Pinas": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Andrey Pulyaev",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:15",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Andrey Pulyaev",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 5,
+      "sigA": 7,
+      "totL": 5,
+      "totA": 7,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       3,
+       4
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       5,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 11,
+      "totL": 4,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       7
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-03T23:17:04.602Z"
+    }
+   ]
+  },
+  "Andrey Pulyaev": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Damian Pinas",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:15",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Damian Pinas",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 11,
+      "totL": 4,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       7
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 5,
+      "sigA": 7,
+      "totL": 5,
+      "totA": 7,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       3,
+       4
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       5,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-03T23:17:04.602Z"
     }
    ]
   }
