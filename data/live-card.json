@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-04T01:19:19.875Z",
+ "generatedAt": "2026-10-04T01:35:21.640Z",
  "fighters": {
   "Tyshawn Williams": {
    "history": [
@@ -9204,6 +9204,194 @@
       ]
      },
      "capturedAt": "2026-10-04T01:19:19.783Z"
+    }
+   ]
+  },
+  "King Green": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Esteban Ribovics",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "4:08",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Esteban Ribovics",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 49,
+      "totL": 29,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       11,
+       23
+      ],
+      "body": [
+       11,
+       18
+      ],
+      "leg": [
+       5,
+       8
+      ],
+      "dist": [
+       24,
+       46
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 3,
+      "sigL": 35,
+      "sigA": 71,
+      "totL": 41,
+      "totA": 79,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:31",
+      "head": [
+       25,
+       56
+      ],
+      "body": [
+       4,
+       6
+      ],
+      "leg": [
+       6,
+       9
+      ],
+      "dist": [
+       28,
+       56
+      ],
+      "clinch": [
+       0,
+       2
+      ],
+      "ground": [
+       7,
+       13
+      ]
+     },
+     "capturedAt": "2026-10-04T01:35:21.541Z"
+    }
+   ]
+  },
+  "Esteban Ribovics": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "King Green",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "4:08",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "King Green",
+     "result": "W",
+     "f": {
+      "kd": 3,
+      "sigL": 35,
+      "sigA": 71,
+      "totL": 41,
+      "totA": 79,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:31",
+      "head": [
+       25,
+       56
+      ],
+      "body": [
+       4,
+       6
+      ],
+      "leg": [
+       6,
+       9
+      ],
+      "dist": [
+       28,
+       56
+      ],
+      "clinch": [
+       0,
+       2
+      ],
+      "ground": [
+       7,
+       13
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 49,
+      "totL": 29,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       11,
+       23
+      ],
+      "body": [
+       11,
+       18
+      ],
+      "leg": [
+       5,
+       8
+      ],
+      "dist": [
+       24,
+       46
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-04T01:35:21.541Z"
     }
    ]
   }
