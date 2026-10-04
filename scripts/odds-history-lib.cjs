@@ -80,9 +80,16 @@ function stripKeys(entries) {
 // re-applying the same date overwrites that day's entry (so a script can
 // safely be re-run, and the twice-daily schedule collapses to one
 // end-of-day reading per matchup per day).
-function applySnapshot(history, oddsData, dateStr) {
+function applySnapshot(history, oddsData, dateStr, nowMs) {
+  const now = nowMs == null ? Date.now() : nowMs;
   (oddsData || []).forEach(fight => {
     if (!fight || !fight.home_team || !fight.away_team) return;
+    // The last day row doubles as the fight's CLOSING line everywhere downstream, so
+    // never record a snapshot taken after the fight started: by then odds.json holds
+    // in-play prices (UFC 332's main event was stored as -6542/+1508 at 02:46Z, after
+    // a 02:15Z start) and they would overwrite the real close.
+    const start = Date.parse(fight.commence_time);
+    if (Number.isFinite(start) && start <= now) return;
     const { home, away } = consensus(fight);
     if (home == null && away == null) return;
     const key = pairKey(fight.home_team, fight.away_team);

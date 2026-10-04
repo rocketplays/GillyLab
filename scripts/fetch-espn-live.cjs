@@ -426,27 +426,40 @@ async function main() {
   const total = (evt.bouts || []).filter((b) => !b.isCancelled).length;
   const decided = (evt.bouts || []).filter((b) => b.winnerFighterSlug).length;
   const allDecided = total > 0 && decided === total;
+  // A winner lands before ESPN posts the numbers (the main event is the usual
+  // straggler: enrichFinishedBout logs "stats still zeroed — retrying next poll").
+  // allDecided alone let the poller quit with a box score still outstanding — UFC 332's
+  // main event never got one. Count the decided, non-voided bouts with no box row yet
+  // so the poller can keep going (it caps how long, see live-results.yml).
+  const bDate = historyDate(evt.startsAt);
+  const boxesPending = (evt.bouts || []).filter((b) => {
+    if (b.isCancelled || !b.winnerFighterSlug) return false;
+    const nms = (b.fighters || []).map((f) => f.fighterName);
+    if (nms.length !== 2 || !bDate) return false;
+    return !(stats[nms[0]] || []).some((r) => r && r.opponent === nms[1] && r.date === bDate);
+  }).length;
   console.log(`[live] ${decided}/${total} bouts decided · ${changes.length} change(s) this poll`);
   changes.forEach((c) => console.log('   + ' + c));
 
-  if (!changes.length) return emit(false, allDecided);
-  if (DRY) { console.log('[live] --dry: not writing.'); return emit(true, allDecided); }
+  if (!changes.length) return emit(false, allDecided, boxesPending);
+  if (DRY) { console.log('[live] --dry: not writing.'); return emit(true, allDecided, boxesPending); }
 
   fs.writeFileSync(EVENT_PATH, JSON.stringify(doc));   // never the athlete cache
   if (statsDirty) { fs.writeFileSync(STATS_PATH, JSON.stringify(stats)); console.log('[live] wrote data/fight-stats.json'); }
   if (liveDirty) { card.generatedAt = new Date().toISOString(); fs.writeFileSync(LIVE_PATH, JSON.stringify(card, null, 1) + '\n'); console.log('[live] wrote data/live-card.json'); }
   console.log('[live] wrote data/event.json');
-  return emit(true, allDecided);
+  return emit(true, allDecided, boxesPending);
 }
 
 // The poller watches these two lines: `changed` decides whether to commit+deploy,
 // `allDecided` lets it stop polling once the main event is in the books rather
 // than idling until the featured window shuts hours later.
-function emit(changed, allDecided) {
+function emit(changed, allDecided, boxesPending = 0) {
   if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
   console.log(`changed=${changed}`);
   console.log(`allDecided=${!!allDecided}`);
+  console.log(`boxesPending=${boxesPending}`);
 }
 
-module.exports = { pickLiveEvent, applyResult, liveEventStatus, boxFrom, flatStats, hasRealStats, methodLabel, historyDate, resultLetter, hasRow, reconcileRow, pruneLive, enrichFinishedBout, LEAD_IN_MS, FEATURED_WINDOW_MS };
+module.exports = { espnBouts, pickLiveEvent, applyResult, liveEventStatus, boxFrom, flatStats, hasRealStats, methodLabel, historyDate, resultLetter, hasRow, reconcileRow, pruneLive, enrichFinishedBout, LEAD_IN_MS, FEATURED_WINDOW_MS };
 if (require.main === module) main().catch((e) => { console.error('[live] non-fatal error:', e.message); emit(false, false); });

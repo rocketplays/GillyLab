@@ -332,8 +332,11 @@ function mountMatchup(container){
     if (!res) return '';
     if (res.voided) return '<span class="mf-res-tag ' + (res.draw ? 'mf-res-draw' : 'mf-res-nc') + '">' + (res.draw ? 'DRAW' : 'NC') + '</span>';
     if (!res.winner) return '';
-    var name = side === 2 ? f.f2 : f.f1;
-    return res.winner === name
+    // side-resolved, not ===: ESPN's winner spelling ('Roberto Soldić') can differ
+    // from the card's ('Roberto Soldic'), which used to tag BOTH fighters LOSS.
+    var ws0 = window.GL_NAMES.side(res.winner, f.f1, f.f2);
+    if (!ws0) return '';   // winner matches neither fighter: say nothing rather than LOSS on both
+    return ws0 === (side === 2 ? 2 : 1)
       ? '<span class="mf-res-tag mf-res-win">WIN</span>'
       : '<span class="mf-res-tag mf-res-loss">LOSS</span>';
   }
@@ -355,7 +358,8 @@ function mountMatchup(container){
   function resultRecapHTML(f, res){
     if (res.voided) return '<div class="mf-pf-result">' + (res.draw ? 'Draw' : 'No Contest') + '</div>';
     if (!res.winner) return '';
-    var loser = res.winner === f.f1 ? f.f2 : (res.winner === f.f2 ? f.f1 : '');
+    var ws = window.GL_NAMES.side(res.winner, f.f1, f.f2);
+    var loser = ws === 1 ? f.f2 : (ws === 2 ? f.f1 : '');
     var rt = (res.round ? 'R' + res.round : '') + (res.round && res.time ? ' ' : '') + (res.time || '');
     return '<div class="mf-pf-result"><span class="mf-pf-win">' + esc(res.winner) + '</span> def. ' + esc(loser) +
       '<div class="mf-pf-method">' + esc(abbrMethod(res.method)) + (rt ? ' · ' + esc(rt) : '') + '</div></div>';
@@ -386,7 +390,7 @@ function mountMatchup(container){
     // "+", that double-signs any plus-money value ("++128").
     var fmt = function(o){ return o == null ? '—' : String(o); };
     var favSide = (f.o1 != null && f.o2 != null) ? (f.o1 <= f.o2 ? 1 : 2) : null;
-    var winSide = (res && res.winner) ? (res.winner === f.f1 ? 1 : (res.winner === f.f2 ? 2 : 0)) : 0;
+    var winSide = (res && res.winner) ? window.GL_NAMES.side(res.winner, f.f1, f.f2) : 0;
     var winOdds = winSide === 1 ? f.o1 : (winSide === 2 ? f.o2 : null);
     // Any plus-money winner (+101 or longer) counts as an upset, same
     // threshold the site's oddsHistoryPair-based check uses.
@@ -457,7 +461,7 @@ function mountMatchup(container){
     // pairing (order-independent) before attaching data-dd-slug, or every
     // OTHER bout on a card with deep-dive data would wrongly claim it too.
     var hd = eventSlug && hubData[eventSlug];
-    var ddMatches = hd && ((hd.n1 === f.f1 && hd.n2 === f.f2) || (hd.n1 === f.f2 && hd.n2 === f.f1));
+    var ddMatches = hd && window.GL_NAMES.samePair(hd.n1, hd.n2, f.f1, f.f2);
     var ddSlug = ddMatches ? eventSlug : '';
     return (
       '<button type="button" class="mf-sim-bar" data-sim-a="' + esc(f.f1) + '" data-sim-b="' + esc(f.f2) + '" data-sim-rounds="' + (f.rounds === 5 ? 5 : 3) + '"' +
@@ -966,7 +970,8 @@ function mountMatchup(container){
     var res = f.result || {};
     var resultLine = '';
     if (res.winner){
-      var loser = res.winner === f.f1 ? f.f2 : f.f2 === res.winner ? f.f1 : '';
+      var ws2 = window.GL_NAMES.side(res.winner, f.f1, f.f2);
+      var loser = ws2 === 1 ? f.f2 : ws2 === 2 ? f.f1 : '';
       resultLine = res.winner + ' def. ' + loser + ' · ' + abbrMethod(res.method) + (res.round ? ' R' + res.round : '') + (res.time ? ' - ' + res.time : '');
     } else if (res.voided){
       resultLine = res.draw ? 'Draw' : 'No Contest';

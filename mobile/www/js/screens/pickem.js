@@ -57,7 +57,7 @@ function mountPickem(container){
   var submitted = false, dirty = false, inFlight = false;
   var pkPollTimer = null;
 
-  function sideOf(bout, winnerName){ return winnerName === bout.f1 ? 'f1' : 'f2'; }
+  function sideOf(bout, winnerName){ return window.GL_NAMES.side(winnerName, bout.f1, bout.f2) === 2 ? 'f2' : 'f1'; }
   function partsFor(id, side, method, round){
     var sc = score[id];
     if (!sc) return { wPts:0, mPts:0, rPts:0 };
@@ -223,7 +223,7 @@ function mountPickem(container){
     var picksOut = card.bouts.map(function(b){
       var p = picks[b.id];
       if (!p || !p.winner) return null;
-      var winnerIsF1 = p.winner === b.f1;
+      var winnerIsF1 = window.GL_NAMES.side(p.winner, b.f1, b.f2) !== 2;
       return {
         winner: p.winner, loser: winnerIsF1 ? b.f2 : b.f1,
         winnerSlug: winnerIsF1 ? b.s1 : b.s2, loserSlug: winnerIsF1 ? b.s2 : b.s1,
@@ -245,7 +245,7 @@ function mountPickem(container){
     var g = gradeBoutPick(p, b);
     var res = b.res;
     var methodStr = res.method + (res.method !== 'Decision' && res.round ? ' · R' + res.round : '');
-    var outcome = res.voided ? 'Draw / No Contest' : (esc(res.winner) + ' def. ' + esc(res.winner === b.f1 ? b.f2 : b.f1));
+    var outcome = res.voided ? 'Draw / No Contest' : (esc(res.winner) + ' def. ' + esc(window.GL_NAMES.side(res.winner, b.f1, b.f2) === 1 ? b.f2 : b.f1));
     var cls, pickLine, pts;
     if (g.nopick){ cls = 'void'; pickLine = 'No pick made'; pts = ''; }
     else if (g.voided){ cls = 'void'; pickLine = 'You picked ' + esc(p.winner) + ' — bout voided'; pts = '<span class="pk-res-pts zero">0</span>'; }
@@ -286,7 +286,8 @@ function mountPickem(container){
       if (isDone(b)) return resultBoutHTML(b);
       var p = picks[b.id];
       var winner = p && p.winner;
-      var f1sel = winner === b.f1, f2sel = winner === b.f2;
+      var ws = winner ? window.GL_NAMES.side(winner, b.f1, b.f2) : 0;
+      var f1sel = ws === 1, f2sel = ws === 2;
       var showDetail = !!winner && !locked;
       var pts = !winner ? 'Tap a fighter to pick the winner'
         : (isComplete(p) ? 'Total possible points: <strong>' + potential(p) + '</strong>'
@@ -732,7 +733,7 @@ function mountPickem(container){
   }).then(function(mine){
     if (mine && mine.record && Array.isArray(mine.record.picks)){
       mine.record.picks.forEach(function(p){
-        var b = card.bouts.filter(function(x){ return (x.f1 === p.f1 && x.f2 === p.f2) || (x.f1 === p.f2 && x.f2 === p.f1); })[0];
+        var b = card.bouts.filter(function(x){ return window.GL_NAMES.samePair(p.f1, p.f2, x.f1, x.f2); })[0];
         if (!b) return;
         picks[b.id] = { boutId:b.id, winner:p.winner, side: sideOf(b, p.winner), method:p.method, round:p.round, confidence:p.confidence };
       });

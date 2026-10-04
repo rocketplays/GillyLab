@@ -896,6 +896,33 @@ function fightStatsFor(arr, date) {
   return best;
 }
 
+// fight-stats.json is keyed by the name the stats job saw — ESPN's spelling
+// ("Roberto Soldić", "Rafael Dos Anjos") — while the card and profile carry our own
+// ("Roberto Soldic", "Rafael dos Anjos"). A bare fightStats[name] lookup therefore
+// missed those fighters' newest row (and the opponent check below compared raw
+// strings), so a finished fight showed no box score. Fold accents/case, and merge
+// every key that folds to the same name so a history split across two spellings
+// is still one history.
+const foldStatsName = (n) => String(n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase().replace(/\s+/g, " ");
+const statsIndexCache = new WeakMap();
+function fightStatsRows(fightStats, name) {
+  if (!fightStats || !name) return null;
+  let idx = statsIndexCache.get(fightStats);
+  if (!idx) {
+    idx = new Map();
+    for (const k of Object.keys(fightStats)) {
+      const f = foldStatsName(k);
+      if (!idx.has(f)) idx.set(f, []);
+      idx.get(f).push(k);
+    }
+    statsIndexCache.set(fightStats, idx);
+  }
+  const keys = idx.get(foldStatsName(name));
+  if (!keys || !keys.length) return null;
+  if (keys.length === 1) return fightStats[keys[0]];
+  return keys.flatMap((k) => fightStats[k] || []);
+}
+
 /* ─────────────────────────── bet & clv tracker ──────────────────────────────
    Bets ride in the PICKS namespace under a bt: prefix, so there's no new KV
    binding to provision:
@@ -3826,13 +3853,13 @@ export default {
         if (cardsNeedingStats.length) {
           const fightStats = await loadAssetJson(env, url, "/data/fight-stats.json");
           if (fightStats) {
-            const normName = (n) => String(n || "").trim().toLowerCase();
+            const normName = foldStatsName;
             const attachStats = (c) => {
               const cardDate = c.date || (c.prelimsAt || "").slice(0, 10);
               c.fights = (c.fights || []).map((f) => {
                 if (!f.result || f.result.voided) return f;
-                const arr1 = fightStats[f.f1];
-                const arr2 = fightStats[f.f2];
+                const arr1 = fightStatsRows(fightStats, f.f1);
+                const arr2 = fightStatsRows(fightStats, f.f2);
                 let rec = null, s1 = null, s2 = null;
                 if (arr1) {
                   rec = fightStatsFor(arr1, cardDate);
@@ -3882,6 +3909,26 @@ export default {
             };
             attachClosingOdds(card);
             carousel.forEach(attachClosingOdds);
+          }
+          // Last resort for a decided fight with neither a live consensus (see
+          // pagesConsensusOdds: it now refuses in-play prices) nor a captured closing
+          // line (the capture cron is best-effort): the final day row of
+          // odds-history.json, which applySnapshot only ever writes pre-start.
+          const oddsHist = await loadAssetJson(env, url, "/data/odds-history.json");
+          if (Array.isArray(oddsHist) && oddsHist.length) {
+            const fromHistory = (c) => {
+              c.fights = (c.fights || []).map((f) => {
+                if (!f.result || f.result.voided || f.o1 != null || f.o2 != null) return f;
+                const e = oddsHist.find((x) => x && (
+                  (namesMatch(x.f1, f.f1) && namesMatch(x.f2, f.f2)) || (namesMatch(x.f1, f.f2) && namesMatch(x.f2, f.f1))));
+                const d = e && Array.isArray(e.days) ? e.days[e.days.length - 1] : null;
+                if (!d || d.price1 == null || d.price2 == null) return f;
+                const flipped = !(namesMatch(e.f1, f.f1) && namesMatch(e.f2, f.f2));
+                return Object.assign({}, f, { o1: flipped ? d.price2 : d.price1, o2: flipped ? d.price1 : d.price2 });
+              });
+            };
+            fromHistory(card);
+            carousel.forEach(fromHistory);
           }
         }
 
@@ -4084,7 +4131,7 @@ export default {
           // oppSlug (the opponent-profile link) is cheap and free either
           // way, so every viewer gets it.
           const fightStats = subscribed && fighterName ? await loadAssetJson(env, url, "/data/fight-stats.json") : null;
-          const arr = fightStats && fighterName ? fightStats[fighterName] : null;
+          const arr = fightStats && fighterName ? fightStatsRows(fightStats, fighterName) : null;
           extras.fightHistory = extras.fightHistory.map(function (row) {
             const rec = arr ? fightStatsFor(arr, row.date) : null;
             const oppSlug = profileSlugFor(row.opponent, profileSlugs) || null;

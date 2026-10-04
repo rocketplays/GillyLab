@@ -2704,6 +2704,14 @@ export function pagesConsensusOdds(oddsData, nameA, nameB) {
     ((namesMatch(e.home_team, nameA) && namesMatch(e.away_team, nameB)) ||
      (namesMatch(e.home_team, nameB) && namesMatch(e.away_team, nameA))));
   if (!ev || !Array.isArray(ev.bookmakers)) return null;
+  // Once a fight has started the books flip to in-play lines (UFC 332: Silva at
+  // -6542/+1508 while she was winning), and odds.json keeps them until the book pulls
+  // the market. That is not the pre-fight or closing price, and it was shown as one.
+  // Return nothing so callers fall back to the captured closing line / odds-history.
+  if (ev.commence_time) {
+    const t = Date.parse(ev.commence_time);
+    if (isFinite(t) && t <= Date.now()) return null;
+  }
   const toProb = (o) => (o < 0 ? -o / (-o + 100) : 100 / (o + 100));
   const toAmerican = (p) => (!(p > 0) || !(p < 1)) ? null : (p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p));
   const qa = [], qb = [];

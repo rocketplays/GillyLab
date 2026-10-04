@@ -96,6 +96,7 @@ jobs:
           POLLS=0
           DEPLOYS=0
           IDLE=0                                # consecutive no-change polls after the last fight
+          BOXWAIT=0                             # polls spent waiting only on box scores
 
           while [ "$(date +%s)" -lt "$DEADLINE" ]; do
             POLLS=$((POLLS+1))
@@ -111,11 +112,23 @@ jobs:
             # decided there is nothing left to fetch. Give it 2 quiet polls
             # (~10 min at the 5-min POLL interval) in case ESPN back-fills a
             # method, then stop.
+            #
+            # But "decided" only means every bout has a winner. ESPN posts the numbers
+            # later (UFC 332's main event never got a box score because we quit here),
+            # so while any decided bout still lacks a box score keep polling — capped at
+            # 24 polls (~2h) so a fight ESPN never posts stats for can't hold the job open.
+            BOXES=$(echo "$OUT" | sed -n 's/^boxesPending=//p' | tail -1)
+            BOXES=${BOXES:-0}
             if echo "$OUT" | grep -q '^allDecided=true' && echo "$OUT" | grep -q '^changed=false'; then
-              IDLE=$((IDLE+1))
-              if [ "$IDLE" -ge 2 ]; then
-                echo "::notice::every bout decided and quiet — polled ${POLLS}x, deployed ${DEPLOYS}x"
-                break
+              if [ "$BOXES" -gt 0 ] && [ "$BOXWAIT" -lt 24 ]; then
+                BOXWAIT=$((BOXWAIT+1))
+                echo "::notice::all decided but ${BOXES} box score(s) still missing — waiting (${BOXWAIT}/24)"
+              else
+                IDLE=$((IDLE+1))
+                if [ "$IDLE" -ge 2 ]; then
+                  echo "::notice::every bout decided and quiet — polled ${POLLS}x, deployed ${DEPLOYS}x"
+                  break
+                fi
               fi
             else
               IDLE=0
