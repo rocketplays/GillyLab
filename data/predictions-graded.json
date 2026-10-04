@@ -4670,7 +4670,36 @@
         "pts": -0.0302,
         "leaned": true
       }
+    },
+    {
+      "fightId": "natalia silva|wang cong",
+      "event": "UFC 332",
+      "gradedAt": "2026-10-04T16:26:09.961Z",
+      "a": {
+        "feed": "Natalia Silva",
+        "db": "Natália Silva"
+      },
+      "b": {
+        "feed": "Wang Cong",
+        "db": "Wang Cong"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 5,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.6684,
+      "modelClose": 0.6715,
+      "marketOpen": 0.6701,
+      "marketClose": 0.6417,
+      "leanA": -0.0017,
+      "nSnapshots": 39,
+      "clv": {
+        "toward": true,
+        "pts": 0.0284,
+        "leaned": false
+      }
     }
   ],
-  "generatedAt": "2026-10-04T03:07:27.027Z"
+  "generatedAt": "2026-10-04T16:26:09.971Z"
 }
