@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-03T15:39:25.757Z",
-  "nGraded": 160,
+  "generatedAt": "2026-10-04T03:07:27.023Z",
+  "nGraded": 161,
   "note": "Internal proof-of-concept. Pre-upgrade CLV uses self-snapshotted close (approximate).",
   "calibration": [
     {
@@ -23,9 +23,9 @@
     },
     {
       "band": "50-60%",
-      "n": 59,
-      "predicted": 0.5418,
-      "actual": 0.6271
+      "n": 60,
+      "predicted": 0.5415,
+      "actual": 0.6167
     },
     {
       "band": "60-70%",
@@ -47,25 +47,25 @@
     }
   ],
   "accuracy": {
-    "model": 0.6125,
-    "marketClose": 0.6125
+    "model": 0.6087,
+    "marketClose": 0.6149
   },
   "brier": {
-    "modelOpen": 0.2368,
-    "marketClose": 0.2443
+    "modelOpen": 0.2371,
+    "marketClose": 0.2429
   },
   "logloss": {
-    "modelOpen": 0.6665,
-    "marketClose": 0.695
+    "modelOpen": 0.667,
+    "marketClose": 0.6918
   },
   "clv": {
-    "nWithMovement": 160,
-    "hitRate": 0.425,
-    "avgMovePts": 0.0247,
+    "nWithMovement": 161,
+    "hitRate": 0.4224,
+    "avgMovePts": 0.0244,
     "leanedOnly": {
-      "n": 144,
-      "hitRate": 0.4306,
-      "avgMovePts": 0.0271
+      "n": 145,
+      "hitRate": 0.4276,
+      "avgMovePts": 0.0267
     }
   }
 }
