@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-03T23:47:33.110Z",
+ "generatedAt": "2026-10-04T00:33:25.134Z",
  "fighters": {
   "Tyshawn Williams": {
    "history": [
@@ -8828,6 +8828,194 @@
       ]
      },
      "capturedAt": "2026-10-03T23:47:33.015Z"
+    }
+   ]
+  },
+  "Ateba Gautier": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Roman Kopylov",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "3:12",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Roman Kopylov",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 30,
+      "totL": 7,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       21
+      ],
+      "body": [
+       4,
+       9
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       7,
+       30
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 19,
+      "sigA": 23,
+      "totL": 19,
+      "totA": 23,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       16,
+       20
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       12,
+       15
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "capturedAt": "2026-10-04T00:33:25.031Z"
+    }
+   ]
+  },
+  "Roman Kopylov": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Ateba Gautier",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "3:12",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Ateba Gautier",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 19,
+      "sigA": 23,
+      "totL": 19,
+      "totA": 23,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       16,
+       20
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       12,
+       15
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 30,
+      "totL": 7,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       21
+      ],
+      "body": [
+       4,
+       9
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       7,
+       30
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-04T00:33:25.031Z"
     }
    ]
   }
