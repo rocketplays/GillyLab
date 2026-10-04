@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-04T01:35:21.640Z",
+ "generatedAt": "2026-10-04T02:06:14.461Z",
  "fighters": {
   "Tyshawn Williams": {
    "history": [
@@ -9392,6 +9392,194 @@
       ]
      },
      "capturedAt": "2026-10-04T01:35:21.541Z"
+    }
+   ]
+  },
+  "Deiveson Figueiredo": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Payton Talbott",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:09",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Payton Talbott",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 6,
+      "totL": 5,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:22",
+      "head": [
+       3,
+       4
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 25,
+      "sigA": 44,
+      "totL": 27,
+      "totA": 46,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       18,
+       37
+      ],
+      "body": [
+       5,
+       5
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       17,
+       33
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       8,
+       11
+      ]
+     },
+     "capturedAt": "2026-10-04T02:06:14.373Z"
+    }
+   ]
+  },
+  "Payton Talbott": {
+   "history": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Deiveson Figueiredo",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:09",
+     "event": "UFC 332: Silva vs. Wang",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 3, 2026",
+     "opponent": "Deiveson Figueiredo",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 25,
+      "sigA": 44,
+      "totL": 27,
+      "totA": 46,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       18,
+       37
+      ],
+      "body": [
+       5,
+       5
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       17,
+       33
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       8,
+       11
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 6,
+      "totL": 5,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:22",
+      "head": [
+       3,
+       4
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-04T02:06:14.373Z"
     }
    ]
   }
