@@ -6221,6 +6221,7 @@
     { name: "Andre Fili", division: "FW", rank: "NR", record: "25-14-0", initials: "AFI", country: "USA" },
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" }, { name: "Natan Levy", division: "LW", rank: "NR", record: "9-2-0", initials: "NLE", country: "Israel" },
+ { name: "Alivia Bierley", division: "WBW", rank: "NR", record: "5-1-0", initials: "AB", country: "USA" },
  { name: "Summer Onley", division: "WBW", rank: "NR", record: "6-0-0", initials: "SO", country: "England" },
  { name: "Ryuho Miyaguchi", division: "BW", rank: "NR", record: "7-1-0", initials: "RM", country: "Japan" },
  { name: "Mateus Soares", division: "BW", rank: "NR", record: "11-2-0", initials: "MS", country: "Brazil" },
@@ -10184,6 +10185,7 @@
  "Nell Ariano": { ht:"6'4\"", dob:"1995-01-20", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:6, gym:"Platinum MMA Training Centre" },
  "Salhahuddin Everett": { ht:"6'3\"", dob:"1997-06-07", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Freestyle MMA" },
  "Ozzy Martin": { ht:"6'0\"", dob:"2002-09-18", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Nostos MMA" },
+  "Alivia Bierley": { ht:"5'7\"", dob:"1996-09-20", reach:'66"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"60%", streak:5, gym:"Pete Spratt American Muay Thai" },
   "Summer Onley": { ht:"5'7\"", dob:"1994-06-09", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Ronin MMA" },
   "Ryuho Miyaguchi": { ht:"5'10\"", dob:"1998-01-27", reach:'68"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:0, gym:"Cobra Kai MMA Dojo" },
   "Mateus Soares": { ht:"5'4\"", dob:"2004-05-24", reach:'66.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:4, gym:"Rizzo RVT" },
@@ -42545,6 +42547,13 @@
   "Roque Conceição": [
     { opponent: "Imanol Rodriguez", odds: 171 }
   ],
+  "Alivia Bierley": [
+    { opponent: "Nikola Kacperska", odds: -700 },
+    { opponent: "Devon McDonald", odds: -338 },
+    { opponent: "Samantha Brister", odds: -549 },
+    { opponent: "Nadia Chmil", odds: -275 },
+    { opponent: "Maya Samuels-Stewart", odds: -649 }
+  ],
   "Ryuho Miyaguchi": [
     { opponent: "Chungreng Koren", odds: -230 }
   ],
@@ -55994,6 +56003,14 @@ const FIGHT_HISTORY = {
     { date: "Jul 22, 2024", opponent: "Edwin Castro", result: "W", method: "TKO (Punches)", round: 1, time: "1:26", event: "Inka 44 - Ramses vs. Henrique", org: "Inka" },
     { date: "Apr 26, 2024", opponent: "Diogo Coquinche", result: "W", method: "TKO (Punches)", round: 3, time: "4:08", event: "Inka 42 - Chavez vs. Coquinche", org: "Inka" },
     { date: "Feb 29, 2024", opponent: "Carlos Diego Guado", result: "W", method: "TKO (Knee to the Body and Punches)", round: 1, time: "4:40", event: "Inka 40 - Ramses vs. Pereira", org: "Inka" }
+  ],
+  "Alivia Bierley": [
+    { date: "Jul 19, 2026", opponent: "Nikola Kacperska", result: "W", method: "TKO (Punches)", round: 3, time: "3:36", event: "Fury FC 121 - Martinez vs. Amaro", org: "Fury FC" },
+    { date: "May 17, 2026", opponent: "Shanna Gomez", result: "W", method: "KO (Punches)", round: 2, time: "2:34", event: "Fury FC 119 - Calderon vs. Jackson", org: "Fury FC" },
+    { date: "Oct 17, 2025", opponent: "Devon McDonald", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 110 - Patershuk vs. Urbina", org: "Fury FC" },
+    { date: "Feb 21, 2025", opponent: "Samantha Brister", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 102", org: "Fury FC" },
+    { date: "Sep 22, 2024", opponent: "Nadia Chmil", result: "W", method: "KO (Punch)", round: 1, time: "1:25", event: "Fury FC 96 - Silva vs. Gurule", org: "Fury FC" },
+    { date: "May 12, 2024", opponent: "Maya Samuels-Stewart", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury FC 90 - Dixon vs. Macklin", org: "Fury FC" }
   ],
   "Summer Onley": [
     { date: "Mar 7, 2026", opponent: "Myllena Messias", result: "W", method: "TKO (Punches)", round: 2, time: "0:31", event: "FCC 45 - Full Contact Contender 45", org: "FCC" },
@@ -120313,6 +120330,11 @@ const ACCOLADES = {
     { icon: "🏅", title: "Undefeated through 9 pro fights (6 KO/TKO, 3 decisions)", detail: null },
     { icon: "🏆", title: "Inka Flyweight Champion", detail: null },
     { icon: "🥊", title: "6-0 amateur record before turning pro in 2024", detail: null }
+  ],
+  "Alivia Bierley": [
+    { icon: "🏅", title: "3 finishes in 5 pro wins (2 KO, 1 TKO)", detail: null },
+    { icon: "🎯", title: "Five straight wins since a split-decision loss in her May 2024 pro debut", detail: null },
+    { icon: "🥊", title: "Undefeated as an amateur; former college basketball player and gymnast", detail: null }
   ],
   "Summer Onley": [
     { icon: "🏆", title: "Full Contact Contender (FCC) Bantamweight Champion", detail: null },
