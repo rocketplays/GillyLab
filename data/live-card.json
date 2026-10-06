@@ -1,194 +1,6 @@
 {
- "generatedAt": "2026-10-04T02:06:14.461Z",
+ "generatedAt": "2026-10-06T23:44:08.038Z",
  "fighters": {
-  "Tyshawn Williams": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Antonio Monteiro",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Antonio Monteiro",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 68,
-      "sigA": 82,
-      "totL": 107,
-      "totA": 128,
-      "tdL": 6,
-      "tdA": 17,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "8:51",
-      "head": [
-       61,
-       74
-      ],
-      "body": [
-       3,
-       4
-      ],
-      "leg": [
-       4,
-       4
-      ],
-      "dist": [
-       24,
-       32
-      ],
-      "clinch": [
-       5,
-       6
-      ],
-      "ground": [
-       39,
-       44
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 18,
-      "sigA": 64,
-      "totL": 27,
-      "totA": 73,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "2:21",
-      "head": [
-       14,
-       52
-      ],
-      "body": [
-       4,
-       11
-      ],
-      "leg": [
-       0,
-       1
-      ],
-      "dist": [
-       12,
-       56
-      ],
-      "clinch": [
-       3,
-       5
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "capturedAt": "2026-09-16T00:38:06.315Z"
-    }
-   ]
-  },
-  "Antonio Monteiro": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Tyshawn Williams",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Tyshawn Williams",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 18,
-      "sigA": 64,
-      "totL": 27,
-      "totA": 73,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "2:21",
-      "head": [
-       14,
-       52
-      ],
-      "body": [
-       4,
-       11
-      ],
-      "leg": [
-       0,
-       1
-      ],
-      "dist": [
-       12,
-       56
-      ],
-      "clinch": [
-       3,
-       5
-      ],
-      "ground": [
-       3,
-       3
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 68,
-      "sigA": 82,
-      "totL": 107,
-      "totA": 128,
-      "tdL": 6,
-      "tdA": 17,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "8:51",
-      "head": [
-       61,
-       74
-      ],
-      "body": [
-       3,
-       4
-      ],
-      "leg": [
-       4,
-       4
-      ],
-      "dist": [
-       24,
-       32
-      ],
-      "clinch": [
-       5,
-       6
-      ],
-      "ground": [
-       39,
-       44
-      ]
-     },
-     "capturedAt": "2026-09-16T00:38:06.315Z"
-    }
-   ]
-  },
   "Luis Hernandez": {
    "history": [
     {
@@ -199,16 +11,6 @@
      "round": 1,
      "time": "0:57",
      "event": "UFC Fight Night: Rosas Jr. vs. Barcelos",
-     "org": "UFC"
-    },
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Hugo Guillon",
-     "result": "W",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 2,
-     "time": "1:01",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
      "org": "UFC"
     }
    ],
@@ -290,742 +92,6 @@
       ]
      },
      "capturedAt": "2026-09-27T01:30:11.999Z"
-    },
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Hugo Guillon",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 67,
-      "sigA": 116,
-      "totL": 75,
-      "totA": 126,
-      "tdL": 1,
-      "tdA": 3,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:37",
-      "head": [
-       40,
-       83
-      ],
-      "body": [
-       24,
-       27
-      ],
-      "leg": [
-       3,
-       6
-      ],
-      "dist": [
-       50,
-       96
-      ],
-      "clinch": [
-       17,
-       20
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 38,
-      "sigA": 63,
-      "totL": 58,
-      "totA": 83,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:19",
-      "head": [
-       22,
-       35
-      ],
-      "body": [
-       15,
-       27
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       29,
-       53
-      ],
-      "clinch": [
-       9,
-       10
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-16T00:38:06.362Z"
-    }
-   ]
-  },
-  "Hugo Guillon": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Luis Hernandez",
-     "result": "L",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 2,
-     "time": "1:01",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Luis Hernandez",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 38,
-      "sigA": 63,
-      "totL": 58,
-      "totA": 83,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:19",
-      "head": [
-       22,
-       35
-      ],
-      "body": [
-       15,
-       27
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       29,
-       53
-      ],
-      "clinch": [
-       9,
-       10
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 67,
-      "sigA": 116,
-      "totL": 75,
-      "totA": 126,
-      "tdL": 1,
-      "tdA": 3,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "1:37",
-      "head": [
-       40,
-       83
-      ],
-      "body": [
-       24,
-       27
-      ],
-      "leg": [
-       3,
-       6
-      ],
-      "dist": [
-       50,
-       96
-      ],
-      "clinch": [
-       17,
-       20
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-16T00:38:06.362Z"
-    }
-   ]
-  },
-  "Ednilson Santos": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Akbar Abdullaev",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "0:19",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Akbar Abdullaev",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 0,
-      "sigA": 3,
-      "totL": 0,
-      "totA": 3,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       1
-      ],
-      "body": [
-       0,
-       1
-      ],
-      "leg": [
-       0,
-       1
-      ],
-      "dist": [
-       0,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 3,
-      "sigA": 3,
-      "totL": 3,
-      "totA": 3,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       1,
-       1
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       3,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-16T00:38:06.407Z"
-    }
-   ]
-  },
-  "Akbar Abdullaev": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Ednilson Santos",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "0:19",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Ednilson Santos",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 3,
-      "sigA": 3,
-      "totL": 3,
-      "totA": 3,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       1,
-       1
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       3,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 0,
-      "sigA": 3,
-      "totL": 0,
-      "totA": 3,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       1
-      ],
-      "body": [
-       0,
-       1
-      ],
-      "leg": [
-       0,
-       1
-      ],
-      "dist": [
-       0,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-16T00:38:06.407Z"
-    }
-   ]
-  },
-  "Oscar Ravello": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Igor Cavalcanti",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "1:38",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Igor Cavalcanti",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 3,
-      "sigA": 13,
-      "totL": 5,
-      "totA": 16,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       2,
-       9
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       4
-      ],
-      "dist": [
-       3,
-       12
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 35,
-      "sigA": 51,
-      "totL": 52,
-      "totA": 73,
-      "tdL": 2,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:57",
-      "head": [
-       33,
-       49
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       5,
-       6
-      ],
-      "clinch": [
-       2,
-       6
-      ],
-      "ground": [
-       28,
-       39
-      ]
-     },
-     "capturedAt": "2026-09-16T00:43:27.612Z"
-    }
-   ]
-  },
-  "Igor Cavalcanti": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Oscar Ravello",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "1:38",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Oscar Ravello",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 35,
-      "sigA": 51,
-      "totL": 52,
-      "totA": 73,
-      "tdL": 2,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:57",
-      "head": [
-       33,
-       49
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       5,
-       6
-      ],
-      "clinch": [
-       2,
-       6
-      ],
-      "ground": [
-       28,
-       39
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 3,
-      "sigA": 13,
-      "totL": 5,
-      "totA": 16,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       2,
-       9
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       4
-      ],
-      "dist": [
-       3,
-       12
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-16T00:43:27.612Z"
-    }
-   ]
-  },
-  "Zevan Hunt": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Mayton Perea",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "0:45",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Mayton Perea",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 4,
-      "sigA": 11,
-      "totL": 4,
-      "totA": 11,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:01",
-      "head": [
-       3,
-       10
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       4,
-       11
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 2,
-      "sigL": 23,
-      "sigA": 37,
-      "totL": 24,
-      "totA": 38,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:08",
-      "head": [
-       21,
-       34
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       14,
-       27
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       8,
-       9
-      ]
-     },
-     "capturedAt": "2026-09-16T00:58:48.348Z"
-    }
-   ]
-  },
-  "Mayton Perea": {
-   "history": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Zevan Hunt",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "0:45",
-     "event": "Dana White's Contender Series: Season 10, Week 6",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Sep 15, 2026",
-     "opponent": "Zevan Hunt",
-     "result": "W",
-     "f": {
-      "kd": 2,
-      "sigL": 23,
-      "sigA": 37,
-      "totL": 24,
-      "totA": 38,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:08",
-      "head": [
-       21,
-       34
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       14,
-       27
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       8,
-       9
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 4,
-      "sigA": 11,
-      "totL": 4,
-      "totA": 11,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:01",
-      "head": [
-       3,
-       10
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       4,
-       11
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-09-16T00:58:48.348Z"
     }
    ]
   },
@@ -9580,6 +8646,194 @@
       ]
      },
      "capturedAt": "2026-10-04T02:06:14.373Z"
+    }
+   ]
+  },
+  "Summer Onley": {
+   "history": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Alivia Bierley",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 9",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Alivia Bierley",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 84,
+      "totL": 35,
+      "totA": 88,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:12",
+      "head": [
+       11,
+       52
+      ],
+      "body": [
+       6,
+       10
+      ],
+      "leg": [
+       16,
+       22
+      ],
+      "dist": [
+       31,
+       76
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       0,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 47,
+      "sigA": 114,
+      "totL": 71,
+      "totA": 143,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:42",
+      "head": [
+       23,
+       67
+      ],
+      "body": [
+       12,
+       35
+      ],
+      "leg": [
+       12,
+       12
+      ],
+      "dist": [
+       35,
+       101
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       9,
+       10
+      ]
+     },
+     "capturedAt": "2026-10-06T23:44:07.902Z"
+    }
+   ]
+  },
+  "Alivia Bierley": {
+   "history": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Summer Onley",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 9",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Summer Onley",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 47,
+      "sigA": 114,
+      "totL": 71,
+      "totA": 143,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:42",
+      "head": [
+       23,
+       67
+      ],
+      "body": [
+       12,
+       35
+      ],
+      "leg": [
+       12,
+       12
+      ],
+      "dist": [
+       35,
+       101
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       9,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 84,
+      "totL": 35,
+      "totA": 88,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:12",
+      "head": [
+       11,
+       52
+      ],
+      "body": [
+       6,
+       10
+      ],
+      "leg": [
+       16,
+       22
+      ],
+      "dist": [
+       31,
+       76
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       0,
+       4
+      ]
+     },
+     "capturedAt": "2026-10-06T23:44:07.902Z"
     }
    ]
   }
