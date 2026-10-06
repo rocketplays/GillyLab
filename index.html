@@ -6354,6 +6354,7 @@
  { name: "Ihor Potieria", division: "MW", rank: "NR", record: "20-8-0", initials: "IPO", country: "Ukraine" },
  { name: "Azamat Murzakanov", division: "LHW", rank: "#8", record: "16-1-0", initials: "AMZ2", country: "Russia" },
  { name: "Preston LaGrange", division: "LHW", rank: "NR", record: "6-1-0", initials: "PL", country: "USA" },
+ { name: "Nell Ariano", division: "LHW", rank: "NR", record: "6-0-0", initials: "NA", country: "France" },
  // ─── FEATHERWEIGHT (remaining) ───
  { name: "Yizha", division: "FW", rank: "NR", record: "26-6-0", initials: "YIZ", country: "China" },
  { name: "Manel Kape", division: "FLW", rank: "#2", record: "23-7-0", initials: "MKP", country: "Angola" },
@@ -10174,6 +10175,7 @@
  "Namsrai Batbayar": { ht:"5'4\"", dob:"2000-12-29", reach:'68"', stance:"Orthodox", slpm:3.91, strAcc:"36%", sapm:3.6, strDef:"39%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"100%", streak:6, gym:"One Team Fighting Center" },
  // ── Bantamweight (more) ──
  "Preston LaGrange": { ht:"6'3\"", dob:"1998-12-16", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Hard Drive MMA" },
+ "Nell Ariano": { ht:"6'4\"", dob:"1995-01-20", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:6, gym:"Platinum MMA Training Centre" },
  "Marcus McGhee": { ht:"5'8\"", dob:"1990-05-07", reach:'69"', stance:"Orthodox", slpm:5.54, strAcc:"44%", sapm:3.57, strDef:"57%", kd:1.11, tdLanded:0.22, tdAcc:"11%", tdDef:"82%", subAvg:0.22, finRate:"82%", streak:1, gym:"The MMA Lab" },
  "Keiichiro Nakamura": { ht:"5'10\"", dob:"1998-12-02", reach:'70"', stance:"Southpaw", slpm:4.48, strAcc:"42%", sapm:4.28, strDef:"64%", kd:0.83, tdLanded:0.00, tdAcc:"0%", tdDef:"79%", subAvg:0.00, finRate:"88%", streak:8, gym:"EXFIGHT" },
  "Rinya Nakamura": { ht:"5'7\"", dob:"1995-03-23", reach:'68"', stance:"Southpaw", slpm:2.82, strAcc:"51%", sapm:1.74, strDef:"62%", kd:0.81, tdLanded:2.15, tdAcc:"57%", tdDef:"100%", subAvg:1.08, finRate:"70%", streak:1, gym:"American Top Team" },
@@ -42514,6 +42516,14 @@
     { opponent: "Dylan Diebitz", odds: -201 },
     { opponent: "Brandon Holmes", odds: 158 }
   ],
+  "Nell Ariano": [
+    { opponent: "Norbert Pietrzak", odds: 133 },
+    { opponent: "Riku Urholin", odds: -675 },
+    { opponent: "Charles Joyner", odds: -110 },
+    { opponent: "Danny Hartwell", odds: 188 },
+    { opponent: "Farshad Nazarnia", odds: 145 },
+    { opponent: "Jamie Macdonald", odds: 155 }
+  ],
   "Marcus McGhee": [
     { opponent: "John Yannis", odds: -475 },
     { opponent: "Petr Yan", odds: 290 },
@@ -55924,6 +55934,14 @@ const FIGHT_HISTORY = {
     { date: "Mar 22, 2025", opponent: "Isaiah Robinson", result: "W", method: "Submission (Keylock)", round: 1, time: "2:28", event: "Caged Aggression 39" },
     { date: "Oct 12, 2024", opponent: "Herbert Rogers-Williams", result: "W", method: "Submission (Triangle Choke)", round: 2, time: "2:10", event: "Caged Aggression 38" },
     { date: "Mar 23, 2024", opponent: "Myles Bryant", result: "W", method: "KO (Punches)", round: 1, time: "0:26", event: "Caged Aggression 37" }
+  ],
+  "Nell Ariano": [
+    { date: "Jul 4, 2026", opponent: "Norbert Pietrzak", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 209", org: "Cage Warriors" },
+    { date: "Nov 21, 2025", opponent: "Riku Urholin", result: "W", method: "TKO (Punches)", round: 2, time: "1:19", event: "Cage Warriors 197: Unplugged", org: "Cage Warriors" },
+    { date: "Jun 27, 2025", opponent: "Charles Joyner", result: "W", method: "TKO (Punches)", round: 3, time: "3:30", event: "Cage Warriors 190", org: "Cage Warriors" },
+    { date: "Mar 14, 2025", opponent: "Danny Hartwell", result: "W", method: "KO (Elbows)", round: 2, time: "0:48", event: "Cage Warriors 184: Unplugged", org: "Cage Warriors" },
+    { date: "Sep 20, 2024", opponent: "Farshad Nazarnia", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Cage Warriors 177", org: "Cage Warriors" },
+    { date: "Apr 20, 2024", opponent: "Jamie Macdonald", result: "W", method: "TKO (Punches)", round: 2, time: "3:45", event: "Cage Warriors 171", org: "Cage Warriors" }
   ],
   "Marcus McGhee": [
     { date: "Oct 3, 2026", opponent: "Anthony Romero", result: "W", method: "KO/TKO (Punches)", round: 1, time: "4:58", event: "UFC 332: Silva vs. Wang", org: "UFC" },
@@ -120185,6 +120203,11 @@ const ACCOLADES = {
   "Preston LaGrange": [
     { icon: "🏅", title: "100% finish rate — all 6 pro wins by KO/TKO (2) or submission (4)", detail: null },
     { icon: "🏅", title: "26-second KO of Myles Bryant at Caged Aggression 37 (Mar 2024), his fastest finish", detail: null }
+  ],
+  "Nell Ariano": [
+    { icon: "🏅", title: "Undefeated 6-0 pro record, all six wins in Cage Warriors", detail: null },
+    { icon: "🥊", title: "4 KO/TKO wins, including a 48-second elbow KO of Danny Hartwell (Cage Warriors 184)", detail: null },
+    { icon: "🤼", title: "IMMAF World and European Championships competitor (amateur)", detail: null }
   ],
   "Marcus McGhee": [
     { icon: "🏅", title: "2023 MMA Fighting Third Team MMA All-Star", detail: null },
