@@ -6353,6 +6353,7 @@
  { name: "Da'Mon Blackshear", division: "BW", rank: "NR", record: "17-8-1", initials: "DBL2", country: "USA" },
  { name: "Ihor Potieria", division: "MW", rank: "NR", record: "20-8-0", initials: "IPO", country: "Ukraine" },
  { name: "Azamat Murzakanov", division: "LHW", rank: "#8", record: "16-1-0", initials: "AMZ2", country: "Russia" },
+ { name: "Preston LaGrange", division: "LHW", rank: "NR", record: "6-1-0", initials: "PL", country: "USA" },
  // ─── FEATHERWEIGHT (remaining) ───
  { name: "Yizha", division: "FW", rank: "NR", record: "26-6-0", initials: "YIZ", country: "China" },
  { name: "Manel Kape", division: "FLW", rank: "#2", record: "23-7-0", initials: "MKP", country: "Angola" },
@@ -10172,6 +10173,7 @@
  "HyunSung Park": { ht:"5'7\"", dob:"1995-11-04", reach:'66"', stance:"Orthodox", slpm:3.38, strAcc:"41%", sapm:3.14, strDef:"55%", kd:0.60, tdLanded:1.50, tdAcc:"33%", tdDef:"47%", subAvg:1.80, finRate:"90%", streak:0, gym:"Tiger Muay Thai" },
  "Namsrai Batbayar": { ht:"5'4\"", dob:"2000-12-29", reach:'68"', stance:"Orthodox", slpm:3.91, strAcc:"36%", sapm:3.6, strDef:"39%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"100%", streak:6, gym:"One Team Fighting Center" },
  // ── Bantamweight (more) ──
+ "Preston LaGrange": { ht:"6'3\"", dob:"1998-12-16", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Hard Drive MMA" },
  "Marcus McGhee": { ht:"5'8\"", dob:"1990-05-07", reach:'69"', stance:"Orthodox", slpm:5.54, strAcc:"44%", sapm:3.57, strDef:"57%", kd:1.11, tdLanded:0.22, tdAcc:"11%", tdDef:"82%", subAvg:0.22, finRate:"82%", streak:1, gym:"The MMA Lab" },
  "Keiichiro Nakamura": { ht:"5'10\"", dob:"1998-12-02", reach:'70"', stance:"Southpaw", slpm:4.48, strAcc:"42%", sapm:4.28, strDef:"64%", kd:0.83, tdLanded:0.00, tdAcc:"0%", tdDef:"79%", subAvg:0.00, finRate:"88%", streak:8, gym:"EXFIGHT" },
  "Rinya Nakamura": { ht:"5'7\"", dob:"1995-03-23", reach:'68"', stance:"Southpaw", slpm:2.82, strAcc:"51%", sapm:1.74, strDef:"62%", kd:0.81, tdLanded:2.15, tdAcc:"57%", tdDef:"100%", subAvg:1.08, finRate:"70%", streak:1, gym:"American Top Team" },
@@ -42508,6 +42510,10 @@
     { opponent: "Daria Rehil", odds: -300 },
     { opponent: "Sylwia Maksym", odds: -163 }
   ],
+  "Preston LaGrange": [
+    { opponent: "Dylan Diebitz", odds: -201 },
+    { opponent: "Brandon Holmes", odds: 158 }
+  ],
   "Marcus McGhee": [
     { opponent: "John Yannis", odds: -475 },
     { opponent: "Petr Yan", odds: 290 },
@@ -55910,6 +55916,15 @@ const FIGHT_HISTORY = {
 
 
 
+  "Preston LaGrange": [
+    { date: "Jul 24, 2026", opponent: "Dylan Diebitz", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:54", event: "LFA 237: Lee vs. Tardio", org: "LFA" },
+    { date: "Apr 25, 2026", opponent: "Derek Benoit", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:48", event: "XFC 54: Ascension", org: "XFC" },
+    { date: "Jan 18, 2026", opponent: "Brandon Holmes", result: "L", method: "KO (Slam and Punches)", round: 1, time: "3:13", event: "Fury FC 113", org: "Fury FC" },
+    { date: "Oct 18, 2025", opponent: "Brady Minner", result: "W", method: "KO (Punches)", round: 1, time: "1:41", event: "Caged Aggression 40" },
+    { date: "Mar 22, 2025", opponent: "Isaiah Robinson", result: "W", method: "Submission (Keylock)", round: 1, time: "2:28", event: "Caged Aggression 39" },
+    { date: "Oct 12, 2024", opponent: "Herbert Rogers-Williams", result: "W", method: "Submission (Triangle Choke)", round: 2, time: "2:10", event: "Caged Aggression 38" },
+    { date: "Mar 23, 2024", opponent: "Myles Bryant", result: "W", method: "KO (Punches)", round: 1, time: "0:26", event: "Caged Aggression 37" }
+  ],
   "Marcus McGhee": [
     { date: "Oct 3, 2026", opponent: "Anthony Romero", result: "W", method: "KO/TKO (Punches)", round: 1, time: "4:58", event: "UFC 332: Silva vs. Wang", org: "UFC" },
     { date: "Jun 6, 2026", opponent: "John Yannis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
@@ -120166,6 +120181,10 @@ const ACCOLADES = {
   "Jonathan Martinez": [
     { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt; 11 of 19 wins by stoppage", detail: null },
     { icon: "🥊", title: "\"Dragon\" — devastating leg-kick finisher (R2 leg-kick TKOs of Cub Swanson & Adrian Yañez)", detail: null }
+  ],
+  "Preston LaGrange": [
+    { icon: "🏅", title: "100% finish rate — all 6 pro wins by KO/TKO (2) or submission (4)", detail: null },
+    { icon: "🏅", title: "26-second KO of Myles Bryant at Caged Aggression 37 (Mar 2024), his fastest finish", detail: null }
   ],
   "Marcus McGhee": [
     { icon: "🏅", title: "2023 MMA Fighting Third Team MMA All-Star", detail: null },
