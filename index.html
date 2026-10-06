@@ -6221,6 +6221,7 @@
     { name: "Andre Fili", division: "FW", rank: "NR", record: "25-14-0", initials: "AFI", country: "USA" },
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" }, { name: "Natan Levy", division: "LW", rank: "NR", record: "9-2-0", initials: "NLE", country: "Israel" },
+ { name: "Summer Onley", division: "WBW", rank: "NR", record: "6-0-0", initials: "SO", country: "England" },
  { name: "Ryuho Miyaguchi", division: "BW", rank: "NR", record: "7-1-0", initials: "RM", country: "Japan" },
  { name: "Mateus Soares", division: "BW", rank: "NR", record: "11-2-0", initials: "MS", country: "Brazil" },
  { name: "Marcus McGhee", division: "BW", rank: "#15", record: "12-2-0", initials: "MMG2", country: "USA" },
@@ -10183,6 +10184,7 @@
  "Nell Ariano": { ht:"6'4\"", dob:"1995-01-20", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:6, gym:"Platinum MMA Training Centre" },
  "Salhahuddin Everett": { ht:"6'3\"", dob:"1997-06-07", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Freestyle MMA" },
  "Ozzy Martin": { ht:"6'0\"", dob:"2002-09-18", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Nostos MMA" },
+  "Summer Onley": { ht:"5'7\"", dob:"1994-06-09", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Ronin MMA" },
   "Ryuho Miyaguchi": { ht:"5'10\"", dob:"1998-01-27", reach:'68"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:0, gym:"Cobra Kai MMA Dojo" },
   "Mateus Soares": { ht:"5'4\"", dob:"2004-05-24", reach:'66.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:4, gym:"Rizzo RVT" },
  "Marcus McGhee": { ht:"5'8\"", dob:"1990-05-07", reach:'69"', stance:"Orthodox", slpm:5.54, strAcc:"44%", sapm:3.57, strDef:"57%", kd:1.11, tdLanded:0.22, tdAcc:"11%", tdDef:"82%", subAvg:0.22, finRate:"82%", streak:1, gym:"The MMA Lab" },
@@ -55992,6 +55994,14 @@ const FIGHT_HISTORY = {
     { date: "Jul 22, 2024", opponent: "Edwin Castro", result: "W", method: "TKO (Punches)", round: 1, time: "1:26", event: "Inka 44 - Ramses vs. Henrique", org: "Inka" },
     { date: "Apr 26, 2024", opponent: "Diogo Coquinche", result: "W", method: "TKO (Punches)", round: 3, time: "4:08", event: "Inka 42 - Chavez vs. Coquinche", org: "Inka" },
     { date: "Feb 29, 2024", opponent: "Carlos Diego Guado", result: "W", method: "TKO (Knee to the Body and Punches)", round: 1, time: "4:40", event: "Inka 40 - Ramses vs. Pereira", org: "Inka" }
+  ],
+  "Summer Onley": [
+    { date: "Mar 7, 2026", opponent: "Myllena Messias", result: "W", method: "TKO (Punches)", round: 2, time: "0:31", event: "FCC 45 - Full Contact Contender 45", org: "FCC" },
+    { date: "Nov 29, 2025", opponent: "Monica Carvalho Fontes Rodrigues", result: "W", method: "TKO (Punches)", round: 1, time: "2:05", event: "FCC 44 - Full Contact Contender 44", org: "FCC" },
+    { date: "Sep 20, 2025", opponent: "Thiciany Miranda Ferreira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FCC 43 - Full Contact Contender 43", org: "FCC" },
+    { date: "Jun 7, 2025", opponent: "Ana Carolina Araujo", result: "W", method: "TKO (Punches and Elbows)", round: 3, time: "4:18", event: "FCC 42 - Full Contact Contender 42", org: "FCC" },
+    { date: "Sep 7, 2024", opponent: "Flordinice Muniz", result: "W", method: "TKO (Body Kick and Punches)", round: 2, time: "1:24", event: "FCC 39 - Full Contact Contender 39", org: "FCC" },
+    { date: "Jun 8, 2024", opponent: "Wiktoria Wojciechowska", result: "W", method: "TKO (Elbows and Punches)", round: 2, time: "2:20", event: "FCC 38 - Full Contact Contender 38", org: "FCC" }
   ],
   "Ryuho Miyaguchi": [
     { date: "May 28, 2026", opponent: "Chungreng Koren", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:00", event: "Road to UFC Season 5: Macau Quarterfinals 1", org: "UFC" },
@@ -120303,6 +120313,11 @@ const ACCOLADES = {
     { icon: "🏅", title: "Undefeated through 9 pro fights (6 KO/TKO, 3 decisions)", detail: null },
     { icon: "🏆", title: "Inka Flyweight Champion", detail: null },
     { icon: "🥊", title: "6-0 amateur record before turning pro in 2024", detail: null }
+  ],
+  "Summer Onley": [
+    { icon: "🏆", title: "Full Contact Contender (FCC) Bantamweight Champion", detail: null },
+    { icon: "🏅", title: "Undefeated through 6 pro fights; 5 finishes in 6 wins (all TKO)", detail: null },
+    { icon: "🥊", title: "7-1 amateur record before turning pro in 2024", detail: null }
   ],
   "Ryuho Miyaguchi": [
     { icon: "🏅", title: "6 KO/TKO finishes in 7 pro wins; 4 first-round finishes", detail: null },
