@@ -6222,6 +6222,7 @@
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" }, { name: "Natan Levy", division: "LW", rank: "NR", record: "9-2-0", initials: "NLE", country: "Israel" },
  { name: "Ryuho Miyaguchi", division: "BW", rank: "NR", record: "7-1-0", initials: "RM", country: "Japan" },
+ { name: "Mateus Soares", division: "BW", rank: "NR", record: "11-2-0", initials: "MS", country: "Brazil" },
  { name: "Marcus McGhee", division: "BW", rank: "#15", record: "12-2-0", initials: "MMG2", country: "USA" },
  { name: "Victor Henry", division: "BW", rank: "NR", record: "25-7-0", initials: "VHE", country: "USA" }, // 1 NC
  { name: "Luan Lacerda", division: "BW", rank: "NR", record: "13-4-0", initials: "LLA", country: "Brazil" },
@@ -10183,6 +10184,7 @@
  "Salhahuddin Everett": { ht:"6'3\"", dob:"1997-06-07", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Freestyle MMA" },
  "Ozzy Martin": { ht:"6'0\"", dob:"2002-09-18", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Nostos MMA" },
   "Ryuho Miyaguchi": { ht:"5'10\"", dob:"1998-01-27", reach:'68"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:0, gym:"Cobra Kai MMA Dojo" },
+  "Mateus Soares": { ht:"5'4\"", dob:"2004-05-24", reach:'66.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:4, gym:"Rizzo RVT" },
  "Marcus McGhee": { ht:"5'8\"", dob:"1990-05-07", reach:'69"', stance:"Orthodox", slpm:5.54, strAcc:"44%", sapm:3.57, strDef:"57%", kd:1.11, tdLanded:0.22, tdAcc:"11%", tdDef:"82%", subAvg:0.22, finRate:"82%", streak:1, gym:"The MMA Lab" },
  "Keiichiro Nakamura": { ht:"5'10\"", dob:"1998-12-02", reach:'70"', stance:"Southpaw", slpm:4.48, strAcc:"42%", sapm:4.28, strDef:"64%", kd:0.83, tdLanded:0.00, tdAcc:"0%", tdDef:"79%", subAvg:0.00, finRate:"88%", streak:8, gym:"EXFIGHT" },
  "Rinya Nakamura": { ht:"5'7\"", dob:"1995-03-23", reach:'68"', stance:"Southpaw", slpm:2.82, strAcc:"51%", sapm:1.74, strDef:"62%", kd:0.81, tdLanded:2.15, tdAcc:"57%", tdDef:"100%", subAvg:1.08, finRate:"70%", streak:1, gym:"American Top Team" },
@@ -42544,6 +42546,11 @@
   "Ryuho Miyaguchi": [
     { opponent: "Chungreng Koren", odds: -230 }
   ],
+  "Mateus Soares": [
+    { opponent: "Edson Dos Anjos", odds: -548 },
+    { opponent: "Luiz Henrique Pacifico", odds: -172 },
+    { opponent: "Macksom Lee", odds: -275 }
+  ],
   "Marcus McGhee": [
     { opponent: "John Yannis", odds: -475 },
     { opponent: "Petr Yan", odds: 290 },
@@ -55995,6 +56002,21 @@ const FIGHT_HISTORY = {
     { date: "Mar 24, 2024", opponent: "Kohei Uoyama", result: "W", method: "KO (Head Kick)", round: 1, time: "2:29", event: "Shooto / Torao Nation State - Force 19", org: "Shooto" },
     { date: "Sep 30, 2023", opponent: "Kosuke Eda", result: "W", method: "TKO (Body Kick)", round: 2, time: "0:52", event: "Gladiator 023 in Osaka", org: "Gladiator" },
     { date: "Mar 5, 2023", opponent: "Kazuya Iwasa", result: "W", method: "KO (Punches)", round: 2, time: "2:18", event: "Shooto Border 2023: The 1st", org: "Shooto" }
+  ],
+  "Mateus Soares": [
+    { date: "May 29, 2026", opponent: "Edson dos Anjos", result: "W", method: "TKO (Punches)", round: 1, time: "2:48", event: "LFA 234 - Fernando vs. Soares", org: "LFA" },
+    { date: "Nov 7, 2025", opponent: "Luiz Henrique Pacifico", result: "W", method: "TKO (Punches)", round: 1, time: "4:52", event: "LFA 221 - Clark vs. Consuli", org: "LFA" },
+    { date: "Feb 15, 2025", opponent: "Derick Garcia Borges", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "MAC 12 - Borges vs. Soares", org: "MAC" },
+    { date: "Dec 13, 2024", opponent: "Wallace Lopes", result: "W", method: "TKO (Leg Kick and Punches)", round: 3, time: "0:38", event: "Shooto Brazil 127", org: "Shooto" },
+    { date: "Aug 30, 2024", opponent: "Macksom Lee", result: "L", method: "Submission (Brabo Choke)", round: 2, time: "4:14", event: "LFA 191 - Prado vs. Lopes", org: "LFA" },
+    { date: "Mar 23, 2024", opponent: "Alexandre dos Santos Junior", result: "W", method: "KO (Punches)", round: 3, time: "0:59", event: "LFA 179 - Neto vs. Antunes", org: "LFA" },
+    { date: "Sep 2, 2023", opponent: "Andre Matos Muniz", result: "W", method: "TKO (Punches)", round: 1, time: "1:44", event: "MAC 5", org: "MAC" },
+    { date: "Jun 17, 2023", opponent: "Reidney de Oliveira Campos", result: "W", method: "Submission (Heel Hook)", round: 1, time: "3:32", event: "MAC 4 - Bantamweight Grand Prix", org: "MAC" },
+    { date: "Mar 17, 2023", opponent: "Ricardo de Almeida", result: "W", method: "TKO (Punches)", round: 1, time: "4:14", event: "Shooto Brazil 116", org: "Shooto" },
+    { date: "Nov 25, 2022", opponent: "Wellington Lopes", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 113", org: "Shooto" },
+    { date: "Sep 24, 2022", opponent: "Jose Victor", result: "W", method: "TKO", round: 1, time: "0:00", event: "Mesquita Combat", org: "Mesquita Combat" },
+    { date: "Aug 27, 2022", opponent: "Neuaque Miniamin", result: "W", method: "TKO (Punches)", round: 1, time: "2:01", event: "Jungle Fight 110", org: "Jungle Fight" },
+    { date: "Aug 6, 2022", opponent: "Ivan Alirio", result: "W", method: "KO (Head Kick)", round: 1, time: "0:32", event: "Maximun Fight MMA - 1st Edition", org: "Maximun Fight" }
   ],
   "Marcus McGhee": [
     { date: "Oct 3, 2026", opponent: "Anthony Romero", result: "W", method: "KO/TKO (Punches)", round: 1, time: "4:58", event: "UFC 332: Silva vs. Wang", org: "UFC" },
@@ -120286,6 +120308,11 @@ const ACCOLADES = {
     { icon: "🏅", title: "6 KO/TKO finishes in 7 pro wins; 4 first-round finishes", detail: null },
     { icon: "🥊", title: "Road to UFC Season 5 quarterfinalist (lost to Chungreng Koren, May 2026)", detail: null },
     { icon: "🎯", title: "Won 7 straight before the Road to UFC loss, all in Japan (Shooto and Gladiator)", detail: null }
+  ],
+  "Mateus Soares": [
+    { icon: "🏅", title: "10 finishes in 11 pro wins (9 KO/TKO, 1 submission)", detail: null },
+    { icon: "⚡", title: "8 of 11 wins came in the first round", detail: null },
+    { icon: "🎯", title: "Four-fight win streak into the Contender Series, at age 22", detail: null }
   ],
   "Marcus McGhee": [
     { icon: "🏅", title: "2023 MMA Fighting Third Team MMA All-Star", detail: null },
