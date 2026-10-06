@@ -6341,6 +6341,7 @@
  { name: "Damian Rzepecki", division: "LW", rank: "NR", record: "10-1-0", initials: "DRZ", country: "Poland" },
  { name: "Anderson Berinja", division: "BW", rank: "NR", record: "25-14-0", initials: "ABR", country: "Brazil" },
  { name: "Salhahuddin Everett", division: "WW", rank: "NR", record: "4-0-0", initials: "SE", country: "USA" },
+ { name: "Ozzy Martin", division: "WW", rank: "NR", record: "4-0-0", initials: "OM", country: "USA" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "17-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "21-7-0", initials: "MBU", country: "Lithuania" },
@@ -10178,6 +10179,7 @@
  "Preston LaGrange": { ht:"6'3\"", dob:"1998-12-16", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Hard Drive MMA" },
  "Nell Ariano": { ht:"6'4\"", dob:"1995-01-20", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:6, gym:"Platinum MMA Training Centre" },
  "Salhahuddin Everett": { ht:"6'3\"", dob:"1997-06-07", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Freestyle MMA" },
+ "Ozzy Martin": { ht:"6'0\"", dob:"2002-09-18", reach:null, stance:"Switch", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Nostos MMA" },
  "Marcus McGhee": { ht:"5'8\"", dob:"1990-05-07", reach:'69"', stance:"Orthodox", slpm:5.54, strAcc:"44%", sapm:3.57, strDef:"57%", kd:1.11, tdLanded:0.22, tdAcc:"11%", tdDef:"82%", subAvg:0.22, finRate:"82%", streak:1, gym:"The MMA Lab" },
  "Keiichiro Nakamura": { ht:"5'10\"", dob:"1998-12-02", reach:'70"', stance:"Southpaw", slpm:4.48, strAcc:"42%", sapm:4.28, strDef:"64%", kd:0.83, tdLanded:0.00, tdAcc:"0%", tdDef:"79%", subAvg:0.00, finRate:"88%", streak:8, gym:"EXFIGHT" },
  "Rinya Nakamura": { ht:"5'7\"", dob:"1995-03-23", reach:'68"', stance:"Southpaw", slpm:2.82, strAcc:"51%", sapm:1.74, strDef:"62%", kd:0.81, tdLanded:2.15, tdAcc:"57%", tdDef:"100%", subAvg:1.08, finRate:"70%", streak:1, gym:"American Top Team" },
@@ -42529,6 +42531,9 @@
   "Salhahuddin Everett": [
     { opponent: "Armus Guyton", odds: -4000 }
   ],
+  "Ozzy Martin": [
+    { opponent: "Ron Marshall", odds: -2000 }
+  ],
   "Marcus McGhee": [
     { opponent: "John Yannis", odds: -475 },
     { opponent: "Petr Yan", odds: 290 },
@@ -55953,6 +55958,12 @@ const FIGHT_HISTORY = {
     { date: "Jan 22, 2026", opponent: "Wesley Drain", result: "W", method: "KO (Punches)", round: 1, time: "0:04", event: "Tuff-N-Uff 151", org: "Tuff-N-Uff" },
     { date: "Sep 26, 2025", opponent: "Ryan Hawkins", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "2:24", event: "Tuff-N-Uff 148", org: "Tuff-N-Uff" },
     { date: "Aug 23, 2025", opponent: "Chris Kingery", result: "W", method: "TKO (Elbows)", round: 1, time: "1:42", event: "Tuff-N-Uff 147", org: "Tuff-N-Uff" }
+  ],
+  "Ozzy Martin": [
+    { date: "Jul 18, 2026", opponent: "Ryan Jett", result: "W", method: "TKO (Elbows and Knees)", round: 1, time: "0:30", event: "Cage Titans 77", org: "Cage Titans" },
+    { date: "Aug 16, 2025", opponent: "Rayne Wells", result: "W", method: "TKO (Punches)", round: 3, time: "0:14", event: "Combat Zone 89", org: "Combat Zone" },
+    { date: "Jul 19, 2025", opponent: "Kenyon Moore", result: "W", method: "KO (Punches)", round: 1, time: "2:21", event: "Cage Titans 72", org: "Cage Titans" },
+    { date: "Jan 25, 2025", opponent: "Ron Marshall", result: "W", method: "TKO (Submission to Punches)", round: 2, time: "2:30", event: "Cage Titans 69", org: "Cage Titans" }
   ],
   "Marcus McGhee": [
     { date: "Oct 3, 2026", opponent: "Anthony Romero", result: "W", method: "KO/TKO (Punches)", round: 1, time: "4:58", event: "UFC 332: Silva vs. Wang", org: "UFC" },
@@ -120224,6 +120235,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "Two Tuff-N-Uff titles in 2024 (amateur)", detail: null },
     { icon: "🏅", title: "4-second KO of Wesley Drain at Tuff-N-Uff 151 (Jan 2026); all 4 pro wins finished in round 1", detail: null },
     { icon: "🎯", title: "UFC employee: worked in UFC security, then as Dana White's assistant (\"Facility Runner\"), before his Contender Series bout", detail: null }
+  ],
+  "Ozzy Martin": [
+    { icon: "🏅", title: "100% finish rate — all 4 pro wins by KO/TKO", detail: null },
+    { icon: "🏅", title: "30-second TKO (elbows and knees) of Ryan Jett at Cage Titans 77 (Jul 2026)", detail: null }
   ],
   "Marcus McGhee": [
     { icon: "🏅", title: "2023 MMA Fighting Third Team MMA All-Star", detail: null },
