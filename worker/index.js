@@ -3472,7 +3472,8 @@ export default {
           loadAssetJson(env, url, "/data/fighter-lite.json"),
         ]);
         const fighterLiteBySlug = (lite && lite.bySlug) || {};
-        const withSlug = (n) => ({ name: n, slug: profileSlugFor(n, profileSlugs) || null });
+        const rosterAliases = (ro && ro.aliases) || {};
+        const withSlug = (n) => ({ name: n, slug: profileSlugFor(n, profileSlugs) || profileSlugFor(rosterAliases[n] || "", profileSlugs) || null });
         const fighters = ((ro && ro.fighters) || []).map(withSlug);
         const changes = ((ro && ro.changes) || []).map((w) => ({
           week: w.week,

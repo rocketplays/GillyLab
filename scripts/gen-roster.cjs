@@ -27,5 +27,13 @@ if (rcM) {
   }
 }
 
-fs.writeFileSync(path.join(ROOT, "data/roster.json"), JSON.stringify({ generatedAt: new Date().toISOString(), count: fighters.length, fighters, changes }) + "\n");
+// Roster name -> canonical FIGHTERS name, for names the roster spells differently
+// from the profile database ("Abdul Rakhman Yakhyaev" vs "Abdulrakhman Yakhyaev").
+// Without this the /roster page and the app can't resolve a profile slug for them
+// and render the name greyed out / unclickable.
+const aliases = {};
+const alM = IDX.match(/const ACTIVE_ROSTER_ALIASES\s*=\s*\{([\s\S]*?)\n\s*\};/);
+if (alM) { const re = /"([^"]+)"\s*:\s*"([^"]+)"/g; let x; while ((x = re.exec(alM[1]))) aliases[x[1]] = x[2]; }
+
+fs.writeFileSync(path.join(ROOT, "data/roster.json"), JSON.stringify({ generatedAt: new Date().toISOString(), count: fighters.length, fighters, changes, aliases }) + "\n");
 console.log(`roster.json: ${fighters.length} fighters, ${changes.length} change week(s)`);

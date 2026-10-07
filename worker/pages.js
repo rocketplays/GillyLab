@@ -2459,7 +2459,8 @@ function rosterSSR(roster, slugMap) {
 }
 export const rosterPage = ({ subscribed, loggedIn, roster, profileSlugs }) => {
   const R = (roster && roster.fighters) || [];
-  const RSLUG = {}; R.forEach((n) => { const s = profileSlugFor(n, profileSlugs); if (s) RSLUG[n] = s; });
+  const RALIAS = (roster && roster.aliases) || {};
+  const RSLUG = {}; R.forEach((n) => { const s = profileSlugFor(n, profileSlugs) || profileSlugFor(RALIAS[n] || "", profileSlugs); if (s) RSLUG[n] = s; });
   const rs = rosterSSR(roster, RSLUG); return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#12251b">
