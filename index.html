@@ -6221,6 +6221,7 @@
     { name: "Andre Fili", division: "FW", rank: "NR", record: "25-14-0", initials: "AFI", country: "USA" },
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" }, { name: "Natan Levy", division: "LW", rank: "NR", record: "9-2-0", initials: "NLE", country: "Israel" },
+ { name: "Aline Pereira", division: "WBW", rank: "NR", record: "3-2-0", initials: "AP", country: "Brazil" },
  { name: "Smilla Sundell", division: "WBW", rank: "NR", record: "2-0-0", initials: "SS", country: "Sweden" },
  { name: "Alivia Bierley", division: "WBW", rank: "NR", record: "6-1-0", initials: "AB", country: "USA" },
  { name: "Summer Onley", division: "WBW", rank: "NR", record: "6-1-0", initials: "SO", country: "England" },
@@ -10186,6 +10187,7 @@
  "Nell Ariano": { ht:"6'4\"", dob:"1995-01-20", reach:null, stance:"Orthodox", slpm:1.25, strAcc:"38%", sapm:5.0, strDef:"37%", kd:0.0, tdLanded:6.25, tdAcc:"33%", tdDef:null, subAvg:0.0, finRate:"67%", streak:6, gym:"Platinum MMA Training Centre" },
  "Salhahuddin Everett": { ht:"6'3\"", dob:"1997-06-07", reach:null, stance:"Switch", slpm:9.74, strAcc:"49%", sapm:8.21, strDef:"48%", kd:7.69, tdLanded:0.0, tdAcc:null, tdDef:"100%", subAvg:0.0, finRate:"100%", streak:4, gym:"Freestyle MMA" },
  "Ozzy Martin": { ht:"6'0\"", dob:"2002-09-18", reach:null, stance:"Switch", slpm:8.21, strAcc:"52%", sapm:9.74, strDef:"51%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"100%", streak:4, gym:"Nostos MMA" },
+  "Aline Pereira": { ht:"5'7\"", dob:"1990-10-06", reach:'70"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"0%", streak:2, gym:"Teixeira MMA & Fitness" },
   "Smilla Sundell": { ht:"5'10\"", dob:"2004-11-12", reach:'69.5"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Diaz Combat Sports" },
   "Alivia Bierley": { ht:"5'7\"", dob:"1996-09-20", reach:'66"', stance:"Orthodox", slpm:3.13, strAcc:"41%", sapm:2.2, strDef:"61%", kd:0.0, tdLanded:2.0, tdAcc:"50%", tdDef:"100%", subAvg:0.0, finRate:"60%", streak:5, gym:"Pete Spratt American Muay Thai" },
   "Summer Onley": { ht:"5'7\"", dob:"1994-06-09", reach:null, stance:"Orthodox", slpm:2.2, strAcc:"39%", sapm:3.13, strDef:"59%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"50%", subAvg:0.0, finRate:"83%", streak:6, gym:"Ronin MMA" },
@@ -42616,6 +42618,13 @@
   "Roque Conceição": [
     { opponent: "Imanol Rodriguez", odds: 171 }
   ],
+  "Aline Pereira": [
+    { opponent: "Jade Masson-Wong", odds: -500 },
+    { opponent: "Nejra Repp", odds: -170 },
+    { opponent: "Cheyanne Bowers", odds: -175 },
+    { opponent: "Chelsea Conner", odds: -649 },
+    { opponent: "Helen Peralta", odds: -317 }
+  ],
   "Smilla Sundell": [
     { opponent: "Maya Samuels-Stewart", odds: -650 },
     { opponent: "Miranda Barber", odds: -5000 }
@@ -56081,6 +56090,13 @@ const FIGHT_HISTORY = {
     { date: "Jul 22, 2024", opponent: "Edwin Castro", result: "W", method: "TKO (Punches)", round: 1, time: "1:26", event: "Inka 44 - Ramses vs. Henrique", org: "Inka" },
     { date: "Apr 26, 2024", opponent: "Diogo Coquinche", result: "W", method: "TKO (Punches)", round: 3, time: "4:08", event: "Inka 42 - Chavez vs. Coquinche", org: "Inka" },
     { date: "Feb 29, 2024", opponent: "Carlos Diego Guado", result: "W", method: "TKO (Knee to the Body and Punches)", round: 1, time: "4:40", event: "Inka 40 - Ramses vs. Pereira", org: "Inka" }
+  ],
+  "Aline Pereira": [
+    { date: "May 16, 2026", opponent: "Jade Masson-Wong", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "MVP MMA 1: Rousey vs. Carano", org: "MVP" },
+    { date: "Nov 14, 2025", opponent: "Nejra Repp", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 222: Pires vs. Belakh", org: "LFA" },
+    { date: "Sep 22, 2023", opponent: "Cheyanne Bowers", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 168: McKee vs. McPadden", org: "LFA" },
+    { date: "Jun 16, 2023", opponent: "Chelsea Conner", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 160: Sweeney vs. Begosso", org: "LFA" },
+    { date: "Nov 18, 2022", opponent: "Helen Peralta", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 147: Melo vs. Costa", org: "LFA" }
   ],
   "Smilla Sundell": [
     { date: "Jun 5, 2026", opponent: "Maya Samuels-Stewart", result: "W", method: "TKO (Punches and Knees)", round: 2, time: "1:28", event: "Tuff-N-Uff 154", org: "Tuff-N-Uff" },
@@ -120417,6 +120433,12 @@ const ACCOLADES = {
     { icon: "🏅", title: "Undefeated through 9 pro fights (6 KO/TKO, 3 decisions)", detail: null },
     { icon: "🏆", title: "Inka Flyweight Champion", detail: null },
     { icon: "🥊", title: "6-0 amateur record before turning pro in 2024", detail: null }
+  ],
+  "Aline Pereira": [
+    { icon: "🏆", title: "Inaugural Karate Combat Women's Flyweight Champion (2025)", detail: null },
+    { icon: "👥", title: "Sister of former two-division UFC champion Alex Pereira", detail: null },
+    { icon: "🥊", title: "Kickboxing background: 6-2 record, challenged for the Glory Super Bantamweight title (Jan 2021)", detail: null },
+    { icon: "🎯", title: "All 3 MMA wins by decision; won her last two, including MVP MMA 1 on Netflix (May 2026)", detail: null }
   ],
   "Smilla Sundell": [
     { icon: "🏆", title: "Inaugural ONE Women's Strawweight Muay Thai World Champion (youngest world champion in ONE history, age 17)", detail: null },
