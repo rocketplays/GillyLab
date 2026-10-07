@@ -35,8 +35,8 @@
 window.GL_ROUTER.register('matchup', {
   title: 'Events',
   tab: 'matchup',
-  render: function(container){
-    mountMatchup(container);
+  render: function(container, params){
+    mountMatchup(container, params);
   }
 });
 
@@ -52,8 +52,24 @@ window.GL_ROUTER.register('matchup', {
 // completing and moving out of "upcoming").
 var lastCarouselSlug = null;
 
-function mountMatchup(container){
+function mountMatchup(container, params){
   container.innerHTML = '<p class="gl-muted">Loading the card…</p>';
+
+  // Home's "View All Upcoming Cards" link / a Scheduled Cards tile ask for
+  // this screen to open scrolled down to the Upcoming Events carousel (and,
+  // for a tile, to that event's slide). Consumed once per navigation: the
+  // router re-renders with the SAME params object on a back(), and a back
+  // should restore the visitor's old scroll position rather than re-jump.
+  var focusCarousel = !!(params && params.focusCarousel && !params._consumed);
+  if (params && params.focusCarousel) params._consumed = true;
+  if (focusCarousel && params.eventSlug) lastCarouselSlug = params.eventSlug;
+  function scrollToCarousel(){
+    var hdr = container.querySelector('.mf-car-hdr');
+    var sc = document.getElementById('appScroll');
+    if (!hdr || !sc) return;
+    var top = hdr.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - 8;
+    sc.scrollTop = Math.max(0, top);
+  }
 
   var data = null;       // last successful /api/app/matchup response
   var searchSeq = 0;     // ignore a stale search response that resolves late
@@ -270,6 +286,7 @@ function mountMatchup(container){
         '<div class="sr-common"><div class="sr-common-title">Finish &amp; durability</div>' +
           '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Win finish rate</div><div class="sr-cmp-val">' + esc(fd.finRate && fd.finRate.a || '—') + '</div><div class="sr-cmp-val">' + esc(fd.finRate && fd.finRate.b || '—') + '</div></div>' +
           '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Win methods</div><div class="sr-cmp-val">' + esc(fd.methods && fd.methods.a || '—') + '</div><div class="sr-cmp-val">' + esc(fd.methods && fd.methods.b || '—') + '</div></div>' +
+          (fd.timesFinished ? '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Times finished</div><div class="sr-cmp-val' + (fd.timesFinished.aCls ? ' ' + esc(fd.timesFinished.aCls) : '') + '">' + esc(fd.timesFinished.a || '—') + '</div><div class="sr-cmp-val' + (fd.timesFinished.bCls ? ' ' + esc(fd.timesFinished.bCls) : '') + '">' + esc(fd.timesFinished.b || '—') + '</div></div>' : '') +
         '</div>'
       );
     }
@@ -389,9 +406,12 @@ function mountMatchup(container){
     // same convention as this file's top-level fmtOdds -- do not re-prepend
     // "+", that double-signs any plus-money value ("++128").
     var fmt = function(o){ return o == null ? '—' : String(o); };
-    var favSide = (f.o1 != null && f.o2 != null) ? (f.o1 <= f.o2 ? 1 : 2) : null;
+    // Compare NUMERICALLY: the strings ("+131" vs "-156") sort wrong
+    // lexicographically, which mislabeled the favorite and hid the badge.
+    var n1 = f.o1 == null ? null : Number(f.o1), n2 = f.o2 == null ? null : Number(f.o2);
+    var favSide = (n1 != null && n2 != null && !isNaN(n1) && !isNaN(n2)) ? (n1 <= n2 ? 1 : 2) : null;
     var winSide = (res && res.winner) ? window.GL_NAMES.side(res.winner, f.f1, f.f2) : 0;
-    var winOdds = winSide === 1 ? f.o1 : (winSide === 2 ? f.o2 : null);
+    var winOdds = winSide === 1 ? n1 : (winSide === 2 ? n2 : null);
     // Any plus-money winner (+101 or longer) counts as an upset, same
     // threshold the site's oddsHistoryPair-based check uses.
     var upset = winSide && favSide && winSide !== favSide && winOdds != null && winOdds >= 101;
@@ -1511,6 +1531,13 @@ function mountMatchup(container){
       if (res.card && res.hub) hubData[res.card.slug] = res.hub;
       (res.carousel || []).forEach(function(c){ if (c && c.hub) hubData[c.slug] = c.hub; });
       render();
+      if (focusCarousel){
+        focusCarousel = false;
+        // Twice: once after the carousel has jumped to its slide, and again
+        // once avatars/images have settled and shifted the layout.
+        setTimeout(scrollToCarousel, 80);
+        setTimeout(scrollToCarousel, 450);
+      }
     }).catch(function(){
       container.innerHTML = '<div class="gl-card"><h3 style="margin:0 0 .4rem">Matchup hub unavailable right now</h3><p>Couldn’t reach gillylab.com. Check your connection and try again shortly.</p></div>';
     });

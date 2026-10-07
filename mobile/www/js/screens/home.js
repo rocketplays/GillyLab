@@ -210,8 +210,8 @@ window.GL_ROUTER.register('home', {
     // neither are Play & Compete's tiles or More Premium Tools' cards --
     // both already route to more than one destination, so there's no
     // single "view all" this pattern fits.
-    function headLink(label, route){
-      return '<button type="button" class="hm-head-link" data-goto="' + route + '">' + esc(label) + '<span class="hm-head-arrow">›</span></button>';
+    function headLink(label, route, extraAttrs){
+      return '<button type="button" class="hm-head-link" data-goto="' + route + '"' + (extraAttrs ? ' ' + extraAttrs : '') + '>' + esc(label) + '<span class="hm-head-arrow">›</span></button>';
     }
 
     // ── 2. Scheduled Cards -- horizontal strip of the upcoming carousel,
@@ -244,7 +244,7 @@ window.GL_ROUTER.register('home', {
         var when = c.date ? new Date(c.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
         var matchup = main ? (surname(main.f1) + ' vs ' + surname(main.f2)) : (c.event || '');
         return (
-          '<button type="button" class="hm-ev-card ' + kind + '" data-goto="matchup">' +
+          '<button type="button" class="hm-ev-card ' + kind + '" data-goto="matchup" data-focus-carousel="1" data-event-slug="' + esc(c.slug || '') + '">' +
             '<div class="hm-ev-tag ' + kind + '">' + esc(eventKindLabel(kind, c.event)) + '</div>' +
             (main ? '<div class="hm-ev-fighters">' + av(main.f1, main.s1, 'hm-ev-av') + av(main.f2, main.s2, 'hm-ev-av') + '</div>' : '') +
             '<div class="hm-ev-title">' + esc(matchup) + '</div>' +
@@ -254,7 +254,7 @@ window.GL_ROUTER.register('home', {
       }).join('');
       return (
         '<div class="gl-sec">' +
-          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Scheduled <span class="a">Cards</span></h2>' + headLink('View All Upcoming Cards', 'matchup') + '</div>' +
+          '<div class="gl-dash-head gl-dash-head--evenspace"><h2 class="gl-dash-title hm-title">Scheduled <span class="a">Cards</span></h2>' + headLink('View All Upcoming Cards', 'matchup', 'data-focus-carousel="1"') + '</div>' +
           '<div class="hm-strip">' + cards + '</div>' +
         '</div>'
       );
@@ -591,13 +591,18 @@ window.GL_ROUTER.register('home', {
 
     function wire(){
       container.querySelectorAll('[data-goto]').forEach(function(el){
-        el.addEventListener('click', go(el.getAttribute('data-goto')));
+        // Scheduled Cards' "View All" link and tiles ask the Events tab to
+        // scroll down to its Upcoming Events carousel (and, for a tile, to
+        // that event's own slide); every other data-goto button just
+        // navigates to the top of its screen, "View Full Card" included.
+        var params;
+        if (el.hasAttribute('data-focus-carousel')){
+          params = { focusCarousel: true };
+          var evSlug = el.getAttribute('data-event-slug');
+          if (evSlug) params.eventSlug = evSlug;
+        }
+        el.addEventListener('click', go(el.getAttribute('data-goto'), params));
       });
-      // Scheduled Cards' tiles all route to the Events tab's own carousel
-      // rather than deep-linking to that specific slide -- matchup.js's
-      // render() doesn't currently accept a route param to preselect one
-      // (it always loads the default featured card + carousel), so jumping
-      // straight to a specific card would need that screen extended first.
       container.querySelectorAll('[data-slug]').forEach(function(el){
         el.addEventListener('click', function(){
           window.GL_NATIVE.tap();
