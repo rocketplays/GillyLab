@@ -6221,6 +6221,7 @@
     { name: "Andre Fili", division: "FW", rank: "NR", record: "25-14-0", initials: "AFI", country: "USA" },
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" }, { name: "Natan Levy", division: "LW", rank: "NR", record: "9-2-0", initials: "NLE", country: "Israel" },
+ { name: "Smilla Sundell", division: "WBW", rank: "NR", record: "2-0-0", initials: "SS", country: "Sweden" },
  { name: "Alivia Bierley", division: "WBW", rank: "NR", record: "6-1-0", initials: "AB", country: "USA" },
  { name: "Summer Onley", division: "WBW", rank: "NR", record: "6-1-0", initials: "SO", country: "England" },
  { name: "Ryuho Miyaguchi", division: "BW", rank: "NR", record: "7-2-0", initials: "RM", country: "Japan" },
@@ -10185,6 +10186,7 @@
  "Nell Ariano": { ht:"6'4\"", dob:"1995-01-20", reach:null, stance:"Orthodox", slpm:1.25, strAcc:"38%", sapm:5.0, strDef:"37%", kd:0.0, tdLanded:6.25, tdAcc:"33%", tdDef:null, subAvg:0.0, finRate:"67%", streak:6, gym:"Platinum MMA Training Centre" },
  "Salhahuddin Everett": { ht:"6'3\"", dob:"1997-06-07", reach:null, stance:"Switch", slpm:9.74, strAcc:"49%", sapm:8.21, strDef:"48%", kd:7.69, tdLanded:0.0, tdAcc:null, tdDef:"100%", subAvg:0.0, finRate:"100%", streak:4, gym:"Freestyle MMA" },
  "Ozzy Martin": { ht:"6'0\"", dob:"2002-09-18", reach:null, stance:"Switch", slpm:8.21, strAcc:"52%", sapm:9.74, strDef:"51%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"100%", streak:4, gym:"Nostos MMA" },
+  "Smilla Sundell": { ht:"5'10\"", dob:"2004-11-12", reach:'69.5"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Diaz Combat Sports" },
   "Alivia Bierley": { ht:"5'7\"", dob:"1996-09-20", reach:'66"', stance:"Orthodox", slpm:3.13, strAcc:"41%", sapm:2.2, strDef:"61%", kd:0.0, tdLanded:2.0, tdAcc:"50%", tdDef:"100%", subAvg:0.0, finRate:"60%", streak:5, gym:"Pete Spratt American Muay Thai" },
   "Summer Onley": { ht:"5'7\"", dob:"1994-06-09", reach:null, stance:"Orthodox", slpm:2.2, strAcc:"39%", sapm:3.13, strDef:"59%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"50%", subAvg:0.0, finRate:"83%", streak:6, gym:"Ronin MMA" },
   "Ryuho Miyaguchi": { ht:"5'10\"", dob:"1998-01-27", reach:'68"', stance:"Orthodox", slpm:4.76, strAcc:"29%", sapm:19.05, strDef:"35%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"86%", streak:0, gym:"Cobra Kai MMA Dojo" },
@@ -42614,6 +42616,10 @@
   "Roque Conceição": [
     { opponent: "Imanol Rodriguez", odds: 171 }
   ],
+  "Smilla Sundell": [
+    { opponent: "Maya Samuels-Stewart", odds: -650 },
+    { opponent: "Miranda Barber", odds: -5000 }
+  ],
   "Alivia Bierley": [
     { opponent: "Nikola Kacperska", odds: -700 },
     { opponent: "Devon McDonald", odds: -338 },
@@ -56075,6 +56081,10 @@ const FIGHT_HISTORY = {
     { date: "Jul 22, 2024", opponent: "Edwin Castro", result: "W", method: "TKO (Punches)", round: 1, time: "1:26", event: "Inka 44 - Ramses vs. Henrique", org: "Inka" },
     { date: "Apr 26, 2024", opponent: "Diogo Coquinche", result: "W", method: "TKO (Punches)", round: 3, time: "4:08", event: "Inka 42 - Chavez vs. Coquinche", org: "Inka" },
     { date: "Feb 29, 2024", opponent: "Carlos Diego Guado", result: "W", method: "TKO (Knee to the Body and Punches)", round: 1, time: "4:40", event: "Inka 40 - Ramses vs. Pereira", org: "Inka" }
+  ],
+  "Smilla Sundell": [
+    { date: "Jun 5, 2026", opponent: "Maya Samuels-Stewart", result: "W", method: "TKO (Punches and Knees)", round: 2, time: "1:28", event: "Tuff-N-Uff 154", org: "Tuff-N-Uff" },
+    { date: "Jan 22, 2026", opponent: "Miranda Barber", result: "W", method: "TKO (Knees and Elbows)", round: 1, time: "4:54", event: "Tuff-N-Uff 151", org: "Tuff-N-Uff" }
   ],
   "Alivia Bierley": [
     { date: "Oct 6, 2026", opponent: "Summer Onley", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 10, Week 9", org: "UFC" },
@@ -120407,6 +120417,12 @@ const ACCOLADES = {
     { icon: "🏅", title: "Undefeated through 9 pro fights (6 KO/TKO, 3 decisions)", detail: null },
     { icon: "🏆", title: "Inka Flyweight Champion", detail: null },
     { icon: "🥊", title: "6-0 amateur record before turning pro in 2024", detail: null }
+  ],
+  "Smilla Sundell": [
+    { icon: "🏆", title: "Inaugural ONE Women's Strawweight Muay Thai World Champion (youngest world champion in ONE history, age 17)", detail: null },
+    { icon: "🏅", title: "ONE Super Series Female Fighter of the Year (2022); two-time ONE Performance of the Night bonus winner", detail: null },
+    { icon: "🥊", title: "36-5-1 combined kickboxing and Muay Thai record before turning to MMA", detail: null },
+    { icon: "🎯", title: "2-0 in MMA, both by TKO", detail: null }
   ],
   "Alivia Bierley": [
     { icon: "🏅", title: "3 finishes in 5 pro wins (2 KO, 1 TKO)", detail: null },
