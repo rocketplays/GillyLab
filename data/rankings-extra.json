@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-07T18:23:04.446Z",
+  "generatedAt": "2026-10-07T21:07:31.980Z",
   "bySlug": {
     "islam-makhachev": {
       "name": "Islam Makhachev",
@@ -205,6 +205,12 @@
       "flag": "🇺🇸",
       "record": "18-7-0"
     },
+    "payton-talbott": {
+      "name": "Payton Talbott",
+      "photo": "payton-talbott",
+      "flag": "🇺🇸",
+      "record": "12-1-0"
+    },
     "aiemann-zahabi": {
       "name": "Aiemann Zahabi",
       "photo": "aiemann-zahabi",
@@ -217,11 +223,11 @@
       "flag": "🇲🇽",
       "record": "15-1-0"
     },
-    "deiveson-figueiredo": {
-      "name": "Deiveson Figueiredo",
-      "photo": "deiveson-figueiredo",
-      "flag": "🇧🇷",
-      "record": "25-8-1"
+    "raul-rosas": {
+      "name": "Raul Rosas Jr.",
+      "photo": "raul-rosas",
+      "flag": "🇲🇽",
+      "record": "13-1-0"
     },
     "marlon-vera": {
       "name": "Marlon Vera",
@@ -229,23 +235,11 @@
       "flag": "🇪🇨",
       "record": "24-12-1"
     },
-    "payton-talbott": {
-      "name": "Payton Talbott",
-      "photo": "payton-talbott",
-      "flag": "🇺🇸",
-      "record": "12-1-0"
-    },
-    "raul-rosas": {
-      "name": "Raul Rosas Jr.",
-      "photo": "raul-rosas",
-      "flag": "🇲🇽",
-      "record": "13-1-0"
-    },
-    "raoni-barcelos": {
-      "name": "Raoni Barcelos",
-      "photo": "raoni-barcelos",
+    "deiveson-figueiredo": {
+      "name": "Deiveson Figueiredo",
+      "photo": "deiveson-figueiredo",
       "flag": "🇧🇷",
-      "record": "22-6-0"
+      "record": "25-8-1"
     },
     "farid-basharat": {
       "name": "Farid Basharat",
@@ -258,6 +252,12 @@
       "photo": "marcus-mcghee",
       "flag": "🇺🇸",
       "record": "12-2-0"
+    },
+    "raoni-barcelos": {
+      "name": "Raoni Barcelos",
+      "photo": "raoni-barcelos",
+      "flag": "🇧🇷",
+      "record": "22-6-0"
     },
     "movsar-evloev": {
       "name": "Movsar Evloev",
@@ -631,29 +631,23 @@
       "flag": "🇧🇷",
       "record": "16-4-0"
     },
-    "jamahal-hill": {
-      "name": "Jamahal Hill",
-      "photo": "jamahal-hill",
-      "flag": "🇺🇸",
-      "record": "12-4-0"
-    },
     "azamat-murzakanov": {
       "name": "Azamat Murzakanov",
       "photo": "azamat-murzakanov",
       "flag": "🇷🇺",
       "record": "16-1-0"
     },
-    "jan-blachowicz": {
-      "name": "Jan Błachowicz",
-      "photo": "jan-blachowicz",
-      "flag": "🇵🇱",
-      "record": "29-12-2"
-    },
     "dominick-reyes": {
       "name": "Dominick Reyes",
       "photo": "dominick-reyes",
       "flag": "🇺🇸",
       "record": "16-5-0"
+    },
+    "jan-blachowicz": {
+      "name": "Jan Błachowicz",
+      "photo": "jan-blachowicz",
+      "flag": "🇵🇱",
+      "record": "29-12-2"
     },
     "bogdan-guskov": {
       "name": "Bogdan Guskov",
@@ -667,17 +661,23 @@
       "flag": "🇦🇺",
       "record": "27-9-0"
     },
-    "johnny-walker": {
-      "name": "Johnny Walker",
-      "photo": "johnny-walker",
-      "flag": "🇧🇷",
-      "record": "23-10-1"
-    },
     "alonzo-menifield": {
       "name": "Alonzo Menifield",
       "photo": "alonzo-menifield",
       "flag": "🇺🇸",
       "record": "19-6-1"
+    },
+    "muhammad-saidov": {
+      "name": "Muhammad Saidov",
+      "photo": "muhammad-saidov",
+      "flag": "",
+      "record": ""
+    },
+    "reinier-de-ridder": {
+      "name": "Reinier de Ridder",
+      "photo": "reinier-de-ridder",
+      "flag": "🇳🇱",
+      "record": "22-4-0"
     },
     "nikita-krylov": {
       "name": "Nikita Krylov",
@@ -757,17 +757,17 @@
       "flag": "🇺🇸",
       "record": "29-14-0"
     },
-    "mario-pinto": {
-      "name": "Mario Pinto",
-      "photo": "mario-pinto",
-      "flag": "🇵🇹",
-      "record": "13-0-0"
-    },
     "aleksandar-rakic": {
       "name": "Aleksandar Rakić",
       "photo": "aleksandar-rakic",
       "flag": "🇷🇸",
       "record": "15-6-0"
+    },
+    "mario-pinto": {
+      "name": "Mario Pinto",
+      "photo": "mario-pinto",
+      "flag": "🇵🇹",
+      "record": "13-0-0"
     },
     "valentina-shevchenko": {
       "name": "Valentina Shevchenko",
@@ -791,7 +791,7 @@
       "name": "Natália Silva",
       "photo": "natalia-silva",
       "flag": "🇧🇷",
-      "record": "20-5-1"
+      "record": "21-5-1"
     },
     "mackenzie-dern": {
       "name": "Mackenzie Dern",
@@ -835,17 +835,17 @@
       "flag": "🇧🇷",
       "record": "23-4-0"
     },
-    "raquel-pennington": {
-      "name": "Raquel Pennington",
-      "photo": "raquel-pennington",
-      "flag": "🇺🇸",
-      "record": "16-10-0"
-    },
     "rose-namajunas": {
       "name": "Rose Namajunas",
       "photo": "rose-namajunas",
       "flag": "🇺🇸",
       "record": "14-8-0"
+    },
+    "raquel-pennington": {
+      "name": "Raquel Pennington",
+      "photo": "raquel-pennington",
+      "flag": "🇺🇸",
+      "record": "16-10-0"
     },
     "denise-gomes": {
       "name": "Denise Gomes",
@@ -935,7 +935,7 @@
       "name": "Wang Cong",
       "photo": "wang-cong",
       "flag": "🇨🇳",
-      "record": "10-1-0"
+      "record": "10-2-0"
     },
     "tracy-cortez": {
       "name": "Tracy Cortez",
@@ -967,17 +967,17 @@
       "flag": "🇧🇷",
       "record": "12-3-0"
     },
-    "gabriella-fernandes": {
-      "name": "Gabriella Fernandes",
-      "photo": "gabriella-fernandes",
-      "flag": "🇧🇷",
-      "record": "11-4-0"
-    },
     "regina-tarin": {
       "name": "Regina Tarin",
       "photo": "regina-tarin",
       "flag": "🇲🇽",
       "record": "9-0-0"
+    },
+    "gabriella-fernandes": {
+      "name": "Gabriella Fernandes",
+      "photo": "gabriella-fernandes",
+      "flag": "🇧🇷",
+      "record": "11-4-0"
     },
     "joselyne-edwards": {
       "name": "Joselyne Edwards",
@@ -985,17 +985,17 @@
       "flag": "🇵🇦",
       "record": "18-6-0"
     },
-    "norma-dumont": {
-      "name": "Norma Dumont",
-      "photo": "norma-dumont",
-      "flag": "🇧🇷",
-      "record": "13-4-0"
-    },
     "ailin-perez": {
       "name": "Ailín Pérez",
       "photo": "ailin-perez",
       "flag": "🇦🇷",
       "record": "14-2-0"
+    },
+    "norma-dumont": {
+      "name": "Norma Dumont",
+      "photo": "norma-dumont",
+      "flag": "🇧🇷",
+      "record": "13-4-0"
     },
     "yana-santos": {
       "name": "Yana Santos",
@@ -1009,17 +1009,17 @@
       "flag": "🇧🇷",
       "record": "13-2-0"
     },
-    "macy-chiasson": {
-      "name": "Macy Chiasson",
-      "photo": "macy-chiasson",
-      "flag": "🇺🇸",
-      "record": "11-6-0"
-    },
     "jacqueline-cavalcanti": {
       "name": "Jacqueline Cavalcanti",
       "photo": "jacqueline-cavalcanti",
       "flag": "🇵🇹",
       "record": "10-2-0"
+    },
+    "macy-chiasson": {
+      "name": "Macy Chiasson",
+      "photo": "macy-chiasson",
+      "flag": "🇺🇸",
+      "record": "11-6-0"
     },
     "karol-rosa": {
       "name": "Karol Rosa",
@@ -1045,23 +1045,29 @@
       "flag": "🇫🇷",
       "record": "10-4-0"
     },
-    "miesha-tate": {
-      "name": "Miesha Tate",
-      "photo": "miesha-tate",
-      "flag": "🇺🇸",
-      "record": "20-10-0"
-    },
     "melissa-croden": {
       "name": "Melissa Croden",
       "photo": "melissa-croden",
       "flag": "🇨🇦",
       "record": "8-3-0"
     },
+    "daria-zhelezniakova": {
+      "name": "Daria Zhelezniakova",
+      "photo": "daria-zhelezniakova",
+      "flag": "🇷🇺",
+      "record": "10-3-0"
+    },
     "mitch-raposo": {
       "name": "Mitch Raposo",
       "photo": "mitch-raposo",
       "flag": "🇺🇸",
       "record": "11-3-0"
+    },
+    "imanol-rodriguez": {
+      "name": "Imanol Rodriguez",
+      "photo": "imanol-rodriguez",
+      "flag": "🇲🇽",
+      "record": "8-0-0"
     },
     "rei-tsuruya": {
       "name": "Rei Tsuruya",
@@ -1075,23 +1081,17 @@
       "flag": "🇺🇸",
       "record": "20-9-0"
     },
-    "alessandro-costa": {
-      "name": "Alessandro Costa",
-      "photo": "alessandro-costa",
-      "flag": "🇧🇷",
-      "record": "17-5-0"
+    "montel-jackson": {
+      "name": "Montel Jackson",
+      "photo": "montel-jackson",
+      "flag": "🇺🇸",
+      "record": "16-4-0"
     },
     "bryce-mitchell": {
       "name": "Bryce Mitchell",
       "photo": "bryce-mitchell",
       "flag": "🇺🇸",
       "record": "19-3-0"
-    },
-    "montel-jackson": {
-      "name": "Montel Jackson",
-      "photo": "montel-jackson",
-      "flag": "🇺🇸",
-      "record": "16-4-0"
     },
     "pat-sabatini": {
       "name": "Pat Sabatini",
@@ -1129,11 +1129,11 @@
       "flag": "🇺🇸",
       "record": "24-3-1"
     },
-    "jalin-turner": {
-      "name": "Jalin Turner",
-      "photo": "jalin-turner",
-      "flag": "🇺🇸",
-      "record": "16-9-0"
+    "esteban-ribovics": {
+      "name": "Esteban Ribovics",
+      "photo": "esteban-ribovics",
+      "flag": "🇦🇷",
+      "record": "17-3-0"
     },
     "kevin-holland": {
       "name": "Kevin Holland",
@@ -1141,23 +1141,35 @@
       "flag": "🇺🇸",
       "record": "29-15-0"
     },
+    "roman-kopylov": {
+      "name": "Roman Kopylov",
+      "photo": "roman-kopylov",
+      "flag": "🇷🇺",
+      "record": "16-5-0"
+    },
     "edmen-shahbazyan": {
       "name": "Edmen Shahbazyan",
       "photo": "edmen-shahbazyan",
       "flag": "🇺🇸",
       "record": "17-6-0"
     },
-    "reinier-de-ridder": {
-      "name": "Reinier de Ridder",
-      "photo": "reinier-de-ridder",
-      "flag": "🇳🇱",
-      "record": "22-4-0"
+    "modestas-bukauskas": {
+      "name": "Modestas Bukauskas",
+      "photo": "modestas-bukauskas",
+      "flag": "🇱🇹",
+      "record": "21-7-0"
     },
-    "muhammad-saidov": {
-      "name": "Muhammad Saidov",
-      "photo": "muhammad-saidov",
-      "flag": "",
-      "record": ""
+    "abdulrakhman-yakhyaev": {
+      "name": "Abdulrakhman Yakhyaev",
+      "photo": "abdulrakhman-yakhyaev",
+      "flag": "🇹🇷",
+      "record": "10-0-0"
+    },
+    "johnny-walker": {
+      "name": "Johnny Walker",
+      "photo": "johnny-walker",
+      "flag": "🇧🇷",
+      "record": "23-10-1"
     },
     "brando-pericic": {
       "name": "Brando Pericic",
@@ -1165,17 +1177,11 @@
       "flag": "🇦🇺",
       "record": "7-1-0"
     },
-    "mick-parkin": {
-      "name": "Mick Parkin",
-      "photo": "mick-parkin",
-      "flag": "🇬🇧",
-      "record": "10-2-0"
-    },
-    "shamil-gaziev": {
-      "name": "Shamil Gaziev",
-      "photo": "shamil-gaziev",
-      "flag": "🇷🇺",
-      "record": "15-3-0"
+    "anthony-wint": {
+      "name": "Anthony Wint",
+      "photo": "anthony-wint",
+      "flag": "🇺🇸",
+      "record": "9-0-0"
     },
     "piera-rodriguez": {
       "name": "Piera Rodriguez",
@@ -1200,12 +1206,6 @@
       "photo": "carli-judice",
       "flag": "🇺🇸",
       "record": "7-2-0"
-    },
-    "daria-zhelezniakova": {
-      "name": "Daria Zhelezniakova",
-      "photo": "daria-zhelezniakova",
-      "flag": "🇷🇺",
-      "record": "10-3-0"
     }
   }
 }
