@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T17:52:54.626Z",
+  "generatedAt": "2026-10-07T02:56:43.227Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
@@ -1800,6 +1800,11 @@
     "JunYong Park|Aug 7, 2016|Shavkat Rakhmonov": {
       "real": "Shavkat Rakhmonov",
       "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Mackson Lee|Aug 30, 2024|Mateus Soares": {
+      "real": "Mateus Soares",
+      "theyCallHim": "Macksom Lee",
       "note": "alias"
     },
     "Rafael Cerqueira|Nov 22, 2025|Abdulrakhman Yakhyaev": {
