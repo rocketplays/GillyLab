@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-07T00:15:12.403Z",
+ "generatedAt": "2026-10-07T00:46:12.821Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -9210,6 +9210,194 @@
       ]
      },
      "capturedAt": "2026-10-07T00:15:12.271Z"
+    }
+   ]
+  },
+  "Salhahuddin Everett": {
+   "history": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Ozzy Martin",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:57",
+     "event": "Dana White's Contender Series: Season 10, Week 9",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Ozzy Martin",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 19,
+      "sigA": 39,
+      "totL": 19,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:01",
+      "head": [
+       14,
+       31
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       19,
+       39
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 31,
+      "totL": 16,
+      "totA": 31,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       6,
+       21
+      ],
+      "body": [
+       6,
+       6
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       16,
+       30
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-07T00:46:12.688Z"
+    }
+   ]
+  },
+  "Ozzy Martin": {
+   "history": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Salhahuddin Everett",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:57",
+     "event": "Dana White's Contender Series: Season 10, Week 9",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Salhahuddin Everett",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 31,
+      "totL": 16,
+      "totA": 31,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       6,
+       21
+      ],
+      "body": [
+       6,
+       6
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       16,
+       30
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 19,
+      "sigA": 39,
+      "totL": 19,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:01",
+      "head": [
+       14,
+       31
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       19,
+       39
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-07T00:46:12.688Z"
     }
    ]
   }
