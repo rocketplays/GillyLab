@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-07T00:46:12.821Z",
+ "generatedAt": "2026-10-07T01:01:41.620Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -9398,6 +9398,194 @@
       ]
      },
      "capturedAt": "2026-10-07T00:46:12.688Z"
+    }
+   ]
+  },
+  "Preston LaGrange": {
+   "history": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Nell Ariano",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "2:24",
+     "event": "Dana White's Contender Series: Season 10, Week 9",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Nell Ariano",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 12,
+      "sigA": 19,
+      "totL": 14,
+      "totA": 21,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       11,
+       17
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       8,
+       12
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 8,
+      "totL": 8,
+      "totA": 13,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:17",
+      "head": [
+       3,
+       7
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       2,
+       6
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-07T01:01:41.489Z"
+    }
+   ]
+  },
+  "Nell Ariano": {
+   "history": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Preston LaGrange",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "2:24",
+     "event": "Dana White's Contender Series: Season 10, Week 9",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 6, 2026",
+     "opponent": "Preston LaGrange",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 8,
+      "totL": 8,
+      "totA": 13,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:17",
+      "head": [
+       3,
+       7
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       2,
+       6
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 12,
+      "sigA": 19,
+      "totL": 14,
+      "totA": 21,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       11,
+       17
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       8,
+       12
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-10-07T01:01:41.489Z"
     }
    ]
   }
