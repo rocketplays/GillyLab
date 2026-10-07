@@ -6221,6 +6221,7 @@
     { name: "Andre Fili", division: "FW", rank: "NR", record: "25-14-0", initials: "AFI", country: "USA" },
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" }, { name: "Natan Levy", division: "LW", rank: "NR", record: "9-2-0", initials: "NLE", country: "Israel" },
+ { name: "Luis Francischinelli", division: "WW", rank: "NR", record: "6-1-0", initials: "LF", country: "Brazil" },
  { name: "Will Rentz", division: "WW", rank: "NR", record: "8-2-0", initials: "WR", country: "USA" },
  { name: "Aline Pereira", division: "WBW", rank: "NR", record: "3-2-0", initials: "AP", country: "Brazil" },
  { name: "Smilla Sundell", division: "WBW", rank: "NR", record: "2-0-0", initials: "SS", country: "Sweden" },
@@ -10188,6 +10189,7 @@
  "Nell Ariano": { ht:"6'4\"", dob:"1995-01-20", reach:null, stance:"Orthodox", slpm:1.25, strAcc:"38%", sapm:5.0, strDef:"37%", kd:0.0, tdLanded:6.25, tdAcc:"33%", tdDef:null, subAvg:0.0, finRate:"67%", streak:6, gym:"Platinum MMA Training Centre" },
  "Salhahuddin Everett": { ht:"6'3\"", dob:"1997-06-07", reach:null, stance:"Switch", slpm:9.74, strAcc:"49%", sapm:8.21, strDef:"48%", kd:7.69, tdLanded:0.0, tdAcc:null, tdDef:"100%", subAvg:0.0, finRate:"100%", streak:4, gym:"Freestyle MMA" },
  "Ozzy Martin": { ht:"6'0\"", dob:"2002-09-18", reach:null, stance:"Switch", slpm:8.21, strAcc:"52%", sapm:9.74, strDef:"51%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"100%", streak:4, gym:"Nostos MMA" },
+  "Luis Francischinelli": { ht:"6'6\"", dob:"1996-03-16", reach:'83"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"California MMA" },
   "Will Rentz": { ht:"6'0\"", dob:"1999-03-14", reach:null, stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:5, gym:"Gracie Tampa South" },
   "Aline Pereira": { ht:"5'7\"", dob:"1990-10-06", reach:'70"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"0%", streak:2, gym:"Teixeira MMA & Fitness" },
   "Smilla Sundell": { ht:"5'10\"", dob:"2004-11-12", reach:'69.5"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Diaz Combat Sports" },
@@ -42620,6 +42622,13 @@
   "Roque Conceição": [
     { opponent: "Imanol Rodriguez", odds: 171 }
   ],
+  "Luis Francischinelli": [
+    { opponent: "Travis Arrellano", odds: -2104 },
+    { opponent: "Jonathan Piersma", odds: -450 },
+    { opponent: "Victor Kuiks", odds: -549 },
+    { opponent: "Greg Sun", odds: -549 },
+    { opponent: "Ken Burrs", odds: -901 }
+  ],
   "Will Rentz": [
     { opponent: "Shane Mistretta", odds: -333 },
     { opponent: "Gabriel Morales", odds: -500 },
@@ -56099,6 +56108,15 @@ const FIGHT_HISTORY = {
     { date: "Jul 22, 2024", opponent: "Edwin Castro", result: "W", method: "TKO (Punches)", round: 1, time: "1:26", event: "Inka 44 - Ramses vs. Henrique", org: "Inka" },
     { date: "Apr 26, 2024", opponent: "Diogo Coquinche", result: "W", method: "TKO (Punches)", round: 3, time: "4:08", event: "Inka 42 - Chavez vs. Coquinche", org: "Inka" },
     { date: "Feb 29, 2024", opponent: "Carlos Diego Guado", result: "W", method: "TKO (Knee to the Body and Punches)", round: 1, time: "4:40", event: "Inka 40 - Ramses vs. Pereira", org: "Inka" }
+  ],
+  "Luis Francischinelli": [
+    { date: "May 15, 2026", opponent: "Travis Arrellano", result: "W", method: "KO (Punch)", round: 2, time: "2:04", event: "LFA 232: Visconde vs. Pintos", org: "LFA" },
+    { date: "Nov 21, 2025", opponent: "Jonathan Piersma", result: "L", method: "Submission (Rear-Naked Choke)", round: 3, time: "1:22", event: "LFA 223: Francischinelli vs. Piersma", org: "LFA" },
+    { date: "May 9, 2025", opponent: "Angelo Rivera Jr.", result: "W", method: "TKO (Punches)", round: 1, time: "1:59", event: "LFA 208: Mecate vs. Reyes", org: "LFA" },
+    { date: "Aug 23, 2024", opponent: "Victor Kuiks", result: "W", method: "KO (Punch)", round: 1, time: "3:20", event: "LFA 190: Chapolin vs. Siqueira", org: "LFA" },
+    { date: "May 17, 2024", opponent: "Greg Sun", result: "W", method: "KO (Punch)", round: 1, time: "0:50", event: "LFA 184: Diaz vs. Lewis", org: "LFA" },
+    { date: "Feb 23, 2024", opponent: "Ken Burrs", result: "W", method: "TKO (Knee and Punches)", round: 1, time: "4:12", event: "LFA 177: Smyth vs. Magomedov", org: "LFA" },
+    { date: "Jun 23, 2023", opponent: "Emmanueli Adzoh", result: "W", method: "TKO (Punches)", round: 1, time: "1:25", event: "LFA 161: Davis vs. Siqueira", org: "LFA" }
   ],
   "Will Rentz": [
     { date: "Jun 20, 2026", opponent: "Nick McCarty", result: "W", method: "TKO (Punches)", round: 1, time: "0:22", event: "Combat Night: Tampa", org: "Combat Night" },
@@ -120454,6 +120472,11 @@ const ACCOLADES = {
     { icon: "🏅", title: "Undefeated through 9 pro fights (6 KO/TKO, 3 decisions)", detail: null },
     { icon: "🏆", title: "Inka Flyweight Champion", detail: null },
     { icon: "🥊", title: "6-0 amateur record before turning pro in 2024", detail: null }
+  ],
+  "Luis Francischinelli": [
+    { icon: "🏅", title: "All 6 pro wins by KO/TKO; 5 in the first round", detail: null },
+    { icon: "🥊", title: "Six-foot-six kickboxer at welterweight; sparred UFC heavyweight Alexander Volkov", detail: null },
+    { icon: "🎯", title: "Five straight first-round finishes after his LFA debut (Jun 2023 to May 2025)", detail: null }
   ],
   "Will Rentz": [
     { icon: "🏅", title: "All 8 pro wins by KO/TKO; 5 of them in the first round", detail: null },
