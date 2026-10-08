@@ -41,7 +41,7 @@ window.GL_ROUTER.register('pickem', {
 });
 
 function mountPickem(container){
-  container.innerHTML = '<p class="gl-muted">Loading this week’s card…</p>';
+  container.innerHTML = '<p class="gl-muted gl-loading">Loading this week’s card…</p>';
 
   // Same /photos/thumb/<slug>.png convention the website itself uses (see the
   // PUBLIC_ASSETS allowlist in worker/index.js) -- absolute, since the app is
@@ -538,7 +538,7 @@ function mountPickem(container){
     showPanel(
       '<div class="pk-tabs">' + tabs + '</div>' +
       '<div id="pkLbStatus"></div>' +
-      '<div class="pk-board-list" id="pkLbList"><div class="pk-board-empty">Loading…</div></div>'
+      '<div class="pk-board-list" id="pkLbList"><div class="pk-board-empty gl-loading">Loading…</div></div>'
     );
     container.querySelectorAll('[data-lb-scope]').forEach(function(btn){
       btn.addEventListener('click', function(){
@@ -603,7 +603,7 @@ function mountPickem(container){
   // ── Player profile (opened from a leaderboard name) ------------------------
   // Mirrors openPickemPlayer/renderPickemPlayer (index.html ~8494-8516).
   function showPlayerProfile(name){
-    showPanel('<div class="pk-board-empty">Loading…</div>', { backLabel: '← Back to leaderboard', onBack: showLeaderboard });
+    showPanel('<div class="pk-board-empty gl-loading">Loading…</div>', { backLabel: '← Back to leaderboard', onBack: showLeaderboard });
     window.GL_API.pickemPlayer(name).then(function(res){
       if (!res.name) res.name = name;
       var evs = res.events || [];
@@ -625,7 +625,7 @@ function mountPickem(container){
   // ── History: per-event list, then per-bout drill-down -----------------------
   // Mirrors renderPickemHistory + renderPickemHistoryEvent (index.html ~8341-8431).
   function showHistory(){
-    showPanel('<p class="gl-muted">Loading your history…</p>');
+    showPanel('<p class="gl-muted gl-loading">Loading your history…</p>');
     window.GL_API.pickemHistory().then(function(res){
       renderHistoryList(res);
     }).catch(function(){
@@ -657,7 +657,7 @@ function mountPickem(container){
 
   function showHistoryEvent(slug, listRes){
     var backToList = function(){ renderHistoryList(listRes); };
-    showPanel('<div class="pk-board-empty">Loading…</div>', { backLabel: '← All cards', onBack: backToList });
+    showPanel('<div class="pk-board-empty gl-loading">Loading…</div>', { backLabel: '← All cards', onBack: backToList });
     window.GL_API.pickemHistory(slug).then(function(res){
       var bouts = res.bouts || [];
       var rows = bouts.map(function(b){

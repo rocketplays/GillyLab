@@ -41,7 +41,7 @@ window.GL_ROUTER.register('bracket', {
 });
 
 function mountBracket(container){
-  container.innerHTML = '<p class="gl-muted">Loading this week’s bracket…</p>';
+  container.innerHTML = '<p class="gl-muted gl-loading">Loading this week’s bracket…</p>';
 
   var PHOTO_BASE = window.GL_API.BASE + '/photos/thumb/';
   var FIGHTERS = [], bySeed = {}, QF_PAIRS = [];
@@ -372,7 +372,7 @@ function mountBracket(container){
   function renderLeaderboard(){
     document.querySelectorAll('#brLbTabs [data-lb-scope]').forEach(function(b){ b.classList.toggle('sel', b.getAttribute('data-lb-scope') === lbScope); });
     var listEl = document.getElementById('brLbList');
-    listEl.innerHTML = '<div class="pk-board-empty">Loading…</div>';
+    listEl.innerHTML = '<div class="pk-board-empty gl-loading">Loading…</div>';
     window.GL_API.bracketLeaderboard(lbScope).then(function(res){
       var rows = res.rows || [];
       var meName = res.me && res.me.name;
@@ -429,7 +429,7 @@ function mountBracket(container){
           '<button type="button" class="pk-tab sel" data-lb-scope="week">This Week</button>' +
           '<button type="button" class="pk-tab" data-lb-scope="season">Season</button>' +
         '</div>' +
-        '<div class="pk-board-list" id="brLbList"><div class="pk-board-empty">Loading…</div></div>' +
+        '<div class="pk-board-list" id="brLbList"><div class="pk-board-empty gl-loading">Loading…</div></div>' +
       '</div>' +
       '<div id="brSubmitSpacer"></div>';
 

@@ -846,7 +846,7 @@ window.GL_ODDS = (function(){
     var mySeq = ++loadSeq;
     activeContainer = container;
     plBound = false;
-    container.innerHTML = '<p class="gl-muted">Loading odds…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading odds…</p>';
     window.GL_API.account().catch(function(){ return null; }).then(function(acct){
       if (mySeq !== loadSeq) return;
       var subscribed = !!(acct && acct.subscribed);

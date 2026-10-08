@@ -285,7 +285,7 @@ window.GL_ROUTER.register('account', {
     }
 
     function loadAccount(){
-      container.innerHTML = '<p class="gl-muted">Loading account…</p>';
+      container.innerHTML = '<p class="gl-muted gl-loading">Loading account…</p>';
       Promise.all([
         window.GL_API.account().catch(function(){ return null; }),
         window.GL_API.pickemName().catch(function(){ return null; }),

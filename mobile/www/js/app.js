@@ -8,8 +8,17 @@ document.addEventListener('DOMContentLoaded', function(){
     // premium user briefly sees Account before it flips to More rather
     // than blocking first paint on a network round-trip.
     window.GL_SUB.refresh();
+    // Warm the cache for the screens people open first so their first tap is
+    // instant (see the response cache in api.js). Deferred so it never competes
+    // with first paint.
+    setTimeout(function(){
+      var A = window.GL_API;
+      ['/api/app/rankings?source=media', '/api/app/roster', '/api/app/matchup', '/api/app/leaders'].forEach(function(p){ A.prefetch(p); });
+    }, 600);
   });
   window.GL_AUTH.onChange(function(){
+    // Cached responses may differ by plan/account -- start clean.
+    window.GL_API.clearCache();
     // Re-render whatever screen is up so login/logout is reflected
     // immediately (e.g. the lock screen on Pick'em swaps to the real one).
     var name = (location.hash || '#/home').replace(/^#\//, '').split('/')[0] || 'home';

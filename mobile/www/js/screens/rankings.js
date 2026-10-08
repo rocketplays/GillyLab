@@ -26,7 +26,7 @@ var DIV_LABELS = {
 };
 
 function mountRankings(container){
-  container.innerHTML = '<p class="gl-muted">Loading rankings…</p>';
+  container.innerHTML = '<p class="gl-muted gl-loading">Loading rankings…</p>';
 
   var source = 'media';
   var data = null;      // last successful response for the current source
@@ -295,7 +295,7 @@ function mountRankings(container){
   }
 
   function load(){
-    container.innerHTML = '<p class="gl-muted">Loading rankings…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading rankings…</p>';
     window.GL_API.rankings(source).then(function(res){
       data = res;
       if (!activeDiv || (data.tabs || []).indexOf(activeDiv) < 0) activeDiv = (data.tabs || [])[0] || null;

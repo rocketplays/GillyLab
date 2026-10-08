@@ -27,7 +27,7 @@ window.GL_ROUTER.register('premium', {
   tab: 'account',
   showBack: true,
   render: function(container){
-    container.innerHTML = '<p class="gl-muted">Loading…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading…</p>';
 
     // The fetched CSS is scoped under .sub-cx / .fx-* / #tiers / .fx-lb (the
     // site's own class names) and is the same on every visit -- injected

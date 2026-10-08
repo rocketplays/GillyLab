@@ -13,7 +13,64 @@
 window.GL_API = (function(){
   var BASE = 'https://gillylab.com';
 
-  function request(path, opts){
+  // ── Response cache (stale-while-revalidate) ────────────────────────────
+  // Screens used to refetch and flash "Loading…" on EVERY visit, even to data
+  // that changes weekly (rankings, roster, fighter profiles). Public, read-only
+  // GETs are now cached: inside `fresh` the cached copy is returned instantly
+  // with no network call; past it (but inside `stale`) the cached copy is still
+  // returned instantly and a silent background refetch updates the cache for
+  // the next visit. Live or personal data (odds, bets, pick'em, account, push,
+  // premium extras) is deliberately NOT listed and always hits the network.
+  // The cache is cleared on login/logout (see app.js).
+  var MIN = 60 * 1000, HOUR = 60 * MIN;
+  var CACHE_RULES = [
+    { prefix: '/api/app/rankings',         fresh: 10 * MIN, stale: 24 * HOUR },
+    { prefix: '/api/app/roster',           fresh: 10 * MIN, stale: 24 * HOUR },
+    { prefix: '/api/app/leaders',          fresh: 10 * MIN, stale: 24 * HOUR },
+    { prefix: '/api/app/premium-features', fresh: 60 * MIN, stale: 24 * HOUR },
+    { prefix: '/api/app/fighter?',         fresh: 5 * MIN,  stale: 24 * HOUR },
+    { prefix: '/api/fighter-search',       fresh: 10 * MIN, stale: 24 * HOUR },
+    // Events can go live / get results, so never serve this one stale.
+    { prefix: '/api/app/matchup',          fresh: 45 * 1000, stale: 0, memoryOnly: true },
+  ];
+  var LS_PREFIX = 'glc1:';
+  var mem = {};       // path -> { t, body (JSON string) }
+  var inflight = {};  // path -> Promise (dedupes simultaneous identical GETs)
+
+  function ruleFor(path){
+    for (var i = 0; i < CACHE_RULES.length; i++){
+      if (path.indexOf(CACHE_RULES[i].prefix) === 0) return CACHE_RULES[i];
+    }
+    return null;
+  }
+  function lsGet(k){ try { return JSON.parse(localStorage.getItem(LS_PREFIX + k) || 'null'); } catch(e){ return null; } }
+  function lsSet(k, v){ try { localStorage.setItem(LS_PREFIX + k, JSON.stringify(v)); } catch(e){} }
+  function lookup(path, rule){
+    var hit = mem[path] || (rule.memoryOnly ? null : lsGet(path));
+    if (!hit || !hit.body) return null;
+    mem[path] = hit;
+    var age = Date.now() - hit.t;
+    if (age <= rule.fresh) return { body: hit.body, fresh: true };
+    if (age <= rule.stale) return { body: hit.body, fresh: false };
+    return null;
+  }
+  function store(path, rule, data){
+    var body;
+    try { body = JSON.stringify(data); } catch(e){ return; }
+    var rec = { t: Date.now(), body: body };
+    mem[path] = rec;
+    if (!rule.memoryOnly && body.length < 600000) lsSet(path, rec);
+  }
+  function clearCache(){
+    mem = {};
+    try {
+      var drop = [];
+      for (var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if (k && k.indexOf(LS_PREFIX) === 0) drop.push(k); }
+      drop.forEach(function(k){ localStorage.removeItem(k); });
+    } catch(e){}
+  }
+
+  function network(path, opts){
     opts = opts || {};
     var headers = Object.assign({ 'Content-Type':'application/json' }, opts.headers || {});
     var token = window.GL_AUTH && window.GL_AUTH.token && window.GL_AUTH.token();
@@ -29,6 +86,40 @@ window.GL_API = (function(){
         return data;
       });
     });
+  }
+
+  function cachedNetwork(path, rule, opts){
+    if (inflight[path]) return inflight[path];
+    var p = network(path, opts).then(function(data){
+      delete inflight[path];
+      store(path, rule, data);
+      return data;
+    }, function(err){ delete inflight[path]; throw err; });
+    inflight[path] = p;
+    return p;
+  }
+
+  function request(path, opts){
+    opts = opts || {};
+    var isGet = (!opts.method || opts.method === 'GET') && !opts.body;
+    var rule = isGet ? ruleFor(path) : null;
+    if (!rule) return network(path, opts);
+    var hit = opts.nocache ? null : lookup(path, rule);
+    if (hit){
+      // Stale hit: show it now, refresh quietly for next time.
+      if (!hit.fresh) cachedNetwork(path, rule, opts).catch(function(){});
+      return Promise.resolve(JSON.parse(hit.body));
+    }
+    return cachedNetwork(path, rule, opts);
+  }
+
+  // Fire-and-forget cache warm-up (never throws, never blocks).
+  function prefetch(path){
+    var rule = ruleFor(path);
+    if (!rule) return;
+    var hit = lookup(path, rule);
+    if (hit && hit.fresh) return;
+    cachedNetwork(path, rule, {}).catch(function(){});
   }
 
   return {
@@ -170,6 +261,8 @@ window.GL_API = (function(){
     bracketSubmit: function(picks){ return request('/api/bracket/submit', { method: 'POST', body: { picks: picks } }); },
     bracketLeaderboard: function(scope){ return request('/api/bracket/leaderboard?scope=' + encodeURIComponent(scope || 'week')); },
     request: request,
+    prefetch: prefetch,
+    clearCache: clearCache,
     BASE: BASE,
   };
 })();

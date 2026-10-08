@@ -1083,7 +1083,7 @@ window.GL_SIMULATOR = (function(){
   }
 
   function load(container, params){
-    container.innerHTML = '<p class="gl-muted">Loading…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading…</p>';
     window.GL_API.account().catch(function(){ return null; }).then(function(acct){
       var subscribed = !!(acct && acct.subscribed);
       if (!subscribed){

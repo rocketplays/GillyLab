@@ -352,7 +352,7 @@ window.GL_BETTRACKER = (function(){
   }
 
   function renderHistory(host){
-    if (!betsData){ host.innerHTML = '<p class="gl-muted">Loading your bets…</p>'; return; }
+    if (!betsData){ host.innerHTML = '<p class="gl-muted gl-loading">Loading your bets…</p>'; return; }
     var scoped = betsData.bets.filter(inRange(hRange));
     var verified = scoped.filter(function(b){ return b.verified; });
     var vs = computeStats(verified);
@@ -771,7 +771,7 @@ window.GL_BETTRACKER = (function(){
   }
 
   function renderLog(host){
-    if (!fightsData){ host.innerHTML = '<p class="gl-muted">Loading upcoming fights…</p>'; return; }
+    if (!fightsData){ host.innerHTML = '<p class="gl-muted gl-loading">Loading upcoming fights…</p>'; return; }
     var h = stageHTML() + '<div class="bt-panel"><div class="bt-seg">' +
       '<div class="' + (logKind === 'card' ? 'on' : '') + '" data-kind="card">Upcoming fights</div>' +
       '<div class="' + (logKind === 'custom' ? 'on' : '') + '" data-kind="custom">Custom bet</div>' +
@@ -858,7 +858,7 @@ window.GL_BETTRACKER = (function(){
     host.innerHTML = '<div class="pk-tabs" style="margin-bottom:1.6rem">' + tab('units','Units') + tab('roi','ROI') + tab('clv','CLV') + '</div>' +
       '<div class="bt-ranges">' + rng('all','All time') + rng('7d','7D') + rng('30d','30D') + rng('6m','6M') + rng('12m','1Y') + '</div>' +
       '<div class="bt-foot" style="margin:.2rem 0 1rem">Verified, auto-graded bets only. ' + blurb + '</div>' +
-      '<div class="pk-board-list" id="bt-board-list"><div class="pk-board-empty">Loading…</div></div>';
+      '<div class="pk-board-list" id="bt-board-list"><div class="pk-board-empty gl-loading">Loading…</div></div>';
     var at = boardTab, ar = boardRange;
     window.GL_API.betLeaderboard(at, ar).then(function(r){
       if (view !== 'board' || boardTab !== at || boardRange !== ar) return;
@@ -896,7 +896,7 @@ window.GL_BETTRACKER = (function(){
   }
   function openPlayer(name){ playerName = name; setView('player'); }
   function renderPlayer(host, name){
-    host.innerHTML = '<button type="button" class="pk-hist-back" data-back-board>&larr; Back to leaderboard</button><div class="pk-board-empty">Loading…</div>';
+    host.innerHTML = '<button type="button" class="pk-hist-back" data-back-board>&larr; Back to leaderboard</button><div class="pk-board-empty gl-loading">Loading…</div>';
     window.GL_API.betPlayer(name).then(function(r){
       if (view !== 'player') return;
       var back = '<button type="button" class="pk-hist-back" data-back-board>&larr; Back to leaderboard</button>';
@@ -1108,7 +1108,7 @@ window.GL_BETTRACKER = (function(){
     var mySeq = ++loadSeq;
     activeContainer = container;
     bound = false;
-    container.innerHTML = '<p class="gl-muted">Loading…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading…</p>';
     if (params && params.legs){ pendingPrefill = params; fromOdds = true; }
     window.GL_API.account().catch(function(){ return null; }).then(function(acct){
       if (mySeq !== loadSeq) return;

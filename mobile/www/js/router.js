@@ -288,6 +288,11 @@ window.GL_ROUTER = (function(){
     // #app itself keeps its id/classes untouched (nothing else in the app
     // selects into it by id besides this file), so no CSS/layout changes.
     var pageEl = document.createElement('div');
+    // Fade/slide the new screen in instead of hard-swapping it (reduced-motion is
+    // handled in CSS). Class is dropped after the animation so it can't interfere
+    // with position:fixed/sticky children or later re-renders.
+    pageEl.className = 'gl-page-enter';
+    pageEl.addEventListener('animationend', function(){ pageEl.classList.remove('gl-page-enter'); }, { once: true });
     appEl.innerHTML = '';
     appEl.appendChild(pageEl);
     appScrollEl.scrollTop = 0;

@@ -53,7 +53,7 @@ window.GL_ROUTER.register('matchup', {
 var lastCarouselSlug = null;
 
 function mountMatchup(container, params){
-  container.innerHTML = '<p class="gl-muted">Loading the card…</p>';
+  container.innerHTML = '<p class="gl-muted gl-loading">Loading the card…</p>';
 
   // Home's "View All Upcoming Cards" link / a Scheduled Cards tile ask for
   // this screen to open scrolled down to the Upcoming Events carousel (and,
@@ -1215,7 +1215,8 @@ function mountMatchup(container, params){
     // in the background for a view nobody's looking at.
     if (!container.isConnected){ clearInterval(window.__mfLivePollTimer); return; }
     if (!isLiveWindow()) return;
-    window.GL_API.matchup().then(function(res){
+    // Live polling must bypass the response cache or results lag by up to its TTL.
+    window.GL_API.request('/api/app/matchup', { nocache: true }).then(function(res){
       if (!container.isConnected || !res || !res.card || !data.card) return;
       if (fightResultsSignature(res.card) === fightResultsSignature(data.card)) return;
       data = res;
@@ -1512,7 +1513,7 @@ function mountMatchup(container, params){
   }
 
   function load(eventSlug){
-    container.innerHTML = '<p class="gl-muted">Loading the card…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading the card…</p>';
     // The Card page is public (no login required), unlike the site's fully
     // gated index.html -- so whether to show each fight's Simulate Matchup
     // bar has to come from a parallel, best-effort account() call rather

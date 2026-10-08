@@ -12,7 +12,7 @@ window.GL_ROUTER.register('roster', {
 });
 
 function mountRoster(container){
-  container.innerHTML = '<p class="gl-muted">Loading roster…</p>';
+  container.innerHTML = '<p class="gl-muted gl-loading">Loading roster…</p>';
   var fighters = [], changes = [];
   var activeLetter = 'All';
   // Fetched once at mount (mirrors home.js's / rankings.js's own account()

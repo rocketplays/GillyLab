@@ -687,7 +687,7 @@ window.GL_FIGHTER = (function(){
     var mySeq = ++loadSeq;
     activeContainer = container;
     activeFighterSlug = slug;
-    container.innerHTML = '<p class="gl-muted">Loading fighter…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading fighter…</p>';
     Promise.all([
       window.GL_API.fighter(slug),
       window.GL_API.account().catch(function(){ return null; }),

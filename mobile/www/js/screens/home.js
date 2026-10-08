@@ -38,7 +38,7 @@ window.GL_ROUTER.register('home', {
   title: 'GillyLab',
   tab: 'home',
   render: function(container){
-    container.innerHTML = '<p class="gl-muted">Loading…</p>';
+    container.innerHTML = '<p class="gl-muted gl-loading">Loading…</p>';
 
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
     function go(route, params){ return function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go(route, params); }; }
