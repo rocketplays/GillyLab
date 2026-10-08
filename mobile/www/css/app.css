@@ -2591,3 +2591,12 @@ body #mh-box{
   .gl-page-enter{ animation:none; }
   .gl-loading{ animation:none; opacity:1; }
 }
+
+/* Pull-to-refresh indicator (sits behind the page, revealed as it is pulled down). */
+.gl-ptr{ position:fixed; top:calc(env(safe-area-inset-top) + 14px); left:50%; margin-left:-18px; width:36px; height:36px;
+  border-radius:50%; background:var(--card, #14141a); border:1px solid var(--border); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; }
+.gl-ptr.spin svg{ animation:glSpin .7s linear infinite; }
+@keyframes glSpin{ to{ transform:rotate(360deg); } }
+.gl-app{ overscroll-behavior-y:contain; }
+@media (prefers-reduced-motion:reduce){ .gl-ptr.spin svg{ animation:none; } }

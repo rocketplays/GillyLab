@@ -400,7 +400,7 @@ window.GL_ROUTER = (function(){
         var w = window.innerWidth || 375;
         var v = lastDx / Math.max(1, Date.now() - st);           // px per ms
         var commit = !cancelled && !blocked() && (lastDx > w * 0.33 || (v > 0.55 && lastDx > 40));
-        if (reduce){ reset(); if (commit){ window.GL_NATIVE.tap(); back(); } return; }
+        if (reduce){ reset(); if (commit){ window.GL_NATIVE.select(); back(); } return; }
         appScrollEl.style.transition = 'transform .2s cubic-bezier(.2,.7,.2,1)';
         appScrollEl.style.transform = 'translateX(' + (commit ? w : 0) + 'px)';
         var done = false;
@@ -408,13 +408,91 @@ window.GL_ROUTER = (function(){
           if (done) return; done = true;
           appScrollEl.removeEventListener('transitionend', end);
           reset();
-          if (commit){ window.GL_NATIVE.tap(); back(); }
+          if (commit){ window.GL_NATIVE.select(); back(); }
         }
         appScrollEl.addEventListener('transitionend', end);
         setTimeout(end, 260);
       }
       document.addEventListener('touchend', function(){ finish(false); }, { passive: true });
       document.addEventListener('touchcancel', function(){ finish(true); }, { passive: true });
+    })();
+    // Pull-to-refresh: drag down from the top of a screen, release past the
+    // threshold -> haptic, spinner, cached data cleared, screen re-rendered.
+    // Skipped on screens with in-progress forms/state (simulator, bet tracker,
+    // account/settings/login/premium, bracket) so a pull can't wipe someone's work.
+    (function(){
+      var NO_PTR = { simulator:1, bettracker:1, login:1, account:1, settings:1, premium:1, bracket:1 };
+      var THRESH = 70, MAXPULL = 110, EDGE = 28;
+      var sy = 0, sx = 0, tracking = false, pulling = false, pull = 0, armed = false, busy = false;
+      var ind = document.createElement('div');
+      ind.className = 'gl-ptr';
+      ind.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 5v11M7 12l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      appScrollEl.parentNode.insertBefore(ind, appScrollEl);
+      function blocked(){
+        if (busy || !current || NO_PTR[current]) return true;
+        if (appScrollEl.classList.contains('gl-app--fullbleed')) return true;
+        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])')) return true;
+        return false;
+      }
+      function paint(p){
+        appScrollEl.style.transform = p ? 'translateY(' + p + 'px)' : '';
+        var prog = Math.min(1, p / THRESH);
+        ind.style.opacity = prog;
+        ind.style.transform = 'translateY(' + (p * 0.5 - 6) + 'px) rotate(' + (prog >= 1 ? 180 : prog * 180) + 'deg)';
+      }
+      function settle(){
+        appScrollEl.style.transition = '';
+        appScrollEl.style.transform = '';
+        ind.style.transition = ''; ind.style.opacity = 0; ind.classList.remove('spin');
+      }
+      document.addEventListener('touchstart', function(e){
+        tracking = pulling = armed = false;
+        if (e.touches.length !== 1 || blocked()) return;
+        var t = e.touches[0];
+        if (t.clientX <= EDGE || appScrollEl.scrollTop > 0) return;
+        sx = t.clientX; sy = t.clientY; pull = 0; tracking = true;
+      }, { passive: true });
+      document.addEventListener('touchmove', function(e){
+        if (!tracking) return;
+        var t = e.touches[0], dy = t.clientY - sy, dx = Math.abs(t.clientX - sx);
+        if (!pulling){
+          if (dy < -6 || appScrollEl.scrollTop > 0 || dx > dy) { if (dy < -6 || dx > 12) tracking = false; return; }
+          if (dy > 10 && dy > dx * 1.5){ pulling = true; appScrollEl.style.transition = 'none'; ind.style.transition = 'none'; }
+          else return;
+        }
+        if (e.cancelable) e.preventDefault();
+        pull = Math.min(MAXPULL, Math.max(0, dy * 0.5));
+        paint(pull);
+        var nowArmed = pull >= THRESH;
+        if (nowArmed && !armed) window.GL_NATIVE.select();
+        armed = nowArmed;
+      }, { passive: false });
+      function release(cancelled){
+        if (!tracking) return;
+        var was = pulling, go_ = armed && !cancelled;
+        tracking = pulling = armed = false;
+        if (!was) return;
+        if (!go_){
+          appScrollEl.style.transition = 'transform .22s cubic-bezier(.2,.7,.2,1)';
+          ind.style.transition = 'opacity .2s, transform .22s';
+          paint(0);
+          setTimeout(settle, 240);
+          return;
+        }
+        busy = true;
+        window.GL_NATIVE.refresh();
+        appScrollEl.style.transition = 'transform .2s cubic-bezier(.2,.7,.2,1)';
+        paint(THRESH * 0.6);
+        ind.classList.add('spin');
+        window.GL_API.clearCache();
+        setTimeout(function(){
+          settle();
+          busy = false;
+          if (current) go(current, currentParams, { showBack: currentShowBack });
+        }, 550);
+      }
+      document.addEventListener('touchend', function(){ release(false); }, { passive: true });
+      document.addEventListener('touchcancel', function(){ release(true); }, { passive: true });
     })();
     window.addEventListener('hashchange', function(){
       if (ignoreNextHashChange){ ignoreNextHashChange = false; return; }

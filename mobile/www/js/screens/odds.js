@@ -743,7 +743,7 @@ window.GL_ODDS = (function(){
         return;
       }
       var x = hit(e, '.pl-leg-x'); if (x){ window.GL_NATIVE.tap(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
-      var bo = hit(e, '.pl-book-opt'); if (bo){ window.GL_NATIVE.tap(); plSwitchBook(bo.dataset.book); return; }
+      var bo = hit(e, '.pl-book-opt'); if (bo){ window.GL_NATIVE.select(); plSwitchBook(bo.dataset.book); return; }
       if (hit(e, '#plLogBet')){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('bettracker', { legs: PARLAY.legs }, { showBack: true }); return; }
       if (hit(e, '#plShareOpen')){ window.GL_NATIVE.tap(); plShareOpen(); return; }
       if (hit(e, '#plSaveImg')){ plSaveImage(); return; }

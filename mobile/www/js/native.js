@@ -36,10 +36,20 @@ window.GL_NATIVE = (function(){
     }
   }
 
-  function tap(){
-    var P = plugins();
-    if (P.Haptics) P.Haptics.impact({ style:'LIGHT' }).catch(function(){});
-  }
+  // Haptics are reserved for moments that mean something (like native apps do),
+  // not every tap:
+  //   tap()     -- plain navigation/buttons: intentionally SILENT. ~130 call sites
+  //                still call it; keeping it a no-op avoids touching all of them.
+  //   select()  -- a choice changed: toggles, segmented controls, picking a side.
+  //   success() -- something was saved/submitted (fired from api.js on mutations).
+  //   error()   -- an action failed.
+  //   refresh() -- pull-to-refresh triggered, swipe-back committed.
+  function tap(){}
+  function hap(fn){ var P = plugins(); if (P.Haptics) { try { fn(P.Haptics); } catch(e){} } }
+  function select(){ hap(function(H){ H.impact({ style:'LIGHT' }).catch(function(){}); }); }
+  function success(){ hap(function(H){ H.notification({ type:'SUCCESS' }).catch(function(){}); }); }
+  function error(){ hap(function(H){ H.notification({ type:'ERROR' }).catch(function(){}); }); }
+  function refresh(){ hap(function(H){ H.impact({ style:'MEDIUM' }).catch(function(){}); }); }
 
   function openExternal(url){
     var P = plugins();
@@ -157,5 +167,5 @@ window.GL_NATIVE = (function(){
     });
   }
 
-  return { init: init, tap: tap, openExternal: openExternal, isNative: isNative, saveImage: saveImage };
+  return { init: init, tap: tap, select: select, success: success, error: error, refresh: refresh, openExternal: openExternal, isNative: isNative, saveImage: saveImage };
 })();

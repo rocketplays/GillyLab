@@ -70,7 +70,24 @@ window.GL_API = (function(){
     } catch(e){}
   }
 
+  // Mutations that should buzz on success/failure (user-initiated saves only --
+  // background calls like push-token, token refresh, polling, prefs are silent).
+  var HAPTIC_MUTATIONS = ['/api/pickem/save', '/api/bets', '/api/bets/edit', '/api/bets/delete', '/api/bets/settle', '/api/bracket/submit', '/api/change-password', '/api/login', '/api/signup', '/api/pickem/name'];
+  function wantsHaptic(path, opts){
+    var m = opts && opts.method;
+    return !!m && m !== 'GET' && HAPTIC_MUTATIONS.indexOf(path.split('?')[0]) >= 0;
+  }
+
   function network(path, opts){
+    var p = rawNetwork(path, opts);
+    if (wantsHaptic(path, opts)){
+      p.then(function(){ if (window.GL_NATIVE) window.GL_NATIVE.success(); },
+             function(){ if (window.GL_NATIVE) window.GL_NATIVE.error(); });
+    }
+    return p;
+  }
+
+  function rawNetwork(path, opts){
     opts = opts || {};
     var headers = Object.assign({ 'Content-Type':'application/json' }, opts.headers || {});
     var token = window.GL_AUTH && window.GL_AUTH.token && window.GL_AUTH.token();

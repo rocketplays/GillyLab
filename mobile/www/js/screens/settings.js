@@ -119,7 +119,7 @@ window.GL_ROUTER.register('settings', {
         var key = input.getAttribute('data-pref');
         input.checked = prefs[key] !== false;
         input.addEventListener('change', function(){
-          window.GL_NATIVE.tap();
+          window.GL_NATIVE.select();
           var val = input.checked;
           var body = {}; body[key] = val;
           window.GL_API.setNotificationPrefs(body).catch(function(){

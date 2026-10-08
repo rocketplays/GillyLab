@@ -326,7 +326,7 @@ function mountPickem(container){
 
     host.querySelectorAll('.pk-fighter').forEach(function(btn){
       btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
+        window.GL_NATIVE.select();
         var el = btn.closest('.pk-bout'); var id = el.getAttribute('data-bout');
         var b = card.bouts.filter(function(x){ return x.id === id; })[0];
         var p = picks[id] || (picks[id] = { boutId:id });
@@ -338,7 +338,7 @@ function mountPickem(container){
     });
     host.querySelectorAll('[data-method]').forEach(function(btn){
       btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
+        window.GL_NATIVE.select();
         var el = btn.closest('.pk-bout'); var id = el.getAttribute('data-bout');
         var p = picks[id]; if (!p) return;
         p.method = btn.getAttribute('data-method');
@@ -348,7 +348,7 @@ function mountPickem(container){
     });
     host.querySelectorAll('[data-round]').forEach(function(btn){
       btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
+        window.GL_NATIVE.select();
         var el = btn.closest('.pk-bout'); var id = el.getAttribute('data-bout');
         var p = picks[id]; if (!p) return;
         p.round = parseInt(btn.getAttribute('data-round'), 10);
@@ -357,7 +357,7 @@ function mountPickem(container){
     });
     host.querySelectorAll('[data-c]').forEach(function(btn){
       btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
+        window.GL_NATIVE.select();
         var el = btn.closest('.pk-bout'); var id = el.getAttribute('data-bout');
         var p = picks[id]; if (!p) return;
         p.confidence = btn.getAttribute('data-c');

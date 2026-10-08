@@ -1039,7 +1039,7 @@ window.GL_BETTRACKER = (function(){
     container.addEventListener('click', function(e){
       var t;
       if ((t = hit(e, '[data-goto]'))){ window.GL_NATIVE.tap(); window.GL_ROUTER.go(t.getAttribute('data-goto')); return; }
-      if ((t = hit(e, '[data-view]'))){ window.GL_NATIVE.tap(); setView(t.getAttribute('data-view')); return; }
+      if ((t = hit(e, '[data-view]'))){ window.GL_NATIVE.select(); setView(t.getAttribute('data-view')); return; }
       if ((t = hit(e, '[data-back-odds]'))){ window.GL_NATIVE.tap(); window.GL_ROUTER.back(); return; }
       if ((t = hit(e, '[data-scope]'))){ hScope = t.getAttribute('data-scope'); renderView(); return; }
       if ((t = hit(e, '[data-range]'))){ hRange = t.getAttribute('data-range'); renderView(); return; }

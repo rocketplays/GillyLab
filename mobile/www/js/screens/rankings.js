@@ -264,7 +264,7 @@ function mountRankings(container){
   function wire(){
     container.querySelectorAll('.rk-toggle button').forEach(function(btn){
       btn.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
+        window.GL_NATIVE.select();
         var s = btn.getAttribute('data-src');
         if (s === source) return;
         source = s;
