@@ -2497,6 +2497,10 @@ body #mh-box{
    column-gap variable keeps the lines meeting the next column's edge exactly,
    same calc() approach as the site's own CSS. */
 .br-match{ position:relative; display:flex; flex-direction:column; gap:.5rem; }
+/* Final + Champion columns hold a single card: center it vertically in the column
+   (QF is the tall one), so it lines up with the Semifinal connector instead of
+   hugging the top. */
+.br-col > .br-match, .br-col > .br-champcard{ margin-top:auto; margin-bottom:auto; }
 .br-col:not(:last-child) .br-match::after{ content:""; position:absolute; left:100%; top:50%; width:var(--br-stub); height:1px; background:var(--border); }
 .br-pair::before{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:25%; bottom:25%; width:1px; background:var(--border); }
 .br-pair::after{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:50%; height:1px; width:calc(var(--br-gap) - var(--br-stub)); background:var(--border); }
@@ -2574,7 +2578,10 @@ body #mh-box{
   display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
 }
 .br-submitrow[hidden]{ display:none; }
-.br-submitrow .gl-btn{ width:auto; flex:none; }
+.br-submitrow{ box-shadow:0 -10px 24px rgba(0,0,0,.45); flex-wrap:nowrap; }
+.br-submitrow .gl-btn{ width:auto; flex:1 1 auto; min-width:0; }
+.br-submitrow .gl-muted{ flex:none; font-size:.72rem; text-align:right; }
+.br-submitrow .gl-btn:not(:disabled){ box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent), 0 4px 18px color-mix(in srgb, var(--accent) 35%, transparent); }
 
 
 /* ── Smoother navigation ───────────────────────────────────────────────── */

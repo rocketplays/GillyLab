@@ -222,7 +222,11 @@ function mountBracket(container){
     pendingScrollTarget = null;
     var cols = document.querySelectorAll('#brBracket .br-col');
     var target = cols[idx];
-    if (target) target.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    // Center the actual match/champion CARD (not the tall column) both ways, so the
+    // Final and Champion land mid-screen instead of up near the top with a big gap
+    // above the Submit bar.
+    var card = target && (target.querySelector('.br-match, .br-champcard') || target);
+    if (card) card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
   }
 
   function pickQf(i, f){
@@ -362,7 +366,8 @@ function mountBracket(container){
     // resets to 0), so without this the reload path silently stayed on the
     // quarterfinals column instead of showing the result you came back for.
     var champCol = document.getElementById('brColChamp');
-    if (champCol) champCol.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    var champCard = champCol && champCol.querySelector('.br-champcard');
+    if (champCol) (champCard || champCol).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
   }
 
   // ---- leaderboard (week + season), same .pk-board-* classes the Pick'em
