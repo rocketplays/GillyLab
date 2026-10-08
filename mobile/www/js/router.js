@@ -357,7 +357,7 @@ window.GL_ROUTER = (function(){
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       function blocked(){
         if (backBtn.hidden) return true;
-        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])')) return true;
+        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])') || (window.GL_MORE && window.GL_MORE.isOpen())) return true;
         return false;
       }
       function reset(){
@@ -426,7 +426,7 @@ window.GL_ROUTER = (function(){
       function blocked(){
         if (busy || !current || NO_PTR[current]) return true;
         if (appScrollEl.classList.contains('gl-app--fullbleed')) return true;
-        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])')) return true;
+        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])') || (window.GL_MORE && window.GL_MORE.isOpen())) return true;
         return false;
       }
       function paint(p){

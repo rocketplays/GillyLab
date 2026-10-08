@@ -181,5 +181,6 @@ window.GL_MORE = (function(){
     toggle: function(){ ensureWired(); toggle(); },
     open: function(){ ensureWired(); open(); },
     close: function(){ ensureWired(); close(); },
+    isOpen: function(){ return isOpen; },
   };
 })();
