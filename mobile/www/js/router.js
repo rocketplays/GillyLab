@@ -353,6 +353,37 @@ window.GL_ROUTER = (function(){
       window.GL_NATIVE.tap();
       back();
     });
+    // Swipe right from the left screen edge = the back button, but only on a
+    // screen that actually shows one, and never while a sheet/dialog is open or
+    // when the gesture is mostly vertical (a scroll).
+    (function(){
+      var EDGE = 28, MIN_DX = 70, sx = 0, sy = 0, tracking = false;
+      function blocked(){
+        if (backBtn.hidden) return true;
+        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])')) return true;
+        return false;
+      }
+      document.addEventListener('touchstart', function(e){
+        tracking = false;
+        if (e.touches.length !== 1) return;
+        var t = e.touches[0];
+        if (t.clientX > EDGE || blocked()) return;
+        sx = t.clientX; sy = t.clientY; tracking = true;
+      }, { passive: true });
+      document.addEventListener('touchmove', function(e){
+        if (!tracking) return;
+        var t = e.touches[0], dx = t.clientX - sx, dy = Math.abs(t.clientY - sy);
+        if (dy > 45 && dy > dx) { tracking = false; return; }
+        if (dx >= MIN_DX && dx > dy * 1.6){
+          tracking = false;
+          if (blocked()) return;
+          window.GL_NATIVE.tap();
+          back();
+        }
+      }, { passive: true });
+      document.addEventListener('touchend', function(){ tracking = false; }, { passive: true });
+      document.addEventListener('touchcancel', function(){ tracking = false; }, { passive: true });
+    })();
     window.addEventListener('hashchange', function(){
       if (ignoreNextHashChange){ ignoreNextHashChange = false; return; }
       fromHash();
