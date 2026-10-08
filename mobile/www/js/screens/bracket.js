@@ -327,6 +327,9 @@ function mountBracket(container){
       '<div class="br-col"><div class="br-collabel">Semifinals</div><div class="br-pairgroup">' + sfPairHTML + '</div></div>' +
       '<div class="br-col"><div class="br-collabel">Final</div>' + finalMatchHTML + '</div>' +
       '<div class="br-col br-champcol" id="brColChamp"><div class="br-collabel is-final">Champion</div>' +
+        // One group (tile + result line + Leaderboard button) centered together, so the
+        // result and button sit directly under the tile instead of drifting to the bottom.
+        '<div class="br-champgroup">' +
         '<div class="br-champcard">' +
           fighterRowHTML(finalWinner, { yourPick: picks.final === finalWinner }) +
         '</div>' +
@@ -339,6 +342,7 @@ function mountBracket(container){
               : '<div class="br-champ-result bad">✗ You had <strong>' + esc(picks.final.name) + '</strong></div>')
           : '') +
         '<button type="button" class="gl-btn gl-btn-outline" id="brViewLbBtn" style="margin-top:.9rem">View Leaderboard ↓</button>' +
+        '</div>' +
       '</div>' +
       '<div class="br-col br-spacer" aria-hidden="true"></div>';
 
@@ -366,7 +370,7 @@ function mountBracket(container){
     // resets to 0), so without this the reload path silently stayed on the
     // quarterfinals column instead of showing the result you came back for.
     var champCol = document.getElementById('brColChamp');
-    var champCard = champCol && champCol.querySelector('.br-champcard');
+    var champCard = champCol && (champCol.querySelector('.br-champgroup') || champCol.querySelector('.br-champcard'));
     if (champCol) (champCard || champCol).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
   }
 

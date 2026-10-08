@@ -2500,7 +2500,9 @@ body #mh-box{
 /* Final + Champion columns hold a single card: center it vertically in the column
    (QF is the tall one), so it lines up with the Semifinal connector instead of
    hugging the top. */
-.br-col > .br-match, .br-col > .br-champcard{ margin-top:auto; margin-bottom:auto; }
+.br-col > .br-match, .br-col > .br-champcard, .br-col > .br-champgroup{ margin-top:auto; margin-bottom:auto; }
+.br-champgroup{ width:100%; display:flex; flex-direction:column; align-items:center; }
+.br-champgroup .br-champcard{ margin:0; }
 .br-col:not(:last-child) .br-match::after{ content:""; position:absolute; left:100%; top:50%; width:var(--br-stub); height:1px; background:var(--border); }
 .br-pair::before{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:25%; bottom:25%; width:1px; background:var(--border); }
 .br-pair::after{ content:""; position:absolute; left:calc(100% + var(--br-stub)); top:50%; height:1px; width:calc(var(--br-gap) - var(--br-stub)); background:var(--border); }
