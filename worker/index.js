@@ -873,24 +873,8 @@ async function loadPickemScore(env, url) {
 }
 // Generic public JSON asset loader — used to server-render the rankings/roster
 // pages so crawlers get the real content instead of a "Loading…" shell.
-// The two big, read-only profile datasets (6MB / 8MB of JSON) were being re-fetched and
-// re-parsed on EVERY request -- ~all of a fighter profile's load time. Keep the parsed
-// copy in this isolate for a few minutes. Callers treat them as read-only.
-const ASSET_ISOLATE_CACHE = { "/data/fighter-lite.json": null, "/data/fight-stats.json": null };
-const ASSET_ISOLATE_TTL_MS = 5 * 60 * 1000;
 async function loadAssetJson(env, url, p) {
-  const cacheable = Object.prototype.hasOwnProperty.call(ASSET_ISOLATE_CACHE, p);
-  if (cacheable) {
-    const hit = ASSET_ISOLATE_CACHE[p];
-    if (hit && Date.now() - hit.t < ASSET_ISOLATE_TTL_MS) return hit.v;
-  }
-  try {
-    const r = await env.ASSETS.fetch(new Request(new URL(p, url)));
-    if (!r.ok) return null;
-    const v = await r.json();
-    if (cacheable) ASSET_ISOLATE_CACHE[p] = { t: Date.now(), v };
-    return v;
-  } catch { return null; }
+  try { const r = await env.ASSETS.fetch(new Request(new URL(p, url))); if (!r.ok) return null; return await r.json(); } catch { return null; }
 }
 // Ported from fightStatsFor()/_fsParse() in index.html — exact date match,
 // else the closest record within ±36h (timezone drift). Used only by
@@ -4059,9 +4043,21 @@ export default {
         const cors = appCorsHeaders(request);
         const slug = (url.searchParams.get("slug") || "").trim().toLowerCase();
         if (!slug) return json({ error: "missing slug" }, 400, cors);
+        // Public, identical for everyone: serve from the edge cache so a profile does not
+        // re-fetch and re-parse the 6MB fighter-lite.json on every open (that was most of
+        // its load time). Cached by slug for 10 minutes; CORS headers are added per request.
+        let edge = null;
+        try { edge = caches.default; } catch (_) {}
+        const ckey = edge ? new Request("https://edge-cache.gillylab.internal/app-fighter/" + encodeURIComponent(slug)) : null;
+        if (edge) {
+          try { const hit = await edge.match(ckey); if (hit) return json(await hit.json(), 200, cors); } catch (_) {}
+        }
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
         const fighter = lite && lite.bySlug && lite.bySlug[slug];
         if (!fighter) return json({ error: "not found" }, 404, cors);
+        if (edge) {
+          try { await edge.put(ckey, new Response(JSON.stringify({ fighter }), { headers: { "content-type": "application/json", "cache-control": "public, max-age=600" } })); } catch (_) {}
+        }
         return json({ fighter }, 200, cors);
       }
       // Career Accolades, Tape Study, Fight History, Odds History and News

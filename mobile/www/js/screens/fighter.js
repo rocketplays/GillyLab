@@ -630,11 +630,13 @@ window.GL_FIGHTER = (function(){
   // (tabsHTML on `{}` returns ''), never the free lock block -- see load()'s
   // comment on why account() and fighterExtras() are fetched/caught
   // separately.
-  function renderHTML(f, subscribed, extras){
+  function renderHTML(f, subscribed, extras, pending){
     f = f || {};
     var rankLabel = f.rank && f.rank !== 'NR' ? (/C/.test(f.rank) ? 'Champion' : f.rank) : '';
     var metaBits = [f.record, f.division, f.country].filter(Boolean).join(' · ');
-    var tail = tabsHTML(extras || {}) + (subscribed ? statsModalHTML() : lockedHTML());
+    var tail = pending
+      ? '<p class="gl-muted gl-loading" style="margin-top:1rem">Loading fight history…</p>'
+      : tabsHTML(extras || {}) + (subscribed ? statsModalHTML() : lockedHTML());
     // Same placement as the site: right under the record, above everything
     // else -- only for a subscribed viewer with actual breakdown data (the
     // toggle simply doesn't render rather than opening onto an empty panel).
@@ -695,20 +697,26 @@ window.GL_FIGHTER = (function(){
     var subP = (known === null || known === undefined)
       ? window.GL_API.account().then(function(a){ return !!(a && a.subscribed); }).catch(function(){ return false; })
       : Promise.resolve(!!known);
-    Promise.all([
-      window.GL_API.fighter(slug),
-      subP,
-      window.GL_API.fighterExtras(slug).catch(function(){ return null; }),
-    ]).then(function(results){
+    var extrasP = window.GL_API.fighterExtras(slug).catch(function(){ return null; });
+    var scroller = document.getElementById('appScroll');
+    // Two phases: the lite profile (header, bio, stats) paints as soon as the small
+    // /fighter request lands; the heavy premium extras (fight history, tape, odds...)
+    // fill in below it when they arrive, instead of holding the whole page back.
+    window.GL_API.fighter(slug).then(function(fighterRes){
       if (mySeq !== loadSeq) return; // a newer profile request already won
-      var fighterRes = results[0], subscribed = results[1], extras = results[2];
-      container.innerHTML = renderHTML(fighterRes.fighter, subscribed, extras);
-      var goPrem = container.querySelector('[data-goto="premium"]');
-      if (goPrem) goPrem.addEventListener('click', function(){
-        window.GL_NATIVE.tap();
-        window.GL_ROUTER.go('premium');
+      container.innerHTML = renderHTML(fighterRes.fighter, false, null, true);
+      return Promise.all([subP, extrasP]).then(function(r2){
+        if (mySeq !== loadSeq) return;
+        var top = scroller ? scroller.scrollTop : 0;
+        container.innerHTML = renderHTML(fighterRes.fighter, r2[0], r2[1]);
+        if (scroller) scroller.scrollTop = top;
+        var goPrem = container.querySelector('[data-goto="premium"]');
+        if (goPrem) goPrem.addEventListener('click', function(){
+          window.GL_NATIVE.tap();
+          window.GL_ROUTER.go('premium');
+        });
+        wireExtras(container, fighterRes.fighter && fighterRes.fighter.name, r2[1] || {});
       });
-      wireExtras(container, fighterRes.fighter && fighterRes.fighter.name, extras || {});
     }).catch(function(){
       if (mySeq !== loadSeq) return;
       container.innerHTML = '<p class="gl-error">Couldn’t load this fighter’s profile — check your connection and try again.</p>';

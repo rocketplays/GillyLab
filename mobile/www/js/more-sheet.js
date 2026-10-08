@@ -120,6 +120,9 @@ window.GL_MORE = (function(){
     sheet = document.getElementById('moreSheet');
     list = document.getElementById('moreSheetList');
     overlay.addEventListener('click', function(){ window.GL_NATIVE.tap(); close(); });
+    // Touches on the dimmed backdrop (and on a sheet too short to scroll) must not
+    // scroll the page behind.
+    overlay.addEventListener('touchmove', function(e){ if (e.cancelable) e.preventDefault(); }, { passive: false });
     // Swipe down on the sheet to dismiss it: the sheet (and backdrop) follow the
     // finger; past ~25% of its height, or a quick flick, it closes - otherwise it
     // springs back. Only starts when the sheet is scrolled to its top.
@@ -134,6 +137,8 @@ window.GL_MORE = (function(){
         if (!tracking) return;
         var d = e.touches[0].clientY - sy;
         if (!dragging){
+          // Never let the gesture chain to the page behind the sheet.
+          if (e.cancelable && sheet.scrollTop <= 0 && d >= 0) e.preventDefault();
           if (d < -6 || sheet.scrollTop > 0) { tracking = false; return; }
           if (d > 8){ dragging = true; sheet.style.transition = 'none'; overlay.style.transition = 'none'; }
           else return;
