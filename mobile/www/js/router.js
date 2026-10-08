@@ -288,11 +288,6 @@ window.GL_ROUTER = (function(){
     // #app itself keeps its id/classes untouched (nothing else in the app
     // selects into it by id besides this file), so no CSS/layout changes.
     var pageEl = document.createElement('div');
-    // Fade/slide the new screen in instead of hard-swapping it (reduced-motion is
-    // handled in CSS). Class is dropped after the animation so it can't interfere
-    // with position:fixed/sticky children or later re-renders.
-    pageEl.className = 'gl-page-enter';
-    pageEl.addEventListener('animationend', function(){ pageEl.classList.remove('gl-page-enter'); }, { once: true });
     appEl.innerHTML = '';
     appEl.appendChild(pageEl);
     appScrollEl.scrollTop = 0;
@@ -400,7 +395,7 @@ window.GL_ROUTER = (function(){
         var w = window.innerWidth || 375;
         var v = lastDx / Math.max(1, Date.now() - st);           // px per ms
         var commit = !cancelled && !blocked() && (lastDx > w * 0.33 || (v > 0.55 && lastDx > 40));
-        if (reduce){ reset(); if (commit){ window.GL_NATIVE.select(); back(); } return; }
+        if (reduce){ reset(); if (commit){ back(); } return; }
         appScrollEl.style.transition = 'transform .2s cubic-bezier(.2,.7,.2,1)';
         appScrollEl.style.transform = 'translateX(' + (commit ? w : 0) + 'px)';
         var done = false;
@@ -408,7 +403,7 @@ window.GL_ROUTER = (function(){
           if (done) return; done = true;
           appScrollEl.removeEventListener('transitionend', end);
           reset();
-          if (commit){ window.GL_NATIVE.select(); back(); }
+          if (commit){ back(); }
         }
         appScrollEl.addEventListener('transitionend', end);
         setTimeout(end, 260);

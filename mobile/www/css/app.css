@@ -2577,18 +2577,11 @@ body #mh-box{
 
 
 /* ── Smoother navigation ───────────────────────────────────────────────── */
-/* New screens ease in rather than snapping. Opacity-only on fullbleed screens
-   so a transform doesn't create a containing block for their fixed children. */
-.gl-page-enter{ animation:glPageIn .22s cubic-bezier(.2,.7,.2,1) both; }
-.gl-app--fullbleed .gl-page-enter{ animation-name:glPageFade; }
-@keyframes glPageIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
-@keyframes glPageFade{ from{ opacity:0; } to{ opacity:1; } }
 /* "Loading…" only appears if the data is actually slow (>180ms), then fades in,
    so quick or cached loads never flash it. */
 .gl-loading{ opacity:0; animation:glLoadIn .25s ease .18s forwards; }
 @keyframes glLoadIn{ to{ opacity:1; } }
 @media (prefers-reduced-motion:reduce){
-  .gl-page-enter{ animation:none; }
   .gl-loading{ animation:none; opacity:1; }
 }
 
