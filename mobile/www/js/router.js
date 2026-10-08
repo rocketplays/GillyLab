@@ -353,36 +353,68 @@ window.GL_ROUTER = (function(){
       window.GL_NATIVE.tap();
       back();
     });
-    // Swipe right from the left screen edge = the back button, but only on a
-    // screen that actually shows one, and never while a sheet/dialog is open or
-    // when the gesture is mostly vertical (a scroll).
+    // Swipe right from the left screen edge = the back button. The page follows
+    // the finger, then either slides off and goes back (dragged far enough, or a
+    // quick flick) or springs back. Only on a screen that actually shows a back
+    // button, never while a sheet/dialog is open, and ignored for vertical scrolls.
     (function(){
-      var EDGE = 28, MIN_DX = 70, sx = 0, sy = 0, tracking = false;
+      var EDGE = 28, sx = 0, sy = 0, st = 0, tracking = false, dragging = false, lastDx = 0;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       function blocked(){
         if (backBtn.hidden) return true;
         if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])')) return true;
         return false;
       }
+      function reset(){
+        appScrollEl.style.transition = '';
+        appScrollEl.style.transform = '';
+        appScrollEl.style.boxShadow = '';
+      }
       document.addEventListener('touchstart', function(e){
-        tracking = false;
+        tracking = dragging = false;
         if (e.touches.length !== 1) return;
         var t = e.touches[0];
         if (t.clientX > EDGE || blocked()) return;
-        sx = t.clientX; sy = t.clientY; tracking = true;
+        sx = t.clientX; sy = t.clientY; st = Date.now(); lastDx = 0; tracking = true;
       }, { passive: true });
       document.addEventListener('touchmove', function(e){
         if (!tracking) return;
         var t = e.touches[0], dx = t.clientX - sx, dy = Math.abs(t.clientY - sy);
-        if (dy > 45 && dy > dx) { tracking = false; return; }
-        if (dx >= MIN_DX && dx > dy * 1.6){
-          tracking = false;
-          if (blocked()) return;
-          window.GL_NATIVE.tap();
-          back();
+        if (!dragging){
+          if (dy > 12 && dy > dx) { tracking = false; return; }   // it's a scroll
+          if (dx > 10 && dx > dy * 1.5){
+            dragging = true;
+            appScrollEl.style.transition = 'none';
+            appScrollEl.style.boxShadow = '-12px 0 24px rgba(0,0,0,.45)';
+          } else return;
         }
-      }, { passive: true });
-      document.addEventListener('touchend', function(){ tracking = false; }, { passive: true });
-      document.addEventListener('touchcancel', function(){ tracking = false; }, { passive: true });
+        if (e.cancelable) e.preventDefault();
+        lastDx = Math.max(0, dx);
+        appScrollEl.style.transform = 'translateX(' + lastDx + 'px)';
+      }, { passive: false });
+      function finish(cancelled){
+        if (!tracking) return;
+        var was = dragging;
+        tracking = dragging = false;
+        if (!was) return;
+        var w = window.innerWidth || 375;
+        var v = lastDx / Math.max(1, Date.now() - st);           // px per ms
+        var commit = !cancelled && !blocked() && (lastDx > w * 0.33 || (v > 0.55 && lastDx > 40));
+        if (reduce){ reset(); if (commit){ window.GL_NATIVE.tap(); back(); } return; }
+        appScrollEl.style.transition = 'transform .2s cubic-bezier(.2,.7,.2,1)';
+        appScrollEl.style.transform = 'translateX(' + (commit ? w : 0) + 'px)';
+        var done = false;
+        function end(){
+          if (done) return; done = true;
+          appScrollEl.removeEventListener('transitionend', end);
+          reset();
+          if (commit){ window.GL_NATIVE.tap(); back(); }
+        }
+        appScrollEl.addEventListener('transitionend', end);
+        setTimeout(end, 260);
+      }
+      document.addEventListener('touchend', function(){ finish(false); }, { passive: true });
+      document.addEventListener('touchcancel', function(){ finish(true); }, { passive: true });
     })();
     window.addEventListener('hashchange', function(){
       if (ignoreNextHashChange){ ignoreNextHashChange = false; return; }
