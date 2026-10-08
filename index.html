@@ -3045,6 +3045,23 @@
 
     .rank-table { display: flex; flex-direction: column; gap: 0.4rem; }
 
+    /* "Other fighters in this division": active-roster fighters not currently ranked */
+    .rank-others { margin-top: 1.75rem; }
+    .rank-others-title {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.15rem;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.75rem;
+      display: flex; align-items: baseline; gap: 0.6rem;
+    }
+    .rank-others-title span { font-family: inherit; font-size: 0.8rem; color: var(--muted); font-weight: 600; letter-spacing: 0.04em; }
+    .rank-others-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.4rem; }
+    .rank-other {
+      display: flex; align-items: center; gap: 0.65rem; min-width: 0;
+      background: var(--card); border: 1px solid var(--border); border-radius: 5px;
+      padding: 0.45rem 0.7rem; cursor: pointer; transition: border-color 0.15s;
+    }
+    .rank-other:hover { border-color: var(--accent); }
+    .rank-other .rank-name { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
     .rank-row, .rank-champ-row {
       display: flex;
       align-items: center;
@@ -143803,7 +143820,70 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }).join('');
 
     return '<div class="rank-panel-title">' + titleLabel + '</div>' +
-      '<div class="rank-table">' + rows + '</div>';
+      '<div class="rank-table">' + rows + '</div>' +
+      (isP4P ? '' : rankingOthersHTML(divisionName, entries));
+  }
+
+  // ── "Other fighters in this division" ───────────────────────────────────
+  // Every active-roster fighter in this division who is NOT in the current
+  // top 15 / champion list, alphabetical by last name. Driven by ACTIVE_ROSTER
+  // + FIGHTERS directly, so it follows the weekly roster updates and every
+  // rankings refresh with no separate data to maintain.
+  let _rkOtherIdx = null;
+  function _rkNorm(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+  function _rkLastKey(n) {
+    const w = String(n).trim().split(/\s+/);
+    while (w.length > 1 && /^(jr\.?|sr\.?|ii|iii|iv)$/i.test(w[w.length - 1])) w.pop();
+    const PRE = ['da', 'de', 'del', 'dos', 'du', 'van', 'von', 'la', 'le', 'di'];
+    let i = w.length - 1;
+    while (i > 0 && PRE.indexOf(w[i - 1].toLowerCase()) >= 0) i--;
+    return _rkNorm(w.slice(i).join(' ')) + '|' + _rkNorm(w.slice(0, i).join(' '));
+  }
+  function _rkOthersIndex() {
+    if (_rkOtherIdx) return _rkOtherIdx;
+    const byAbbr = {};
+    Object.keys(RANKING_DIVISIONS).forEach(d => { byAbbr[RANKING_DIVISIONS[d].abbr] = d; });
+    const divByNorm = {};
+    FIGHTERS.forEach(f => { const d = byAbbr[f.division]; if (d) divByNorm[_rkNorm(f.name)] = d; });
+    const idx = {};
+    ACTIVE_ROSTER.forEach(name => {
+      const alias = (typeof ACTIVE_ROSTER_ALIASES !== 'undefined' && ACTIVE_ROSTER_ALIASES[name]) || '';
+      const d = divByNorm[_rkNorm(name)] || (alias && divByNorm[_rkNorm(alias)]);
+      if (!d) return;
+      (idx[d] = idx[d] || []).push(name);
+    });
+    Object.keys(idx).forEach(d => idx[d].sort((a, b) => _rkLastKey(a).localeCompare(_rkLastKey(b))));
+    _rkOtherIdx = idx;
+    return idx;
+  }
+  function rankingOthersHTML(divisionName, entries) {
+    const roster = _rkOthersIndex()[divisionName] || [];
+    if (!roster.length) return '';
+    const ranked = new Set();
+    (entries || []).forEach(e => {
+      ranked.add(_rkNorm(e.fighterName));
+      try { ranked.add(_rkNorm(resolveCanonicalFighterName(e.fighterName, e.fighterSlug))); } catch (_) {}
+    });
+    const others = roster.filter(n => {
+      const alias = (typeof ACTIVE_ROSTER_ALIASES !== 'undefined' && ACTIVE_ROSTER_ALIASES[n]) || '';
+      return !ranked.has(_rkNorm(n)) && !(alias && ranked.has(_rkNorm(alias)));
+    });
+    if (!others.length) return '';
+    const cells = others.map(n => {
+      const alias = (typeof ACTIVE_ROSTER_ALIASES !== 'undefined' && ACTIVE_ROSTER_ALIASES[n]) || '';
+      const canon = FIGHTERS.some(f => f.name === n) ? n : (alias || n);
+      const nm = String(canon).replace(/"/g, '&quot;');
+      return '<div class="rank-other" onclick="openFighterByName(\'' + escJsAttr(canon) + '\')">' +
+        '<div class="rank-avatar" data-fighter="' + nm + '"></div>' +
+        '<span class="rank-name">' + String(n).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>' +
+      '</div>';
+    }).join('');
+    return '<div class="rank-others">' +
+      '<div class="rank-others-title">Other fighters in this division<span>' + others.length + ' on the active roster</span></div>' +
+      '<div class="rank-others-grid">' + cells + '</div>' +
+    '</div>';
   }
 
   // ── Rankings mode toggle ─────────────────────────────────────────────────

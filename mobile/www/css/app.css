@@ -1950,6 +1950,12 @@ body #mh-box{
   align-items:center; gap:.6rem; padding:.5rem 0; border-top:1px solid var(--border);
 }
 .rk-row:first-of-type{ border-top:none; }
+/* "Other fighters in this division" under the 1-15 list */
+.rk-others{ margin-top:1.4rem; }
+.rk-others-title{ font-weight:800; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; margin-bottom:.4rem; }
+.rk-others-title span{ display:block; font-weight:600; font-size:.7rem; letter-spacing:.02em; text-transform:none; color:var(--muted); margin-top:.1rem; }
+.rk-other-row{ display:grid; grid-template-columns:36px 1fr; align-items:center; gap:.6rem; padding:.4rem 0; border-top:1px solid var(--border); }
+.rk-other-row:first-of-type{ border-top:none; }
 .rk-num{ text-align:center; font-weight:800; color:var(--muted); font-size:.88rem; }
 .rk-champ .rk-num{ color:#ffcf7a; }
 .rk-av{ position:relative; display:block; width:36px; height:36px; }

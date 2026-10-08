@@ -94,12 +94,34 @@ function mountRankings(container){
     );
   }
 
+  // "Other fighters in this division": active-roster fighters in this division who
+  // are not currently ranked, alphabetical by last name. The worker builds the list
+  // from data/roster.json minus the live rankings (res.others), so it follows both
+  // roster updates and rankings refreshes.
+  function othersHTML(){
+    if (isP4PDiv(activeDiv)) return '';
+    var list = (data && data.others && data.others[activeDiv]) || [];
+    if (!list.length) return '';
+    var rows = list.map(function(f){
+      var ini = window.GL_FIGHTER.initials(f.name);
+      var thumb = f.photo ? (window.GL_FIGHTER.PHOTO_BASE + esc(f.photo) + '.png') : null;
+      var av = '<span class="rk-av"><span class="rk-av-initials">' + esc(ini) + '</span>' +
+        (thumb ? '<img class="rk-av-photo" src="' + thumb + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '') + '</span>';
+      var nm = f.slug
+        ? '<button type="button" class="rk-name" data-slug="' + esc(f.slug) + '">' + esc(f.name) + '</button>'
+        : '<span class="rk-name rk-name-plain">' + esc(f.name) + '</span>';
+      return '<div class="rk-other-row">' + av + nm + '</div>';
+    }).join('');
+    return '<div class="rk-others"><div class="rk-others-title">Other fighters in this division <span>' + list.length + ' on the active roster</span></div>' + rows + '</div>';
+  }
+
   function panelHTML(){
     var entries = (data && data.divisions && data.divisions[activeDiv]) || [];
     var isP4P = isP4PDiv(activeDiv);
     return (
       '<div class="rk-panel-title">' + esc(divLabel(activeDiv)) + '</div>' +
-      (entries.length ? entries.map(function(e){ return rowHTML(e, isP4P); }).join('') : '<p class="gl-muted" style="text-align:center;padding:1.5rem 0">No entries.</p>')
+      (entries.length ? entries.map(function(e){ return rowHTML(e, isP4P); }).join('') : '<p class="gl-muted" style="text-align:center;padding:1.5rem 0">No entries.</p>') +
+      othersHTML()
     );
   }
 

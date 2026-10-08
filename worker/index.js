@@ -3359,6 +3359,22 @@ export default {
             .sort((a, b) => (a.isChampion ? -1 : 0) - (b.isChampion ? -1 : 0) || (a.rank || 99) - (b.rank || 99))
             .map(shapeEntry);
         });
+        // "Other fighters in this division": active-roster fighters in each division
+        // who are not currently ranked (data/roster.json `divisions`, rebuilt by
+        // scripts/gen-roster.cjs whenever ACTIVE_ROSTER changes). Subtracting the live
+        // rankings here means a rankings refresh moves people in/out with no extra step.
+        const rosterRaw = await loadAssetJson(env, url, "/data/roster.json");
+        const nrm = (x) => String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const others = {};
+        tabs.forEach((d) => {
+          if (/Pound-for-Pound/.test(d)) return;
+          const list = (rosterRaw && rosterRaw.divisions && rosterRaw.divisions[d]) || [];
+          const rn = new Set(), rs = new Set();
+          divisions[d].forEach((e) => { rn.add(nrm(e.name)); if (e.slug) rs.add(e.slug); });
+          byDiv[d].forEach((e) => rn.add(nrm(e.fighterName)));
+          const o = list.filter((f) => !rn.has(nrm(f.n)) && !(f.s && rs.has(f.s)));
+          if (o.length) others[d] = o.map((f) => ({ name: f.n, slug: f.s || null, photo: f.p || f.s || null }));
+        });
         // "Top movers" for the app's Home dashboard -- rankChange is only
         // populated for a fraction of fighters at any given sync, so this
         // pulls from every division and just returns whichever fighters DO
@@ -3392,6 +3408,7 @@ export default {
           comparedDate: raw.meta && raw.meta.comparedSnapshotDate,
           tabs,
           divisions,
+          others,
           movers,
           rows: divisions[tabs[0]] || [],
         }, 200, cors);

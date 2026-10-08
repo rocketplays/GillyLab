@@ -2383,6 +2383,12 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
   .rk-mov{flex:0 0 auto;font-size:.72rem;font-weight:800;min-width:2.2rem;text-align:right}
   .rk-mov.up{color:var(--accent)}.rk-mov.down{color:#ff6a5e}.rk-mov.new{color:#ffcf7a}
   .rk-empty{color:var(--muted);text-align:center;padding:2rem 0}
+  .rk-others{margin-top:1.8rem}
+  .rk-others-title{font-weight:800;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+  .rk-others-title span{color:var(--muted);font-size:.74rem;font-weight:600;letter-spacing:.03em;text-transform:none}
+  .rk-others-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.35rem .9rem}
+  .rk-other{display:flex;align-items:center;gap:.6rem;padding:.35rem .1rem;border-bottom:1px solid rgba(255,255,255,.06);min-width:0}
+  .rk-other .rk-av{width:32px;height:32px;font-size:.7rem}
   .rk-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center}
   .rk-cta a{color:var(--accent);text-decoration:none;font-weight:700}
 ${AURORA_CSS}
@@ -2417,10 +2423,12 @@ ${AURORA_CSS}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     (function(){if(window.matchMedia&&window.matchMedia("(hover:hover) and (pointer:fine)").matches){Array.prototype.forEach.call(document.querySelectorAll(".tapword"),function(el){el.textContent="Click";});}})();
-    var SRC="media",BYDIV={},ACTIVE=null,EX={},KSLUG=${JSON.stringify(KSLUG)};
+    var ROSTER=null,SRC="media",BYDIV={},ACTIVE=null,EX={},KSLUG=${JSON.stringify(KSLUG)};
     function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
     function rowHTML(e){var ex=EX[e.fighterSlug]||{};var name=ex.name||e.fighterName;var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(name));var localThumb="/photos/thumb/"+esc(ex.photo||e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var flag=e.flag||ex.flag||"";var psl=KSLUG[e.fighterSlug];var nameHTML=psl?'<a class="rk-name" href="/fighter/'+psl+'">'+esc(name)+'</a>':'<span class="rk-name">'+esc(name)+'</span>';return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+nameHTML+(flag?'<span class="rk-flag">'+esc(flag)+'</span>':"")+movBadge(e)+'</div>';}
-    function showDiv(name){ACTIVE=name;Array.prototype.forEach.call(document.querySelectorAll(".rk-tab"),function(b){b.classList.toggle("sel",b.dataset.div===name);});var entries=(BYDIV[name]||[]).slice().sort(function(a,b){return (a.isChampion?-1:0)-(b.isChampion?-1:0)||(a.rank||99)-(b.rank||99);});document.getElementById("rkPanels").innerHTML='<div class="rk-panel-title">'+esc(tag(name))+'</div>'+(entries.length?entries.map(rowHTML).join(""):'<p class="rk-empty">No entries.</p>');}
+    function nrm(s){return String(s||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");}
+    function othersHTML(name,entries){var list=ROSTER&&ROSTER.divisions&&ROSTER.divisions[name];if(!list||!list.length)return "";var rn={},rs={};entries.forEach(function(e){var ex=EX[e.fighterSlug]||{};rn[nrm(e.fighterName)]=1;if(ex.name)rn[nrm(ex.name)]=1;if(e.fighterSlug)rs[e.fighterSlug]=1;if(KSLUG[e.fighterSlug])rs[KSLUG[e.fighterSlug]]=1;});var o=list.filter(function(f){return !rn[nrm(f.n)]&&!(f.s&&rs[f.s]);});if(!o.length)return "";return '<div class="rk-others"><div class="rk-others-title">Other fighters in this division<span>'+o.length+' on the active roster</span></div><div class="rk-others-grid">'+o.map(function(f){var ini=esc(inits(f.n));var th="/photos/thumb/"+esc(f.p||f.s||"x")+".png";var img='<img class="rk-av" src="'+th+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var nm=f.s?'<a class="rk-name" href="/fighter/'+esc(f.s)+'">'+esc(f.n)+'</a>':'<span class="rk-name">'+esc(f.n)+'</span>';return '<div class="rk-other">'+img+nm+'</div>';}).join("")+'</div></div>';}
+    function showDiv(name){ACTIVE=name;Array.prototype.forEach.call(document.querySelectorAll(".rk-tab"),function(b){b.classList.toggle("sel",b.dataset.div===name);});var entries=(BYDIV[name]||[]).slice().sort(function(a,b){return (a.isChampion?-1:0)-(b.isChampion?-1:0)||(a.rank||99)-(b.rank||99);});document.getElementById("rkPanels").innerHTML='<div class="rk-panel-title">'+esc(tag(name))+'</div>'+(entries.length?entries.map(rowHTML).join(""):'<p class="rk-empty">No entries.</p>')+(/Pound-for-Pound/.test(name)?"":othersHTML(name,entries));}
     function load(keep){
       if(!keep)document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Loading rankings…</p>';
       fetch("/data/"+(SRC==="meta"?"rankings-meta.json":"rankings.json")).then(function(r){return r.json();}).then(function(p){
@@ -2435,7 +2443,7 @@ ${AURORA_CSS}
     document.getElementById("rkTabs").addEventListener("click",function(e){var b=e.target.closest(".rk-tab");if(b)showDiv(b.dataset.div);});
     Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(b){b.addEventListener("click",function(){SRC=b.dataset.src;Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(x){x.classList.remove("sel");});b.classList.add("sel");ACTIVE=null;load();});});
     // Canonical name / photo-slug / flag overrides for fighters the UFC feed leaves incomplete.
-    fetch("/data/rankings-extra.json").then(function(r){return r.json();}).then(function(j){EX=(j&&j.bySlug)||{};}).catch(function(){}).then(function(){load(true);});
+    fetch("/data/roster.json").then(function(r){return r.json();}).then(function(j){ROSTER=j;}).catch(function(){}).then(function(){return fetch("/data/rankings-extra.json");}).then(function(r){return r.json();}).then(function(j){EX=(j&&j.bySlug)||{};}).catch(function(){}).then(function(){load(true);});
   </script>
 </body></html>`; };
 
