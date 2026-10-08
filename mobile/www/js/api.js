@@ -29,6 +29,8 @@ window.GL_API = (function(){
     { prefix: '/api/app/leaders',          fresh: 10 * MIN, stale: 24 * HOUR },
     { prefix: '/api/app/premium-features', fresh: 60 * MIN, stale: 24 * HOUR },
     { prefix: '/api/app/fighter?',         fresh: 5 * MIN,  stale: 24 * HOUR },
+    // Premium-trimmed per account, so memory only and cleared on auth/plan change.
+    { prefix: '/api/app/fighter-extras?', fresh: 5 * MIN, stale: 0, memoryOnly: true },
     { prefix: '/api/fighter-search',       fresh: 10 * MIN, stale: 24 * HOUR },
     // Events can go live / get results, so never serve this one stale.
     { prefix: '/api/app/matchup',          fresh: 45 * 1000, stale: 0, memoryOnly: true },

@@ -688,23 +688,27 @@ window.GL_FIGHTER = (function(){
     activeContainer = container;
     activeFighterSlug = slug;
     container.innerHTML = '<p class="gl-muted gl-loading">Loading fighter…</p>';
+    // All three requests start together (they used to run as fighter+account,
+    // THEN extras -- two sequential round trips). The plan comes from GL_SUB when
+    // it is already known, so the common case doesn't re-fetch /account at all.
+    var known = window.GL_SUB && window.GL_SUB.value();
+    var subP = (known === null || known === undefined)
+      ? window.GL_API.account().then(function(a){ return !!(a && a.subscribed); }).catch(function(){ return false; })
+      : Promise.resolve(!!known);
     Promise.all([
       window.GL_API.fighter(slug),
-      window.GL_API.account().catch(function(){ return null; }),
+      subP,
+      window.GL_API.fighterExtras(slug).catch(function(){ return null; }),
     ]).then(function(results){
       if (mySeq !== loadSeq) return; // a newer profile request already won
-      var fighterRes = results[0], acct = results[1];
-      var subscribed = !!(acct && acct.subscribed);
-      return window.GL_API.fighterExtras(slug).catch(function(){ return null; }).then(function(extras){
-        if (mySeq !== loadSeq) return;
-        container.innerHTML = renderHTML(fighterRes.fighter, subscribed, extras);
-        var goPrem = container.querySelector('[data-goto="premium"]');
-        if (goPrem) goPrem.addEventListener('click', function(){
-          window.GL_NATIVE.tap();
-          window.GL_ROUTER.go('premium');
-        });
-        wireExtras(container, fighterRes.fighter && fighterRes.fighter.name, extras || {});
+      var fighterRes = results[0], subscribed = results[1], extras = results[2];
+      container.innerHTML = renderHTML(fighterRes.fighter, subscribed, extras);
+      var goPrem = container.querySelector('[data-goto="premium"]');
+      if (goPrem) goPrem.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        window.GL_ROUTER.go('premium');
       });
+      wireExtras(container, fighterRes.fighter && fighterRes.fighter.name, extras || {});
     }).catch(function(){
       if (mySeq !== loadSeq) return;
       container.innerHTML = '<p class="gl-error">Couldn’t load this fighter’s profile — check your connection and try again.</p>';

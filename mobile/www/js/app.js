@@ -16,6 +16,16 @@ document.addEventListener('DOMContentLoaded', function(){
       ['/api/app/rankings?source=media', '/api/app/roster', '/api/app/matchup', '/api/app/leaders'].forEach(function(p){ A.prefetch(p); });
     }, 600);
   });
+  // Start loading a fighter profile the instant a name is touched, so the data is
+  // usually already in the cache by the time the tap completes.
+  document.addEventListener('touchstart', function(e){
+    var el = e.target.closest && e.target.closest('[data-slug],[data-chg-slug]');
+    if (!el) return;
+    var slug = el.getAttribute('data-slug') || el.getAttribute('data-chg-slug');
+    if (!slug || !/^[a-z0-9-]+$/.test(slug)) return;
+    window.GL_API.prefetch('/api/app/fighter?slug=' + encodeURIComponent(slug));
+    window.GL_API.prefetch('/api/app/fighter-extras?slug=' + encodeURIComponent(slug));
+  }, { passive: true });
   window.GL_AUTH.onChange(function(){
     // Cached responses may differ by plan/account -- start clean.
     window.GL_API.clearCache();

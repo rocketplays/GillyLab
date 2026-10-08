@@ -873,8 +873,24 @@ async function loadPickemScore(env, url) {
 }
 // Generic public JSON asset loader — used to server-render the rankings/roster
 // pages so crawlers get the real content instead of a "Loading…" shell.
+// The two big, read-only profile datasets (6MB / 8MB of JSON) were being re-fetched and
+// re-parsed on EVERY request -- ~all of a fighter profile's load time. Keep the parsed
+// copy in this isolate for a few minutes. Callers treat them as read-only.
+const ASSET_ISOLATE_CACHE = { "/data/fighter-lite.json": null, "/data/fight-stats.json": null };
+const ASSET_ISOLATE_TTL_MS = 5 * 60 * 1000;
 async function loadAssetJson(env, url, p) {
-  try { const r = await env.ASSETS.fetch(new Request(new URL(p, url))); if (!r.ok) return null; return await r.json(); } catch { return null; }
+  const cacheable = Object.prototype.hasOwnProperty.call(ASSET_ISOLATE_CACHE, p);
+  if (cacheable) {
+    const hit = ASSET_ISOLATE_CACHE[p];
+    if (hit && Date.now() - hit.t < ASSET_ISOLATE_TTL_MS) return hit.v;
+  }
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL(p, url)));
+    if (!r.ok) return null;
+    const v = await r.json();
+    if (cacheable) ASSET_ISOLATE_CACHE[p] = { t: Date.now(), v };
+    return v;
+  } catch { return null; }
 }
 // Ported from fightStatsFor()/_fsParse() in index.html — exact date match,
 // else the closest record within ±36h (timezone drift). Used only by

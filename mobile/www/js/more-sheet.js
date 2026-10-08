@@ -120,6 +120,44 @@ window.GL_MORE = (function(){
     sheet = document.getElementById('moreSheet');
     list = document.getElementById('moreSheetList');
     overlay.addEventListener('click', function(){ window.GL_NATIVE.tap(); close(); });
+    // Swipe down on the sheet to dismiss it: the sheet (and backdrop) follow the
+    // finger; past ~25% of its height, or a quick flick, it closes - otherwise it
+    // springs back. Only starts when the sheet is scrolled to its top.
+    (function(){
+      var sy = 0, st = 0, dragging = false, tracking = false, dy = 0;
+      sheet.addEventListener('touchstart', function(e){
+        tracking = dragging = false;
+        if (!isOpen || e.touches.length !== 1 || sheet.scrollTop > 0) return;
+        sy = e.touches[0].clientY; st = Date.now(); dy = 0; tracking = true;
+      }, { passive: true });
+      sheet.addEventListener('touchmove', function(e){
+        if (!tracking) return;
+        var d = e.touches[0].clientY - sy;
+        if (!dragging){
+          if (d < -6 || sheet.scrollTop > 0) { tracking = false; return; }
+          if (d > 8){ dragging = true; sheet.style.transition = 'none'; overlay.style.transition = 'none'; }
+          else return;
+        }
+        if (e.cancelable) e.preventDefault();
+        dy = Math.max(0, d);
+        sheet.style.transform = 'translateY(' + dy + 'px)';
+        overlay.style.opacity = String(Math.max(0, 1 - dy / Math.max(1, sheet.offsetHeight)));
+      }, { passive: false });
+      function end(cancelled){
+        if (!tracking) return;
+        var was = dragging;
+        tracking = dragging = false;
+        if (!was) return;
+        var h = Math.max(1, sheet.offsetHeight);
+        var v = dy / Math.max(1, Date.now() - st);
+        var commit = !cancelled && (dy > h * 0.25 || (v > 0.5 && dy > 30));
+        sheet.style.transition = ''; overlay.style.transition = '';
+        sheet.style.transform = ''; overlay.style.opacity = '';
+        if (commit) close();   // CSS transition carries it from where the finger left it
+      }
+      sheet.addEventListener('touchend', function(){ end(false); }, { passive: true });
+      sheet.addEventListener('touchcancel', function(){ end(true); }, { passive: true });
+    })();
     list.addEventListener('click', function(e){
       var btn = e.target.closest('[data-route]');
       if (!btn) return;
