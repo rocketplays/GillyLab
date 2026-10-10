@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-10T23:24:58.535Z",
+ "generatedAt": "2026-10-10T23:55:27.351Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -8458,6 +8458,194 @@
       ]
      },
      "capturedAt": "2026-10-10T23:24:58.429Z"
+    }
+   ]
+  },
+  "Julius Walker": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Gerald Meerschaert",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:35",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Gerald Meerschaert",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 36,
+      "sigA": 73,
+      "totL": 67,
+      "totA": 116,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:44",
+      "head": [
+       32,
+       69
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       14
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       30,
+       55
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 21,
+      "totL": 20,
+      "totA": 33,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       7,
+       16
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       8,
+       19
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-10-10T23:55:27.246Z"
+    }
+   ]
+  },
+  "Gerald Meerschaert": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Julius Walker",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:35",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Julius Walker",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 21,
+      "totL": 20,
+      "totA": 33,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       7,
+       16
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       8,
+       19
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 36,
+      "sigA": 73,
+      "totL": 67,
+      "totA": 116,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:44",
+      "head": [
+       32,
+       69
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       14
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       30,
+       55
+      ]
+     },
+     "capturedAt": "2026-10-10T23:55:27.246Z"
     }
    ]
   }
