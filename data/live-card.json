@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-10T21:40:48.516Z",
+ "generatedAt": "2026-10-10T21:51:13.049Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -7518,6 +7518,194 @@
       ]
      },
      "capturedAt": "2026-10-10T21:35:24.636Z"
+    }
+   ]
+  },
+  "Alice Pereira": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Daria Zhelezniakova",
+     "result": "W",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "5:00",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Daria Zhelezniakova",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 32,
+      "totL": 33,
+      "totA": 48,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:05",
+      "head": [
+       18,
+       29
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       14
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       14,
+       17
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 10,
+      "totL": 7,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       6,
+       9
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-10T21:51:12.928Z"
+    }
+   ]
+  },
+  "Daria Zhelezniakova": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Alice Pereira",
+     "result": "L",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "5:00",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Alice Pereira",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 10,
+      "totL": 7,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       6,
+       9
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 32,
+      "totL": 33,
+      "totA": 48,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:05",
+      "head": [
+       18,
+       29
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       14
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       14,
+       17
+      ]
+     },
+     "capturedAt": "2026-10-10T21:51:12.928Z"
     }
    ]
   }
