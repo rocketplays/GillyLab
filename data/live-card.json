@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-10T22:22:26.320Z",
+ "generatedAt": "2026-10-10T22:38:15.409Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -7894,6 +7894,194 @@
       ]
      },
      "capturedAt": "2026-10-10T22:22:26.214Z"
+    }
+   ]
+  },
+  "Felipe Franco": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Brendson Ribeiro",
+     "result": "L",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "1:49",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Brendson Ribeiro",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 5,
+      "totL": 1,
+      "totA": 5,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       1,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 11,
+      "totL": 6,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "0:12",
+      "head": [
+       3,
+       8
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       6,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-10T22:38:15.297Z"
+    }
+   ]
+  },
+  "Brendson Ribeiro": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Felipe Franco",
+     "result": "W",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "1:49",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Felipe Franco",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 11,
+      "totL": 6,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "0:12",
+      "head": [
+       3,
+       8
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       6,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 5,
+      "totL": 1,
+      "totA": 5,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       1,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-10T22:38:15.297Z"
     }
    ]
   }
