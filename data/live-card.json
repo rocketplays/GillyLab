@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-11T01:33:14.128Z",
+ "generatedAt": "2026-10-11T02:14:08.049Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -9210,6 +9210,194 @@
       ]
      },
      "capturedAt": "2026-10-11T01:27:47.838Z"
+    }
+   ]
+  },
+  "Matheus Camilo": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Jai Herbert",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Jai Herbert",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 86,
+      "totL": 51,
+      "totA": 94,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:41",
+      "head": [
+       26,
+       61
+      ],
+      "body": [
+       6,
+       10
+      ],
+      "leg": [
+       11,
+       15
+      ],
+      "dist": [
+       36,
+       77
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 157,
+      "totL": 80,
+      "totA": 194,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "2:55",
+      "head": [
+       25,
+       116
+      ],
+      "body": [
+       19,
+       28
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       43,
+       138
+      ],
+      "clinch": [
+       8,
+       8
+      ],
+      "ground": [
+       3,
+       11
+      ]
+     },
+     "capturedAt": "2026-10-11T02:14:07.933Z"
+    }
+   ]
+  },
+  "Jai Herbert": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Matheus Camilo",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Matheus Camilo",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 157,
+      "totL": 80,
+      "totA": 194,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "2:55",
+      "head": [
+       25,
+       116
+      ],
+      "body": [
+       19,
+       28
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       43,
+       138
+      ],
+      "clinch": [
+       8,
+       8
+      ],
+      "ground": [
+       3,
+       11
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 86,
+      "totL": 51,
+      "totA": 94,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:41",
+      "head": [
+       26,
+       61
+      ],
+      "body": [
+       6,
+       10
+      ],
+      "leg": [
+       11,
+       15
+      ],
+      "dist": [
+       36,
+       77
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-10-11T02:14:07.933Z"
     }
    ]
   }
