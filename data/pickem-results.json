@@ -1,6 +1,106 @@
 {
-  "generatedAt": "2026-10-11T02:24:30.157Z",
+  "generatedAt": "2026-10-11T08:08:08.186Z",
   "events": [
+    {
+      "slug": "ufc-fight-night-october-10-2026",
+      "name": "UFC Fight Night: Allen vs. Duncan",
+      "date": "2026-10-11",
+      "bouts": [
+        {
+          "f1": "Brendan Allen",
+          "f2": "Christian Leroy Duncan",
+          "winner": "Brendan Allen",
+          "method": "Submission",
+          "round": 5,
+          "voided": false
+        },
+        {
+          "f1": "Matheus Camilo",
+          "f2": "Jai Herbert",
+          "winner": "Jai Herbert",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Loopy Godínez",
+          "f2": "Ketlen Souza",
+          "winner": "Loopy Godínez",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Andre Fili",
+          "f2": "Kai Kamaka III",
+          "winner": "Andre Fili",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Malcolm Wellmaker",
+          "f2": "Otari Tanzilovi",
+          "winner": "Otari Tanzilovi",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Julius Walker",
+          "f2": "Gerald Meerschaert",
+          "winner": "Julius Walker",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Francisco Prado",
+          "f2": "Ismael Bonfim",
+          "winner": "Francisco Prado",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Niko Price",
+          "f2": "Leon Shahbazyan",
+          "winner": "Niko Price",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Felipe Franco",
+          "f2": "Brendson Ribeiro",
+          "winner": "Brendson Ribeiro",
+          "method": "Submission",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Allen Frye Jr.",
+          "f2": "RJ Harris",
+          "winner": "Allen Frye Jr.",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Alice Pereira",
+          "f2": "Daria Zhelezniakova",
+          "winner": "Alice Pereira",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Ernesta Kareckaite",
+          "f2": "Melissa Gatto",
+          "voided": true
+        }
+      ]
+    },
     {
       "slug": "ufc-fight-night-october-06-2026",
       "name": "Dana White's Contender Series: Season 10, Week 9",
@@ -3634,125 +3734,6 @@
           "winner": "Damian Pinas",
           "method": "KO/TKO",
           "round": 1,
-          "voided": false
-        }
-      ]
-    },
-    {
-      "slug": "ufc-fight-night-february-21-2026",
-      "name": "UFC Fight Night",
-      "date": "2026-02-22",
-      "bouts": [
-        {
-          "f1": "Sean Strickland",
-          "f2": "Anthony Hernandez",
-          "winner": "Sean Strickland",
-          "method": "KO/TKO",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Geoff Neal",
-          "f2": "Uroš Medić",
-          "winner": "Uroš Medić",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Dan Ige",
-          "f2": "Melquizael Costa",
-          "winner": "Melquizael Costa",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Serghei Spivac",
-          "f2": "Ante Delija",
-          "winner": "Serghei Spivac",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Jacobe Smith",
-          "f2": "Josiah Harrell",
-          "winner": "Jacobe Smith",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Zach Reese",
-          "f2": "Michel Pereira",
-          "winner": "Michel Pereira",
-          "method": "Decision - Split",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Chidi Njokuani",
-          "f2": "Carlos Leal",
-          "winner": "Carlos Leal",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Ode' Osbourne",
-          "f2": "Alibi Idiris",
-          "winner": "Alibi Idiris",
-          "method": "No Contest",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Alden Coria",
-          "f2": "Luis Gurule",
-          "winner": "Alden Coria",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Nora Cornolle",
-          "f2": "Joselyne Edwards",
-          "winner": "Joselyne Edwards",
-          "method": "Submission",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Ramiz Brahimaj",
-          "f2": "Punahele Soriano",
-          "winner": "Punahele Soriano",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Phil Rowe",
-          "f2": "Jean-Paul Lebosnoyani",
-          "winner": "Jean-Paul Lebosnoyani",
-          "method": "Decision - Split",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Jordan Leavitt",
-          "f2": "Yadier del Valle",
-          "winner": "Jordan Leavitt",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Juliana Miller",
-          "f2": "Carli Judice",
-          "winner": "Carli Judice",
-          "method": "Decision - Unanimous",
-          "round": 3,
           "voided": false
         }
       ]
