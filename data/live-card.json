@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-11T00:57:18.734Z",
+ "generatedAt": "2026-10-11T01:27:47.954Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-10-11T00:57:18.624Z"
+    }
+   ]
+  },
+  "Loopy Godínez": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Ketlen Souza",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Ketlen Souza",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 164,
+      "totL": 134,
+      "totA": 230,
+      "tdL": 2,
+      "tdA": 13,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:39",
+      "head": [
+       58,
+       147
+      ],
+      "body": [
+       10,
+       13
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       64,
+       154
+      ],
+      "clinch": [
+       3,
+       6
+      ],
+      "ground": [
+       4,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 158,
+      "totL": 80,
+      "totA": 168,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:29",
+      "head": [
+       53,
+       138
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       67,
+       152
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-11T01:27:47.838Z"
+    }
+   ]
+  },
+  "Ketlen Souza": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Loopy Godínez",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Loopy Godínez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 158,
+      "totL": 80,
+      "totA": 168,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:29",
+      "head": [
+       53,
+       138
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       67,
+       152
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 164,
+      "totL": 134,
+      "totA": 230,
+      "tdL": 2,
+      "tdA": 13,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:39",
+      "head": [
+       58,
+       147
+      ],
+      "body": [
+       10,
+       13
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       64,
+       154
+      ],
+      "clinch": [
+       3,
+       6
+      ],
+      "ground": [
+       4,
+       4
+      ]
+     },
+     "capturedAt": "2026-10-11T01:27:47.838Z"
     }
    ]
   }
