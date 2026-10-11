@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-11T00:00:53.136Z",
+ "generatedAt": "2026-10-11T00:41:54.253Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -8646,6 +8646,194 @@
       ]
      },
      "capturedAt": "2026-10-10T23:55:27.246Z"
+    }
+   ]
+  },
+  "Malcolm Wellmaker": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Otari Tanzilovi",
+     "result": "L",
+     "method": "KO/TKO (Kick)",
+     "round": 2,
+     "time": "2:39",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Otari Tanzilovi",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 17,
+      "sigA": 58,
+      "totL": 45,
+      "totA": 89,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       4,
+       37
+      ],
+      "body": [
+       13,
+       21
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       15,
+       56
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 38,
+      "sigA": 67,
+      "totL": 44,
+      "totA": 73,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:51",
+      "head": [
+       26,
+       54
+      ],
+      "body": [
+       6,
+       7
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       32,
+       59
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-10-11T00:41:54.154Z"
+    }
+   ]
+  },
+  "Otari Tanzilovi": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Malcolm Wellmaker",
+     "result": "W",
+     "method": "KO/TKO (Kick)",
+     "round": 2,
+     "time": "2:39",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Malcolm Wellmaker",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 38,
+      "sigA": 67,
+      "totL": 44,
+      "totA": 73,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:51",
+      "head": [
+       26,
+       54
+      ],
+      "body": [
+       6,
+       7
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       32,
+       59
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 17,
+      "sigA": 58,
+      "totL": 45,
+      "totA": 89,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       4,
+       37
+      ],
+      "body": [
+       13,
+       21
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       15,
+       56
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-11T00:41:54.154Z"
     }
    ]
   }
