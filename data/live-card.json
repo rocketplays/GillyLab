@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-11T02:14:08.049Z",
+ "generatedAt": "2026-10-11T03:07:00.234Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -9398,6 +9398,194 @@
       ]
      },
      "capturedAt": "2026-10-11T02:14:07.933Z"
+    }
+   ]
+  },
+  "Brendan Allen": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Christian Leroy Duncan",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 5,
+     "time": "2:46",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Christian Leroy Duncan",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 107,
+      "totL": 91,
+      "totA": 150,
+      "tdL": 4,
+      "tdA": 11,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "8:39",
+      "head": [
+       34,
+       85
+      ],
+      "body": [
+       12,
+       16
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       32,
+       83
+      ],
+      "clinch": [
+       12,
+       16
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 106,
+      "sigA": 189,
+      "totL": 126,
+      "totA": 212,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "3:51",
+      "head": [
+       65,
+       137
+      ],
+      "body": [
+       20,
+       24
+      ],
+      "leg": [
+       21,
+       28
+      ],
+      "dist": [
+       87,
+       165
+      ],
+      "clinch": [
+       10,
+       15
+      ],
+      "ground": [
+       9,
+       9
+      ]
+     },
+     "capturedAt": "2026-10-11T03:07:00.103Z"
+    }
+   ]
+  },
+  "Christian Leroy Duncan": {
+   "history": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Brendan Allen",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 5,
+     "time": "2:46",
+     "event": "UFC Fight Night: Allen vs. Duncan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 10, 2026",
+     "opponent": "Brendan Allen",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 106,
+      "sigA": 189,
+      "totL": 126,
+      "totA": 212,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "3:51",
+      "head": [
+       65,
+       137
+      ],
+      "body": [
+       20,
+       24
+      ],
+      "leg": [
+       21,
+       28
+      ],
+      "dist": [
+       87,
+       165
+      ],
+      "clinch": [
+       10,
+       15
+      ],
+      "ground": [
+       9,
+       9
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 107,
+      "totL": 91,
+      "totA": 150,
+      "tdL": 4,
+      "tdA": 11,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "8:39",
+      "head": [
+       34,
+       85
+      ],
+      "body": [
+       12,
+       16
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       32,
+       83
+      ],
+      "clinch": [
+       12,
+       16
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "capturedAt": "2026-10-11T03:07:00.103Z"
     }
    ]
   }
