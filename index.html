@@ -6514,6 +6514,7 @@
  { name: "Katlyn Cerminara", division: "WFLW", rank: "NR", record: "18-6-0", initials: "KCE", country: "USA" },
  { name: "Mackenzie Stiller", division: "WFLW", rank: "NR", record: "6-1-0", initials: "MST", country: "USA" },
  { name: "Joel Faglier", division: "HW", rank: "NR", record: "6-0-0", initials: "JFA", country: "USA" },
+    { name: "Lucia Szabova", division: "WFLW", rank: "NR", record: "10-0-0", initials: "LSZ", country: "Slovakia" },
     { name: "Asaf Chopurov", division: "BW", rank: "NR", record: "11-0-0", initials: "ACH", country: "Russia" },
  { name: "Montana De La Rosa", division: "WFLW", rank: "NR", record: "13-9-1", initials: "MDR", country: "USA" },
  // ── Active roster additions (verified May 2026) ──
@@ -10225,6 +10226,7 @@
   "Alivia Bierley": { ht:"5'7\"", dob:"1996-09-20", reach:'66"', stance:"Orthodox", slpm:3.13, strAcc:"41%", sapm:2.2, strDef:"61%", kd:0.0, tdLanded:2.0, tdAcc:"50%", tdDef:"100%", subAvg:0.0, finRate:"60%", streak:5, gym:"Pete Spratt American Muay Thai" },
   "Mackenzie Stiller": { ht:"5'2\"", dob:"1999-07-15", reach:'62"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:3, gym:"One Touch Fight Team" },
   "Joel Faglier": { ht:"6'2\"", dob:"2001-01-18", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Faglier's Mixed Martial Arts" },
+  "Lucia Szabova": { ht:"5'7\"", dob:"1997-12-23", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"70%", streak:10, gym:"Hanuman Gym" },
   "Asaf Chopurov": { ht:"5'7\"", dob:"2001-11-17", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:11, gym:"Team Chingiz Allazov" },
   "Summer Onley": { ht:"5'7\"", dob:"1994-06-09", reach:null, stance:"Orthodox", slpm:2.2, strAcc:"39%", sapm:3.13, strDef:"59%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"50%", subAvg:0.0, finRate:"83%", streak:6, gym:"Ronin MMA" },
   "Ryuho Miyaguchi": { ht:"5'10\"", dob:"1998-01-27", reach:'68"', stance:"Orthodox", slpm:4.76, strAcc:"29%", sapm:19.05, strDef:"35%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"86%", streak:0, gym:"Cobra Kai MMA Dojo" },
@@ -42962,6 +42964,17 @@
     { opponent: "Austin Green", odds: -1000 },
     { opponent: "Omar El-Sahlah", odds: -118 }
   ],
+  "Lucia Szabova": [
+    { opponent: "Lucie Pudilova", odds: -515 },
+    { opponent: "Leidiane Fernandes", odds: -550 },
+    { opponent: "Cecilie Bolander", odds: -339 },
+    { opponent: "Kalindra Faria", odds: -1408 },
+    { opponent: "Aitana Alvarez", odds: -275 },
+    { opponent: "Roza Gumienna", odds: -350 },
+    { opponent: "Cornelia Holm", odds: -437 },
+    { opponent: "Cristina Netza", odds: -475 },
+    { opponent: "Rizlen Zouak", odds: -215 }
+  ],
   "Asaf Chopurov": [
     { opponent: "Reece McLaren", odds: -575 },
     { opponent: "Adriano Ramos", odds: -3333 },
@@ -56551,6 +56564,18 @@ const FIGHT_HISTORY = {
     { date: "Dec 13, 2024", opponent: "Ose Abunaw", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "2:04", event: "NFC 171", org: "NFC" },
     { date: "Nov 3, 2024", opponent: "Omar El-Sahlah", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:19", event: "Fury FC 98: Khera vs. Dixon", org: "Fury FC" },
     { date: "Sep 13, 2024", opponent: "Cameron Graham", result: "W", method: "Submission (Armbar)", round: 1, time: "4:18", event: "Impact Promotions: Beatdown Dothan 4", org: "Impact Promotions" }
+  ],
+  "Lucia Szabova": [
+    { date: "Aug 1, 2026", opponent: "Lucie Pudilova", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Oktagon 92", org: "Oktagon" },
+    { date: "Apr 25, 2026", opponent: "Leidiane Fernandes", result: "W", method: "TKO (Elbows and Punches)", round: 3, time: "2:12", event: "Oktagon 87", org: "Oktagon" },
+    { date: "Aug 9, 2025", opponent: "Cecilie Bolander", result: "W", method: "TKO (Elbows and Punches)", round: 1, time: "3:11", event: "Oktagon 74", org: "Oktagon" },
+    { date: "Feb 22, 2025", opponent: "Kalindra Faria", result: "W", method: "Submission (Keylock)", round: 1, time: "4:16", event: "Oktagon 67", org: "Oktagon" },
+    { date: "Jul 20, 2024", opponent: "Aitana Alvarez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon 59", org: "Oktagon" },
+    { date: "Mar 23, 2024", opponent: "Roza Gumienna", result: "W", method: "Submission (Armbar)", round: 3, time: "4:38", event: "Oktagon 55", org: "Oktagon" },
+    { date: "Jul 24, 2021", opponent: "Cornelia Holm", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon 26", org: "Oktagon" },
+    { date: "Mar 27, 2021", opponent: "Cristina Netza", result: "W", method: "KO (Head Kick)", round: 1, time: "1:30", event: "Oktagon 22", org: "Oktagon" },
+    { date: "Jan 30, 2021", opponent: "Rizlen Zouak", result: "W", method: "Submission (Armbar)", round: 2, time: "1:25", event: "Oktagon 21", org: "Oktagon" },
+    { date: "Nov 21, 2020", opponent: "Anzelika Petkeviciute", result: "W", method: "Submission (Armbar)", round: 1, time: "0:43", event: "Oktagon 18", org: "Oktagon" }
   ],
   "Asaf Chopurov": [
     { date: "Jul 23, 2026", opponent: "Reece McLaren", result: "W", method: "KO (Punch)", round: 1, time: "1:03", event: "UAE Warriors 72", org: "UAE Warriors" },
@@ -120975,6 +121000,14 @@ const ACCOLADES = {
     { icon: "🏅", title: "Undefeated at 6-0 with 5 finishes (2 TKO, 3 submissions); beat Cody East (16-7) by unanimous decision at Fury FC 116", detail: null },
     { icon: "🥊", title: "8-0 as an amateur before turning pro in 2024", detail: null },
     { icon: "🏅", title: "UFC debut vs. Javad Mahjoub at UFC Edmonton (Oct 17, 2026)", detail: null }
+  ],
+  "Lucia Szabova": [
+    { icon: "🏆", title: "Oktagon Women's Flyweight Champion", detail: null },
+    { icon: "🏆", title: "Oktagon Women's Bantamweight Champion", detail: null },
+    { icon: "🏅", title: "First woman to hold two Oktagon weight-class titles simultaneously", detail: null },
+    { icon: "🏅", title: "Oktagon Challenge Season 4 winner (2019)", detail: null },
+    { icon: "🥊", title: "Slovak Muay Thai champion (WKU 2017, -60kg)", detail: null },
+    { icon: "🥊", title: "WKN 2018 Girl Power -62kg tournament winner", detail: null }
   ],
   "Asaf Chopurov": [
     { icon: "🏆", title: "UAE Warriors Bantamweight Champion (2 title defenses)", detail: null },
