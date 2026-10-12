@@ -3867,7 +3867,9 @@ export default {
         // fight objects carry no date of their own (see eventToCard), so the
         // owning card's own date/prelimsAt stands in for it — fightStatsFor's
         // tolerance absorbs the difference.
-        const cardsNeedingStats = [card, ...carousel].filter((c) => c && (c.fights || []).some((f) => f.result && !f.result.voided));
+        // Draws / no contests (result.voided) still happened and still have a box score and a
+        // closing line, so they are NOT skipped here -- only a bout with no result at all is.
+        const cardsNeedingStats = [card, ...carousel].filter((c) => c && (c.fights || []).some((f) => f.result));
         if (cardsNeedingStats.length) {
           const fightStats = await loadAssetJson(env, url, "/data/fight-stats.json");
           if (fightStats) {
@@ -3875,7 +3877,7 @@ export default {
             const attachStats = (c) => {
               const cardDate = c.date || (c.prelimsAt || "").slice(0, 10);
               c.fights = (c.fights || []).map((f) => {
-                if (!f.result || f.result.voided) return f;
+                if (!f.result) return f;
                 const arr1 = fightStatsRows(fightStats, f.f1);
                 const arr2 = fightStatsRows(fightStats, f.f2);
                 let rec = null, s1 = null, s2 = null;
@@ -3908,14 +3910,14 @@ export default {
         // Fight Info dropdown shows the real closing line too instead of
         // hiding the section outright for a fight that in fact had one.
         // Never overwrites a real o1/o2 eventToCard already found.
-        const cardsNeedingClosingOdds = [card, ...carousel].filter((c) => c && (c.fights || []).some((f) => f.result && !f.result.voided && f.o1 == null && f.o2 == null));
+        const cardsNeedingClosingOdds = [card, ...carousel].filter((c) => c && (c.fights || []).some((f) => f.result && f.o1 == null && f.o2 == null));
         if (cardsNeedingClosingOdds.length) {
           const closingOddsRaw = await loadAssetJson(env, url, "/data/odds-closing.json");
           const closingFights = Array.isArray(closingOddsRaw && closingOddsRaw.fights) ? closingOddsRaw.fights : [];
           if (closingFights.length) {
             const attachClosingOdds = (c) => {
               c.fights = (c.fights || []).map((f) => {
-                if (!f.result || f.result.voided || f.o1 != null || f.o2 != null) return f;
+                if (!f.result || f.o1 != null || f.o2 != null) return f;
                 const cf = closingFights.find((x) => x && (
                   (canonicalSimName(x.f1) === f.f1 && canonicalSimName(x.f2) === f.f2) ||
                   (canonicalSimName(x.f1) === f.f2 && canonicalSimName(x.f2) === f.f1)
@@ -3936,7 +3938,7 @@ export default {
           if (Array.isArray(oddsHist) && oddsHist.length) {
             const fromHistory = (c) => {
               c.fights = (c.fights || []).map((f) => {
-                if (!f.result || f.result.voided || f.o1 != null || f.o2 != null) return f;
+                if (!f.result || f.o1 != null || f.o2 != null) return f;
                 const e = oddsHist.find((x) => x && (
                   (namesMatch(x.f1, f.f1) && namesMatch(x.f2, f.f2)) || (namesMatch(x.f1, f.f2) && namesMatch(x.f2, f.f1))));
                 const d = e && Array.isArray(e.days) ? e.days[e.days.length - 1] : null;
