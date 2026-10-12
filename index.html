@@ -6512,6 +6512,7 @@
  { name: "Melissa Gatto", division: "WFLW", rank: "NR", record: "9-3-3", initials: "MGT", country: "Brazil" },
  { name: "Diana Belbita", division: "WFLW", rank: "NR", record: "15-10-0", initials: "DBL", country: "Romania" },
  { name: "Katlyn Cerminara", division: "WFLW", rank: "NR", record: "18-6-0", initials: "KCE", country: "USA" },
+ { name: "Mackenzie Stiller", division: "WFLW", rank: "NR", record: "6-1-0", initials: "MST", country: "USA" },
  { name: "Montana De La Rosa", division: "WFLW", rank: "NR", record: "13-9-1", initials: "MDR", country: "USA" },
  // ── Active roster additions (verified May 2026) ──
  // Heavyweight
@@ -10220,6 +10221,7 @@
   "Aline Pereira": { ht:"5'7\"", dob:"1990-10-06", reach:'70"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"0%", streak:2, gym:"Teixeira MMA & Fitness" },
   "Smilla Sundell": { ht:"5'10\"", dob:"2004-11-12", reach:'69.5"', stance:"--", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Diaz Combat Sports" },
   "Alivia Bierley": { ht:"5'7\"", dob:"1996-09-20", reach:'66"', stance:"Orthodox", slpm:3.13, strAcc:"41%", sapm:2.2, strDef:"61%", kd:0.0, tdLanded:2.0, tdAcc:"50%", tdDef:"100%", subAvg:0.0, finRate:"60%", streak:5, gym:"Pete Spratt American Muay Thai" },
+  "Mackenzie Stiller": { ht:"5'2\"", dob:"1999-07-15", reach:'62"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:3, gym:"One Touch Fight Team" },
   "Summer Onley": { ht:"5'7\"", dob:"1994-06-09", reach:null, stance:"Orthodox", slpm:2.2, strAcc:"39%", sapm:3.13, strDef:"59%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"50%", subAvg:0.0, finRate:"83%", streak:6, gym:"Ronin MMA" },
   "Ryuho Miyaguchi": { ht:"5'10\"", dob:"1998-01-27", reach:'68"', stance:"Orthodox", slpm:4.76, strAcc:"29%", sapm:19.05, strDef:"35%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"86%", streak:0, gym:"Cobra Kai MMA Dojo" },
   "Mateus Soares": { ht:"5'4\"", dob:"2004-05-24", reach:'66.5"', stance:"Orthodox", slpm:19.05, strAcc:"65%", sapm:4.76, strDef:"71%", kd:14.29, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"91%", streak:4, gym:"Rizzo RVT" },
@@ -42842,6 +42844,14 @@
     { opponent: "Nadia Chmil", odds: -275 },
     { opponent: "Maya Samuels-Stewart", odds: -649 }
   ],
+  "Mackenzie Stiller": [
+    { opponent: "Kendra McIntyre", odds: -575 },
+    { opponent: "Cristina Brador", odds: -170 },
+    { opponent: "Sidney Trillo", odds: 105 },
+    { opponent: "Sumiko Inaba", odds: 164 },
+    { opponent: "Chiara Penco", odds: -173 },
+    { opponent: "Maria Henderson", odds: 123 }
+  ],
   "Ryuho Miyaguchi": [
     { opponent: "Mateus Soares", odds: 475 },
     { opponent: "Chungreng Koren", odds: -230 }
@@ -56407,6 +56417,15 @@ const FIGHT_HISTORY = {
     { date: "Feb 21, 2025", opponent: "Samantha Brister", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 102", org: "Fury FC" },
     { date: "Sep 22, 2024", opponent: "Nadia Chmil", result: "W", method: "KO (Punch)", round: 1, time: "1:25", event: "Fury FC 96 - Silva vs. Gurule", org: "Fury FC" },
     { date: "May 12, 2024", opponent: "Maya Samuels-Stewart", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury FC 90 - Dixon vs. Macklin", org: "Fury FC" }
+  ],
+  "Mackenzie Stiller": [
+    { date: "Feb 6, 2026", opponent: "Kendra McIntyre", result: "W", method: "Submission (Scarf Hold Armlock)", round: 1, time: "1:48", event: "LFA 226: Allakhverdiev vs. Kropschot", org: "LFA" },
+    { date: "Sep 12, 2025", opponent: "Cristina Brador", result: "W", method: "Submission (Bulldog Choke)", round: 1, time: "4:33", event: "LFA 217: McKee vs. Nobre", org: "LFA" },
+    { date: "Jun 13, 2025", opponent: "Sidney Trillo", result: "W", method: "Submission (Armbar)", round: 2, time: "1:44", event: "LFA 210: Lawrence vs. Reyes", org: "LFA" },
+    { date: "Sep 8, 2024", opponent: "Sumiko Inaba", result: "L", method: "TKO (Punches)", round: 2, time: "4:25", event: "Bellator Champions Series San Diego: Nurmagomedov vs. Shabliy", org: "Bellator" },
+    { date: "Aug 3, 2024", opponent: "Micaela Rampage", result: "W", method: "Submission (Armbar)", round: 1, time: "3:35", event: "Elite Fight Night 23: Showdown at Horseshoe", org: "Elite Fight Night" },
+    { date: "Sep 23, 2023", opponent: "Chiara Penco", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 299: Eblen vs. Edwards", org: "Bellator" },
+    { date: "Mar 31, 2023", opponent: "Maria Henderson", result: "W", method: "Submission (Armbar)", round: 1, time: "3:17", event: "Bellator 293: Golm vs. James", org: "Bellator" }
   ],
   "Summer Onley": [
     { date: "Oct 6, 2026", opponent: "Alivia Bierley", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 10, Week 9", org: "UFC" },
@@ -120807,6 +120826,12 @@ const ACCOLADES = {
     { icon: "🏅", title: "3 finishes in 6 pro wins (2 KO, 1 TKO); beat Summer Onley by unanimous decision on the Contender Series (Oct 2026)", detail: null },
     { icon: "🎯", title: "Six straight wins since a split-decision loss in her May 2024 pro debut", detail: null },
     { icon: "🥊", title: "Undefeated as an amateur; former college basketball player and gymnast", detail: null }
+  ],
+  "Mackenzie Stiller": [
+    { icon: "🏅", title: "5 submissions in 6 pro wins (3 armbars, a bulldog choke, a scarf-hold armlock); three straight submission wins entering the UFC (LFA 210, 217, 226)", detail: null },
+    { icon: "🥋", title: "Judo pedigree — nicknamed \"Mack-Judo\"", detail: null },
+    { icon: "🏅", title: "Competed on The Ultimate Fighter 34 (Team Bisping); lost a unanimous decision to Delphine Benouaich in the strawweight quarterfinals", detail: null },
+    { icon: "🥊", title: "Former Bellator and LFA fighter; UFC debut vs. Katlyn Cerminara at UFC Edmonton (Oct 17, 2026)", detail: null }
   ],
   "Summer Onley": [
     { icon: "🏆", title: "Full Contact Contender (FCC) Bantamweight Champion", detail: null },
