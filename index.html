@@ -6514,6 +6514,7 @@
  { name: "Katlyn Cerminara", division: "WFLW", rank: "NR", record: "18-6-0", initials: "KCE", country: "USA" },
  { name: "Mackenzie Stiller", division: "WFLW", rank: "NR", record: "6-1-0", initials: "MST", country: "USA" },
  { name: "Joel Faglier", division: "HW", rank: "NR", record: "6-0-0", initials: "JFA", country: "USA" },
+    { name: "Asaf Chopurov", division: "BW", rank: "NR", record: "11-0-0", initials: "ACH", country: "Russia" },
  { name: "Montana De La Rosa", division: "WFLW", rank: "NR", record: "13-9-1", initials: "MDR", country: "USA" },
  // ── Active roster additions (verified May 2026) ──
  // Heavyweight
@@ -10224,6 +10225,7 @@
   "Alivia Bierley": { ht:"5'7\"", dob:"1996-09-20", reach:'66"', stance:"Orthodox", slpm:3.13, strAcc:"41%", sapm:2.2, strDef:"61%", kd:0.0, tdLanded:2.0, tdAcc:"50%", tdDef:"100%", subAvg:0.0, finRate:"60%", streak:5, gym:"Pete Spratt American Muay Thai" },
   "Mackenzie Stiller": { ht:"5'2\"", dob:"1999-07-15", reach:'62"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:3, gym:"One Touch Fight Team" },
   "Joel Faglier": { ht:"6'2\"", dob:"2001-01-18", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:6, gym:"Faglier's Mixed Martial Arts" },
+  "Asaf Chopurov": { ht:"5'7\"", dob:"2001-11-17", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"91%", streak:11, gym:"Team Chingiz Allazov" },
   "Summer Onley": { ht:"5'7\"", dob:"1994-06-09", reach:null, stance:"Orthodox", slpm:2.2, strAcc:"39%", sapm:3.13, strDef:"59%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"50%", subAvg:0.0, finRate:"83%", streak:6, gym:"Ronin MMA" },
   "Ryuho Miyaguchi": { ht:"5'10\"", dob:"1998-01-27", reach:'68"', stance:"Orthodox", slpm:4.76, strAcc:"29%", sapm:19.05, strDef:"35%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"86%", streak:0, gym:"Cobra Kai MMA Dojo" },
   "Mateus Soares": { ht:"5'4\"", dob:"2004-05-24", reach:'66.5"', stance:"Orthodox", slpm:19.05, strAcc:"65%", sapm:4.76, strDef:"71%", kd:14.29, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"91%", streak:4, gym:"Rizzo RVT" },
@@ -42931,6 +42933,13 @@
     { opponent: "Austin Green", odds: -1000 },
     { opponent: "Omar El-Sahlah", odds: -118 }
   ],
+  "Asaf Chopurov": [
+    { opponent: "Reece McLaren", odds: -575 },
+    { opponent: "Adriano Ramos", odds: -3333 },
+    { opponent: "Demarte Pena", odds: -950 },
+    { opponent: "Wanderley Junior", odds: -3333 },
+    { opponent: "Su Sung Cho", odds: -2500 }
+  ],
   "Ryuho Miyaguchi": [
     { opponent: "Mateus Soares", odds: 475 },
     { opponent: "Chungreng Koren", odds: -230 }
@@ -56513,6 +56522,19 @@ const FIGHT_HISTORY = {
     { date: "Dec 13, 2024", opponent: "Ose Abunaw", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "2:04", event: "NFC 171", org: "NFC" },
     { date: "Nov 3, 2024", opponent: "Omar El-Sahlah", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:19", event: "Fury FC 98: Khera vs. Dixon", org: "Fury FC" },
     { date: "Sep 13, 2024", opponent: "Cameron Graham", result: "W", method: "Submission (Armbar)", round: 1, time: "4:18", event: "Impact Promotions: Beatdown Dothan 4", org: "Impact Promotions" }
+  ],
+  "Asaf Chopurov": [
+    { date: "Jul 23, 2026", opponent: "Reece McLaren", result: "W", method: "KO (Punch)", round: 1, time: "1:03", event: "UAE Warriors 72", org: "UAE Warriors" },
+    { date: "Mar 28, 2026", opponent: "Adriano Ramos", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:24", event: "UAE Warriors 69", org: "UAE Warriors" },
+    { date: "Oct 22, 2025", opponent: "Demarte Pena", result: "W", method: "TKO (Retirement)", round: 3, time: "5:00", event: "UAE Warriors 64", org: "UAE Warriors" },
+    { date: "Jul 23, 2025", opponent: "João Pedro Saldanha", result: "W", method: "TKO (Submission to Punches)", round: 1, time: "2:49", event: "UAE Warriors 61", org: "UAE Warriors" },
+    { date: "Jan 17, 2025", opponent: "Wanderley Junior", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "2:35", event: "UAE Warriors 57", org: "UAE Warriors" },
+    { date: "Oct 18, 2024", opponent: "Nikita Mikhailov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RCC 20", org: "RCC" },
+    { date: "Jul 27, 2024", opponent: "Su Sung Cho", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "2:32", event: "UAE Warriors 51", org: "UAE Warriors" },
+    { date: "May 11, 2024", opponent: "Denis Lavrentyev", result: "W", method: "TKO (Punches)", round: 1, time: "2:05", event: "RCC 19", org: "RCC" },
+    { date: "Feb 24, 2024", opponent: "Sharaputdin Ataev", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:06", event: "RCC 18", org: "RCC" },
+    { date: "Dec 23, 2023", opponent: "Zaydullo Zaydulloev", result: "W", method: "TKO (Knee and Punches)", round: 1, time: "1:45", event: "OFC 38", org: "OFC" },
+    { date: "Sep 9, 2023", opponent: "Xabib Mikayilov", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:25", event: "NGF 3", org: "NGF" }
   ],
   "Summer Onley": [
     { date: "Oct 6, 2026", opponent: "Alivia Bierley", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 10, Week 9", org: "UFC" },
@@ -120924,6 +120946,11 @@ const ACCOLADES = {
     { icon: "🏅", title: "Undefeated at 6-0 with 5 finishes (2 TKO, 3 submissions); beat Cody East (16-7) by unanimous decision at Fury FC 116", detail: null },
     { icon: "🥊", title: "8-0 as an amateur before turning pro in 2024", detail: null },
     { icon: "🏅", title: "UFC debut vs. Javad Mahjoub at UFC Edmonton (Oct 17, 2026)", detail: null }
+  ],
+  "Asaf Chopurov": [
+    { icon: "🏆", title: "UAE Warriors Bantamweight Champion (2 title defenses)", detail: null },
+    { icon: "🏅", title: "Undefeated 11-0 as a pro with 10 finishes", detail: null },
+    { icon: "🥊", title: "34-1 amateur record", detail: null }
   ],
   "Summer Onley": [
     { icon: "🏆", title: "Full Contact Contender (FCC) Bantamweight Champion", detail: null },
