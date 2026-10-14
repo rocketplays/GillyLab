@@ -5436,6 +5436,24 @@ export default {
       // existed. `*` is safe here: both blocks already serve unauthenticated
       // (this app's requests carry no cookies/credentials to leak), and nothing
       // gated is reachable through either one.
+      // Web preview of the mobile app, for people who can't install the iOS build yet:
+      // /m/ serves the same ./mobile/www files the Capacitor shell bundles, same-origin with
+      // the API so the session cookie just works. The shell is only HTML/JS/CSS; all data
+      // still comes from the gated /api routes. Not indexed, never cached hard.
+      if (path === "/m") return redirect(env.SITE_URL + "/m/");
+      if (path.startsWith("/m/")) {
+        let rel = path.slice(3) || "index.html";
+        if (rel.endsWith("/")) rel += "index.html";
+        if (rel.includes("..") || rel.includes("\\")) return new Response("Not found", { status: 404 });
+        const a = await env.ASSETS.fetch(new Request(new URL("/mobile/www/" + rel, url), { method: "GET" }));
+        if (a.status !== 200) return new Response("Not found", { status: 404 });
+        const r = new Response(a.body, a);
+        r.headers.set("Cache-Control", "no-cache");
+        r.headers.set("X-Robots-Tag", "noindex, nofollow");
+        if (rel.endsWith(".webmanifest")) r.headers.set("Content-Type", "application/manifest+json");
+        return r;
+      }
+
       if (PUBLIC_LANDING_ASSETS.has(path)) {
         const a = await env.ASSETS.fetch(request);
         if (a.status === 200) {

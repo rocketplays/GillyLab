@@ -20,7 +20,18 @@ window.GL_AUTH = (function(){
   // server-side either way, this just avoids two redundant round-trips.
   var refreshing = null;
 
-  function Prefs(){ return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences) || null; }
+  // In the native app this is Capacitor Preferences. In a plain browser (the web preview served at
+  // gillylab.com/m/) there is no plugin, so fall back to localStorage with the same get/set shape --
+  // otherwise a page reload would forget who is signed in.
+  function Prefs(){
+    var nat = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences) || null;
+    if (nat) return nat;
+    return {
+      get: function(o){ try { return Promise.resolve({ value: localStorage.getItem('glw:' + o.key) }); } catch(e){ return Promise.resolve({}); } },
+      set: function(o){ try { localStorage.setItem('glw:' + o.key, o.value); } catch(e){} return Promise.resolve(); },
+    };
+  }
+  function isWebPreview(){ return !(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
 
   function notify(){ listeners.forEach(function(fn){ fn(state); }); }
 
@@ -131,6 +142,8 @@ window.GL_AUTH = (function(){
     },
     logout: function(){
       state = { loggedIn:false, email:null, token:null };
+      // Web preview authenticates by cookie (same origin), so drop it too.
+      if (isWebPreview()) { try { fetch('/api/logout', { credentials:'include', redirect:'manual' }).catch(function(){}); } catch(e){} }
       return save().then(notify);
     },
   };
