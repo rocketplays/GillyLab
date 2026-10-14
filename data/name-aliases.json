@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-13T18:49:29.664Z",
+  "generatedAt": "2026-10-14T02:20:57.942Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
@@ -1040,11 +1040,6 @@
     "Treston Vines|Jul 14, 2023|Raheam Forest": {
       "real": "Raheam Forest",
       "theyCallHim": "Tre'ston Vines",
-      "note": "alias"
-    },
-    "Gabriel Lorenço|Oct 17, 2021|Igor Cavalcanti": {
-      "real": "Igor Cavalcanti",
-      "theyCallHim": "Gabriel Lorenço",
       "note": "alias"
     },
     "Nina Nunes|Jun 8, 2019|Tatiana Suarez": {
