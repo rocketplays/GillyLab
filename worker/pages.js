@@ -5110,6 +5110,11 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
         ${stat("Owed", esc(money(owed)), owed > 0 ? "pa-owed" : "")}
       </div>
       <div class="pa-pcard-actions">
+        <form method="POST" action="/admin/partners/handle" class="pa-payform">
+          <input type="hidden" name="token" value="${esc(p.token)}">
+          <input type="text" name="handle" value="${esc(p.handle || "")}" placeholder="invite handle (default: code)" maxlength="30">
+          <button type="submit">Set handle</button>
+        </form>
         <form method="POST" action="/admin/partners/pay" class="pa-payform">
           <input type="hidden" name="token" value="${esc(p.token)}">
           <input type="number" name="amount" step="0.01" min="0" placeholder="$ paid" required>
@@ -5175,6 +5180,8 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
       <label>Email</label><input name="email" type="email" required>
       <label>Stripe promo code (create it in the Stripe dashboard first — Product catalog &rarr; Coupons/Promotion codes)</label>
       <input name="promoCode" required placeholder="e.g. JOHN20">
+      <label>Public handle shown on their invite page (optional &mdash; defaults to the promo code)</label>
+      <input name="handle" placeholder="e.g. rocketplays">
       <button type="submit">Add partner</button>
     </form>
     ${error ? `<div class="pa-err">${esc(error)}</div>` : ""}
@@ -5513,7 +5520,7 @@ ${AURORA_CSS}
 // A partner's trackable link opens this "envelope" page first: who invited you, the
 // offer, the promo code, and a CONTINUE button that goes on to the normal flow with
 // &invited=1 so the page is only shown once. Partner name/code are escaped here.
-export const invitePage = (partnerName, promoCode) => {
+export const invitePage = (handle, promoCode) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const code = esc(String(promoCode || "").toUpperCase());
   const go = "/subscribe?ref=" + encodeURIComponent(promoCode) + "&invited=1";
@@ -5545,7 +5552,7 @@ export const invitePage = (partnerName, promoCode) => {
     .inv-fine{text-align:center;color:var(--muted);font-size:.75rem;margin:.6rem auto 0;max-width:320px}
     @media (prefers-reduced-motion: reduce){.inv-card{animation:none;transform:none}.inv-front{animation:none;opacity:1}}
   </style>
-  <p class="inv-from"><b>${esc(partnerName)}</b>invited you to GillyLab Premium!</p>
+  <p class="inv-from"><b>@${esc(handle)}</b>invited you to GillyLab Premium!</p>
   <div class="inv-stage">
     <div class="inv-card">
       <div class="inv-get">GET <span class="a">20% OFF</span></div>

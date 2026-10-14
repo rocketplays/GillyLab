@@ -273,6 +273,8 @@ const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custI
 // on their next dashboard visit, same as someone who's never accepted at all —
 // see the /partner/<token> gate below.
 const PARTNER_TERMS_VERSION = "2026-07-31-w9";
+// Public invite-page handle: letters/digits/._- only, no leading @, max 30.
+const cleanHandle = (h) => String(h || "").replace(/^@+/, "").replace(/[^A-Za-z0-9._-]/g, "").slice(0, 30);
 const partnerByToken = async (env, token) => { const v = await env.PARTNERS.get("partner:" + token); return v ? JSON.parse(v) : null; };
 const putPartner = async (env, p) => env.PARTNERS.put("partner:" + p.token, JSON.stringify(p));
 // Two lookup directions, deliberately separate keys: `promo:<CODE>` is matched by
@@ -5069,7 +5071,7 @@ export default {
         if (ref && url.searchParams.get("invited") !== "1") {
           const ptoken = await partnerTokenForPromo(env, ref);
           const ptn = ptoken ? await partnerByToken(env, ptoken) : null;
-          if (ptn) return html(invitePage(ptn.name, ptn.promoCode));
+          if (ptn) return html(invitePage(ptn.handle || String(ptn.promoCode).toLowerCase(), ptn.promoCode));
         }
         if (!s) {
           // No session — send them through signup first (same `next` mechanism as
@@ -5614,6 +5616,7 @@ export default {
         const name = String(body.name || "").trim();
         const email = normEmail(body.email);
         const code = String(body.promoCode || "").trim();
+        const handle = cleanHandle(body.handle);
         if (!name || !email || !code) return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent("Name, email and promo code are all required."));
         try {
           // The promo code has to already exist in Stripe — this looks it up by
@@ -5625,7 +5628,7 @@ export default {
           const existing = await partnerTokenForPromo(env, code);
           if (existing) return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent(`"${code}" is already registered to another partner.`));
           const token = randHex(24);
-          const partner = { token, name, email, promoCode: code.toUpperCase(), promotionCodeId: pc.id, createdAt: Date.now(), referralCount: 0, activeCount: 0, lifetimeRevenueCents: 0, lifetimeCommissionCents: 0, paidOutCents: 0 };
+          const partner = { token, name, email, handle: handle || undefined, promoCode: code.toUpperCase(), promotionCodeId: pc.id, createdAt: Date.now(), referralCount: 0, activeCount: 0, lifetimeRevenueCents: 0, lifetimeCommissionCents: 0, paidOutCents: 0 };
           await putPartner(env, partner);
           await env.PARTNERS.put("promo:" + partner.promoCode, token);
           await env.PARTNERS.put("promoId:" + pc.id, token);
@@ -5646,6 +5649,13 @@ export default {
           const partner = await partnerByToken(env, token);
           if (partner) { partner.paidOutCents = (partner.paidOutCents || 0) + amountCents; await putPartner(env, partner); }
         }
+        return redirect(env.SITE_URL + "/admin/partners");
+      }
+      if (path === "/admin/partners/handle" && request.method === "POST") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const body = await readBody(request).catch(() => ({}));
+        const p = await partnerByToken(env, String(body.token || ""));
+        if (p) { const h = cleanHandle(body.handle); if (h) p.handle = h; else delete p.handle; await putPartner(env, p); }
         return redirect(env.SITE_URL + "/admin/partners");
       }
       if (path === "/admin/partners/remove" && request.method === "POST") {
