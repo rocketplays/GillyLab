@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-14T00:16:34.107Z",
+ "generatedAt": "2026-10-14T00:32:13.043Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-10-14T00:10:57.912Z"
+    }
+   ]
+  },
+  "Will Rentz": {
+   "history": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Luis Francischinelli",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:18",
+     "event": "Dana White's Contender Series: Season 10, Week 10",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Luis Francischinelli",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 7,
+      "totL": 8,
+      "totA": 15,
+      "tdL": 1,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:25",
+      "head": [
+       2,
+       6
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       3,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 23,
+      "totL": 22,
+      "totA": 30,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:18",
+      "head": [
+       14,
+       20
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       4,
+       7
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       10,
+       14
+      ]
+     },
+     "capturedAt": "2026-10-14T00:32:12.905Z"
+    }
+   ]
+  },
+  "Luis Francischinelli": {
+   "history": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Will Rentz",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:18",
+     "event": "Dana White's Contender Series: Season 10, Week 10",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Will Rentz",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 23,
+      "totL": 22,
+      "totA": 30,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:18",
+      "head": [
+       14,
+       20
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       4,
+       7
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       10,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 7,
+      "totL": 8,
+      "totA": 15,
+      "tdL": 1,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:25",
+      "head": [
+       2,
+       6
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       3,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "capturedAt": "2026-10-14T00:32:12.905Z"
     }
    ]
   }
