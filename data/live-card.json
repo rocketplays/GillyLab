@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-14T01:18:40.553Z",
+ "generatedAt": "2026-10-14T01:44:10.784Z",
  "fighters": {
   "Luis Hernandez": {
    "history": [
@@ -9398,6 +9398,194 @@
       ]
      },
      "capturedAt": "2026-10-14T01:13:10.627Z"
+    }
+   ]
+  },
+  "Ilias Bulaid": {
+   "history": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Erick Visconde",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 10",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Erick Visconde",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 25,
+      "sigA": 41,
+      "totL": 25,
+      "totA": 41,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:28",
+      "head": [
+       1,
+       15
+      ],
+      "body": [
+       12,
+       13
+      ],
+      "leg": [
+       12,
+       13
+      ],
+      "dist": [
+       19,
+       34
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 68,
+      "sigA": 100,
+      "totL": 135,
+      "totA": 182,
+      "tdL": 8,
+      "tdA": 10,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "9:30",
+      "head": [
+       57,
+       83
+      ],
+      "body": [
+       7,
+       12
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       11,
+       36
+      ],
+      "clinch": [
+       13,
+       15
+      ],
+      "ground": [
+       44,
+       49
+      ]
+     },
+     "capturedAt": "2026-10-14T01:44:10.645Z"
+    }
+   ]
+  },
+  "Erick Visconde": {
+   "history": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Ilias Bulaid",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 10",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 13, 2026",
+     "opponent": "Ilias Bulaid",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 68,
+      "sigA": 100,
+      "totL": 135,
+      "totA": 182,
+      "tdL": 8,
+      "tdA": 10,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "9:30",
+      "head": [
+       57,
+       83
+      ],
+      "body": [
+       7,
+       12
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       11,
+       36
+      ],
+      "clinch": [
+       13,
+       15
+      ],
+      "ground": [
+       44,
+       49
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 25,
+      "sigA": 41,
+      "totL": 25,
+      "totA": 41,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:28",
+      "head": [
+       1,
+       15
+      ],
+      "body": [
+       12,
+       13
+      ],
+      "leg": [
+       12,
+       13
+      ],
+      "dist": [
+       19,
+       34
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-14T01:44:10.645Z"
     }
    ]
   }
