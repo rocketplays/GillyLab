@@ -1064,11 +1064,12 @@ ${navMarkup}
     if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var st=document.createElement('style');
     st.textContent=
-      '.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.3,1)}'
+      '.rv{opacity:0;transition:opacity .5s ease}'
      +'.rv.rv-in{opacity:1;transform:none}'
      /* cards cascade: backwards fill only, so hover transforms work again after it ends */
-     +'@keyframes rvCard{from{opacity:0;transform:translateY(34px) scale(.96)}to{opacity:1;transform:none}}'
-     +'.rv-in .fx-card{animation:rvCard .65s cubic-bezier(.2,.7,.3,1) backwards;animation-delay:calc(var(--i,0) * 90ms + 150ms)}'
+     +'@keyframes rvCard{from{opacity:0;transform:translate3d(0,24px,0)}to{opacity:1;transform:translate3d(0,0,0)}}'
+     +'.rv-in .fx-card{will-change:transform,opacity;animation:rvCard .6s cubic-bezier(.22,.7,.3,1) backwards;animation-delay:calc(var(--i,0) * 70ms + 80ms)}'
+     +'.rv-done .fx-card{will-change:auto;animation:none}'
      /* heading highlight: title glows once, rules draw out from the title */
      +'@keyframes rvGlow{0%{text-shadow:0 0 0 transparent}35%{text-shadow:0 0 18px currentColor,0 0 38px currentColor}100%{text-shadow:0 0 0 transparent}}'
      +'@keyframes rvDrawR{from{transform:scaleX(0)}to{transform:scaleX(1)}}'
@@ -1077,7 +1078,7 @@ ${navMarkup}
      +'.fx-band.rv-hl .fx-bl.l{transform-origin:right center;animation:rvDrawR .9s .15s cubic-bezier(.2,.7,.3,1) backwards}'
      +'.fx-band.rv-hl .fx-btag{animation:rvGlow 1.4s .1s ease-out}'
      +'.rv-swipe{display:none}'
-     +'@media (max-width:720px) and (hover:none) and (pointer:coarse){.rv-swipe{display:block;text-align:right;font-size:12px;letter-spacing:.05em;color:var(--muted);margin:8px 4px 0;transition:opacity .4s}.rv-swipe.gone{opacity:0}}'
+     +'@media (max-width:720px) and (hover:none) and (pointer:coarse){.rv-swipe{display:block;text-align:right;font-size:12px;letter-spacing:.05em;color:#fff;font-weight:600;margin:8px 4px 0;transition:opacity .4s}.rv-swipe.gone{opacity:0}}'
      ;
     document.head.appendChild(st);
     window.addEventListener('load',function(){
@@ -1096,6 +1097,7 @@ ${navMarkup}
           var t=e.target; tio.unobserve(t); t.classList.add('rv-in');
           var cards=t.querySelectorAll('.fx-card');
           for(var i=0;i<cards.length;i++) cards[i].style.setProperty('--i', Math.min(i,4));
+          setTimeout(function(){ t.classList.add('rv-done'); },1200);
         });
       },{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
       var others=document.querySelectorAll('footer.foot, footer.site-footer');
@@ -1107,7 +1109,7 @@ ${navMarkup}
       },{threshold:1,rootMargin:'0px 0px -22% 0px'});
       Array.prototype.forEach.call(tiers,function(el){
         var band=el.querySelector('.fx-band'); if(band) bio.observe(band);
-        if(el.getBoundingClientRect().top<vh*0.92){ el.classList.add('rv-in'); return; }
+        if(el.getBoundingClientRect().top<vh*0.92){ el.classList.add('rv-in'); setTimeout(function(){ el.classList.add('rv-done'); },1200); return; }
         el.classList.add('rv'); tio.observe(el);
       });
       Array.prototype.forEach.call(others,function(el){
