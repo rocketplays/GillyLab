@@ -5508,3 +5508,53 @@ ${AURORA_CSS}
   <p style="margin-top:1.6rem"><a href="/">← Back to GillyLab</a></p>
 </div></body></html>`;
 };
+
+// ── Partner invite landing (/subscribe?ref=CODE, before the signup/checkout hop) ───
+// A partner's trackable link opens this "envelope" page first: who invited you, the
+// offer, the promo code, and a CONTINUE button that goes on to the normal flow with
+// &invited=1 so the page is only shown once. Partner name/code are escaped here.
+export const invitePage = (partnerName, promoCode) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const code = esc(String(promoCode || "").toUpperCase());
+  const go = "/subscribe?ref=" + encodeURIComponent(promoCode) + "&invited=1";
+  return shell("You're invited — GillyLab", `
+  <div class="center"><div class="brand inv-brand"><img src="/gl-logo.png?v=8" alt="" class="inv-logo"/><span>GILLY<span class="a">LAB</span></span></div></div>
+  <style>
+    .inv-brand{display:inline-flex;align-items:center;gap:10px;font-size:1.35rem}
+    .inv-logo{height:34px;width:auto;display:block}
+    .inv-from{text-align:center;margin:2.2rem 0 0;font-size:1.25rem;font-weight:700;color:rgba(255,255,255,.85);line-height:1.35}
+    .inv-from b{color:#fff;display:block;font-size:1.45rem;word-break:break-word}
+    .inv-stage{position:relative;width:100%;max-width:340px;height:450px;margin:2.2rem auto 0;overflow:hidden}
+    .inv-card{position:absolute;left:4%;right:4%;top:0;height:340px;z-index:1;text-align:center;padding:1.7rem 1.1rem 0;
+      background:#141416;border:1px solid rgba(0,230,104,.28);border-radius:20px;box-shadow:0 10px 40px rgba(0,230,104,.08);
+      transform:translateY(230px);animation:invUp .9s .25s cubic-bezier(.2,.8,.2,1) forwards}
+    @keyframes invUp{to{transform:translateY(0)}}
+    .inv-get{font-size:2rem;font-weight:900;line-height:1.05}
+    .inv-get .a{color:var(--accent)}
+    .inv-sub{color:var(--muted);font-size:.85rem;margin-top:.35rem}
+    .inv-code{position:relative;margin:1.5rem 0 0;padding:1rem .6rem .7rem;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:#0e0e10}
+    .inv-code small{position:absolute;top:-.62rem;left:50%;transform:translateX(-50%);background:#0a0a0b;padding:.1rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap}
+    .inv-code span{font-size:1.7rem;font-weight:900;letter-spacing:.08em;color:var(--accent);word-break:break-all}
+    .inv-card .btn{margin-top:1.3rem;padding:.9rem 1rem;font-size:1.05rem;letter-spacing:.08em;background:var(--accent);color:#04120a;border-color:var(--accent)}
+    .inv-card .btn:hover{background:#2cf08a}
+    .inv-front{position:absolute;left:0;right:0;bottom:0;height:150px;z-index:2;pointer-events:none;
+      background:linear-gradient(180deg,#c8d2ea 0%,#7f8fba 100%);
+      clip-path:polygon(0 0,50% 42%,100% 0,100% 100%,0 100%);border-radius:0 0 18px 18px;
+      opacity:0;animation:invFade .4s .1s forwards}
+    @keyframes invFade{to{opacity:1}}
+    .inv-fine{text-align:center;color:var(--muted);font-size:.75rem;margin:.6rem auto 0;max-width:320px}
+    @media (prefers-reduced-motion: reduce){.inv-card{animation:none;transform:none}.inv-front{animation:none;opacity:1}}
+  </style>
+  <p class="inv-from"><b>${esc(partnerName)}</b>invited you to GillyLab Premium!</p>
+  <div class="inv-stage">
+    <div class="inv-card">
+      <div class="inv-get">GET <span class="a">20% OFF</span></div>
+      <div class="inv-sub">your first month of Premium</div>
+      <div class="inv-code"><small>ref. promo code</small><span>${code}</span></div>
+      <a class="btn" href="${esc(go)}">CONTINUE</a>
+    </div>
+    <div class="inv-front"></div>
+  </div>
+  <p class="inv-fine">Your code is applied automatically at checkout.</p>
+`);
+};

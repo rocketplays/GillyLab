@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, freeTabs, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, invitePage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, freeTabs, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
 import { getFighterExtras } from "./fighter-extras.js";
 import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown, customSimBase, customSimMethodBaseline } from "./fight-sim.js";
@@ -5063,19 +5063,18 @@ export default {
         if (s) {
           const u = await getUser(env, s.email);
           if (u && u.subscribed) return redirect(env.SITE_URL + authDest(null, true));
-        } else {
-          // No session — send them through signup first (same `next` mechanism
-          // /login and /signup already use everywhere else) so they land back here,
-          // logged in, ref still attached if there was one. This used to only fire
-          // for referral links (the `else if (ref)` this replaced): anyone who hit
-          // /subscribe directly with no session and no ref fell through to
-          // subscribePage() while logged out, which renders a hardcoded "Log out"
-          // link (there's no session to log out of) and a "Go Premium" button that
-          // posts straight to /api/checkout — which requires a session and fails
-          // with a login-required error instead of the signup flow the landing
-          // page's own "Go Premium" link goes through. Making this unconditional
-          // means every logged-out path to /subscribe behaves identically.
-          const next = "/subscribe" + (ref ? "?ref=" + ref : "");
+        }
+        // Partner link, first visit: show the "you've been invited" envelope page
+        // before signup/checkout. CONTINUE comes back with &invited=1 so it shows once.
+        if (ref && url.searchParams.get("invited") !== "1") {
+          const ptoken = await partnerTokenForPromo(env, ref);
+          const ptn = ptoken ? await partnerByToken(env, ptoken) : null;
+          if (ptn) return html(invitePage(ptn.name, ptn.promoCode));
+        }
+        if (!s) {
+          // No session — send them through signup first (same `next` mechanism as
+          // /login and /signup) so they land back here, logged in, ref still attached.
+          const next = "/subscribe" + (ref ? "?ref=" + ref + "&invited=1" : "");
           return redirect(env.SITE_URL + "/signup?next=" + encodeURIComponent(next));
         }
         return html(subscribePage(url.searchParams.get("canceled"), ref));
