@@ -1672,9 +1672,17 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    CSS relies on (later in the cascade normally wins at equal specificity),
    so no !important is needed. */
 body #mh-box{
-  top:calc(50% + (env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 2);
-  max-height:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 2rem);
+  top:calc(50% + (env(safe-area-inset-top) - var(--tabbar-h) - env(safe-area-inset-bottom)) / 2);
+  max-height:calc(100vh - env(safe-area-inset-top) - var(--tabbar-h) - env(safe-area-inset-bottom) - 2rem);
 }
+/* The box is position:fixed but lives inside .gl-app, which is its own
+   stacking context below the tab bar (z-index:10) -- so the box's own
+   z-index:9201 never gets to beat the tab bar, and a box sized/centered on
+   the whole screen had its bottom edge (rounded corners + the last rows of
+   content) hidden behind the tab bar. Centering and sizing it within the
+   area ABOVE the tab bar (the tabbar-h terms above) keeps the whole box,
+   including its bottom corners, visible. The dimmed overlay can still run
+   behind the tab bar; only the box has to clear it. */
 /* #mhShareBtn ("Generate sheet") used to be bolted on as a sibling AFTER
    .mh-body, which needed artificial height reserved for it here. It now
    renders as the last thing INSIDE #mh-body's own scrollable content (see
