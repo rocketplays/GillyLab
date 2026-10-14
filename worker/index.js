@@ -5071,7 +5071,12 @@ export default {
         if (ref && url.searchParams.get("invited") !== "1") {
           const ptoken = await partnerTokenForPromo(env, ref);
           const ptn = ptoken ? await partnerByToken(env, ptoken) : null;
-          if (ptn) return html(invitePage(ptn.handle || String(ptn.promoCode).toLowerCase(), ptn.promoCode));
+          if (ptn) {
+            // Their site username (the one shared by Pick'em, Legends Bracket, bet tracker
+            // leaderboards — pf:<email>) wins; then an admin-set handle; then the promo code.
+            const uname = ptn.email ? await getDisplayName(env, ptn.email).catch(() => null) : null;
+            return html(invitePage(uname || ptn.handle || String(ptn.promoCode).toLowerCase(), ptn.promoCode));
+          }
         }
         if (!s) {
           // No session — send them through signup first (same `next` mechanism as
