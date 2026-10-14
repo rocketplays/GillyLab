@@ -2613,3 +2613,17 @@ body #mh-body{ overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
 @keyframes glSpin{ to{ transform:rotate(360deg); } }
 .gl-app{ overscroll-behavior-y:contain; }
 @media (prefers-reduced-motion:reduce){ .gl-ptr.spin svg{ animation:none; } }
+
+/* ── Long fighter names wrap instead of truncating ─────────────────────────
+   In modals and the Fight Info dropdown a name cut to "Abdul Rakhm…" is worse
+   than a name on two lines, so these let the name wrap. (Rankings/list rows
+   elsewhere keep their ellipsis -- they're single-line by design.) Each
+   rule keeps min-width:0 so the flex row can actually shrink the name box. */
+.cs-hd-nm, .fp-stat-hd-name, .obh-name, .proj-name,
+.cs-barrow .cs-nm, .cs-method-row .cs-method-nm,
+body .mh-hd-nm{
+  white-space:normal; overflow:visible; text-overflow:clip;
+  overflow-wrap:anywhere; min-width:0;
+}
+.cs-barrow .cs-nm, .cs-method-row .cs-method-nm{ line-height:1.2; }
+.cs-barrow, .cs-method-row{ align-items:center; }
