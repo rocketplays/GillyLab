@@ -1675,6 +1675,8 @@ body #mh-box{
   top:calc(50% + (env(safe-area-inset-top) - var(--tabbar-h) - env(safe-area-inset-bottom)) / 2);
   max-height:calc(100vh - env(safe-area-inset-top) - var(--tabbar-h) - env(safe-area-inset-bottom) - 2rem);
 }
+/* Scrolling inside the modal must never chain to the page behind it. */
+body #mh-body{ overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
 /* The box is position:fixed but lives inside .gl-app, which is its own
    stacking context below the tab bar (z-index:10) -- so the box's own
    z-index:9201 never gets to beat the tab bar, and a box sized/centered on

@@ -348,6 +348,14 @@ window.GL_ROUTER = (function(){
       window.GL_NATIVE.tap();
       back();
     });
+    // Any in-app modal/dialog/sheet that sits over the page. While one is open,
+    // a drag at the top of it must scroll the modal (or do nothing) -- never
+    // start pull-to-refresh or the swipe-back gesture on the page behind it
+    // (the page's own scrollTop is 0 while the modal's scroll is locked, so
+    // those handlers would otherwise think the page is being pulled).
+    function modalOpen(){
+      return !!document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden]), #mh-box.mh-on, #cs-box.cs-on, .fp-modal-overlay:not([hidden]), .pl-share.open');
+    }
     // Swipe right from the left screen edge = the back button. The page follows
     // the finger, then either slides off and goes back (dragged far enough, or a
     // quick flick) or springs back. Only on a screen that actually shows a back
@@ -357,7 +365,7 @@ window.GL_ROUTER = (function(){
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       function blocked(){
         if (backBtn.hidden) return true;
-        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])') || (window.GL_MORE && window.GL_MORE.isOpen())) return true;
+        if (modalOpen() || (window.GL_MORE && window.GL_MORE.isOpen())) return true;
         return false;
       }
       function reset(){
@@ -426,7 +434,7 @@ window.GL_ROUTER = (function(){
       function blocked(){
         if (busy || !current || NO_PTR[current]) return true;
         if (appScrollEl.classList.contains('gl-app--fullbleed')) return true;
-        if (document.querySelector('.gl-sheet.open, .gl-confirm-overlay:not([hidden])') || (window.GL_MORE && window.GL_MORE.isOpen())) return true;
+        if (modalOpen() || (window.GL_MORE && window.GL_MORE.isOpen())) return true;
         return false;
       }
       function paint(p){
