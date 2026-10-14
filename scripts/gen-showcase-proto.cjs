@@ -1076,11 +1076,20 @@ ${navMarkup}
      +'.fx-band.rv-hl .fx-bl.r{transform-origin:left center;animation:rvDrawR .9s .15s cubic-bezier(.2,.7,.3,1) backwards}'
      +'.fx-band.rv-hl .fx-bl.l{transform-origin:right center;animation:rvDrawR .9s .15s cubic-bezier(.2,.7,.3,1) backwards}'
      +'.fx-band.rv-hl .fx-btag{animation:rvGlow 1.4s .1s ease-out}'
+     +'.rv-swipe{display:none}'
+     +'@media (max-width:720px) and (hover:none) and (pointer:coarse){.rv-swipe{display:block;text-align:right;font-size:12px;letter-spacing:.05em;color:var(--muted);margin:8px 4px 0;transition:opacity .4s}.rv-swipe.gone{opacity:0}}'
      ;
     document.head.appendChild(st);
     window.addEventListener('load',function(){
       var vh=window.innerHeight||800;
       var tiers=document.querySelectorAll('.fx-tier');
+      /* static 'Swipe' cue under each overflowing row (phones only, via CSS); fades once the row is scrolled */
+      Array.prototype.forEach.call(tiers,function(el){
+        var g=el.querySelector('.fx-grid'); if(!g || g.scrollWidth<=g.clientWidth+4) return;
+        var l=document.createElement('div'); l.className='rv-swipe'; l.setAttribute('aria-hidden','true'); l.textContent='Swipe \u2192';
+        el.appendChild(l);
+        g.addEventListener('scroll',function(){ if(g.scrollLeft>16) l.classList.add('gone'); },{passive:true});
+      });
       var tio=new IntersectionObserver(function(es){
         es.forEach(function(e){
           if(!e.isIntersecting) return;
