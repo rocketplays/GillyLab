@@ -1051,6 +1051,33 @@ ${debug ? `
 ${navMarkup}
 </div>
 <script>${navScript}</script>
+<script>
+/* Scroll-reveal for the logged-out landing page: sections below the fold fade/slide in the
+   first time they scroll into view. Everything already on screen at load is left alone (no
+   flash), and without IntersectionObserver / with reduced-motion nothing is ever hidden.
+   Kept in its OWN script, ahead of the grid script, because featuresScript slices the LAST
+   <script> before </body> for /subscribe. NO backticks or dollar-braces in here. */
+(function(){
+  try{
+    if(!('IntersectionObserver' in window)) return;
+    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var st=document.createElement('style');
+    st.textContent='.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.3,1)}.rv.rv-in{opacity:1;transform:none}';
+    document.head.appendChild(st);
+    window.addEventListener('load',function(){
+      var els=document.querySelectorAll('.fx-tier, .fx-band, footer.foot, footer.site-footer');
+      var vh=window.innerHeight||800, io=new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('rv-in'); io.unobserve(e.target); } });
+      },{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+      els.forEach(function(el){
+        var r=el.getBoundingClientRect();
+        if(r.top<vh*0.92) return;            // already on screen: leave it be
+        el.classList.add('rv'); io.observe(el);
+      });
+    });
+  }catch(e){}
+})();
+</script>
 
 <div class="fx-wrap">
   <div class="fx-top">
