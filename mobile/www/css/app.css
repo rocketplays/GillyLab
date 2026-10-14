@@ -2614,16 +2614,33 @@ body #mh-body{ overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
 .gl-app{ overscroll-behavior-y:contain; }
 @media (prefers-reduced-motion:reduce){ .gl-ptr.spin svg{ animation:none; } }
 
-/* ── Long fighter names wrap instead of truncating ─────────────────────────
-   In modals and the Fight Info dropdown a name cut to "Abdul Rakhm…" is worse
-   than a name on two lines, so these let the name wrap. (Rankings/list rows
-   elsewhere keep their ellipsis -- they're single-line by design.) Each
-   rule keeps min-width:0 so the flex row can actually shrink the name box. */
+/* ── Long fighter names stay on ONE line and shrink to fit ───────────────
+   Wrapping looked wrong, so in modals and the Fight Info dropdown a long
+   name keeps its single line and js/fit-names.js steps its font-size down
+   until it fits (floor ~60% of normal). The ellipsis below is only the
+   last-resort fallback for a name that still doesn't fit at the floor. */
 .cs-hd-nm, .fp-stat-hd-name, .obh-name, .proj-name,
 .cs-barrow .cs-nm, .cs-method-row .cs-method-nm,
 body .mh-hd-nm{
-  white-space:normal; overflow:visible; text-overflow:clip;
-  overflow-wrap:anywhere; min-width:0;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;
 }
-.cs-barrow .cs-nm, .cs-method-row .cs-method-nm{ line-height:1.2; }
-.cs-barrow, .cs-method-row{ align-items:center; }
+
+/* ── Modal close (×) lives in the TOP-RIGHT corner of the box ─────────────
+   It used to sit in the tabs / tag row UNDER the fighter header, which read
+   as part of the body. Pulled out of flow and pinned to the box's top right
+   (both boxes are position:fixed, so they are the positioning context); the
+   header gets right padding so a long name never runs under it. */
+body #mh-box .mh-x, #cs-box .cs-x{
+  position:absolute; top:.4rem; right:.4rem; margin:0; z-index:5;
+  font-size:1.6rem; padding:.2rem .55rem .3rem;
+}
+body #mh-box .mh-hd, #cs-box .cs-hd{ padding-right:2.9rem; }
+
+/* ── Legends Bracket: "How it works" explainer ── */
+.br-how{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:.9rem 1rem; }
+.br-how-title{ font-weight:800; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:.45rem; }
+.br-how-text{ margin:0 0 .6rem; font-size:.84rem; line-height:1.45; color:var(--text); }
+.br-how-steps{ margin:0 0 .75rem; padding-left:1.15rem; font-size:.8rem; line-height:1.5; color:var(--muted); }
+.br-how-pts{ display:flex; flex-wrap:wrap; gap:.4rem .9rem; font-size:.78rem; color:var(--muted); border-top:1px solid var(--border); padding-top:.65rem; }
+.br-how-pts strong, .br-how-max strong{ color:var(--text); }
+.br-how-max{ margin-top:.3rem; font-size:.78rem; color:var(--muted); }

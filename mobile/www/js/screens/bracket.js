@@ -170,12 +170,12 @@ function mountBracket(container){
       '<div class="br-col"><div class="br-collabel">Quarterfinals</div><div class="br-pairgroup">' + qfPairsHTML + '</div></div>' +
       '<div class="br-col"><div class="br-collabel">Semifinals</div><div class="br-pairgroup">' + sfPairHTML + '</div></div>' +
       '<div class="br-col"><div class="br-collabel">Final</div>' + finalMatchHTML + '</div>' +
-      '<div class="br-col br-champcol"><div class="br-collabel" id="brChampLabel">Champion</div>' +
+      '<div class="br-col br-champcol"><div class="br-champgroup"><div class="br-collabel" id="brChampLabel">Champion</div>' +
         '<div class="br-champcard" id="brChampCard">' +
           '<div class="br-champ-cap">Your Pick</div>' +
           (picks.final ? fighterRowHTML(picks.final) : '<div class="br-fcard br-fcard--empty">TBD</div>') +
         '</div>' +
-      '</div>' +
+      '</div></div>' +
       // Bare trailing grid column, not decorative -- see .br-spacer's own
       // CSS comment for why the Champion column can never scroll flush
       // left without it.
@@ -326,10 +326,12 @@ function mountBracket(container){
       '<div class="br-col"><div class="br-collabel">Quarterfinals</div><div class="br-pairgroup">' + qfPairsHTML + '</div></div>' +
       '<div class="br-col"><div class="br-collabel">Semifinals</div><div class="br-pairgroup">' + sfPairHTML + '</div></div>' +
       '<div class="br-col"><div class="br-collabel">Final</div>' + finalMatchHTML + '</div>' +
-      '<div class="br-col br-champcol" id="brColChamp"><div class="br-collabel is-final">Champion</div>' +
-        // One group (tile + result line + Leaderboard button) centered together, so the
-        // result and button sit directly under the tile instead of drifting to the bottom.
+      '<div class="br-col br-champcol" id="brColChamp">' +
+        // One group (label + tile + result line + Leaderboard button) centered together,
+        // so the gold "Champion" label sits right above the tile and the result and
+        // button sit directly under it, instead of the label hugging the column top.
         '<div class="br-champgroup">' +
+        '<div class="br-collabel is-final">Champion</div>' +
         '<div class="br-champcard">' +
           fighterRowHTML(finalWinner, { yourPick: picks.final === finalWinner }) +
         '</div>' +
@@ -409,9 +411,24 @@ function mountBracket(container){
         '<p class="gl-muted" id="brDivision" style="margin:0">This week: —</p>' +
       '</div>' +
       '<div class="gl-sec" id="brBelt"></div>' +
-      '<div class="gl-sec">' +
-        '<p class="gl-muted" style="margin:0">Fill out every round, then submit once. 1 pt per quarterfinal · 2 pts per semifinal · 4 pts for the final — 12 pts possible.</p>' +
-      '</div>' +
+      // Same explainer the website's Legends Bracket page carries (its
+      // intro paragraph + the points rules strip), so the app tells you how
+      // the game works instead of just dropping you onto a bracket.
+      '<div class="gl-sec"><div class="br-how">' +
+        '<div class="br-how-title">How it works</div>' +
+        '<p class="br-how-text">Eight recognizable names from one division, any era — the division rotates every week. Fill it out like a March Madness bracket, earn points for every correct call, and see how you stack up. The GillyLab Model decides every winner.</p>' +
+        '<ol class="br-how-steps">' +
+          '<li>Pick a winner in every matchup, round by round, through to the champion.</li>' +
+          '<li>Fill out every round, then submit once.</li>' +
+          '<li>See your score against the real bracket, and how you rank on the leaderboard.</li>' +
+        '</ol>' +
+        '<div class="br-how-pts">' +
+          '<span><strong>1 pt</strong> per quarterfinal</span>' +
+          '<span><strong>2 pts</strong> per semifinal</span>' +
+          '<span><strong>4 pts</strong> for the final</span>' +
+        '</div>' +
+        '<div class="br-how-max"><strong>12 pts</strong> possible</div>' +
+      '</div></div>' +
       '<div class="gl-sec"><div class="br-scroll-wrap">' +
         '<div class="br-scroll" id="brScroll"><div class="br-bracket" id="brBracket"></div></div>' +
         '<div class="br-fade br-fade-l" aria-hidden="true"></div>' +
