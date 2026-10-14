@@ -1054,8 +1054,7 @@ ${navMarkup}
 <script>
 /* Scroll choreography for the logged-out landing page. Below-the-fold sections fade/slide in
    once; when a group's heading arrives its title glows and its rules draw out; the cards
-   cascade in one after another; and each row gives a one-off sideways nudge so the peeking
-   next card reads as "swipe me". Everything already on screen at load is left alone. With
+   cascade in one after another. Everything already on screen at load is left alone. With
    reduced-motion or no IntersectionObserver nothing is ever hidden or animated. Kept in its
    OWN script, ahead of the grid script, because featuresScript slices the LAST <script>
    before the closing body tag for /subscribe. NO backticks or dollar-braces in here. */
@@ -1077,9 +1076,7 @@ ${navMarkup}
      +'.fx-band.rv-hl .fx-bl.r{transform-origin:left center;animation:rvDrawR .9s .15s cubic-bezier(.2,.7,.3,1) backwards}'
      +'.fx-band.rv-hl .fx-bl.l{transform-origin:right center;animation:rvDrawR .9s .15s cubic-bezier(.2,.7,.3,1) backwards}'
      +'.fx-band.rv-hl .fx-btag{animation:rvGlow 1.4s .1s ease-out}'
-     /* swipe hint: the whole row slides left a touch and settles back */
-     +'@keyframes rvNudge{0%{transform:translateX(0)}40%{transform:translateX(-30px)}100%{transform:translateX(0)}}'
-     +'.fx-grid.rv-nudge .fx-card{animation:rvNudge 1s ease-in-out}';
+     ;
     document.head.appendChild(st);
     window.addEventListener('load',function(){
       var vh=window.innerHeight||800;
@@ -1090,13 +1087,6 @@ ${navMarkup}
           var t=e.target; tio.unobserve(t); t.classList.add('rv-in');
           var cards=t.querySelectorAll('.fx-card');
           for(var i=0;i<cards.length;i++) cards[i].style.setProperty('--i', Math.min(i,4));
-          setTimeout(function(){
-            var g=t.querySelector('.fx-grid');
-            if(g && g.scrollWidth>g.clientWidth+4 && g.scrollLeft<2){
-              g.classList.add('rv-nudge');
-              setTimeout(function(){ g.classList.remove('rv-nudge'); },1100);
-            }
-          },1300);
         });
       },{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
       var others=document.querySelectorAll('footer.foot, footer.site-footer');
