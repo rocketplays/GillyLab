@@ -4640,7 +4640,8 @@ export default {
         if (!nameB) return json({ error: "unknown fighter: " + rawB }, 404, cors);
         if (nameA === nameB) return json({ error: "pick two different fighters" }, 400, cors);
         const rounds = url.searchParams.get("rounds") === "5" ? 5 : 3;
-        const n = Math.min(10000, Math.max(500, parseInt(url.searchParams.get("n"), 10) || 5000));
+        // Same bounds as the website's own Simulations field (100-50,000, default 1,000).
+        const n = Math.min(50000, Math.max(100, parseInt(url.searchParams.get("n"), 10) || 1000));
         const result = await runFightSim(env, nameA, nameB, rounds, n);
         // Slugs (for the app's own avatar photo convention, PHOTO_BASE +
         // slug + '.png') and a tale-of-the-tape stat line per fighter -- the

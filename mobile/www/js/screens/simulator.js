@@ -958,6 +958,11 @@ window.GL_SIMULATOR = (function(){
           '<button type="button" class="fp-tab' + (is5 ? ' sel' : '') + '" data-rounds="5">5 Rounds</button>' +
         '</div>' +
       '</div>' +
+      '<div class="sim-count" style="margin-top:.9rem">' +
+        '<label class="gl-label" style="margin:0 0 .3rem;display:block" for="simCount">Simulations</label>' +
+        '<input type="number" class="mf-search-input" id="simCount" inputmode="numeric" min="100" max="50000" step="1" value="1000">' +
+        '<div class="gl-muted" style="font-size:.72rem;margin-top:.3rem">100 – 50,000. More simulations = a steadier result.</div>' +
+      '</div>' +
       '<button type="button" class="gl-btn gl-btn-primary gl-btn-notready" id="simRunBtn" style="margin-top:1.1rem">Pick both fighters to simulate</button>' +
       '<button type="button" class="sim-byo-btn gl-btn-notready" id="simByoBtn">Build Your Own Simulation</button>' +
       '<div id="simPickError"></div>' +
@@ -1030,14 +1035,29 @@ window.GL_SIMULATOR = (function(){
       });
     });
 
+    // Same rules as the website's own Simulations field: under 100 is
+    // refused with a message, blank/garbage falls back to 1,000, and
+    // anything over 50,000 is capped.
+    var countInput = container.querySelector('#simCount');
+    function readSimCount(){
+      var n = countInput ? parseInt(countInput.value, 10) : NaN;
+      if (isFinite(n) && n < 100) return { error: 'Enter at least 100 simulations — anything less doesn’t give a reliable result.' };
+      if (!isFinite(n)) n = 1000;
+      n = Math.min(50000, Math.max(100, n));
+      if (countInput) countInput.value = n;
+      return { n: n };
+    }
+
     function runSimulation(){
       if (runBtn.disabled) return;
       clearPickError();
+      var cnt = readSimCount();
+      if (cnt.error){ showPickError(cnt.error); return; }
       var prevText = runBtn.textContent;
       runBtn.disabled = true;
       runBtn.textContent = 'Simulating…';
       output.innerHTML = '';
-      window.GL_API.fightSim(picked.a, picked.b, rounds).then(function(res){
+      window.GL_API.fightSim(picked.a, picked.b, rounds, cnt.n).then(function(res){
         output.innerHTML = resultHTML(res.a, res.b, res.slugA, res.slugB, res.result, res.tapeA, res.tapeB, res.breakdown);
         output.querySelectorAll('[data-sim-slug]').forEach(function(el){
           el.addEventListener('click', function(){

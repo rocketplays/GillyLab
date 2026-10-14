@@ -191,8 +191,10 @@ window.GL_API = (function(){
     // Fight Simulator -- Premium-only (see worker/index.js's /api/app/fight-sim).
     // nameA/nameB are fighter NAMES (as returned by fighterSearch below), not
     // slugs. rounds is 3 or 5.
-    fightSim: function(nameA, nameB, rounds){
-      return request('/api/app/fight-sim?a=' + encodeURIComponent(nameA) + '&b=' + encodeURIComponent(nameB) + '&rounds=' + (rounds === 5 ? 5 : 3));
+    fightSim: function(nameA, nameB, rounds, n){
+      // n = number of simulated fights (the website's own "Simulations"
+      // field: 100-50,000, default 1,000). Omitted -> the server's default.
+      return request('/api/app/fight-sim?a=' + encodeURIComponent(nameA) + '&b=' + encodeURIComponent(nameB) + '&rounds=' + (rounds === 5 ? 5 : 3) + (n ? '&n=' + n : ''));
     },
     // "Build Your Own Simulation" -- the one data fetch the custom-weighting
     // modal needs (see worker/index.js's /api/app/custom-sim-base +
