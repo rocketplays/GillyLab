@@ -1052,27 +1052,68 @@ ${navMarkup}
 </div>
 <script>${navScript}</script>
 <script>
-/* Scroll-reveal for the logged-out landing page: sections below the fold fade/slide in the
-   first time they scroll into view. Everything already on screen at load is left alone (no
-   flash), and without IntersectionObserver / with reduced-motion nothing is ever hidden.
-   Kept in its OWN script, ahead of the grid script, because featuresScript slices the LAST
-   <script> before </body> for /subscribe. NO backticks or dollar-braces in here. */
+/* Scroll choreography for the logged-out landing page. Below-the-fold sections fade/slide in
+   once; when a group's heading arrives its title glows and its rules draw out; the cards
+   cascade in one after another; and each row gives a one-off sideways nudge so the peeking
+   next card reads as "swipe me". Everything already on screen at load is left alone. With
+   reduced-motion or no IntersectionObserver nothing is ever hidden or animated. Kept in its
+   OWN script, ahead of the grid script, because featuresScript slices the LAST <script>
+   before the closing body tag for /subscribe. NO backticks or dollar-braces in here. */
 (function(){
   try{
     if(!('IntersectionObserver' in window)) return;
     if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var st=document.createElement('style');
-    st.textContent='.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.3,1)}.rv.rv-in{opacity:1;transform:none}';
+    st.textContent=
+      '.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.3,1)}'
+     +'.rv.rv-in{opacity:1;transform:none}'
+     /* cards cascade: backwards fill only, so hover transforms work again after it ends */
+     +'@keyframes rvCard{from{opacity:0;transform:translateY(34px) scale(.96)}to{opacity:1;transform:none}}'
+     +'.rv-in .fx-card{animation:rvCard .65s cubic-bezier(.2,.7,.3,1) backwards;animation-delay:calc(var(--i,0) * 90ms + 150ms)}'
+     /* heading highlight: title glows once, rules draw out from the title */
+     +'@keyframes rvGlow{0%{text-shadow:0 0 0 transparent}35%{text-shadow:0 0 18px currentColor,0 0 38px currentColor}100%{text-shadow:0 0 0 transparent}}'
+     +'@keyframes rvDrawR{from{transform:scaleX(0)}to{transform:scaleX(1)}}'
+     +'.fx-band.rv-hl .fx-bt{animation:rvGlow 1.4s ease-out}'
+     +'.fx-band.rv-hl .fx-bl.r{transform-origin:left center;animation:rvDrawR .9s .15s cubic-bezier(.2,.7,.3,1) backwards}'
+     +'.fx-band.rv-hl .fx-bl.l{transform-origin:right center;animation:rvDrawR .9s .15s cubic-bezier(.2,.7,.3,1) backwards}'
+     +'.fx-band.rv-hl .fx-btag{animation:rvGlow 1.4s .1s ease-out}'
+     /* swipe hint: the whole row slides left a touch and settles back */
+     +'@keyframes rvNudge{0%{transform:translateX(0)}40%{transform:translateX(-30px)}100%{transform:translateX(0)}}'
+     +'.fx-grid.rv-nudge .fx-card{animation:rvNudge 1s ease-in-out}';
     document.head.appendChild(st);
     window.addEventListener('load',function(){
-      var els=document.querySelectorAll('.fx-tier, .fx-band, footer.foot, footer.site-footer');
-      var vh=window.innerHeight||800, io=new IntersectionObserver(function(es){
-        es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('rv-in'); io.unobserve(e.target); } });
+      var vh=window.innerHeight||800;
+      var tiers=document.querySelectorAll('.fx-tier');
+      var tio=new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(!e.isIntersecting) return;
+          var t=e.target; tio.unobserve(t); t.classList.add('rv-in');
+          var cards=t.querySelectorAll('.fx-card');
+          for(var i=0;i<cards.length;i++) cards[i].style.setProperty('--i', Math.min(i,4));
+          setTimeout(function(){
+            var g=t.querySelector('.fx-grid');
+            if(g && g.scrollWidth>g.clientWidth+4 && g.scrollLeft<2){
+              g.classList.add('rv-nudge');
+              setTimeout(function(){ g.classList.remove('rv-nudge'); },1100);
+            }
+          },1300);
+        });
       },{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
-      els.forEach(function(el){
-        var r=el.getBoundingClientRect();
-        if(r.top<vh*0.92) return;            // already on screen: leave it be
-        el.classList.add('rv'); io.observe(el);
+      var others=document.querySelectorAll('footer.foot, footer.site-footer');
+      var oio=new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('rv-in'); oio.unobserve(e.target); } });
+      },{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+      var bio=new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('rv-hl'); bio.unobserve(e.target); } });
+      },{threshold:1,rootMargin:'0px 0px -22% 0px'});
+      Array.prototype.forEach.call(tiers,function(el){
+        var band=el.querySelector('.fx-band'); if(band) bio.observe(band);
+        if(el.getBoundingClientRect().top<vh*0.92){ el.classList.add('rv-in'); return; }
+        el.classList.add('rv'); tio.observe(el);
+      });
+      Array.prototype.forEach.call(others,function(el){
+        if(el.getBoundingClientRect().top<vh*0.92) return;
+        el.classList.add('rv'); oio.observe(el);
       });
     });
   }catch(e){}
