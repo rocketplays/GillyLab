@@ -1384,10 +1384,17 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 .sr-path-name{ font-weight:800; margin-bottom:.15rem; }
 .sr-path.a .sr-path-name{ color:var(--accent); }
 .sr-path.b .sr-path-name{ color:#ffcf7a; }
-.sr-common-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.4rem; padding:.3rem 0; font-size:.78rem; border-top:1px solid var(--border); }
+/* Mirrors the site's phone layout (index.html ~2650/2695/2883): opponent name
+   on top in muted, then each fighter's result on its own centered line,
+   colored green for a win / red for a loss (even 1-1 stays white). */
+.sr-common-row{ display:grid; grid-template-columns:1fr; gap:.15rem; padding:.5rem 0; font-size:.78rem; text-align:center; border-top:1px solid rgba(255,255,255,.05); }
 .sr-common-row:first-of-type{ border-top:none; }
+.sr-common-row:last-child{ border-bottom:none; }
 .sr-co-name, .sr-co-res{ min-width:0; overflow-wrap:break-word; }
 .sr-co-name{ color:var(--muted); }
+.sr-co-res{ font-weight:600; color:var(--text); }
+.sr-co-res.w{ color:var(--accent); }
+.sr-co-res.l{ color:#ff6a5e; }
 /* Mirrors the site's own scoped centering override for .sr-story-line
    inside .scouting-fight-panel (index.html ~2666, alongside the .sr-cmp-row
    override above) rather than left-aligned storylines text. */

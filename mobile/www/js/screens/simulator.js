@@ -256,7 +256,7 @@ window.GL_SIMULATOR = (function(){
     if (common.length){
       parts.push(
         '<div class="sr-common"><div class="sr-common-title">Common opponents</div>' +
-          common.map(function(c){ return '<div class="sr-common-row"><div class="sr-co-name">' + esc(c.opp) + '</div><div class="sr-co-res">' + esc(sA) + ': ' + esc(c.a) + '</div><div class="sr-co-res">' + esc(sB) + ': ' + esc(c.b) + '</div></div>'; }).join('') +
+          common.map(function(c){ return '<div class="sr-common-row"><div class="sr-co-name">' + esc(c.opp) + '</div><div class="sr-co-res' + (c.aCls ? ' ' + esc(c.aCls) : '') + '">' + esc(sA) + ': ' + esc(c.a) + '</div><div class="sr-co-res' + (c.bCls ? ' ' + esc(c.bCls) : '') + '">' + esc(sB) + ': ' + esc(c.b) + '</div></div>'; }).join('') +
         '</div>'
       );
     }

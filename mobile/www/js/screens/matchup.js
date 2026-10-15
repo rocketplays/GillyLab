@@ -294,7 +294,7 @@ function mountMatchup(container, params){
     if (common.length){
       parts.push(
         '<div class="sr-common"><div class="sr-common-title">Common opponents</div>' +
-          common.map(function(c){ return '<div class="sr-common-row"><div class="sr-co-name">' + esc(c.opp) + '</div><div class="sr-co-res">' + esc(sA) + ': ' + esc(c.a) + '</div><div class="sr-co-res">' + esc(sB) + ': ' + esc(c.b) + '</div></div>'; }).join('') +
+          common.map(function(c){ return '<div class="sr-common-row"><div class="sr-co-name">' + esc(c.opp) + '</div><div class="sr-co-res' + (c.aCls ? ' ' + esc(c.aCls) : '') + '">' + esc(sA) + ': ' + esc(c.a) + '</div><div class="sr-co-res' + (c.bCls ? ' ' + esc(c.bCls) : '') + '">' + esc(sB) + ': ' + esc(c.b) + '</div></div>'; }).join('') +
         '</div>'
       );
     }
@@ -1090,7 +1090,7 @@ function mountMatchup(container, params){
       '<div class="mf-event-header' + (special ? ' ' + special : '') + '">' +
         '<div class="mf-event-info">' +
           '<h1 class="mf-event-name">' + (card ? (special ? esc(card.event) : regularEventNameHTML(card.event)) : 'No card yet') + '</h1>' +
-          (card ? '<div class="mf-event-details">' + esc(fmtDate(card.prelimsAt || card.date)) + (card.city ? ' · ' + esc(card.city) : '') + '</div>' : '') +
+          (card ? '<div class="mf-event-details">' + esc(fmtDate(card.prelimsAt || card.date)) + ((card.location || card.city) ? ' · ' + esc(card.location || card.city) : '') + '</div>' : '') +
         '</div>' +
         (card ? '<div class="mf-event-countdown"><div class="mf-cd-label">Time Until Event</div><div class="mf-cd-time" id="mfCountdown">—</div></div>' : '') +
         (card ? eventTipHTML() : '') +
