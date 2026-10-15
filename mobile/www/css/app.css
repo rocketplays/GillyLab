@@ -2057,7 +2057,10 @@ body #mh-body{ overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
 .odds-table th{ text-align:left; font-size:.6rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); padding:.45rem .5rem; border-bottom:1px solid var(--border); }
 .odds-table td{ padding:.55rem .5rem; border-bottom:1px solid var(--border); }
 .odds-table tr:last-child td{ border-bottom:none; }
-.odds-table tr.prop-subheader td{ padding-top:.7rem; padding-bottom:.25rem; border-bottom:none; color:var(--text); font-size:.72rem; }
+/* Fighter / line header bands -- mirrors the site's green band (index.html ~3561)
+   so the name above each block of book rows reads as a header, not another row. */
+.odds-table tr.prop-subheader td{ padding:.5rem .6rem; border-bottom:none; border-top:1px solid color-mix(in srgb, var(--accent) 20%, transparent); background:color-mix(in srgb, var(--accent) 9%, transparent); color:var(--accent); font-family:'Barlow Condensed',sans-serif; font-size:.95rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.odds-table tr.prop-subheader td strong{ font-weight:800; }
 .book-name{ font-weight:600; font-size:.72rem; color:var(--text); }
 .odds-value{ font-weight:800; font-family:'Barlow Condensed', sans-serif; font-size:.92rem; }
 .odds-value-na{ color:var(--muted); font-size:.78rem; font-weight:400; }
