@@ -2055,6 +2055,10 @@ body #mh-body{ overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
 .odds-prop-btn.active{ color:var(--accent); border-color:var(--accent); background:color-mix(in srgb, var(--accent) 7%, transparent); }
 .odds-table{ width:100%; border-collapse:collapse; font-size:.82rem; }
 .odds-table th{ text-align:left; font-size:.6rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); padding:.45rem .5rem; border-bottom:1px solid var(--border); }
+/* Column heads over the price columns (fighter surnames on Moneyline, Over/Under,
+   method names, round numbers): accent + larger so they read as headers, like the
+   fighter bands. The leading "Sportsbook" label stays small and muted. */
+.odds-table th:not(:first-child){ color:var(--accent); font-family:'Barlow Condensed',sans-serif; font-size:.9rem; font-weight:800; letter-spacing:.08em; }
 .odds-table td{ padding:.55rem .5rem; border-bottom:1px solid var(--border); }
 .odds-table tr:last-child td{ border-bottom:none; }
 /* Fighter / line header bands -- mirrors the site's green band (index.html ~3561)
