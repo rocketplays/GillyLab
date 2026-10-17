@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-17T22:25:10.217Z",
+ "generatedAt": "2026-10-17T22:40:38.547Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -7894,6 +7894,194 @@
       ]
      },
      "capturedAt": "2026-10-17T22:25:10.080Z"
+    }
+   ]
+  },
+  "Katlyn Cerminara": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Mackenzie Stiller",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:46",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Mackenzie Stiller",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 32,
+      "sigA": 71,
+      "totL": 35,
+      "totA": 74,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:15",
+      "head": [
+       29,
+       67
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       25,
+       60
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       5,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 19,
+      "sigA": 58,
+      "totL": 19,
+      "totA": 58,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       9,
+       47
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       19,
+       58
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-17T22:40:38.422Z"
+    }
+   ]
+  },
+  "Mackenzie Stiller": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Katlyn Cerminara",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:46",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Katlyn Cerminara",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 19,
+      "sigA": 58,
+      "totL": 19,
+      "totA": 58,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       9,
+       47
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       19,
+       58
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 32,
+      "sigA": 71,
+      "totL": 35,
+      "totA": 74,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:15",
+      "head": [
+       29,
+       67
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       25,
+       60
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       5,
+       8
+      ]
+     },
+     "capturedAt": "2026-10-17T22:40:38.422Z"
     }
    ]
   }
