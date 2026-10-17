@@ -4821,7 +4821,11 @@ export default {
             ? b.legs.map((l) => {
                 const ln = btBetNames(eventsBySlug, { market: l.market, fightId: l.fightId, params: l.params });
                 const nm = ln[0] || null;
-                return Object.assign({}, l, { name: nm, slug: nm ? (profileSlugFor(nm, profileSlugs) || null) : null });
+                // A fight-level leg (rounds O/U, distance, either-fighter method) resolves to BOTH
+                // fighters -- names/slugs (positionally aligned, null where no profile) let the
+                // share sheet draw both avatars instead of just the first.
+                return Object.assign({}, l, { name: nm, slug: nm ? (profileSlugFor(nm, profileSlugs) || null) : null,
+                  names: ln, slugs: ln.map((n) => profileSlugFor(n, profileSlugs) || null) });
               })
             : null;
           return {

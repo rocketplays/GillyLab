@@ -190,7 +190,7 @@ window.GL_BETTRACKER = (function(){
         names: b.names || [], slugs: b.slugs || [],
       };
       if (b.market === 'PARLAY' && Array.isArray(b.legs)){
-        o.legs = b.legs.map(function(l){ return { pick: l.pick || '', match: l.match || '', odds: l.odds, name: l.name || '', slug: l.slug || '' }; });
+        o.legs = b.legs.map(function(l){ return { pick: l.pick || '', match: l.match || '', odds: l.odds, name: l.name || '', slug: l.slug || '', names: l.names || (l.name ? [l.name] : []), slugs: l.slugs || (l.slug ? [l.slug] : []) }; });
       }
       return o;
     });

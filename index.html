@@ -134736,7 +134736,10 @@ const GL_SHEET = (function () {
     // about the fight rather than a fighter — a total, the distance, a round start.
     const imgs = await Promise.all(bets.map(b => Promise.all((b.slugs || []).slice(0, 2).map(s => loadImg(s)))));
     // Parlay legs get their own small avatars, preloaded alongside the main ones.
-    const legImgs = await Promise.all(bets.map(b => Promise.all((b.legs || []).map(l => loadImg(l.slug)))));
+    // A fight-level leg (total rounds, distance, either-fighter method) carries BOTH
+    // fighters' slugs and draws both; a fighter-specific leg carries one.
+    const legImgs = await Promise.all(bets.map(b => Promise.all((b.legs || []).map(l =>
+      Promise.all(((l.slugs && l.slugs.length) ? l.slugs : [l.slug]).slice(0, 2).map(s => loadImg(s)))))));
     // Rows are variable height: a parlay expands to list its legs vertically below the
     // header, on tight rows so it doesn't run long.
     const PLEG_ROW = 40, PHEAD_H = 84;
@@ -134832,13 +134835,19 @@ const GL_SHEET = (function () {
         ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
       } else {
         const lg = legImgs[i] || [], legsTop = y + PHEAD_H;
-        const tx2 = 96 + 15 + 15 + 14;   // ax + r + 14, same math as below — needed before the loop for the book
+        // Two overlapping avatars for a fight-level leg; every leg's text shifts by the
+        // same amount whenever any leg on this slip has two, so the pick text stays aligned.
+        const PAIR_STEP = 24;
+        const anyTwo = b.legs.some(l => (l.slugs || []).length > 1);
+        const tx2 = 96 + 15 + 15 + 14 + (anyTwo ? PAIR_STEP : 0);   // ax + r + 14, same math as below — needed before the loop for the book
         let legsEndX = tx2;
         ctx.font = '700 27px ' + COND;   // set before measuring, so clip()'s own measureText calls match what actually renders
         b.legs.forEach((l, j) => {
           const lcy = legsTop + j * PLEG_ROW + PLEG_ROW / 2 - 2;
           const r = 15, ax = 96 + r;
-          avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
+          const lpics = lg[j] || [], lnames = (l.names && l.names.length) ? l.names : [l.name];
+          avatar(ctx, lpics[0], ax, lcy, r, initialsOf(lnames[0]), LINE);
+          if (lpics.length > 1) avatar(ctx, lpics[1], ax + PAIR_STEP, lcy, r, initialsOf(lnames[1]), LINE);
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
           ctx.fillStyle = '#c9ccd3';
           // A fight-level leg (total rounds, distance, etc.) has no fighter name in its
@@ -150599,6 +150608,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           // identification at all. `match` gives the renderer something to show
           // regardless of what the pick text itself says.
           return { pick: btExpandPickName(l.pick || '', ln), name: nm, slug: nm ? nameToSlug(nm) : '',
+            names: ln, slugs: ln.map(n => nameToSlug(n)),
             match: ln.length > 1 ? btShort(ln[0]) + ' vs ' + btShort(ln[1]) : '', odds: l.odds };
         });
       }

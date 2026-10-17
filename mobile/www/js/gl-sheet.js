@@ -1269,7 +1269,10 @@
         return Promise.all((b.slugs || []).slice(0, 2).map(function (s) { return loadImg(s); }));
       })).then(function (imgs) {
         return Promise.all(bets.map(function (b) {
-          return Promise.all((b.legs || []).map(function (l) { return loadImg(l.slug); }));
+          return Promise.all((b.legs || []).map(function (l) {
+            // Fight-level legs (rounds O/U, distance...) carry both fighters' slugs.
+            return Promise.all(((l.slugs && l.slugs.length) ? l.slugs : [l.slug]).slice(0, 2).map(function (s) { return loadImg(s); }));
+          }));
         })).then(function (legImgs) {
           var PLEG_ROW = 40, PHEAD_H = 84;
           var cardH = bets.map(function (b) {
@@ -1356,13 +1359,17 @@
               ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
             } else {
               var lg = legImgs[i] || [], legsTop = y + PHEAD_H;
-              var tx2 = 96 + 15 + 15 + 14;
+              var PAIR_STEP = 24;
+              var anyTwo = b.legs.some(function (l) { return (l.slugs || []).length > 1; });
+              var tx2 = 96 + 15 + 15 + 14 + (anyTwo ? PAIR_STEP : 0);
               var legsEndX = tx2;
               ctx.font = '700 27px ' + COND;
               b.legs.forEach(function (l, j) {
                 var lcy = legsTop + j * PLEG_ROW + PLEG_ROW / 2 - 2;
                 var r = 15, ax = 96 + r;
-                avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
+                var lpics = lg[j] || [], lnames = (l.names && l.names.length) ? l.names : [l.name];
+                avatar(ctx, lpics[0], ax, lcy, r, initialsOf(lnames[0]), LINE);
+                if (lpics.length > 1) avatar(ctx, lpics[1], ax + PAIR_STEP, lcy, r, initialsOf(lnames[1]), LINE);
                 ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
                 ctx.fillStyle = '#c9ccd3';
                 var legTxt = (l.match ? l.match + ': ' : '') + (l.pick || '');
