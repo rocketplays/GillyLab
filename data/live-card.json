@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-17T22:40:38.547Z",
+ "generatedAt": "2026-10-17T23:11:35.108Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -8082,6 +8082,194 @@
       ]
      },
      "capturedAt": "2026-10-17T22:40:38.422Z"
+    }
+   ]
+  },
+  "Javad Mahjoub": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Joel Faglier",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "2:11",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Joel Faglier",
+     "result": "L",
+     "f": {
+      "kd": 2,
+      "sigL": 60,
+      "sigA": 114,
+      "totL": 67,
+      "totA": 126,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:36",
+      "head": [
+       54,
+       105
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       37,
+       79
+      ],
+      "clinch": [
+       6,
+       11
+      ],
+      "ground": [
+       17,
+       24
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 76,
+      "totL": 52,
+      "totA": 77,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       19,
+       40
+      ],
+      "body": [
+       26,
+       30
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       44,
+       67
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "capturedAt": "2026-10-17T23:11:34.979Z"
+    }
+   ]
+  },
+  "Joel Faglier": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Javad Mahjoub",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "2:11",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Javad Mahjoub",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 76,
+      "totL": 52,
+      "totA": 77,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       19,
+       40
+      ],
+      "body": [
+       26,
+       30
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       44,
+       67
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 60,
+      "sigA": 114,
+      "totL": 67,
+      "totA": 126,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:36",
+      "head": [
+       54,
+       105
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       37,
+       79
+      ],
+      "clinch": [
+       6,
+       11
+      ],
+      "ground": [
+       17,
+       24
+      ]
+     },
+     "capturedAt": "2026-10-17T23:11:34.979Z"
     }
    ]
   }
