@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-17T23:11:35.108Z",
+ "generatedAt": "2026-10-17T23:27:29.000Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -8270,6 +8270,194 @@
       ]
      },
      "capturedAt": "2026-10-17T23:11:34.979Z"
+    }
+   ]
+  },
+  "Julien LeBlanc": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Nick Galanti",
+     "result": "L",
+     "method": "Submission (Neck Crank)",
+     "round": 1,
+     "time": "1:26",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Nick Galanti",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 1,
+      "totL": 3,
+      "totA": 4,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 2,
+      "totL": 3,
+      "totA": 5,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:15",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-17T23:27:28.858Z"
+    }
+   ]
+  },
+  "Nick Galanti": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Julien LeBlanc",
+     "result": "W",
+     "method": "Submission (Neck Crank)",
+     "round": 1,
+     "time": "1:26",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Julien LeBlanc",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 2,
+      "totL": 3,
+      "totA": 5,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:15",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 1,
+      "totL": 3,
+      "totA": 4,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-17T23:27:28.858Z"
     }
    ]
   }
