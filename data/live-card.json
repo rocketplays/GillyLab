@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-17T21:54:39.884Z",
+ "generatedAt": "2026-10-17T22:25:10.217Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -7706,6 +7706,194 @@
       ]
      },
      "capturedAt": "2026-10-17T21:49:13.476Z"
+    }
+   ]
+  },
+  "Chad Anheliger": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Steven Koslow",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "4:31",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Steven Koslow",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 59,
+      "totL": 39,
+      "totA": 66,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:12",
+      "head": [
+       25,
+       48
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       5,
+       7
+      ],
+      "dist": [
+       31,
+       55
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 88,
+      "totL": 97,
+      "totA": 145,
+      "tdL": 4,
+      "tdA": 4,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "6:57",
+      "head": [
+       34,
+       66
+      ],
+      "body": [
+       8,
+       11
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       40,
+       74
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       11,
+       13
+      ]
+     },
+     "capturedAt": "2026-10-17T22:25:10.080Z"
+    }
+   ]
+  },
+  "Steven Koslow": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Chad Anheliger",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "4:31",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Chad Anheliger",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 88,
+      "totL": 97,
+      "totA": 145,
+      "tdL": 4,
+      "tdA": 4,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "6:57",
+      "head": [
+       34,
+       66
+      ],
+      "body": [
+       8,
+       11
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       40,
+       74
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       11,
+       13
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 59,
+      "totL": 39,
+      "totA": 66,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:12",
+      "head": [
+       25,
+       48
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       5,
+       7
+      ],
+      "dist": [
+       31,
+       55
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-17T22:25:10.080Z"
     }
    ]
   }
