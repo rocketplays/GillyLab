@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-18T02:22:53.607Z",
+ "generatedAt": "2026-10-18T02:48:25.349Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -9586,6 +9586,194 @@
       ]
      },
      "capturedAt": "2026-10-18T02:17:28.304Z"
+    }
+   ]
+  },
+  "Joaquin Buckley": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Mike Malott",
+     "result": "L",
+     "method": "KO/TKO (Knee)",
+     "round": 2,
+     "time": "2:32",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Mike Malott",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 53,
+      "totL": 20,
+      "totA": 59,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       6,
+       45
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       10,
+       49
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 37,
+      "sigA": 50,
+      "totL": 38,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:25",
+      "head": [
+       15,
+       24
+      ],
+      "body": [
+       20,
+       24
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       21,
+       34
+      ],
+      "clinch": [
+       15,
+       15
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-18T02:48:25.220Z"
+    }
+   ]
+  },
+  "Mike Malott": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Joaquin Buckley",
+     "result": "W",
+     "method": "KO/TKO (Knee)",
+     "round": 2,
+     "time": "2:32",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Joaquin Buckley",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 37,
+      "sigA": 50,
+      "totL": 38,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:25",
+      "head": [
+       15,
+       24
+      ],
+      "body": [
+       20,
+       24
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       21,
+       34
+      ],
+      "clinch": [
+       15,
+       15
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 53,
+      "totL": 20,
+      "totA": 59,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       6,
+       45
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       10,
+       49
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-18T02:48:25.220Z"
     }
    ]
   }
