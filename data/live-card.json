@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-18T00:28:51.344Z",
+ "generatedAt": "2026-10-18T00:59:43.760Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -8834,6 +8834,194 @@
       ]
      },
      "capturedAt": "2026-10-18T00:28:51.202Z"
+    }
+   ]
+  },
+  "Louis Jourdain": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Timmy Cuamba",
+     "result": "L",
+     "method": "Submission (Neck Crank)",
+     "round": 2,
+     "time": "2:48",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Timmy Cuamba",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 36,
+      "totL": 21,
+      "totA": 49,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       18
+      ],
+      "body": [
+       3,
+       7
+      ],
+      "leg": [
+       4,
+       11
+      ],
+      "dist": [
+       9,
+       35
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 50,
+      "totL": 44,
+      "totA": 80,
+      "tdL": 4,
+      "tdA": 4,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:47",
+      "head": [
+       15,
+       42
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       35
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       8,
+       11
+      ]
+     },
+     "capturedAt": "2026-10-18T00:59:43.629Z"
+    }
+   ]
+  },
+  "Timmy Cuamba": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Louis Jourdain",
+     "result": "W",
+     "method": "Submission (Neck Crank)",
+     "round": 2,
+     "time": "2:48",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Louis Jourdain",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 50,
+      "totL": 44,
+      "totA": 80,
+      "tdL": 4,
+      "tdA": 4,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:47",
+      "head": [
+       15,
+       42
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       35
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       8,
+       11
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 36,
+      "totL": 21,
+      "totA": 49,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       18
+      ],
+      "body": [
+       3,
+       7
+      ],
+      "leg": [
+       4,
+       11
+      ],
+      "dist": [
+       9,
+       35
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-18T00:59:43.629Z"
     }
    ]
   }
