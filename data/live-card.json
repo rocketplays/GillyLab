@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-17T23:27:29.000Z",
+ "generatedAt": "2026-10-18T00:13:24.781Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -8458,6 +8458,194 @@
       ]
      },
      "capturedAt": "2026-10-17T23:27:28.858Z"
+    }
+   ]
+  },
+  "Tanner Boser": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Jhonata Diniz",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "4:26",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Jhonata Diniz",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 71,
+      "totL": 196,
+      "totA": 237,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "10:18",
+      "head": [
+       33,
+       59
+      ],
+      "body": [
+       8,
+       8
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       16,
+       38
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       27,
+       32
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 45,
+      "totL": 28,
+      "totA": 61,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       8,
+       35
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       13,
+       43
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-18T00:13:24.651Z"
+    }
+   ]
+  },
+  "Jhonata Diniz": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Tanner Boser",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "4:26",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Tanner Boser",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 45,
+      "totL": 28,
+      "totA": 61,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       8,
+       35
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       13,
+       43
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 71,
+      "totL": 196,
+      "totA": 237,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "10:18",
+      "head": [
+       33,
+       59
+      ],
+      "body": [
+       8,
+       8
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       16,
+       38
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       27,
+       32
+      ]
+     },
+     "capturedAt": "2026-10-18T00:13:24.651Z"
     }
    ]
   }
