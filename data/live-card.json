@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-18T00:59:43.760Z",
+ "generatedAt": "2026-10-18T01:15:16.243Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-10-18T00:59:43.629Z"
+    }
+   ]
+  },
+  "Marc-Andre Barriault": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Kyle Daukaus",
+     "result": "W",
+     "method": "KO/TKO (Elbows)",
+     "round": 1,
+     "time": "4:28",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Kyle Daukaus",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 32,
+      "sigA": 46,
+      "totL": 43,
+      "totA": 60,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:28",
+      "head": [
+       31,
+       45
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       4
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       28,
+       40
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 11,
+      "totL": 14,
+      "totA": 23,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:15",
+      "head": [
+       4,
+       10
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-18T01:15:16.105Z"
+    }
+   ]
+  },
+  "Kyle Daukaus": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Marc-Andre Barriault",
+     "result": "L",
+     "method": "KO/TKO (Elbows)",
+     "round": 1,
+     "time": "4:28",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Marc-Andre Barriault",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 11,
+      "totL": 14,
+      "totA": 23,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:15",
+      "head": [
+       4,
+       10
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       4,
+       10
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 32,
+      "sigA": 46,
+      "totL": 43,
+      "totA": 60,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:28",
+      "head": [
+       31,
+       45
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       4
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       28,
+       40
+      ]
+     },
+     "capturedAt": "2026-10-18T01:15:16.105Z"
     }
    ]
   }
