@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-18T01:51:35.140Z",
+ "generatedAt": "2026-10-18T02:17:28.440Z",
  "fighters": {
   "Aieza Bertolso": {
    "history": [
@@ -9398,6 +9398,194 @@
       ]
      },
      "capturedAt": "2026-10-18T01:51:34.959Z"
+    }
+   ]
+  },
+  "Erin Blanchfield": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Jasmine Jasudavicius",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Jasmine Jasudavicius",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 69,
+      "sigA": 142,
+      "totL": 75,
+      "totA": 149,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:13",
+      "head": [
+       64,
+       136
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       66,
+       139
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 166,
+      "totL": 62,
+      "totA": 201,
+      "tdL": 5,
+      "tdA": 12,
+      "sub": 3,
+      "rev": 1,
+      "ctrl": "8:16",
+      "head": [
+       44,
+       159
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       46,
+       161
+      ],
+      "clinch": [
+       0,
+       2
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-10-18T02:17:28.304Z"
+    }
+   ]
+  },
+  "Jasmine Jasudavicius": {
+   "history": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Erin Blanchfield",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Buckley vs. Malott",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 17, 2026",
+     "opponent": "Erin Blanchfield",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 166,
+      "totL": 62,
+      "totA": 201,
+      "tdL": 5,
+      "tdA": 12,
+      "sub": 3,
+      "rev": 1,
+      "ctrl": "8:16",
+      "head": [
+       44,
+       159
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       46,
+       161
+      ],
+      "clinch": [
+       0,
+       2
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 69,
+      "sigA": 142,
+      "totL": 75,
+      "totA": 149,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:13",
+      "head": [
+       64,
+       136
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       66,
+       139
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-18T02:17:28.304Z"
     }
    ]
   }
