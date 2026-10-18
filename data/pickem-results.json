@@ -1,6 +1,117 @@
 {
-  "generatedAt": "2026-10-17T14:51:52.912Z",
+  "generatedAt": "2026-10-18T02:58:53.065Z",
   "events": [
+    {
+      "slug": "ufc-fight-night-october-17-2026",
+      "name": "UFC Fight Night: Buckley vs. Malott",
+      "date": "2026-10-18",
+      "bouts": [
+        {
+          "f1": "Joaquin Buckley",
+          "f2": "Mike Malott",
+          "winner": "Mike Malott",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Erin Blanchfield",
+          "f2": "Jasmine Jasudavicius",
+          "winner": "Jasmine Jasudavicius",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Kyle Nelson",
+          "f2": "Cristian Pérez",
+          "winner": "Cristian Pérez",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Marc-Andre Barriault",
+          "f2": "Kyle Daukaus",
+          "winner": "Marc-Andre Barriault",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Louis Jourdain",
+          "f2": "Timmy Cuamba",
+          "winner": "Timmy Cuamba",
+          "method": "Submission",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Mandel Nallo",
+          "f2": "Nate Landwehr",
+          "winner": "Mandel Nallo",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Tanner Boser",
+          "f2": "Jhonata Diniz",
+          "winner": "Tanner Boser",
+          "method": "KO/TKO",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Julien LeBlanc",
+          "f2": "Nick Galanti",
+          "winner": "Nick Galanti",
+          "method": "Submission",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Javad Mahjoub",
+          "f2": "Joel Faglier",
+          "winner": "Joel Faglier",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Katlyn Cerminara",
+          "f2": "Mackenzie Stiller",
+          "winner": "Katlyn Cerminara",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Chad Anheliger",
+          "f2": "Steven Koslow",
+          "winner": "Steven Koslow",
+          "method": "Submission",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Melissa Croden",
+          "f2": "Chelsea Chandler",
+          "winner": "Chelsea Chandler",
+          "method": "Submission",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Cody Chovancek",
+          "f2": "SuYoung You",
+          "winner": "SuYoung You",
+          "method": "Submission",
+          "round": 3,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-fight-night-october-13-2026",
       "name": "Dana White's Contender Series: Season 10, Week 10",
@@ -3567,109 +3678,6 @@
           "winner": "Piera Rodriguez",
           "method": "Decision - Unanimous",
           "round": 3,
-          "voided": false
-        }
-      ]
-    },
-    {
-      "slug": "ufc-326",
-      "name": "UFC 326",
-      "date": "2026-03-08",
-      "bouts": [
-        {
-          "f1": "Max Holloway",
-          "f2": "Charles Oliveira",
-          "winner": "Charles Oliveira",
-          "method": "Decision - Unanimous",
-          "round": 5,
-          "voided": false
-        },
-        {
-          "f1": "Caio Borralho",
-          "f2": "Reinier de Ridder",
-          "winner": "Caio Borralho",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Rob Font",
-          "f2": "Raul Rosas Jr.",
-          "winner": "Raul Rosas Jr.",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Drew Dober",
-          "f2": "Michael Johnson",
-          "winner": "Drew Dober",
-          "method": "KO/TKO",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Gregory Rodrigues",
-          "f2": "Brunno Ferreira",
-          "winner": "Gregory Rodrigues",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Cody Garbrandt",
-          "f2": "Xiao Long",
-          "winner": "Cody Garbrandt",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Donte Johnson",
-          "f2": "Cody Brundage",
-          "winner": "Donte Johnson",
-          "method": "Decision - Split",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Ricky Turcios",
-          "f2": "Alberto Montes",
-          "winner": "Alberto Montes",
-          "method": "Submission",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Cody Durden",
-          "f2": "Nyamjargal Tumendemberel",
-          "winner": "Nyamjargal Tumendemberel",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Sumudaerji",
-          "f2": "Jesus Aguilar",
-          "winner": "Sumudaerji",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Rafael Tobias",
-          "f2": "Diyar Nurgozhay",
-          "winner": "Diyar Nurgozhay",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Luke Fernandez",
-          "f2": "Rodolfo Bellato",
-          "winner": "Rodolfo Bellato",
-          "method": "KO/TKO",
-          "round": 1,
           "voided": false
         }
       ]
