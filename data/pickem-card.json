@@ -1,6 +1,6 @@
 {
   "slug": "ufc-333",
-  "generatedAt": "2026-10-19T18:08:52.733Z",
+  "generatedAt": "2026-10-20T02:22:37.255Z",
   "slugs": [
     "alexander-volkanovski",
     "movsar-evloev",
@@ -23,7 +23,13 @@
     "colby-thicknesse",
     "asaf-chopurov",
     "abubakar-vagaev",
-    "jacob-malkoun"
+    "jacob-malkoun",
+    "bolaji-oki",
+    "daniel-santos",
+    "kody-steele",
+    "noah-gugnon",
+    "iasmin-lucindo",
+    "nicolle-caliari"
   ],
   "bouts": [
     {
@@ -33,8 +39,8 @@
       "ps1": "alexander-volkanovski",
       "ps2": "movsar-evloev",
       "wPts": {
-        "f1": 10.009817616490952,
-        "f2": 9.990205735761787
+        "f1": 9.989924214294804,
+        "f2": 10.010100501396321
       },
       "mPts": {
         "f1": {
@@ -63,8 +69,8 @@
       "ps1": "petr-yan",
       "ps2": "merab-dvalishvili",
       "wPts": {
-        "f1": 8.754338361573524,
-        "f2": 11.786805528382702
+        "f1": 8.711566508800866,
+        "f2": 11.876224835389259
       },
       "mPts": {
         "f1": {
@@ -149,8 +155,8 @@
       "ps1": "aaron-pico",
       "ps2": "losene-keita",
       "wPts": {
-        "f1": 9.896058748083968,
-        "f2": 10.106632990434115
+        "f1": 9.840058421506239,
+        "f2": 10.166405341397322
       },
       "mPts": {
         "f1": {
@@ -177,8 +183,8 @@
       "ps1": "azamat-murzakanov",
       "ps2": "dominick-reyes",
       "wPts": {
-        "f1": 8.309211027224428,
-        "f2": 12.87354115258796
+        "f1": 8.274042355373458,
+        "f2": 12.976906161781649
       },
       "mPts": {
         "f1": {
@@ -205,8 +211,8 @@
       "ps1": "nikita-krylov",
       "ps2": "abdulrakhman-yakhyaev",
       "wPts": {
-        "f1": 18.2423375034629,
-        "f2": 7.2718855019205675
+        "f1": 18.510992344530518,
+        "f2": 7.243741167093041
       },
       "mPts": {
         "f1": {
@@ -233,8 +239,8 @@
       "ps1": "abus-magomedov",
       "ps2": "cam-rowston",
       "wPts": {
-        "f1": 9.700349724904928,
-        "f2": 10.323169170815554
+        "f1": 9.711655367546282,
+        "f2": 10.310057908926485
       },
       "mPts": {
         "f1": {
@@ -261,8 +267,8 @@
       "ps1": "grant-dawson",
       "ps2": "nurullo-aliev",
       "wPts": {
-        "f1": 9.584888586767985,
-        "f2": 10.461656865173568
+        "f1": 9.571515982562218,
+        "f2": 10.47825680944774
       },
       "mPts": {
         "f1": {
@@ -289,8 +295,8 @@
       "ps1": "colby-thicknesse",
       "ps2": "asaf-chopurov",
       "wPts": {
-        "f1": 18.86159815187472,
-        "f2": 7.208841501313373
+        "f1": 18.987603712243665,
+        "f2": 7.1967758741354695
       },
       "mPts": {
         "f1": {
@@ -317,8 +323,8 @@
       "ps1": "abubakar-vagaev",
       "ps2": "jacob-malkoun",
       "wPts": {
-        "f1": 8.587464811839606,
-        "f2": 12.151824473972184
+        "f1": 8.81568063594122,
+        "f2": 11.663148195341225
       },
       "mPts": {
         "f1": {
@@ -330,6 +336,90 @@
           "KO/TKO": 4,
           "Submission": 7,
           "Decision": 4
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-bolaji-oki-vs-daniel-santos",
+      "f1": "Bolaji Oki",
+      "f2": "Daniel Santos",
+      "ps1": "bolaji-oki",
+      "ps2": "daniel-santos",
+      "wPts": {
+        "f1": 10.568369200229366,
+        "f2": 9.50057733101909
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 4,
+          "Submission": 7,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 3,
+          "Submission": 6,
+          "Decision": 6
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-kody-steele-vs-noah-gugnon",
+      "f1": "Kody Steele",
+      "f2": "Noah Gugnon",
+      "ps1": "kody-steele",
+      "ps2": "noah-gugnon",
+      "wPts": {
+        "f1": 8.965909787486655,
+        "f2": 11.381212706391244
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 4,
+          "Submission": 6,
+          "Decision": 5
+        },
+        "f2": {
+          "KO/TKO": 4,
+          "Submission": 5,
+          "Decision": 6
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-iasmin-lucindo-vs-nicolle-caliari",
+      "f1": "Iasmin Lucindo",
+      "f2": "Nicolle Caliari",
+      "ps1": "iasmin-lucindo",
+      "ps2": "nicolle-caliari",
+      "wPts": {
+        "f1": 7.538484223889879,
+        "f2": 16.183899105200798
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 5,
+          "Submission": 6,
+          "Decision": 3
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 4,
+          "Decision": 6
         }
       },
       "rPts": {
