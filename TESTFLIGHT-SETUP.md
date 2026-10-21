@@ -1,6 +1,6 @@
 # TestFlight setup & enrolling testers
 
-Bundle ID `com.gillylab.app`, team `NL2T9K5XN7`, version 1.0 (build 1). Push is covered in
+Bundle ID `com.gillylab.app`, team `JA244RT5Q9`, version 1.0 (build 1). Push is covered in
 `PUSH-NOTIFICATIONS-SETUP.txt`; this file is the App Store Connect / TestFlight side.
 
 ## One-time setup

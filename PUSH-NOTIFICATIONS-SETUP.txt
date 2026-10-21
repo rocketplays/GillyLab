@@ -23,7 +23,7 @@ straight to Apple (worker/index.js: apnsSendOne). So iOS needs NO Firebase
 project, NO GoogleService-Info.plist and NO Firebase SDK. Firebase/FCM is only
 used for Android (below).
 
-1. Apple Developer account -- done (team NL2T9K5XN7).
+1. Apple Developer account -- done (team JA244RT5Q9).
 
 2. Register the App ID (once)
    - developer.apple.com -> Account -> Certificates, Identifiers & Profiles
@@ -41,8 +41,8 @@ used for Android (below).
    One key works for sandbox AND production, and for every app on the team.
 
 4. Set the three worker secrets (from the repo root; values never touch git)
-     npx wrangler secret put APNS_KEY_ID        <- the Key ID
-     npx wrangler secret put APNS_TEAM_ID       <- NL2T9K5XN7
+     npx wrangler secret put APNS_KEY_ID        <- 8ST4J56P76  (the "GillyLab Push" key)
+     npx wrangler secret put APNS_TEAM_ID       <- JA244RT5Q9
      npx wrangler secret put APNS_PRIVATE_KEY < ~/Downloads/AuthKey_XXXXXXXXXX.p8
    (the "<" form feeds the file in directly so the key is never pasted into
    chat or shell history). Optional: APNS_BUNDLE_ID if the bundle id changes
