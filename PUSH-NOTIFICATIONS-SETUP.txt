@@ -1,0 +1,115 @@
+Push notifications setup (APNs for iOS, FCM for Android)
+====================================================
+
+Status: code is done. Push is wired end-to-end in the app and the worker, but
+silently no-ops until the worker secrets below are set (APNS_* for iOS, FCM_*
+for Android). Nothing breaks in the meantime.
+
+Where things stand:
+- Device tokens register/unregister automatically on login/logout, no
+  UI needed for that part.
+- Settings toggles (Pick'em Reminders, Pick'em Results, Bet Results)
+  already send for real once configured, and Settings has a "Send a test
+  notification" button for verifying a device.
+- Triggers: runLockReminders, runResultRecaps, runBetResultPushes in
+  worker/index.js.
+
+
+IOS  (direct APNs -- no Firebase on iOS)
+---
+
+The iOS app hands the worker a raw APNs device token, and the worker sends it
+straight to Apple (worker/index.js: apnsSendOne). So iOS needs NO Firebase
+project, NO GoogleService-Info.plist and NO Firebase SDK. Firebase/FCM is only
+used for Android (below).
+
+1. Apple Developer account -- done (team NL2T9K5XN7).
+
+2. Register the App ID (once)
+   - developer.apple.com -> Account -> Certificates, Identifiers & Profiles
+     -> Identifiers -> "+" -> App IDs -> App
+   - Bundle ID (Explicit): com.gillylab.app
+   - Capabilities: tick "Push Notifications"
+   (Xcode's automatic signing can also create this for you the first time you
+   build with a signed-in team.)
+
+3. Create an APNs authentication key
+   - Account -> Keys -> "+"
+   - Name "GillyLab Push", tick "Apple Push Notifications service (APNs)"
+   - Register, download the .p8 (ONLY DOWNLOADS ONCE -- keep it safe)
+   - Note the Key ID (10 chars) and your Team ID (Account -> Membership)
+   One key works for sandbox AND production, and for every app on the team.
+
+4. Set the three worker secrets (from the repo root; values never touch git)
+     npx wrangler secret put APNS_KEY_ID        <- the Key ID
+     npx wrangler secret put APNS_TEAM_ID       <- NL2T9K5XN7
+     npx wrangler secret put APNS_PRIVATE_KEY < ~/Downloads/AuthKey_XXXXXXXXXX.p8
+   (the "<" form feeds the file in directly so the key is never pasted into
+   chat or shell history). Optional: APNS_BUNDLE_ID if the bundle id changes
+   (defaults to com.gillylab.app).
+   Then deploy: npm run deploy   (or push to main -- Cloudflare auto-deploys)
+
+5. Xcode (already committed -- nothing to click, just verify)
+   - mobile/ios/App/App/App.entitlements carries aps-environment. Xcode swaps
+     it to "production" automatically for Archive / TestFlight / App Store.
+   - Info.plist has UIBackgroundModes -> remote-notification.
+   - In Xcode: App target -> Signing & Capabilities should now list "Push
+     Notifications" and "Background Modes" with no red errors.
+   - cd mobile && npx cap sync ios   (copies the latest www/ into the app)
+
+6. Test on a REAL device (push does not work in the iOS Simulator for APNs
+   tokens): sign in -> allow notifications -> Settings -> Push Notifications
+   -> "Send a test notification". Works for both Xcode (sandbox) and
+   TestFlight (production) installs.
+
+
+ANDROID
+-------
+Easier than iOS -- no separate developer account or key upload needed,
+Android push rides on FCM directly.
+
+1. Register the Android app in the SAME Firebase project used for iOS
+   - Firebase console -> that project -> Project Settings -> "Add app"
+     -> Android icon
+   - Package name: com.gillylab.app  (must match exactly)
+   - Nickname: optional
+   - SHA-1: can skip (only needed for Google Sign-In/Dynamic Links,
+     not push)
+   - Download the google-services.json it offers you
+
+2. Drop the file into the project
+   - Put google-services.json in mobile/android/app/ (next to
+     build.gradle) -- send it to me and I'll place it, or copy it
+     there yourself
+   - Nothing else to configure: mobile/android/app/build.gradle
+     already detects the file and applies the google-services gradle
+     plugin automatically when it's present (it's a no-op build
+     warning otherwise: "google-services.json not found, ... Push
+     Notifications won't work") -- and mobile/android/build.gradle
+     already has the plugin's classpath declared. This was set up
+     when @capacitor/push-notifications was installed.
+
+3. Rebuild
+   - npx cap sync android (only needed again if you change native
+     deps -- a plain rebuild is enough after just adding the file)
+   - npx cap open android -> Build/Run from Android Studio, or your
+     usual signed-build flow for a real device
+
+
+WORKER SECRETS -- ANDROID / FCM (only needed if you ship Android)
+------------------------------------------------------------------
+
+(Firebase project needed for Android only.) Firebase console -> Project
+Settings -> Service Accounts -> "Generate
+new private key" -> downloads a JSON file. From that file, set three
+Cloudflare Worker secrets (from the worker/ directory):
+
+  wrangler secret put FCM_PROJECT_ID      <- the JSON's "project_id"
+  wrangler secret put FCM_CLIENT_EMAIL    <- the JSON's "client_email"
+  wrangler secret put FCM_PRIVATE_KEY     <- the JSON's "private_key" (keep newlines)
+
+Prefer running these yourself (wrangler prompts you directly) rather
+than pasting the private key into chat.
+
+Once those three secrets are set and the app is rebuilt with both
+config files in place, push should work with no further code changes.

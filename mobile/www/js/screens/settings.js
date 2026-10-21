@@ -54,6 +54,8 @@ window.GL_ROUTER.register('settings', {
           switchHTML('pushPickemReminders', 'Pick’em Reminders', 'A nudge before picks lock for the next card') +
           switchHTML('pushPickemResults', 'Pick’em Results', 'When your picks are graded after a card') +
           (subscribed ? switchHTML('pushBetResults', 'Bet Results', 'When a tracked bet is graded win or loss') : '') +
+          '<button id="testPushBtn" class="gl-btn gl-btn-outline" style="margin-top:.7rem">Send a test notification</button>' +
+          '<p id="testPushMsg" class="gl-muted" style="margin:.4rem 0 0;min-height:1.2em"></p>' +
         '</div>' +
         '<div class="gl-sec">' +
           '<div class="gl-dash-head"><h2 class="gl-dash-title">Email Notifications</h2></div>' +
@@ -126,6 +128,19 @@ window.GL_ROUTER.register('settings', {
             input.checked = !val;   // revert on failure
           });
         });
+      });
+
+      var testBtn = container.querySelector('#testPushBtn');
+      if (testBtn) testBtn.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        var msg = container.querySelector('#testPushMsg');
+        msg.textContent = 'Sending…';
+        window.GL_API.sendTestPush().then(function(r){
+          if (r && r.ok) msg.textContent = 'Sent — it should arrive in a few seconds.';
+          else if (r && r.reason === 'no_devices') msg.textContent = 'This device isn’t registered for push yet. Allow notifications when prompted, then reopen the app.';
+          else if (r && r.reason === 'not_configured') msg.textContent = 'Push isn’t set up on the server yet.';
+          else msg.textContent = 'Couldn’t deliver to your device(s). Check that notifications are allowed in iOS Settings.';
+        }).catch(function(){ msg.textContent = 'Couldn’t reach the server.'; });
       });
 
       var contactBtn = container.querySelector('#contactBtn');

@@ -2799,17 +2799,83 @@ async function fcmSendOne(env, token, { title, body, data }) {
   if (status === "UNREGISTERED" || status === "NOT_FOUND" || status === "INVALID_ARGUMENT") return "invalid";
   return "error";
 }
+/* ── Push delivery, iOS (direct APNs, token-based auth) ──────────────────────
+ * The native app's @capacitor/push-notifications plugin hands back a RAW APNs
+ * device token on iOS (64+ hex chars) -- it only becomes an FCM token if the
+ * Firebase iOS SDK is linked in, which we deliberately don't do. So iOS tokens
+ * go straight to Apple; Android tokens (long, contain ':') keep going via FCM.
+ *
+ * Secrets (wrangler secret put ...): APNS_KEY_ID (10-char id of the .p8 key),
+ * APNS_TEAM_ID (10-char Apple team id), APNS_PRIVATE_KEY (the .p8 file's full
+ * text, BEGIN/END PRIVATE KEY lines included). APNS_BUNDLE_ID is optional
+ * (defaults to com.gillylab.app, the app's bundle id = the apns-topic).
+ *
+ * Auth is a short-lived ES256 JWT (kid = key id, iss = team id), reused for
+ * ~50 min (Apple rejects tokens older than 1h and throttles re-minting more
+ * than once per 20 min). WebCrypto's ECDSA signature is already the raw r||s
+ * form JWT wants, so no DER conversion is needed.
+ *
+ * Sandbox vs production: a build run straight from Xcode registers a SANDBOX
+ * token; TestFlight / App Store builds register PRODUCTION tokens, and each
+ * environment rejects the other's with 400 BadDeviceToken. We try production
+ * first (the common case) and fall back to sandbox on BadDeviceToken, so dev
+ * and TestFlight devices both work with no per-token bookkeeping.
+ */
+function apnsConfigured(env) { return !!(env.APNS_KEY_ID && env.APNS_TEAM_ID && env.APNS_PRIVATE_KEY); }
+function isApnsToken(t) { return typeof t === "string" && /^[0-9a-fA-F]{64,}$/.test(t); }
+let _apnsJwtCache = null;   // { jwt, iat }
+async function apnsJwt(env) {
+  const now = Math.floor(Date.now() / 1000);
+  if (_apnsJwtCache && now - _apnsJwtCache.iat < 3000) return _apnsJwtCache.jwt;
+  const body = env.APNS_PRIVATE_KEY.replace(/\\n/g, "\n").replace(/-----BEGIN PRIVATE KEY-----/, "").replace(/-----END PRIVATE KEY-----/, "").replace(/\s+/g, "");
+  const der = Uint8Array.from(atob(body), (c) => c.charCodeAt(0));
+  const key = await crypto.subtle.importKey("pkcs8", der, { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
+  const unsigned = b64url(enc.encode(JSON.stringify({ alg: "ES256", kid: env.APNS_KEY_ID }))) + "." + b64url(enc.encode(JSON.stringify({ iss: env.APNS_TEAM_ID, iat: now })));
+  const sig = await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, key, enc.encode(unsigned));
+  const jwt = unsigned + "." + b64url(sig);
+  _apnsJwtCache = { jwt, iat: now };
+  return jwt;
+}
+async function apnsSendOne(env, token, { title, body, data }) {
+  const jwt = await apnsJwt(env);
+  const payload = Object.assign({}, data || {}, { aps: { alert: { title, body }, sound: "default" } });
+  const topic = env.APNS_BUNDLE_ID || "com.gillylab.app";
+  let reason = "";
+  for (const host of ["api.push.apple.com", "api.sandbox.push.apple.com"]) {
+    const res = await fetch("https://" + host + "/3/device/" + token, {
+      method: "POST",
+      headers: { authorization: "bearer " + jwt, "apns-topic": topic, "apns-push-type": "alert", "apns-priority": "10", "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) return "ok";
+    const err = await res.json().catch(() => null);
+    reason = (err && err.reason) || String(res.status);
+    if (res.status === 410) return "invalid";                      // Unregistered (app deleted)
+    if (res.status === 400 && reason === "BadDeviceToken") continue; // wrong environment -- try the other
+    if (res.status === 400 && reason === "DeviceTokenNotForTopic") return "invalid";
+    if (res.status === 403 && (reason === "ExpiredProviderToken" || reason === "InvalidProviderToken")) { _apnsJwtCache = null; return "error"; }
+    return "error";
+  }
+  return "invalid";   // BadDeviceToken in both environments -- the token is dead
+}
+// Routes a token to the right provider by its shape. Missing config for that
+// provider = "error" (keep the token; setup just isn't finished yet).
+async function pushSendOne(env, token, payload) {
+  if (isApnsToken(token)) return apnsConfigured(env) ? apnsSendOne(env, token, payload) : "error";
+  return fcmConfigured(env) ? fcmSendOne(env, token, payload) : "error";
+}
+function pushConfigured(env) { return fcmConfigured(env) || apnsConfigured(env); }
 // Sends to every device token on a user's account, dropping any that come
 // back invalid (uninstalled app, expired token, etc.) so the list doesn't
 // grow stale forever. Best-effort: a send failure here must never break the
 // reminder/recap run it rode in on.
 async function fcmSendToUser(env, u, email, payload) {
-  if (!fcmConfigured(env) || !u || !Array.isArray(u.pushTokens) || !u.pushTokens.length) return { sent: 0 };
+  if (!pushConfigured(env) || !u || !Array.isArray(u.pushTokens) || !u.pushTokens.length) return { sent: 0 };
   let sent = 0;
   const keep = [];
   for (const token of u.pushTokens) {
     try {
-      const result = await fcmSendOne(env, token, payload);
+      const result = await pushSendOne(env, token, payload);
       if (result === "ok") { sent++; keep.push(token); }
       else if (result === "error") keep.push(token);   // transient — don't drop
       // "invalid" — drop silently (not pushed to `keep`)
@@ -2935,7 +3001,7 @@ async function runLockReminders(env, base, opts = {}) {
     const u = await getUser(env, email);
     const prefs = getNotifPrefs(u);
     const wantEmail = !alreadyEmailed && !(u && u.emailOptOut) && prefs.emailPickemReminders !== false;
-    const wantPush = !alreadyPushed && prefs.pushPickemReminders !== false && !!(u && Array.isArray(u.pushTokens) && u.pushTokens.length) && fcmConfigured(env);
+    const wantPush = !alreadyPushed && prefs.pushPickemReminders !== false && !!(u && Array.isArray(u.pushTokens) && u.pushTokens.length) && pushConfigured(env);
     if (!wantEmail && !wantPush) continue;
     targeted++;
     if (dry) continue;
@@ -2987,7 +3053,7 @@ async function runResultRecaps(env, base, opts = {}) {
       if (!score) continue;   // not graded for this user yet
       const prefs = getNotifPrefs(u);
       const wantEmail = !alreadyEmailed && !(u && u.emailOptOut) && prefs.emailPickemResults !== false;
-      const wantPush = !alreadyPushed && prefs.pushPickemResults !== false && !!(u && Array.isArray(u.pushTokens) && u.pushTokens.length) && fcmConfigured(env);
+      const wantPush = !alreadyPushed && prefs.pushPickemResults !== false && !!(u && Array.isArray(u.pushTokens) && u.pushTokens.length) && pushConfigured(env);
       if (!wantEmail && !wantPush) continue;
       targeted++;
       if (dry) continue;
@@ -3077,7 +3143,7 @@ async function runMissedNudges(env, base, opts = {}) {
 // since a user's bets don't share one settle time.
 async function runBetResultPushes(env, base, opts = {}) {
   const dry = !!opts.dry;
-  if (!fcmConfigured(env)) return { type: "betResults", skipped: "FCM not configured" };
+  if (!pushConfigured(env)) return { type: "betResults", skipped: "push not configured" };
   const [events, closing, keys] = await Promise.all([
     btLoadResultEvents(env, base), loadClosingOdds(env, base), listAllKeys(env, "bt:"),
   ]);
@@ -5005,6 +5071,22 @@ export default {
         u.pushTokens = tokens;
         await putUser(env, s.email, u);
         return json({ ok: true }, 200, cors);
+      }
+      // "Send a test notification" (App Settings): pushes one sample alert to the
+      // signed-in user's OWN registered devices so a tester can confirm the whole
+      // chain (permission -> token -> worker -> APNs/FCM) works end to end.
+      // Returns how many devices accepted it plus whether any provider is set up.
+      if (path === "/api/app/push-test" && request.method === "POST") {
+        const cors = appCorsHeaders(request);
+        const s = await readSession(request, env);
+        if (!s) return json({ error: "Not signed in" }, 401, cors);
+        const u = await getUser(env, s.email);
+        if (!u) return json({ error: "Not signed in" }, 401, cors);
+        const devices = Array.isArray(u.pushTokens) ? u.pushTokens.length : 0;
+        if (!pushConfigured(env)) return json({ ok: false, reason: "not_configured", devices }, 200, cors);
+        if (!devices) return json({ ok: false, reason: "no_devices", devices }, 200, cors);
+        const r = await fcmSendToUser(env, u, s.email, { title: "GillyLab", body: "Push notifications are working.", data: { type: "test" } });
+        return json({ ok: r.sent > 0, sent: r.sent, devices }, 200, cors);
       }
       if (path === "/api/app/push-token" && request.method === "DELETE") {
         const cors = appCorsHeaders(request);

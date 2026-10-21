@@ -237,6 +237,7 @@ window.GL_API = (function(){
     // and worker/index.js's /api/app/push-token. Token is the raw FCM/APNs
     // token string from the PushNotifications plugin's 'registration' event.
     registerPushToken: function(token){ return request('/api/app/push-token', { method:'POST', body:{ token:token } }); },
+    sendTestPush: function(){ return request('/api/app/push-test', { method:'POST' }); },
     unregisterPushToken: function(token){ return request('/api/app/push-token', { method:'DELETE', body:{ token:token } }); },
     // App -> web SSO handoff (see worker/index.js's handleAppWebHandoff) --
     // any button that opens an authenticated site page (Manage Subscription,
