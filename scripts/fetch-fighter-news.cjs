@@ -74,6 +74,23 @@ function isRetrospective(title) {
   return RETRO_RE.test(String(title || '')) && !STATUS_RE.test(String(title || ''));
 }
 
+// Two more false-positive shapes (UFC 333, Volkanovski/Evloev and Yan/Dvalishvili):
+//  1. "UFC 333 broadcast team: Paul Felder steps in for Joe Rogan for Volkanovski vs.
+//     Evloev" — "steps in" matched, but the person stepping in is a COMMENTATOR, not a
+//     fighter. Anything about the broadcast/commentary booth is never a bout change.
+//  2. "Sean O'Malley fears Petr Yan is making same injury mistake that cost him ..." —
+//     a third party's opinion/prediction that happens to contain the word "injury".
+//     Same logic as isRetrospective: an opinion verb with NO status language is not a
+//     fight in doubt (real withdrawals keep their STATUS_RE words and still flag).
+const BROADCAST_RE = /\b(?:broadcast(?:ers?| team| booth)?|commentary|commentators?|announcers?|play-by-play|color analyst|analysts?|cageside|joe rogan|jon anik|daniel cormier)\b/i;
+const OPINION_RE = /\b(?:fears?|feared|warns?|warned|predicts?|predicted|speculates?|speculated|believes?|suggests?|thinks?|expects?|worried|worries)\b/i;
+function isBroadcastNews(title) {
+  return BROADCAST_RE.test(String(title || ''));
+}
+function isOpinionOnly(title) {
+  return OPINION_RE.test(String(title || '')) && !STATUS_RE.test(String(title || ''));
+}
+
 function refersToPastEvent(title, eventNums) {
   if (!eventNums || !eventNums.size) return false;
   const found = String(title || '').match(/\bUFC\s+\d{2,4}\b/gi) || [];
@@ -209,6 +226,7 @@ function curate(items, now, eventNums, name) {
       date: isFinite(ts) ? new Date(ts).toISOString().slice(0, 10) : null,
       injury: INJURY_RE.test(it.title) && namesFighter(it.title, name) &&
               !refersToPastEvent(it.title, eventNums) && !isRetrospective(it.title) &&
+              !isBroadcastNews(it.title) && !isOpinionOnly(it.title) &&
               !aboutOtherBout(it.title)
     });
     if (out.length >= PER_FIGHTER) break;
@@ -286,5 +304,5 @@ async function main() {
   console.log(`fighter-news.json: ${ok}/${fighters.length} fighters with news · ${kept} items · ${injuries} injury-flagged`);
 }
 
-module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, isRetrospective, upcomingCardFighters, isProfilePage, namesFighter, aboutOtherBout };
+module.exports = { isBroadcastNews, isOpinionOnly, parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, isRetrospective, upcomingCardFighters, isProfilePage, namesFighter, aboutOtherBout };
 if (require.main === module) main();

@@ -90,5 +90,12 @@ check('"card suffers blow as fighter withdraws" does NOT flag the other marquee 
 check('"suffers blow as <named fighter> withdraws" still flags the named fighter',
   inj('Geoff Neal', 'UFC 330 suffers blow as Geoff Neal withdraws weeks out from card') === true);
 
-console.log('\n' + (fail ? '  ' + fail + ' FAILURE(S)' : '  all checks passed'));
+// UFC 333 false positives: broadcast-booth change and a third party's opinion
+check('broadcast-team "steps in" does NOT flag a bout',
+  inj('Movsar Evloev', 'UFC 330 broadcast team: Paul Felder steps in for Joe Rogan for Volkanovski vs. Evloev - Yahoo Sports') === false);
+check('opinion piece containing "injury" does NOT flag a bout',
+  inj('Merab Dvalishvili', "Sean O'Malley fears Petr Yan is making same injury mistake that cost him in Merab Dvalishvili rematch - Bloody Elbow") === false);
+check('real withdrawal still flags', inj('Merab Dvalishvili', 'Merab Dvalishvili withdraws from UFC 330 with injury - ESPN') === true);
+
+console.log('\n' + (fail ?  '  ' + fail + ' FAILURE(S)' : '  all checks passed'));
 process.exit(fail ? 1 : 0);
