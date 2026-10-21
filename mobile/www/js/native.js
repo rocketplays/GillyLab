@@ -19,6 +19,38 @@ window.GL_NATIVE = (function(){
   function plugins(){ return (window.Capacitor && window.Capacitor.Plugins) || {}; }
   function isNative(){ return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
 
+  // ── Upgrade/purchase links: US App Store storefront only ────────────────
+  // App Store guideline 3.1.1(a): outside the US storefront an iOS app may not
+  // show buttons/links/calls-to-action that lead to a purchase outside In-App
+  // Purchase. Our upgrade flow is an external Stripe checkout, so on iOS we
+  // hide EVERY upgrade/subscription-management control unless the device's
+  // App Store storefront is confirmed to be the US. FAIL CLOSED: the
+  // `gl-no-upgrade` class goes on <html> the moment this script loads and is
+  // only removed once the native Storefront plugin (ios/App/App/
+  // StorefrontPlugin.swift) reports "USA". If the plugin is missing or errors,
+  // upgrade controls simply stay hidden. Android and the plain-browser /m/
+  // preview are unchanged (no class). CSS in app.css does the hiding;
+  // router.js blocks the premium screen; see upgradeAllowed() below.
+  function isIOSNative(){
+    return isNative() && !!(window.Capacitor && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
+  }
+  function upgradeAllowed(){ return !document.documentElement.classList.contains('gl-no-upgrade'); }
+  function detectStorefront(){
+    if (!isIOSNative()) return;
+    document.documentElement.classList.add('gl-no-upgrade');
+    var SF = null;
+    try { SF = (window.Capacitor.registerPlugin ? window.Capacitor.registerPlugin('Storefront') : null) || plugins().Storefront; } catch(e){}
+    if (!SF || !SF.getCountry) return;
+    SF.getCountry().then(function(r){
+      var c = r && r.country ? String(r.country).toUpperCase() : '';
+      if (c === 'USA' || c === 'US'){
+        document.documentElement.classList.remove('gl-no-upgrade');
+        try { document.dispatchEvent(new Event('gl-upgrade-allowed')); } catch(e){}
+      }
+    }).catch(function(){});
+  }
+  detectStorefront();
+
   function init(){
     var P = plugins();
     if (P.StatusBar){
@@ -167,5 +199,5 @@ window.GL_NATIVE = (function(){
     });
   }
 
-  return { init: init, tap: tap, select: select, success: success, error: error, refresh: refresh, openExternal: openExternal, isNative: isNative, saveImage: saveImage };
+  return { init: init, tap: tap, select: select, success: success, error: error, refresh: refresh, openExternal: openExternal, isNative: isNative, upgradeAllowed: upgradeAllowed, saveImage: saveImage };
 })();

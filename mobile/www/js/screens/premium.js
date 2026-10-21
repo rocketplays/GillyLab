@@ -48,6 +48,7 @@ window.GL_ROUTER.register('premium', {
     // which is correct there -- /subscribe's own signup flow handles that
     // visitor fine on its own.
     var openCheckout = function(){
+      if (window.GL_NATIVE && window.GL_NATIVE.upgradeAllowed && !window.GL_NATIVE.upgradeAllowed()) return;
       window.GL_NATIVE.tap();
       window.GL_API.webHandoff('/subscribe').then(function(res){
         window.GL_NATIVE.openExternal(res && res.url ? res.url : window.GL_API.BASE + '/subscribe');

@@ -208,6 +208,7 @@ window.GL_ROUTER.register('account', {
 
       var portalBtn = container.querySelector('#portalBtn');
       if (portalBtn) portalBtn.addEventListener('click', function(){
+        if (window.GL_NATIVE && window.GL_NATIVE.upgradeAllowed && !window.GL_NATIVE.upgradeAllowed()) return;
         window.GL_NATIVE.tap();
         var fallback = function(){ window.GL_NATIVE.openExternal(window.GL_API.BASE + '/api/portal'); };
         window.GL_API.webHandoff('/api/portal').then(function(res){

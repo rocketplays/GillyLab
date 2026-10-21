@@ -45,7 +45,14 @@ Builds expire after 90 days.
 - [ ] App Privacy "nutrition labels" in App Store Connect (email address, user ID, usage data; no tracking)
 - [ ] Demo account for the reviewer (Pick'em is login-gated; Premium features need a subscribed demo account)
 - [ ] Screenshots (6.9" and 6.5" iPhone; iPad if iPad is enabled — the target is currently iPhone + iPad)
-- [ ] **Payments decision (App Review guideline 3.1.1):** "Go Premium" opens gillylab.com/subscribe in Safari
-  (Stripe). Apple permits external purchase links for US-storefront apps; for other storefronts it is a likely
-  rejection unless the link is hidden or In-App Purchase is used. Safest for review: hide the upgrade button
-  outside the US storefront, or ship the first build with premium purchase hidden and sign-in only for existing subscribers.
+- [x] **Payments (App Review guideline 3.1.1 / 3.1.1(a)):** "Go Premium" opens gillylab.com/subscribe (Stripe).
+  Apple allows external purchase links on the **US storefront only**, so on iOS every upgrade / "Go Premium" /
+  Manage Subscription control is hidden unless the device's App Store storefront is confirmed US
+  (`mobile/ios/App/App/StorefrontPlugin.swift` + `GL_NATIVE.upgradeAllowed()`, fail-closed: if the storefront
+  can't be read, the buttons stay hidden). Informational "what Premium unlocks" panels remain.
+  - **Verify in Xcode/TestFlight:** a US-storefront Apple ID should show Go Premium; any other storefront (or the
+    simulator with a non-US region) should show none. If a US device shows no upgrade buttons, the plugin isn't
+    registered -- check `MainViewController` is the storyboard's class and Xcode built the two new Swift files.
+  - Still advisable: set App Store Connect availability to the **United States only** for the first release
+    (guideline 3.1.3(b) is also strict about web-bought subscriptions in other storefronts without in-app purchase).
+  - Commission: currently 0% on US link-outs (court injunction); Apple proposed 15%/10%/5% on 2026-08-13 -- not in effect, check before launch.

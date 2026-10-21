@@ -2658,3 +2658,13 @@ body #mh-box .mh-hd, #cs-box .cs-hd{ padding-right:2.9rem; }
 .br-how-pts{ display:flex; flex-wrap:wrap; gap:.4rem .9rem; font-size:.78rem; color:var(--muted); border-top:1px solid var(--border); padding-top:.65rem; }
 .br-how-pts strong, .br-how-max strong{ color:var(--text); }
 .br-how-max{ margin-top:.3rem; font-size:.78rem; color:var(--muted); }
+
+/* Non-US iOS storefronts (and until the storefront is confirmed): no upgrade or
+   subscription-management controls anywhere -- App Store guideline 3.1.1(a).
+   html.gl-no-upgrade is managed by js/native.js (fail-closed). The informational
+   "what Premium unlocks" panels stay; only the calls-to-action go. */
+html.gl-no-upgrade [data-goto="premium"],
+html.gl-no-upgrade .gl-cta,
+html.gl-no-upgrade .acct-premium-box,
+html.gl-no-upgrade #goPremiumBtn,
+html.gl-no-upgrade #portalBtn{ display:none !important; }

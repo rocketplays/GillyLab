@@ -207,6 +207,9 @@ window.GL_ROUTER = (function(){
   }
 
   function go(name, params, opts){
+    // Upgrade screen is unreachable where purchase CTAs aren't allowed (non-US
+    // iOS storefront / not yet confirmed) -- see native.js upgradeAllowed().
+    if (name === 'premium' && window.GL_NATIVE && window.GL_NATIVE.upgradeAllowed && !window.GL_NATIVE.upgradeAllowed()) name = 'home';
     var screen = screens[name];
     if (!screen){ console.error('GL_ROUTER: unknown route', name); return; }
     opts = opts || {};
