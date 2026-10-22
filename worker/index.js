@@ -5034,6 +5034,39 @@ export default {
       // email + a bearer token, and the token's own `sub` claim is a
       // point-in-time snapshot from whenever it was last issued, not
       // something to trust for display). Session required.
+      // Beta-tester reward (see /admin/beta-feedback below). A member who said YES
+      // to the site's iOS-beta popup can send feedback from inside the app; that
+      // proves they installed the beta AND signed in. Nothing is credited here --
+      // it only queues the feedback and emails CONTACT_TO an approve link.
+      // GET -> {eligible, status}; POST {text} -> {ok, status:"pending"}.
+      if (path === "/api/app/beta-feedback" && (request.method === "GET" || request.method === "POST")) {
+        const cors = appCorsHeaders(request);
+        const sess = await readSession(request, env);
+        if (!sess) return json({ error: "Not signed in" }, 401, cors);
+        const em = String(sess.email).toLowerCase();
+        const usr = await getUser(env, em);
+        const invite = await env.ACTIVITY.get("betainvite:" + em, "json").catch(() => null);
+        const eligible = !!(usr && usr.subscribed && invite && invite.answer === "yes");
+        const fb = await env.ACTIVITY.get("betafeedback:" + em, "json").catch(() => null);
+        if (request.method === "GET") return json({ eligible, status: fb ? fb.status : null }, 200, cors);
+        if (!eligible) return json({ error: "Not eligible" }, 403, cors);
+        if (fb && fb.status !== "rejected") return json({ error: "Feedback already submitted", status: fb.status }, 409, cors);
+        const body = await readBody(request).catch(() => ({}));
+        const text = String((body && body.text) || "").trim();
+        if (text.length < 40) return json({ error: "Please write at least a couple of sentences (40+ characters)." }, 400, cors);
+        const tokBytes = crypto.getRandomValues(new Uint8Array(18));
+        const token = Array.from(tokBytes, (b) => b.toString(16).padStart(2, "0")).join("");
+        const rec = { email: em, text: text.slice(0, 4000), at: new Date().toISOString(), status: "pending", token };
+        await env.ACTIVITY.put("betafeedback:" + em, JSON.stringify(rec));
+        await env.ACTIVITY.put("betafeedbacktok:" + token, em);
+        try {
+          await sendEmail(env, CONTACT_TO, "GillyLab beta feedback from " + em + " (approve free month?)",
+            "<p><strong>" + escHtml(em) + "</strong> sent beta feedback from the iPhone app:</p>" +
+            "<blockquote style=\"margin:12px 0;padding:10px 14px;border-left:3px solid #00e668;white-space:pre-wrap\">" + escHtml(rec.text) + "</blockquote>" +
+            "<p><a href=\"" + env.SITE_URL + "/admin/beta-feedback?token=" + token + "\">Review and approve the free month</a> (you'll need to be signed in as admin).</p>");
+        } catch (e) { /* saved either way; it also shows up on the admin page */ }
+        return json({ ok: true, status: "pending" }, 200, cors);
+      }
       if (path === "/api/app/account" && request.method === "GET") {
         const cors = appCorsHeaders(request);
         const s = await readSession(request, env);
@@ -5614,6 +5647,65 @@ export default {
       // Internal, founder-only: model-performance scorecard. Requires a session
       // whose email is on the founder allow-list; not linked anywhere and never
       // shown to ordinary subscribers.
+      // Founder-only: review one beta-feedback submission and, on approve, credit the
+      // member one month (a negative Stripe customer-balance entry equal to the plan
+      // price -- it's applied to their next invoice, and unlike a coupon it never
+      // clobbers a partner/promo discount or trips isStripeComped's 100%-forever check).
+      if (path === "/admin/beta-feedback") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const token = String(url.searchParams.get("token") || "");
+        const em = token ? await env.ACTIVITY.get("betafeedbacktok:" + token) : null;
+        const fb = em ? await env.ACTIVITY.get("betafeedback:" + em, "json") : null;
+        if (!fb || fb.token !== token) return html(notePage("Not found", "That feedback link isn't valid."), 404);
+        const done = fb.status !== "pending";
+        const page = "<p><strong>" + escHtml(fb.email) + "</strong> &middot; " + escHtml(fb.at) + " &middot; status: <strong>" + escHtml(fb.status) + "</strong>" + (fb.note ? " (" + escHtml(fb.note) + ")" : "") + "</p>" +
+          "<blockquote style=\"white-space:pre-wrap;border-left:3px solid #00e668;padding:8px 14px\">" + escHtml(fb.text) + "</blockquote>" +
+          (done ? "" :
+            "<form method=\"POST\" action=\"/admin/beta-feedback/decide\" style=\"display:flex;gap:10px\"><input type=\"hidden\" name=\"token\" value=\"" + escHtml(token) + "\">" +
+            "<button name=\"action\" value=\"approve\" style=\"padding:10px 16px;font-weight:700\">Approve &amp; credit one month</button>" +
+            "<button name=\"action\" value=\"reject\" style=\"padding:10px 16px\">Reject</button></form>");
+        return html("<!doctype html><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Beta feedback</title>" +
+          "<body style=\"font:16px/1.5 -apple-system,system-ui,sans-serif;max-width:640px;margin:32px auto;padding:0 16px;background:#0a0a0b;color:#f0f0f0\"><h2>Beta feedback</h2>" + page + "</body>",
+          200, { "Cache-Control": "private, no-store" });
+      }
+      if (path === "/admin/beta-feedback/decide" && request.method === "POST") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const body = await readBody(request).catch(() => ({}));
+        const token = String(body.token || "");
+        const action = body.action === "approve" ? "approve" : (body.action === "reject" ? "reject" : null);
+        const em = token ? await env.ACTIVITY.get("betafeedbacktok:" + token) : null;
+        const fb = em ? await env.ACTIVITY.get("betafeedback:" + em, "json") : null;
+        if (!fb || fb.token !== token || !action) return html(notePage("Not found", "That feedback link isn't valid."), 404);
+        const back = env.SITE_URL + "/admin/beta-feedback?token=" + encodeURIComponent(token);
+        if (fb.status !== "pending") return redirect(back);
+        if (action === "reject") {
+          fb.status = "rejected"; fb.decidedAt = new Date().toISOString();
+          await env.ACTIVITY.put("betafeedback:" + em, JSON.stringify(fb));
+          return redirect(back);
+        }
+        // Approve: flip to "approving" first so a double-click can't credit twice.
+        fb.status = "approving";
+        await env.ACTIVITY.put("betafeedback:" + em, JSON.stringify(fb));
+        try {
+          const usr = await getUser(env, em);
+          if (!usr || !usr.subscribed) { fb.status = "approved"; fb.note = "no active subscription -- nothing to credit"; }
+          else if (usr.partnerComp || !usr.stripeCustomerId) { fb.status = "approved"; fb.note = "already comped (partner/no Stripe subscription) -- nothing to credit"; }
+          else {
+            const price = await stripe(env, "prices/" + env.STRIPE_PRICE_ID);
+            await stripe(env, "customers/" + usr.stripeCustomerId + "/balance_transactions", "POST", {
+              amount: -Math.abs(price.unit_amount || 0), currency: price.currency || "usd",
+              description: "GillyLab iOS beta tester -- one free month",
+            });
+            fb.status = "approved"; fb.note = "credited " + ((price.unit_amount || 0) / 100).toFixed(2) + " " + (price.currency || "usd").toUpperCase();
+          }
+          fb.decidedAt = new Date().toISOString();
+        } catch (e) {
+          fb.status = "pending"; fb.note = "credit failed: " + String(e && e.message || e).slice(0, 120);
+        }
+        await env.ACTIVITY.put("betafeedback:" + em, JSON.stringify(fb));
+        return redirect(back);
+      }
+
       if (path === "/scorecard") {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
         return html(scorecardPage(scorecardData), 200, { "Cache-Control": "private, no-store" });

@@ -65,6 +65,26 @@ window.GL_ROUTER.register('settings', {
       );
     }
 
+    // Beta-tester reward. Only rendered when the server says this account said YES to
+    // the site's beta popup (eligible) -- see worker /api/app/beta-feedback. Feedback
+    // is queued for approval; approval credits one free month on their next invoice.
+    function betaHTML(beta){
+      if (!beta || !beta.eligible) return '';
+      var body;
+      if (beta.status === 'pending' || beta.status === 'approving') {
+        body = '<p class="gl-muted" style="margin:0">Thanks for the feedback! We’re reviewing it, and your free month will be credited to your next invoice once it’s approved.</p>';
+      } else if (beta.status === 'approved') {
+        body = '<p class="gl-muted" style="margin:0">Approved. Your free month shows up as a credit on your next invoice. Thank you for testing!</p>';
+      } else {
+        body =
+          '<p class="gl-muted" style="margin:0 0 .6rem">Thanks for testing the beta. Tell us what you tried, what worked, and what didn’t. Send feedback and you’ll get a free month of Premium once we approve it.</p>' +
+          '<textarea id="betaText" rows="5" maxlength="4000" style="width:100%;box-sizing:border-box;padding:.6rem;border-radius:10px;border:1px solid var(--border,#2a2a32);background:transparent;color:inherit;font:inherit" placeholder="Your feedback (a few sentences)"></textarea>' +
+          '<button id="betaSend" class="gl-btn gl-btn-outline" style="margin-top:.7rem">Send feedback</button>' +
+          '<p id="betaMsg" class="gl-muted" style="margin:.4rem 0 0;min-height:1.2em"></p>';
+      }
+      return '<div class="gl-sec"><div class="gl-dash-head"><h2 class="gl-dash-title">Beta Tester Feedback</h2></div>' + body + '</div>';
+    }
+
     function supportHTML(isFirst){
       return (
         '<div class="gl-sec' + (isFirst ? ' gl-sec--first' : '') + '">' +
@@ -101,12 +121,13 @@ window.GL_ROUTER.register('settings', {
       );
     }
 
-    function render(prefs, subscribed, loggedIn){
+    function render(prefs, subscribed, loggedIn, beta){
       // supportHTML() picks up gl-sec--first when Notifications is absent
       // (logged out) so the first section on screen still gets the no-
       // top-border treatment instead of a stray line right under the title.
       container.innerHTML =
         (loggedIn ? notificationsHTML(subscribed) : '') +
+        (loggedIn ? betaHTML(beta) : '') +
         supportHTML(!loggedIn) +
         socialsHTML() +
         appInfoHTML();
@@ -141,6 +162,19 @@ window.GL_ROUTER.register('settings', {
           else if (r && r.reason === 'not_configured') msg.textContent = 'Push isn’t set up on the server yet.';
           else msg.textContent = 'Couldn’t deliver to your device(s). Check that notifications are allowed in iOS Settings.';
         }).catch(function(){ msg.textContent = 'Couldn’t reach the server.'; });
+      });
+
+      var betaSend = container.querySelector('#betaSend');
+      if (betaSend) betaSend.addEventListener('click', function(){
+        window.GL_NATIVE.tap();
+        var ta = container.querySelector('#betaText'), msg = container.querySelector('#betaMsg');
+        var text = (ta.value || '').trim();
+        if (text.length < 40) { msg.textContent = 'Please write at least a couple of sentences.'; return; }
+        betaSend.disabled = true; msg.textContent = 'Sending…';
+        window.GL_API.sendBetaFeedback(text).then(function(r){
+          if (r && r.ok) { ta.disabled = true; msg.textContent = 'Thank you! We’ll review it and credit your free month once it’s approved.'; }
+          else { betaSend.disabled = false; msg.textContent = (r && r.error) || 'Couldn’t send. Try again.'; }
+        }).catch(function(e){ betaSend.disabled = false; msg.textContent = (e && e.data && e.data.error) || 'Couldn’t reach the server.'; });
       });
 
       var contactBtn = container.querySelector('#contactBtn');
@@ -182,8 +216,9 @@ window.GL_ROUTER.register('settings', {
         Promise.all([
           window.GL_API.notificationPrefs().catch(function(){ return {}; }),
           window.GL_API.account().catch(function(){ return null; }),
+          window.GL_API.betaFeedbackStatus().catch(function(){ return null; }),
         ]).then(function(results){
-          render(results[0], !!(results[1] && results[1].subscribed), true);
+          render(results[0], !!(results[1] && results[1].subscribed), true, results[2]);
         });
       } else {
         render({}, false, false);

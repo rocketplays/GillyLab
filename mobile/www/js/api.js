@@ -222,6 +222,9 @@ window.GL_API = (function(){
     // Account screen -- see worker/index.js's /api/app/account,
     // /api/change-password, /api/delete-account.
     account: function(){ return request('/api/app/account'); },
+    // Beta-tester reward: {eligible, status} / submit {text} (worker /api/app/beta-feedback).
+    betaFeedbackStatus: function(){ return request('/api/app/beta-feedback'); },
+    sendBetaFeedback: function(text){ return request('/api/app/beta-feedback', { method:'POST', body:{ text:text } }); },
     changePassword: function(current, password){ return request('/api/change-password', { method:'POST', body:{ current:current, password:password } }); },
     deleteAccount: function(){ return request('/api/delete-account', { method:'POST' }); },
     // Settings screen notification preferences -- see worker/index.js's
