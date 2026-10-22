@@ -640,6 +640,35 @@ window.GL_ROUTER.register('home', {
           '</div>'
         ));
       wire();
+      applyBetaNudge();
+    }
+
+    // Slim, dismissible pointer to Settings > Beta Tester Feedback. Only for members
+    // the server marks eligible (said YES to the site's beta popup, subscribed) who
+    // haven't submitted feedback yet. Dismiss is remembered on the device.
+    var NUDGE_KEY = 'gl_beta_nudge_dismissed';
+    var betaStatusP = window.GL_AUTH.ready.then(function(){
+      return window.GL_AUTH.isLoggedIn() ? window.GL_API.betaFeedbackStatus().catch(function(){ return null; }) : null;
+    });
+    function applyBetaNudge(){
+      try { if (localStorage.getItem(NUDGE_KEY)) return; } catch (e) {}
+      betaStatusP.then(function(b){
+        if (!b || !b.eligible || (b.status && b.status !== 'rejected')) return;
+        if (container.querySelector('#betaNudge')) return;
+        var bar = document.createElement('div');
+        bar.id = 'betaNudge';
+        bar.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin:0 0 .75rem;padding:.5rem .7rem;border:1px solid var(--border);border-radius:10px;font-size:.8rem;line-height:1.35;color:var(--muted)';
+        bar.innerHTML =
+          '<span style="flex:1">Beta tester? Send feedback for a free month of Premium.</span>' +
+          '<button type="button" id="betaNudgeGo" style="background:none;border:0;padding:.25rem .3rem;color:var(--accent);font:inherit;font-weight:700;cursor:pointer">Send</button>' +
+          '<button type="button" id="betaNudgeX" aria-label="Dismiss" style="background:none;border:0;padding:.25rem .3rem;color:var(--muted);font:inherit;cursor:pointer">&times;</button>';
+        container.insertBefore(bar, container.firstChild);
+        bar.querySelector('#betaNudgeGo').addEventListener('click', function(){ window.GL_NATIVE.tap(); window.GL_ROUTER.go('settings'); });
+        bar.querySelector('#betaNudgeX').addEventListener('click', function(){
+          try { localStorage.setItem(NUDGE_KEY, '1'); } catch (e) {}
+          bar.remove();
+        });
+      });
     }
 
     window.GL_AUTH.ready.then(function(){
