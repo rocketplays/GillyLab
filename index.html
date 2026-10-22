@@ -151704,8 +151704,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 </div>
 <script>
 (function () {
+  // OFF until the build with the in-app feedback form is live on TestFlight (the popup
+  // promises a free month for feedback sent from that form). Flip to true to re-enable.
+  var ENABLED = false;
   var KEY = 'gl_beta_invite', el = document.getElementById('glBetaInvite');
-  if (!el) return;
+  if (!el || !ENABLED) return;
   function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function set(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
   function hide() { el.classList.remove('show'); }
