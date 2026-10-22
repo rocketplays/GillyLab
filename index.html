@@ -151704,18 +151704,34 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function set(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
   function hide() { el.classList.remove('show'); }
+  // Record the answer on the account (also emails support@gillylab.com); best effort.
+  function record(v) {
+    try {
+      fetch('/api/beta-invite', { method: 'POST', credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ answer: v }) }).catch(function () {});
+    } catch (e) {}
+  }
   var force = /[?&]betainvite=1\b/.test(location.search);
-  document.getElementById('gbiNo').onclick = function () { set('no'); hide(); };
+  document.getElementById('gbiNo').onclick = function () { set('no'); record('no'); hide(); };
   document.getElementById('gbiYes').onclick = function () {
-    set('yes');
+    set('yes'); record('yes');
     document.getElementById('gbiAsk').style.display = 'none';
     document.getElementById('gbiLink').style.display = '';
   };
   document.getElementById('gbiClose').onclick = hide;
   document.getElementById('gbiGo').addEventListener('click', function () { setTimeout(hide, 300); });
   el.addEventListener('click', function (e) { if (e.target === el && document.getElementById('gbiLink').style.display !== 'none') hide(); });
-  if (!force && get()) return;                       // already answered
-  setTimeout(function () { el.classList.add('show'); }, 2500);
+  function show() { setTimeout(function () { el.classList.add('show'); }, 2500); }
+  if (force) { show(); return; }
+  if (get()) return;                                 // answered in this browser
+  // Not answered here: ask the server whether this account already answered elsewhere.
+  fetch('/api/beta-invite', { credentials: 'same-origin' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) {
+      if (j && j.answer) { set(j.answer); return; }
+      show();
+    })
+    .catch(show);
 })();
 </script>
 </body>

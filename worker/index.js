@@ -3292,6 +3292,34 @@ export default {
         if (s) await logActivity(env, ctx, s.email, "climb_run");
         return new Response(null, { status: 204 });
       }
+      // iOS beta invite popup on the gated site (see index.html #glBetaInvite).
+      // GET -> {answer: "yes"|"no"|null} so the popup follows the account across
+      // devices; POST {answer} records it (session required, subscribed members
+      // only) and emails CONTACT_TO the first time a given answer is recorded.
+      // Stored in the ACTIVITY KV as betainvite:<email> (internal, never public).
+      if (path === "/api/beta-invite" && (request.method === "GET" || request.method === "POST")) {
+        const s = await readSession(request, env);
+        if (!s || !s.sub) return json({ error: "Not signed in" }, 401);
+        const key = "betainvite:" + String(s.email).toLowerCase();
+        let prev = null;
+        try { prev = await env.ACTIVITY.get(key, "json"); } catch (e) { prev = null; }
+        if (request.method === "GET") return json({ answer: prev ? prev.answer : null });
+        const body = await readBody(request).catch(() => ({}));
+        const answer = body && body.answer === "yes" ? "yes" : (body && body.answer === "no" ? "no" : null);
+        if (!answer) return json({ error: "answer must be yes or no" }, 400);
+        if (prev && prev.answer === answer) return json({ ok: true, answer, unchanged: true });
+        const rec = { email: s.email, answer, at: new Date().toISOString(), previous: prev ? prev.answer : null };
+        try { await env.ACTIVITY.put(key, JSON.stringify(rec)); } catch (e) { return json({ error: "Couldn't save" }, 500); }
+        try {
+          await sendEmail(env, CONTACT_TO,
+            "GillyLab beta invite — " + s.email + " said " + answer.toUpperCase(),
+            "<p><strong>" + escHtml(s.email) + "</strong> answered <strong>" + answer.toUpperCase() +
+            "</strong> to the iOS beta (TestFlight) invite on the site." +
+            (rec.previous ? " (Previously: " + escHtml(rec.previous) + ".)" : "") +
+            "</p><p style=\"color:#666\">" + escHtml(rec.at) + "</p>");
+        } catch (e) { /* notification is best-effort; the answer is already saved */ }
+        return json({ ok: true, answer });
+      }
       if (path === "/api/logout") return redirect(env.SITE_URL + "/", clearCookie());
       if (path === "/api/checkout" && request.method === "POST") return handleCheckout(request, env);
       if (path === "/api/checkout/success") return handleCheckoutSuccess(request, env, url);
