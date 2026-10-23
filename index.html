@@ -138138,6 +138138,455 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // by either of the two named methods. Placed after `method`, before
   // `roundProps`, to match the tab order in the UI.
   const MANUAL_PROP_ODDS = {
+    // UFC 333 (Oct 2026) — sourced from fightodds.io, current prices (fanduel/draftkings/betmgm/betonlineag/bovada).
+    // Method/double-chance/round props always fill in; ML and round totals only fill books missing on the live feed.
+    // Alex Volkanovski vs Movsar Evloev (UFC 333) -- fightodds.io, current prices
+    'evloev|volkanovski': {
+      rounds: 5,
+      method: {
+        fanduel:     { f1: { ko: 1000, sub: 1200, dec: 140 }, f2: { ko: 430, sub: 1900, dec: 250 } },
+        draftkings:  { f1: { ko: 1000, sub: 1200, dec: 125 }, f2: { ko: 450, sub: 2000, dec: 185 } },
+        betmgm:      { f1: { ko: 900, sub: 1200, dec: 125 }, f2: { ko: 400, sub: 1800, dec: 175 } },
+        betonlineag: { f1: { ko: 600, sub: 900, dec: 180 }, f2: { ko: 425, sub: 900, dec: 185 } },
+        bovada:      { f1: { ko: 700, sub: 1000, dec: 145 }, f2: { ko: 450, sub: 1800, dec: 190 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 105, koSub: 500, subDec: 115 }, f2: { koDec: -105, koSub: 340, subDec: 175 } },
+        draftkings:  { f1: { koDec: -110, koSub: 600, subDec: -105 }, f2: { koDec: 100, koSub: 380, subDec: 150 } },
+        betmgm:      { f1: { koSub: 550 }, f2: { koSub: 350 } },
+        betonlineag: { f1: { koDec: 125, subDec: 145 }, f2: { koDec: 110, subDec: 150 } },
+        bovada:      { f1: { koDec: 105, koSub: 430, subDec: 125 }, f2: { koDec: 105, koSub: 425, subDec: 145 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 2200, r2: 2200, r3: 2200, r4: 2700, r5: 3000 }, f2: { r1: 1400, r2: 1400, r3: 2000, r4: 2200, r5: 2500 } },
+        draftkings:  { f1: { r1: 2200, r2: 2500, r3: 2800, r4: 3000, r5: 3500 }, f2: { r1: 1400, r2: 1600, r3: 2000, r4: 2200, r5: 2500 } },
+        betmgm:      { f1: { r1: 1800, r2: 2200, r3: 3000, r4: 3500, r5: 4000 }, f2: { r1: 1250, r2: 1450, r3: 1800, r4: 2000, r5: 2500 } },
+        betonlineag: { f1: { r1: 1200, r2: 1400, r3: 1600, r4: 2000, r5: 2500 }, f2: { r1: 950, r2: 1100, r3: 1300, r4: 1600, r5: 2200 } },
+        bovada:      { f1: { r1: 2200, r2: 2200, r3: 2500, r4: 2500, r5: 2800 }, f2: { r1: 1500, r2: 1600, r3: 1700, r4: 1800, r5: 2000 } },
+      },
+      totals: {
+        '4.5': {
+          fanduel:     { over: -260, under: 192 },
+        },
+      },
+    },
+    // Petr Yan vs Merab Dvalishvili (UFC 333) -- fightodds.io, current prices
+    'dvalishvili|yan': {
+      rounds: 5,
+      method: {
+        fanduel:     { f1: { ko: 1600, sub: 1300, dec: 210 }, f2: { ko: 460, sub: 3000, dec: 105 } },
+        draftkings:  { f1: { ko: 1200, sub: 1600, dec: 165 }, f2: { ko: 400, sub: 2200, dec: 130 } },
+        betmgm:      { f1: { ko: 950, sub: 1500, dec: 175 }, f2: { ko: 350, sub: 2000, dec: 125 } },
+        betonlineag: { f1: { ko: 1100, sub: 1800, dec: 185 }, f2: { ko: 285, sub: 2000, dec: 125 } },
+        bovada:      { f1: { ko: 1000, sub: 1800, dec: 210 }, f2: { ko: 350, sub: 1800, dec: 110 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 140, koSub: 700, subDec: 135 }, f2: { koDec: -150, koSub: 390, subDec: 120 } },
+        draftkings:  { f1: { koDec: 130, koSub: 750, subDec: 135 }, f2: { koDec: -140, koSub: 350, subDec: 110 } },
+        betmgm:      { f1: { koSub: 850 }, f2: { koSub: 325 } },
+        betonlineag: { f1: { koDec: 150, subDec: 170 }, f2: { koDec: -150, subDec: 115 } },
+        bovada:      { f1: { koDec: 140, koSub: 800, subDec: 130 }, f2: { koDec: -130, koSub: 350, subDec: 130 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 2700, r2: 3000, r3: 3000, r4: 3500, r5: 4000 }, f2: { r1: 1700, r2: 2000, r3: 2200, r4: 2200, r5: 2700 } },
+        draftkings:  { f1: { r1: 4000, r2: 3500, r3: 3500, r4: 3500, r5: 3000 }, f2: { r1: 1000, r2: 1400, r3: 2000, r4: 2500, r5: 2800 } },
+        betmgm:      { f1: { r1: 2000, r2: 3300, r3: 4000, r4: 4500, r5: 5000 }, f2: { r1: 1000, r2: 1400, r3: 2000, r4: 2500, r5: 3300 } },
+        betonlineag: { f1: { r1: 3200, r2: 3700, r3: 4400, r4: 4900, r5: 5400 }, f2: { r1: 900, r2: 1000, r3: 1250, r4: 1500, r5: 1800 } },
+        bovada:      { f1: { r1: 2500, r2: 2500, r3: 2500, r4: 2800, r5: 3300 }, f2: { r1: 1700, r2: 1800, r3: 1800, r4: 2000, r5: 2200 } },
+      },
+      totals: {
+        '4.5': {
+          fanduel:     { over: -280, under: 205 },
+        },
+      },
+    },
+    // Lone'er Kavanagh vs Ramazonbek Temirov (UFC 333) -- fightodds.io, current prices
+    'kavanagh|temirov': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -105, f2: -115 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 350, sub: 1900, dec: 240 }, f2: { ko: 200, sub: 2000, dec: 420 } },
+        draftkings:  { f1: { ko: 380, sub: 1800, dec: 200 }, f2: { ko: 185, sub: 2000, dec: 400 } },
+        betmgm:      { f1: { ko: 300, sub: 1700, dec: 225 }, f2: { ko: 175, sub: 1900, dec: 400 } },
+        betonlineag: { f1: { ko: 450, sub: 900, dec: 210 }, f2: { ko: 160, sub: 2000, dec: 400 } },
+        bovada:      { f1: { ko: 400, sub: 800, dec: 220 }, f2: { ko: 175, sub: 2000, dec: 450 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: -105, koSub: 280, subDec: 200 }, f2: { koDec: -110, koSub: 170, subDec: 340 } },
+        draftkings:  { f1: { koDec: -105, koSub: 330, subDec: 165 }, f2: { koDec: -105, koSub: 175, subDec: 300 } },
+        betmgm:      { f1: { koSub: 275 }, f2: { koSub: 150 } },
+        betonlineag: { f1: { koDec: 150, subDec: 185 }, f2: { koDec: 110, subDec: 250 } },
+        bovada:      { f1: { koDec: 115, koSub: 265, subDec: 165 }, f2: { koDec: 105, koSub: 175, subDec: 325 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 650, r2: 1100, r3: 1600 }, f2: { r1: 450, r2: 700, r3: 1100 } },
+        draftkings:  { f1: { r1: 650, r2: 900, r3: 1600 }, f2: { r1: 400, r2: 600, r3: 900 } },
+        betmgm:      { f1: { r1: 600, r2: 850, r3: 1400 }, f2: { r1: 175, r2: 400, r3: 625 } },
+        betonlineag: { f1: { r1: 750, r2: 950, r3: 1500 }, f2: { r1: 350, r2: 500, r3: 850 } },
+        bovada:      { f1: { r1: 650, r2: 1000, r3: 1600 }, f2: { r1: 425, r2: 625, r3: 1000 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -108, under: -112 },
+          betmgm:      { over: -125, under: -105 },
+        },
+      },
+    },
+    // Alexander Volkov vs Rizvan Kuniev (UFC 333) -- fightodds.io, current prices
+    'kuniev|volkov': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 550, sub: 1700, dec: 195 }, f2: { ko: 410, sub: 2200, dec: 185 } },
+        draftkings:  { f1: { ko: 550, sub: 1600, dec: 180 }, f2: { ko: 350, sub: 2000, dec: 175 } },
+        betmgm:      { f1: { ko: 500, sub: 1600, dec: 175 }, f2: { ko: 350, sub: 1800, dec: 175 } },
+        betonlineag: { f1: { ko: 400, sub: 2200, dec: 180 }, f2: { ko: 400, sub: 2200, dec: 155 } },
+        bovada:      { f1: { ko: 500, sub: 2200, dec: 205 }, f2: { ko: 350, sub: 2200, dec: 185 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 105, koSub: 440, subDec: 160 }, f2: { koDec: -120, koSub: 340, subDec: 160 } },
+        draftkings:  { f1: { koDec: 110, koSub: 450, subDec: 140 }, f2: { koDec: -120, koSub: 320, subDec: 145 } },
+        betmgm:      { f1: { koSub: 450 }, f2: { koSub: 325 } },
+        betonlineag: { f1: { koDec: 120, subDec: 160 }, f2: { koDec: 100, subDec: 145 } },
+        bovada:      { f1: { koDec: 115, koSub: 385, subDec: 175 }, f2: { koDec: -105, koSub: 335, subDec: 145 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1000, r2: 1400, r3: 2200 }, f2: { r1: 750, r2: 1200, r3: 1800 } },
+        draftkings:  { f1: { r1: 900, r2: 1200, r3: 1800 }, f2: { r1: 650, r2: 900, r3: 1400 } },
+        betmgm:      { f1: { r1: 850, r2: 1300, r3: 1800 }, f2: { r1: 650, r2: 1000, r3: 1600 } },
+        betonlineag: { f1: { r1: 800, r2: 1000, r3: 1400 }, f2: { r1: 800, r2: 1000, r3: 1400 } },
+        bovada:      { f1: { r1: 900, r2: 1200, r3: 1700 }, f2: { r1: 750, r2: 1000, r3: 1400 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -235, under: 190 },
+        },
+      },
+    },
+    // Aaron Pico vs Losene Keita (UFC 333) -- fightodds.io, current prices
+    'keita|pico': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 230, sub: 2700, dec: 500 }, f2: { ko: 230, sub: 900, dec: 310 } },
+        draftkings:  { f1: { ko: 215, sub: 2500, dec: 550 }, f2: { ko: 215, sub: 800, dec: 300 } },
+        betmgm:      { f1: { ko: 225, sub: 2500, dec: 450 }, f2: { ko: 175, sub: 800, dec: 300 } },
+        betonlineag: { f1: { ko: 200, sub: 2500, dec: 450 }, f2: { ko: 230, sub: 800, dec: 235 } },
+        bovada:      { f1: { ko: 215, sub: 2500, dec: 550 }, f2: { ko: 225, sub: 900, dec: 250 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 120, koSub: 200, subDec: 460 }, f2: { koDec: -115, koSub: 160, subDec: 200 } },
+        draftkings:  { f1: { koDec: 125, koSub: 200, subDec: 425 }, f2: { koDec: -125, koSub: 150, subDec: 185 } },
+        betmgm:      { f1: { koSub: 200 }, f2: { koSub: 150 } },
+        betonlineag: { f1: { koDec: 110, subDec: 375 }, f2: { koDec: 125, subDec: 200 } },
+        bovada:      { f1: { koDec: 115, koSub: 200, subDec: 350 }, f2: { koDec: -115, koSub: 175, subDec: 200 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 500, r2: 850, r3: 1100 }, f2: { r1: 420, r2: 650, r3: 1200 } },
+        draftkings:  { f1: { r1: 400, r2: 650, r3: 1200 }, f2: { r1: 350, r2: 550, r3: 1000 } },
+        betmgm:      { f1: { r1: 425, r2: 725, r3: 1300 }, f2: { r1: 275, r2: 500, r3: 900 } },
+        betonlineag: { f1: { r1: 325, r2: 475, r3: 1100 }, f2: { r1: 600, r2: 600, r3: 1500 } },
+        bovada:      { f1: { r1: 450, r2: 650, r3: 1100 }, f2: { r1: 475, r2: 700, r3: 1200 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 124, under: -150 },
+          betmgm:      { over: 125, under: -170 },
+        },
+      },
+    },
+    // Azamat Murzakanov vs Dominick Reyes (UFC 333) -- fightodds.io, current prices
+    'murzakanov|reyes': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: -120, sub: 2000, dec: 550 }, f2: { ko: 320, sub: 1700, dec: 800 } },
+        draftkings:  { f1: { ko: -125, sub: 1800, dec: 500 }, f2: { ko: 300, sub: 1800, dec: 800 } },
+        betmgm:      { f1: { ko: -135, sub: 1600, dec: 500 }, f2: { ko: 300, sub: 1800, dec: 800 } },
+        betonlineag: { f1: { ko: -140, sub: 2000, dec: 450 }, f2: { ko: 300, sub: 2000, dec: 675 } },
+        bovada:      { f1: { ko: -125, sub: 1800, dec: 575 }, f2: { ko: 300, sub: 1800, dec: 750 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: -210, koSub: -145, subDec: 470 }, f2: { koDec: 200, koSub: 250, subDec: 600 } },
+        draftkings:  { f1: { koDec: -200, koSub: -130, subDec: 350 }, f2: { koDec: 195, koSub: 275, subDec: 500 } },
+        betmgm:      { f1: { koSub: -140 }, f2: { koSub: 250 } },
+        betonlineag: { f1: { koDec: -200, subDec: 375 }, f2: { koDec: 200, subDec: 350 } },
+        bovada:      { f1: { koDec: -200, koSub: -130, subDec: 350 }, f2: { koDec: 195, koSub: 275, subDec: 500 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 185, r2: 490, r3: 1100 }, f2: { r1: 600, r2: 1000, r3: 1600 } },
+        draftkings:  { f1: { r1: 175, r2: 450, r3: 1000 }, f2: { r1: 550, r2: 850, r3: 1400 } },
+        betmgm:      { f1: { r1: 125, r2: 450, r3: 1050 }, f2: { r1: 375, r2: 1050, r3: 2200 } },
+        betonlineag: { f1: { r1: 170, r2: 375, r3: 1100 }, f2: { r1: 600, r2: 825, r3: 1500 } },
+        bovada:      { f1: { r1: 205, r2: 400, r3: 850 }, f2: { r1: 525, r2: 1000, r3: 1800 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: 112, under: -136 },
+          betmgm:      { over: 100, under: -135 },
+        },
+      },
+    },
+    // Nikita Krylov vs Abdulrakhman Yakhyaev (UFC 333) -- fightodds.io, current prices
+    'krylov|yakhyaev': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 400, f2: -550 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 700, sub: 1200, dec: 1600 }, f2: { ko: -130, sub: 300, dec: 1200 } },
+        draftkings:  { f1: { ko: 750, sub: 1400, dec: 1600 }, f2: { ko: -130, sub: 225, dec: 1000 } },
+        betmgm:      { f1: { ko: 750, sub: 1400, dec: 1600 }, f2: { ko: -150, sub: 225, dec: 1000 } },
+        betonlineag: { f1: { ko: 700, sub: 1200, dec: 1800 }, f2: { ko: -140, sub: 220, dec: 1000 } },
+        bovada:      { f1: { ko: 750, sub: 1400, dec: 1700 }, f2: { ko: -130, sub: 225, dec: 1100 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 500, koSub: 480, subDec: 750 }, f2: { koDec: -170, koSub: -360, subDec: 220 } },
+        draftkings:  { f1: { koDec: 550, koSub: 500, subDec: 750 }, f2: { koDec: -175, koSub: -400, subDec: 165 } },
+        betmgm:      { f1: { koSub: 450 }, f2: { koSub: -425 } },
+        betonlineag: { f1: { koDec: 450, subDec: 650 }, f2: { koDec: -350, subDec: 115 } },
+        bovada:      { f1: { koDec: 550, koSub: 500, subDec: 750 }, f2: { koDec: -175, koSub: -400, subDec: 165 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1000, r2: 1600, r3: 2700 }, f2: { r1: -135, r2: 400, r3: 1700 } },
+        draftkings:  { f1: { r1: 850, r2: 1600, r3: 2800 }, f2: { r1: -160, r2: 450, r3: 1200 } },
+        betmgm:      { f1: { r1: 525, r2: 2000, r3: 2800 }, f2: { r1: -300, r2: 450, r3: 2000 } },
+        betonlineag: { f1: { r1: 800, r2: 1400, r3: 2500 }, f2: { r1: -210, r2: 400, r3: 1800 } },
+        bovada:      { f1: { r1: 1000, r2: 1500, r3: 2500 }, f2: { r1: -152, r2: 375, r3: 1600 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: 220, under: -280 },
+          betmgm:      { over: 210, under: -300 },
+        },
+      },
+    },
+    // Abusupyian Magomedov vs Cam Rowston (UFC 333) -- fightodds.io, current prices
+    'magomedov|rowston': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -135, f2: 110 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 340, sub: 500, dec: 350 }, f2: { ko: 420, sub: 550, dec: 430 } },
+        draftkings:  { f1: { ko: 275, sub: 450, dec: 350 }, f2: { ko: 380, sub: 600, dec: 400 } },
+        betmgm:      { f1: { ko: 275, sub: 450, dec: 350 }, f2: { ko: 350, sub: 600, dec: 400 } },
+        betonlineag: { f1: { ko: 300, sub: 500, dec: 300 }, f2: { ko: 350, sub: 600, dec: 375 } },
+        bovada:      { f1: { ko: 275, sub: 450, dec: 325 }, f2: { ko: 380, sub: 900, dec: 400 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 125, koSub: 160, subDec: 165 }, f2: { koDec: 170, koSub: 200, subDec: 210 } },
+        draftkings:  { f1: { koDec: 110, koSub: 150, subDec: 160 }, f2: { koDec: 150, koSub: 215, subDec: 225 } },
+        betmgm:      { f1: { koSub: 150 }, f2: { koSub: 200 } },
+        betonlineag: { f1: { koDec: 115, subDec: 145 }, f2: { koDec: 120, subDec: 160 } },
+        bovada:      { f1: { koDec: 110, koSub: 150, subDec: 155 }, f2: { koDec: 150, koSub: 215, subDec: 195 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 470, r2: 650, r3: 1000 }, f2: { r1: 550, r2: 750, r3: 1300 } },
+        draftkings:  { f1: { r1: 330, r2: 600, r3: 1000 }, f2: { r1: 550, r2: 650, r3: 900 } },
+        betmgm:      { f1: { r1: 350, r2: 525, r3: 950 }, f2: { r1: 450, r2: 700, r3: 1150 } },
+        betonlineag: { f1: { r1: 475, r2: 675, r3: 1000 }, f2: { r1: 500, r2: 525, r3: 800 } },
+        bovada:      { f1: { r1: 425, r2: 625, r3: 1000 }, f2: { r1: 475, r2: 700, r3: 1100 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 118, under: -144 },
+          betmgm:      { over: 110, under: -150 },
+        },
+      },
+    },
+    // Grant Dawson vs Nurullo Aliev (UFC 333) -- fightodds.io, current prices
+    'aliev|dawson': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 490, sub: 2200, dec: 200 }, f2: { ko: 1000, sub: 500, dec: 190 } },
+        draftkings:  { f1: { ko: 450, sub: 2000, dec: 180 }, f2: { ko: 1000, sub: 500, dec: 175 } },
+        betmgm:      { f1: { ko: 450, sub: 2000, dec: 175 }, f2: { ko: 900, sub: 400, dec: 175 } },
+        betonlineag: { f1: { ko: 450, sub: 2000, dec: 175 }, f2: { ko: 1000, sub: 400, dec: 180 } },
+        bovada:      { f1: { ko: 450, sub: 2000, dec: 190 }, f2: { ko: 1000, sub: 500, dec: 175 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 100, koSub: 410, subDec: 175 }, f2: { koDec: 135, koSub: 340, subDec: 100 } },
+        draftkings:  { f1: { koDec: 105, koSub: 400, subDec: 150 }, f2: { koDec: 125, koSub: 350, subDec: -105 } },
+        betmgm:      { f1: { koSub: 400 }, f2: { koSub: 350 } },
+        betonlineag: { f1: { koDec: 110, subDec: 150 }, f2: { koDec: 130, subDec: 115 } },
+        bovada:      { f1: { koDec: 100, koSub: 400, subDec: 145 }, f2: { koDec: 125, koSub: 350, subDec: -105 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 950, r2: 1400, r3: 1900 }, f2: { r1: 850, r2: 1200, r3: 1600 } },
+        draftkings:  { f1: { r1: 850, r2: 1100, r3: 1600 }, f2: { r1: 750, r2: 1000, r3: 1400 } },
+        betmgm:      { f1: { r1: 900, r2: 1300, r3: 2200 }, f2: { r1: 675, r2: 1000, r3: 1500 } },
+        betonlineag: { f1: { r1: 800, r2: 1100, r3: 1300 }, f2: { r1: 850, r2: 900, r3: 925 } },
+        bovada:      { f1: { r1: 850, r2: 1300, r3: 2000 }, f2: { r1: 750, r2: 1100, r3: 1700 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -235, under: 188 },
+        },
+      },
+    },
+    // Asaf Chopurov vs Colby Thicknesse (UFC 333) -- fightodds.io, current prices
+    'chopurov|thicknesse': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 170, sub: 300, dec: 250 }, f2: { ko: 1500, sub: 1100, dec: 950 } },
+        draftkings:  { f1: { ko: 150, sub: 250, dec: 225 }, f2: { ko: 1800, sub: 1200, dec: 900 } },
+        betmgm:      { f1: { ko: 125, sub: 250, dec: 225 }, f2: { ko: 1800, sub: 1200, dec: 900 } },
+        betonlineag: { f1: { ko: 150, sub: 220, dec: 225 }, f2: { ko: 2500, sub: 1200, dec: 850 } },
+        bovada:      { f1: { ko: 150, sub: 250, dec: 235 }, f2: { ko: 1800, sub: 1200, dec: 850 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: -180, koSub: -160, subDec: -115 }, f2: { koDec: 650, koSub: 700, subDec: 550 } },
+        draftkings:  { f1: { koDec: -215, koSub: -150, subDec: -140 }, f2: { koDec: 600, koSub: 800, subDec: 500 } },
+        betmgm:      { f1: { koSub: -160 }, f2: { koSub: 750 } },
+        betonlineag: { f1: { koDec: -250, subDec: -200 }, f2: { koDec: 600, subDec: 500 } },
+        bovada:      { f1: { koDec: -215, koSub: -150, subDec: -140 }, f2: { koDec: 600, koSub: 800, subDec: 500 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 230, r2: 400, r3: 650 }, f2: { r1: 1500, r2: 2200, r3: 3000 } },
+        draftkings:  { f1: { r1: 215, r2: 350, r3: 600 }, f2: { r1: 1600, r2: 2200, r3: 2800 } },
+        betmgm:      { f1: { r1: 200, r2: 350, r3: 600 }, f2: { r1: 1600, r2: 2200, r3: 2800 } },
+        betonlineag: { f1: { r1: 150, r2: 325, r3: 625 }, f2: { r1: 2000, r2: 3000, r3: 4000 } },
+        bovada:      { f1: { r1: 210, r2: 350, r3: 650 }, f2: { r1: 1600, r2: 2500, r3: 3300 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -152, under: 126 },
+        },
+        '2.5': {
+          betmgm:      { over: 125, under: -165 },
+        },
+      },
+    },
+    // Abubakar Vagaev vs Jacob Malkoun (UFC 333) -- fightodds.io, current prices
+    'malkoun|vagaev': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 650, sub: 2000, dec: 240 }, f2: { ko: 600, sub: 2200, dec: 110 } },
+        draftkings:  { f1: { ko: 600, sub: 2000, dec: 240 }, f2: { ko: 550, sub: 2000, dec: 100 } },
+        betmgm:      { f1: { ko: 550, sub: 2000, dec: 225 }, f2: { ko: 475, sub: 1800, dec: 100 } },
+        betonlineag: { f1: { ko: 550, sub: 2000, dec: 200 }, f2: { ko: 550, sub: 2000, dec: 100 } },
+        bovada:      { f1: { ko: 600, sub: 2000, dec: 250 }, f2: { ko: 550, sub: 2000, dec: 110 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 140, koSub: 500, subDec: 200 }, f2: { koDec: -160, koSub: 500, subDec: -110 } },
+        draftkings:  { f1: { koDec: 140, koSub: 500, subDec: 195 }, f2: { koDec: -155, koSub: 450, subDec: -120 } },
+        betmgm:      { f1: { koSub: 500 }, f2: { koSub: 450 } },
+        betonlineag: { f1: { koDec: 160, subDec: 175 }, f2: { koDec: -150, subDec: -125 } },
+        bovada:      { f1: { koDec: 140, koSub: 500, subDec: 195 }, f2: { koDec: -155, koSub: 450, subDec: -120 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1100, r2: 1600, r3: 2200 }, f2: { r1: 1100, r2: 1600, r3: 2200 } },
+        draftkings:  { f1: { r1: 900, r2: 1400, r3: 2000 }, f2: { r1: 900, r2: 1200, r3: 1800 } },
+        betmgm:      { f1: { r1: 900, r2: 1400, r3: 2000 }, f2: { r1: 900, r2: 1200, r3: 1800 } },
+        betonlineag: { f1: { r1: 1000, r2: 1200, r3: 1600 }, f2: { r1: 1000, r2: 1200, r3: 1600 } },
+        bovada:      { f1: { r1: 1100, r2: 1400, r3: 1800 }, f2: { r1: 1000, r2: 1200, r3: 1600 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -340, under: 260 },
+        },
+      },
+    },
+    // Bolaji Oki vs Daniel Santos (UFC 333) -- fightodds.io, current prices
+    'oki|santos': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 220, sub: 1800, dec: 470 }, f2: { ko: 350, sub: 470, dec: 390 } },
+        draftkings:  { f1: { ko: 200, sub: 2000, dec: 450 }, f2: { ko: 330, sub: 450, dec: 350 } },
+        betmgm:      { f1: { ko: 200, sub: 2000, dec: 450 }, f2: { ko: 300, sub: 400, dec: 350 } },
+        betonlineag: { f1: { ko: 250, sub: 2800, dec: 350 }, f2: { ko: 300, sub: 450, dec: 275 } },
+        bovada:      { f1: { ko: 200, sub: 2000, dec: 400 }, f2: { ko: 330, sub: 450, dec: 400 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 105, koSub: 180, subDec: 370 }, f2: { koDec: 140, koSub: 160, subDec: 175 } },
+        draftkings:  { f1: { koDec: 105, koSub: 180, subDec: 340 }, f2: { koDec: 125, koSub: 175, subDec: 180 } },
+        betmgm:      { f1: { koSub: 175 }, f2: { koSub: 150 } },
+        betonlineag: { f1: { koDec: 125, subDec: 300 }, f2: { koDec: 150, subDec: 175 } },
+        bovada:      { f1: { koDec: 105, koSub: 180, subDec: 340 }, f2: { koDec: 125, koSub: 175, subDec: 180 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 470, r2: 700, r3: 1300 }, f2: { r1: 410, r2: 700, r3: 1100 } },
+        draftkings:  { f1: { r1: 330, r2: 700, r3: 1200 }, f2: { r1: 350, r2: 650, r3: 1100 } },
+        betmgm:      { f1: { r1: 325, r2: 700, r3: 1200 }, f2: { r1: 350, r2: 650, r3: 1100 } },
+        betonlineag: { f1: { r1: 375, r2: 800, r3: 1600 }, f2: { r1: 450, r2: 600, r3: 950 } },
+        bovada:      { f1: { r1: 450, r2: 750, r3: 1300 }, f2: { r1: 375, r2: 600, r3: 1100 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -148, under: 122 },
+        },
+        '2.5': {
+          betmgm:      { over: 130, under: -170 },
+        },
+      },
+    },
+    // Kody Steele vs Noah Gugnon (UFC 333) -- fightodds.io, current prices
+    'gugnon|steele': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 440, sub: 750, dec: 460 }, f2: { ko: 350, sub: 290, dec: 440 } },
+        draftkings:  { f1: { ko: 400, sub: 800, dec: 400 }, f2: { ko: 275, sub: 300, dec: 400 } },
+        betmgm:      { f1: { ko: 400, sub: 800, dec: 400 }, f2: { ko: 250, sub: 300, dec: 400 } },
+        betonlineag: { f1: { ko: 400, sub: 800, dec: 500 }, f2: { ko: 325, sub: 225, dec: 350 } },
+        bovada:      { f1: { ko: 400, sub: 800, dec: 450 }, f2: { ko: 275, sub: 300, dec: 400 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 185, koSub: 250, subDec: 260 }, f2: { koDec: 150, koSub: 110, subDec: 130 } },
+        draftkings:  { f1: { koDec: 165, koSub: 275, subDec: 225 }, f2: { koDec: 125, koSub: 120, subDec: 130 } },
+        betmgm:      { f1: { koSub: 275 }, f2: { koSub: 100 } },
+        betonlineag: { f1: { koDec: 225, subDec: 250 }, f2: { koDec: 165, subDec: 145 } },
+        bovada:      { f1: { koDec: 165, koSub: 275, subDec: 225 }, f2: { koDec: 125, koSub: 120, subDec: 130 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 650, r2: 900, r3: 1600 }, f2: { r1: 340, r2: 500, r3: 950 } },
+        draftkings:  { f1: { r1: 550, r2: 850, r3: 1400 }, f2: { r1: 275, r2: 450, r3: 900 } },
+        betmgm:      { f1: { r1: 550, r2: 850, r3: 1400 }, f2: { r1: 275, r2: 450, r3: 900 } },
+        betonlineag: { f1: { r1: 550, r2: 650, r3: 1000 }, f2: { r1: 325, r2: 450, r3: 850 } },
+        bovada:      { f1: { r1: 575, r2: 850, r3: 1400 }, f2: { r1: 325, r2: 500, r3: 850 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -146, under: 120 },
+        },
+        '2.5': {
+          betmgm:      { over: 130, under: -170 },
+        },
+      },
+    },
+    // Iasmin Lucindo vs Nicolle Caliari (UFC 333) -- fightodds.io, current prices
+    'caliari|lucindo': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: 284, f2: -350 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 1700, sub: 1000, dec: 500 }, f2: { ko: 550, sub: 750, dec: -135 } },
+        draftkings:  { f1: { ko: 1800, sub: 1400, dec: 500 }, f2: { ko: 450, sub: 700, dec: -150 } },
+        betmgm:      { f1: { ko: 1800, sub: 1400, dec: 500 }, f2: { ko: 350, sub: 700, dec: -150 } },
+        betonlineag: { f1: { ko: 1400, sub: 1000, dec: 400 }, f2: { ko: 500, sub: 800, dec: -155 } },
+        bovada:      { f1: { ko: 1800, sub: 1400, dec: 525 }, f2: { ko: 450, sub: 700, dec: -150 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koDec: 410, koSub: 700, subDec: 340 }, f2: { koDec: -240, koSub: 310, subDec: -210 } },
+        draftkings:  { f1: { koDec: 350, koSub: 800, subDec: 330 }, f2: { koDec: -330, koSub: 275, subDec: -250 } },
+        betmgm:      { f1: { koSub: 800 }, f2: { koSub: 275 } },
+        betonlineag: { f1: { koDec: 350, subDec: 325 }, f2: { koDec: -250, subDec: -200 } },
+        bovada:      { f1: { koDec: 350, koSub: 800, subDec: 330 }, f2: { koDec: -330, koSub: 275, subDec: -250 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1500, r2: 2200, r3: 2700 }, f2: { r1: 850, r2: 1000, r3: 1400 } },
+        draftkings:  { f1: { r1: 1800, r2: 2200, r3: 2800 }, f2: { r1: 600, r2: 850, r3: 1200 } },
+        betmgm:      { f1: { r1: 1800, r2: 2200, r3: 2800 }, f2: { r1: 600, r2: 850, r3: 1200 } },
+        betonlineag: { f1: { r1: 1400, r2: 1600, r3: 2200 }, f2: { r1: 700, r2: 850, r3: 1100 } },
+        bovada:      { f1: { r1: 1600, r2: 2000, r3: 2800 }, f2: { r1: 700, r2: 900, r3: 1300 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -300, under: 235 },
+          betonlineag: { over: -275, under: 228 },
+        },
+      },
+    },
     // DWCS 2026 Week 5 (Sep 8, 2026) — sourced from fightodds.io, current-column
     // reads, Sep 8 2026. Method/round/double-chance props always fill in (no
     // book prices these on the live feed); ML only fills books data/odds.json
