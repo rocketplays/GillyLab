@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-24T19:18:40.017Z",
+ "generatedAt": "2026-10-24T19:34:12.517Z",
  "fighters": {
   "Summer Onley": {
    "history": [
@@ -8646,6 +8646,194 @@
       ]
      },
      "capturedAt": "2026-10-24T19:18:39.889Z"
+    }
+   ]
+  },
+  "Lone'er Kavanagh": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Ramazan Temirov",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:28",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Ramazan Temirov",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 20,
+      "sigA": 42,
+      "totL": 20,
+      "totA": 42,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:01",
+      "head": [
+       12,
+       31
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       19,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 39,
+      "totL": 13,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       11,
+       36
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       13,
+       39
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T19:34:12.392Z"
+    }
+   ]
+  },
+  "Ramazan Temirov": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Lone'er Kavanagh",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:28",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Lone'er Kavanagh",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 39,
+      "totL": 13,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       11,
+       36
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       13,
+       39
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 20,
+      "sigA": 42,
+      "totL": 20,
+      "totA": 42,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:01",
+      "head": [
+       12,
+       31
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       19,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-24T19:34:12.392Z"
     }
    ]
   }
