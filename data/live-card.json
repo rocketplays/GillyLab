@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-24T18:32:38.802Z",
+ "generatedAt": "2026-10-24T19:18:40.017Z",
  "fighters": {
   "Summer Onley": {
    "history": [
@@ -8458,6 +8458,194 @@
       ]
      },
      "capturedAt": "2026-10-24T18:32:38.670Z"
+    }
+   ]
+  },
+  "Alexander Volkov": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Rizvan Kuniev",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Rizvan Kuniev",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 150,
+      "totL": 82,
+      "totA": 158,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "2:02",
+      "head": [
+       35,
+       99
+      ],
+      "body": [
+       25,
+       33
+      ],
+      "leg": [
+       14,
+       18
+      ],
+      "dist": [
+       66,
+       140
+      ],
+      "clinch": [
+       8,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 87,
+      "totL": 62,
+      "totA": 98,
+      "tdL": 0,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       35,
+       66
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       49,
+       85
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T19:18:39.889Z"
+    }
+   ]
+  },
+  "Rizvan Kuniev": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Alexander Volkov",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Alexander Volkov",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 87,
+      "totL": 62,
+      "totA": 98,
+      "tdL": 0,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       35,
+       66
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       49,
+       85
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 150,
+      "totL": 82,
+      "totA": 158,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "2:02",
+      "head": [
+       35,
+       99
+      ],
+      "body": [
+       25,
+       33
+      ],
+      "leg": [
+       14,
+       18
+      ],
+      "dist": [
+       66,
+       140
+      ],
+      "clinch": [
+       8,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T19:18:39.889Z"
     }
    ]
   }
