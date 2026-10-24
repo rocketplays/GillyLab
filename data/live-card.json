@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-24T19:39:43.164Z",
+ "generatedAt": "2026-10-24T20:35:54.640Z",
  "fighters": {
   "Summer Onley": {
    "history": [
@@ -8834,6 +8834,194 @@
       ]
      },
      "capturedAt": "2026-10-24T19:34:12.392Z"
+    }
+   ]
+  },
+  "Petr Yan": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Merab Dvalishvili",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Merab Dvalishvili",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 93,
+      "sigA": 205,
+      "totL": 94,
+      "totA": 206,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:23",
+      "head": [
+       65,
+       172
+      ],
+      "body": [
+       15,
+       19
+      ],
+      "leg": [
+       13,
+       14
+      ],
+      "dist": [
+       88,
+       198
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 121,
+      "sigA": 388,
+      "totL": 139,
+      "totA": 410,
+      "tdL": 5,
+      "tdA": 58,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:54",
+      "head": [
+       86,
+       326
+      ],
+      "body": [
+       8,
+       21
+      ],
+      "leg": [
+       27,
+       41
+      ],
+      "dist": [
+       115,
+       378
+      ],
+      "clinch": [
+       6,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T20:35:54.511Z"
+    }
+   ]
+  },
+  "Merab Dvalishvili": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Petr Yan",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Petr Yan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 121,
+      "sigA": 388,
+      "totL": 139,
+      "totA": 410,
+      "tdL": 5,
+      "tdA": 58,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:54",
+      "head": [
+       86,
+       326
+      ],
+      "body": [
+       8,
+       21
+      ],
+      "leg": [
+       27,
+       41
+      ],
+      "dist": [
+       115,
+       378
+      ],
+      "clinch": [
+       6,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 93,
+      "sigA": 205,
+      "totL": 94,
+      "totA": 206,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:23",
+      "head": [
+       65,
+       172
+      ],
+      "body": [
+       15,
+       19
+      ],
+      "leg": [
+       13,
+       14
+      ],
+      "dist": [
+       88,
+       198
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-10-24T20:35:54.511Z"
     }
    ]
   }
