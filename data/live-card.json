@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-24T20:46:23.508Z",
+ "generatedAt": "2026-10-24T21:22:00.475Z",
  "fighters": {
   "Summer Onley": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-10-24T20:35:54.511Z"
+    }
+   ]
+  },
+  "Alexander Volkanovski": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Movsar Evloev",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "4:54",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Movsar Evloev",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 110,
+      "totL": 61,
+      "totA": 118,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:44",
+      "head": [
+       48,
+       101
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       42,
+       90
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       11,
+       16
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 65,
+      "totL": 62,
+      "totA": 88,
+      "tdL": 3,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:46",
+      "head": [
+       28,
+       50
+      ],
+      "body": [
+       8,
+       9
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       31,
+       55
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-24T21:22:00.335Z"
+    }
+   ]
+  },
+  "Movsar Evloev": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Alexander Volkanovski",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "4:54",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Alexander Volkanovski",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 65,
+      "totL": 62,
+      "totA": 88,
+      "tdL": 3,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:46",
+      "head": [
+       28,
+       50
+      ],
+      "body": [
+       8,
+       9
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       31,
+       55
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 110,
+      "totL": 61,
+      "totA": 118,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:44",
+      "head": [
+       48,
+       101
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       42,
+       90
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       11,
+       16
+      ]
+     },
+     "capturedAt": "2026-10-24T21:22:00.335Z"
     }
    ]
   }
