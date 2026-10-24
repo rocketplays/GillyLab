@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-24T15:21:54.398Z",
+ "generatedAt": "2026-10-24T17:30:58.368Z",
  "fighters": {
   "Summer Onley": {
    "history": [
@@ -7142,6 +7142,946 @@
       ]
      },
      "capturedAt": "2026-10-24T15:11:25.319Z"
+    }
+   ]
+  },
+  "Abubakar Vagaev": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Jacob Malkoun",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Jacob Malkoun",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 139,
+      "totL": 92,
+      "totA": 162,
+      "tdL": 6,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:07",
+      "head": [
+       55,
+       113
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       11,
+       17
+      ],
+      "dist": [
+       66,
+       123
+      ],
+      "clinch": [
+       3,
+       9
+      ],
+      "ground": [
+       2,
+       7
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 106,
+      "sigA": 202,
+      "totL": 113,
+      "totA": 212,
+      "tdL": 0,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       95,
+       182
+      ],
+      "body": [
+       11,
+       20
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       103,
+       199
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.030Z"
+    }
+   ]
+  },
+  "Jacob Malkoun": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Abubakar Vagaev",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Abubakar Vagaev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 106,
+      "sigA": 202,
+      "totL": 113,
+      "totA": 212,
+      "tdL": 0,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       95,
+       182
+      ],
+      "body": [
+       11,
+       20
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       103,
+       199
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 139,
+      "totL": 92,
+      "totA": 162,
+      "tdL": 6,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:07",
+      "head": [
+       55,
+       113
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       11,
+       17
+      ],
+      "dist": [
+       66,
+       123
+      ],
+      "clinch": [
+       3,
+       9
+      ],
+      "ground": [
+       2,
+       7
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.030Z"
+    }
+   ]
+  },
+  "Colby Thicknesse": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Asaf Chopurov",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Asaf Chopurov",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 134,
+      "totL": 95,
+      "totA": 158,
+      "tdL": 1,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:14",
+      "head": [
+       37,
+       89
+      ],
+      "body": [
+       30,
+       41
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       36,
+       86
+      ],
+      "clinch": [
+       35,
+       45
+      ],
+      "ground": [
+       0,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 91,
+      "totL": 47,
+      "totA": 108,
+      "tdL": 8,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:01",
+      "head": [
+       22,
+       69
+      ],
+      "body": [
+       11,
+       20
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       15,
+       58
+      ],
+      "clinch": [
+       16,
+       28
+      ],
+      "ground": [
+       3,
+       5
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.077Z"
+    }
+   ]
+  },
+  "Asaf Chopurov": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Colby Thicknesse",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Colby Thicknesse",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 91,
+      "totL": 47,
+      "totA": 108,
+      "tdL": 8,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:01",
+      "head": [
+       22,
+       69
+      ],
+      "body": [
+       11,
+       20
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       15,
+       58
+      ],
+      "clinch": [
+       16,
+       28
+      ],
+      "ground": [
+       3,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 134,
+      "totL": 95,
+      "totA": 158,
+      "tdL": 1,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:14",
+      "head": [
+       37,
+       89
+      ],
+      "body": [
+       30,
+       41
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       36,
+       86
+      ],
+      "clinch": [
+       35,
+       45
+      ],
+      "ground": [
+       0,
+       3
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.077Z"
+    }
+   ]
+  },
+  "Grant Dawson": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Nurullo Aliev",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Nurullo Aliev",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 95,
+      "sigA": 188,
+      "totL": 147,
+      "totA": 242,
+      "tdL": 5,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:18",
+      "head": [
+       71,
+       157
+      ],
+      "body": [
+       16,
+       22
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       72,
+       155
+      ],
+      "clinch": [
+       7,
+       11
+      ],
+      "ground": [
+       16,
+       22
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 65,
+      "sigA": 106,
+      "totL": 96,
+      "totA": 138,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:26",
+      "head": [
+       50,
+       88
+      ],
+      "body": [
+       12,
+       15
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       61,
+       101
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.127Z"
+    }
+   ]
+  },
+  "Nurullo Aliev": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Grant Dawson",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Grant Dawson",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 65,
+      "sigA": 106,
+      "totL": 96,
+      "totA": 138,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:26",
+      "head": [
+       50,
+       88
+      ],
+      "body": [
+       12,
+       15
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       61,
+       101
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 95,
+      "sigA": 188,
+      "totL": 147,
+      "totA": 242,
+      "tdL": 5,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:18",
+      "head": [
+       71,
+       157
+      ],
+      "body": [
+       16,
+       22
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       72,
+       155
+      ],
+      "clinch": [
+       7,
+       11
+      ],
+      "ground": [
+       16,
+       22
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.127Z"
+    }
+   ]
+  },
+  "Abus Magomedov": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Cam Rowston",
+     "result": "W",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "1:44",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Cam Rowston",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 15,
+      "totL": 11,
+      "totA": 15,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:07",
+      "head": [
+       5,
+       7
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       11,
+       15
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 11,
+      "totL": 1,
+      "totA": 11,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       0,
+       8
+      ],
+      "body": [
+       0,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       1,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.179Z"
+    }
+   ]
+  },
+  "Cam Rowston": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Abus Magomedov",
+     "result": "L",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "1:44",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Abus Magomedov",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 11,
+      "totL": 1,
+      "totA": 11,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       0,
+       8
+      ],
+      "body": [
+       0,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       1,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 15,
+      "totL": 11,
+      "totA": 15,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:07",
+      "head": [
+       5,
+       7
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       11,
+       15
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.179Z"
+    }
+   ]
+  },
+  "Nikita Krylov": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Abdul-Rakhman Yakhyaev",
+     "result": "L",
+     "method": "KO/TKO (Knee)",
+     "round": 1,
+     "time": "2:38",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Abdul-Rakhman Yakhyaev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 6,
+      "totL": 7,
+      "totA": 9,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:29",
+      "head": [
+       2,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       2,
+       4
+      ],
+      "dist": [
+       3,
+       5
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 6,
+      "sigA": 9,
+      "totL": 19,
+      "totA": 24,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       3,
+       6
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       2
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.225Z"
+    }
+   ]
+  },
+  "Abdul-Rakhman Yakhyaev": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Nikita Krylov",
+     "result": "W",
+     "method": "KO/TKO (Knee)",
+     "round": 1,
+     "time": "2:38",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Nikita Krylov",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 6,
+      "sigA": 9,
+      "totL": 19,
+      "totA": 24,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       3,
+       6
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       2
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 6,
+      "totL": 7,
+      "totA": 9,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:29",
+      "head": [
+       2,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       2,
+       4
+      ],
+      "dist": [
+       3,
+       5
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-24T17:30:58.225Z"
     }
    ]
   }
