@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-24T14:45:54.046Z",
+ "generatedAt": "2026-10-24T15:11:25.462Z",
  "fighters": {
   "Summer Onley": {
    "history": [
@@ -6954,6 +6954,194 @@
       ]
      },
      "capturedAt": "2026-10-24T14:40:26.625Z"
+    }
+   ]
+  },
+  "Bolaji Oki": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Daniel Santos",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Daniel Santos",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 50,
+      "sigA": 100,
+      "totL": 57,
+      "totA": 108,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:43",
+      "head": [
+       29,
+       73
+      ],
+      "body": [
+       18,
+       23
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       47,
+       96
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 60,
+      "sigA": 156,
+      "totL": 69,
+      "totA": 172,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:40",
+      "head": [
+       30,
+       108
+      ],
+      "body": [
+       10,
+       22
+      ],
+      "leg": [
+       20,
+       26
+      ],
+      "dist": [
+       60,
+       155
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-24T15:11:25.319Z"
+    }
+   ]
+  },
+  "Daniel Santos": {
+   "history": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Bolaji Oki",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 333: Volkanovski vs. Evloev",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 24, 2026",
+     "opponent": "Bolaji Oki",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 60,
+      "sigA": 156,
+      "totL": 69,
+      "totA": 172,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:40",
+      "head": [
+       30,
+       108
+      ],
+      "body": [
+       10,
+       22
+      ],
+      "leg": [
+       20,
+       26
+      ],
+      "dist": [
+       60,
+       155
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 50,
+      "sigA": 100,
+      "totL": 57,
+      "totA": 108,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:43",
+      "head": [
+       29,
+       73
+      ],
+      "body": [
+       18,
+       23
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       47,
+       96
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-24T15:11:25.319Z"
     }
    ]
   }
