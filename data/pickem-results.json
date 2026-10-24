@@ -1,6 +1,125 @@
 {
-  "generatedAt": "2026-10-24T02:09:14.889Z",
+  "generatedAt": "2026-10-24T21:32:28.795Z",
   "events": [
+    {
+      "slug": "ufc-333",
+      "name": "UFC 333: Volkanovski vs. Evloev",
+      "date": "2026-10-24",
+      "bouts": [
+        {
+          "f1": "Alexander Volkanovski",
+          "f2": "Movsar Evloev",
+          "winner": "Alexander Volkanovski",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Petr Yan",
+          "f2": "Merab Dvalishvili",
+          "winner": "Petr Yan",
+          "method": "Decision - Unanimous",
+          "round": 5,
+          "voided": false
+        },
+        {
+          "f1": "Lone'er Kavanagh",
+          "f2": "Ramazan Temirov",
+          "winner": "Lone'er Kavanagh",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Alexander Volkov",
+          "f2": "Rizvan Kuniev",
+          "winner": "Alexander Volkov",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Aaron Pico",
+          "f2": "Losene Keita",
+          "winner": "Aaron Pico",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Azamat Murzakanov",
+          "f2": "Dominick Reyes",
+          "winner": "Dominick Reyes",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Nikita Krylov",
+          "f2": "Abdul-Rakhman Yakhyaev",
+          "winner": "Abdul-Rakhman Yakhyaev",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Abus Magomedov",
+          "f2": "Cam Rowston",
+          "winner": "Abus Magomedov",
+          "method": "Submission",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Grant Dawson",
+          "f2": "Nurullo Aliev",
+          "winner": "Grant Dawson",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Colby Thicknesse",
+          "f2": "Asaf Chopurov",
+          "winner": "Colby Thicknesse",
+          "method": "Decision - Split",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Abubakar Vagaev",
+          "f2": "Jacob Malkoun",
+          "winner": "Abubakar Vagaev",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Bolaji Oki",
+          "f2": "Daniel Santos",
+          "winner": "Daniel Santos",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Kody Steele",
+          "f2": "Noah Gugnon",
+          "winner": "Kody Steele",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Iasmin Lucindo",
+          "f2": "Nicolle Caliari",
+          "winner": "Iasmin Lucindo",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-fight-night-october-17-2026",
       "name": "UFC Fight Night: Buckley vs. Malott",
@@ -3559,125 +3678,6 @@
           "winner": "Shanelle Dyer",
           "method": "KO/TKO",
           "round": 2,
-          "voided": false
-        }
-      ]
-    },
-    {
-      "slug": "ufc-fight-night-march-14-2026",
-      "name": "UFC Fight Night",
-      "date": "2026-03-15",
-      "bouts": [
-        {
-          "f1": "Josh Emmett",
-          "f2": "Kevin Vallejos",
-          "winner": "Kevin Vallejos",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Amanda Lemos",
-          "f2": "Gillian Robertson",
-          "winner": "Gillian Robertson",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Andre Fili",
-          "f2": "Jose Miguel Delgado",
-          "winner": "Jose Miguel Delgado",
-          "method": "Decision - Split",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Marwan Rahiki",
-          "f2": "Harry Hardwick",
-          "winner": "Marwan Rahiki",
-          "method": "KO/TKO",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Ion Cutelaba",
-          "f2": "Oumar Sy",
-          "winner": "Ion Cutelaba",
-          "method": "Submission",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Charles Johnson",
-          "f2": "Bruno Silva",
-          "winner": "Charles Johnson",
-          "method": "Decision - Split",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Chris Curtis",
-          "f2": "Myktybek Orolbai",
-          "winner": "Myktybek Orolbai",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Vitor Petrino",
-          "f2": "Steven Asplund",
-          "winner": "Vitor Petrino",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Elijah Smith",
-          "f2": "SuYoung You",
-          "winner": "Elijah Smith",
-          "method": "Submission",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Bolaji Oki",
-          "f2": "Manoel Sousa",
-          "winner": "Manoel Sousa",
-          "method": "KO/TKO",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Brad Tavares",
-          "f2": "Eryk Anders",
-          "winner": "Eryk Anders",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Bia Mesquita",
-          "f2": "Montse Rendon",
-          "winner": "Bia Mesquita",
-          "method": "Submission",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Luan Lacerda",
-          "f2": "Hecher Sosa",
-          "winner": "Hecher Sosa",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Piera Rodriguez",
-          "f2": "Sam Hughes",
-          "winner": "Piera Rodriguez",
-          "method": "Decision - Unanimous",
-          "round": 3,
           "voided": false
         }
       ]
