@@ -1,9 +1,11 @@
 {
   "slug": "ufc-fight-night-october-31-2026",
-  "generatedAt": "2026-10-26T02:00:26.585Z",
+  "generatedAt": "2026-10-26T18:06:10.913Z",
   "slugs": [
     "renato-moicano",
     "tom-nolan",
+    "randy-brown",
+    "jacobe-smith",
     "ode-osbourne",
     "cody-durden",
     "yana-santos",
@@ -12,8 +14,6 @@
     "farman-hasanov",
     "francis-marshall",
     "dakota-hope",
-    "randy-brown",
-    "jacobe-smith",
     "azamat-bekoev",
     "andre-petroski",
     "rodrigo-sezinando",
@@ -37,8 +37,8 @@
       "ps1": "renato-moicano",
       "ps2": "tom-nolan",
       "wPts": {
-        "f1": 10.155470844925444,
-        "f2": 9.85018578821795
+        "f1": 10.02067913753827,
+        "f2": 9.97942419574224
       },
       "mPts": {
         "f1": {
@@ -61,14 +61,42 @@
       }
     },
     {
+      "id": "espn-randy-brown-vs-jacobe-smith",
+      "f1": "Randy Brown",
+      "f2": "Jacobe Smith",
+      "ps1": "randy-brown",
+      "ps2": "jacobe-smith",
+      "wPts": {
+        "f1": 13.640184668086558,
+        "f2": 8.070963226562593
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 5,
+          "Submission": 6,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 3,
+          "Submission": 7,
+          "Decision": 6
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
       "id": "espn-ode-osbourne-vs-cody-durden",
       "f1": "Ode' Osbourne",
       "f2": "Cody Durden",
       "ps1": "ode-osbourne",
       "ps2": "cody-durden",
       "wPts": {
-        "f1": 9.64645754311925,
-        "f2": 10.386751363278005
+        "f1": 9.80841544446291,
+        "f2": 10.200933718406421
       },
       "mPts": {
         "f1": {
@@ -123,8 +151,8 @@
       "ps1": "jean-paul-lebosnoyani",
       "ps2": "farman-hasanov",
       "wPts": {
-        "f1": 7.939627694475612,
-        "f2": 14.14077333330221
+        "f1": 7.910344764620893,
+        "f2": 14.261505434455252
       },
       "mPts": {
         "f1": {
@@ -164,34 +192,6 @@
           "KO/TKO": 5,
           "Submission": 7,
           "Decision": 3
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-randy-brown-vs-jacobe-smith",
-      "f1": "Randy Brown",
-      "f2": "Jacobe Smith",
-      "ps1": "randy-brown",
-      "ps2": "jacobe-smith",
-      "wPts": {
-        "f1": 14.069470018227413,
-        "f2": 7.957335857913632
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 5,
-          "Submission": 6,
-          "Decision": 4
-        },
-        "f2": {
-          "KO/TKO": 3,
-          "Submission": 7,
-          "Decision": 6
         }
       },
       "rPts": {
@@ -263,8 +263,8 @@
       "ps1": "julian-erosa",
       "ps2": "jeongyeong-lee",
       "wPts": {
-        "f1": 12.125302556696376,
-        "f2": 8.598927570033903
+        "f1": 12.08236777616519,
+        "f2": 8.617693475670015
       },
       "mPts": {
         "f1": {
@@ -291,8 +291,8 @@
       "ps1": "nick-klein",
       "ps2": "joseph-kropschot",
       "wPts": {
-        "f1": 15.169474975770889,
-        "f2": 7.715020734157225
+        "f1": 15.245258093976373,
+        "f2": 7.700471517266063
       },
       "mPts": {
         "f1": {
@@ -319,8 +319,8 @@
       "ps1": "talita-alencar",
       "ps2": "piera-rodriguez",
       "wPts": {
-        "f1": 14.314300942361896,
-        "f2": 7.897808424127707
+        "f1": 14.332350147557328,
+        "f2": 7.893559311006219
       },
       "mPts": {
         "f1": {
@@ -347,8 +347,8 @@
       "ps1": "lucia-szabova",
       "ps2": "tainara-lisboa",
       "wPts": {
-        "f1": 7.069826921848027,
-        "f2": 20.488182193203354
+        "f1": 7.05879914125325,
+        "f2": 20.635864314919775
       },
       "mPts": {
         "f1": {
@@ -375,8 +375,8 @@
       "ps1": "zachary-reese",
       "ps2": "mickey-gall",
       "wPts": {
-        "f1": 7.851778775896663,
-        "f2": 14.51412114581026
+        "f1": 7.837140539155549,
+        "f2": 14.579712762156873
       },
       "mPts": {
         "f1": {
