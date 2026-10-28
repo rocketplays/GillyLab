@@ -1,6 +1,6 @@
 {
   "slug": "ufc-fight-night-october-31-2026",
-  "generatedAt": "2026-10-27T17:13:55.978Z",
+  "generatedAt": "2026-10-28T02:49:46.735Z",
   "slugs": [
     "renato-moicano",
     "tom-nolan",
@@ -14,20 +14,18 @@
     "farman-hasanov",
     "francis-marshall",
     "dakota-hope",
-    "azamat-bekoev",
-    "andre-petroski",
     "rodrigo-sezinando",
     "theodor-berggren",
     "julian-erosa",
     "jeongyeong-lee",
+    "zachary-reese",
+    "mickey-gall",
     "nick-klein",
     "joseph-kropschot",
     "talita-alencar",
     "piera-rodriguez",
     "lucia-szabova",
-    "tainara-lisboa",
-    "zachary-reese",
-    "mickey-gall"
+    "tainara-lisboa"
   ],
   "bouts": [
     {
@@ -37,8 +35,8 @@
       "ps1": "renato-moicano",
       "ps2": "tom-nolan",
       "wPts": {
-        "f1": 9.563181810874948,
-        "f2": 10.48866339719703
+        "f1": 9.544991019133152,
+        "f2": 10.511542211494106
       },
       "mPts": {
         "f1": {
@@ -67,8 +65,8 @@
       "ps1": "randy-brown",
       "ps2": "jacobe-smith",
       "wPts": {
-        "f1": 14.201208721186568,
-        "f2": 7.924860993539243
+        "f1": 14.18619026190566,
+        "f2": 7.928510106360176
       },
       "mPts": {
         "f1": {
@@ -95,8 +93,8 @@
       "ps1": "ode-osbourne",
       "ps2": "cody-durden",
       "wPts": {
-        "f1": 10.01053563986082,
-        "f2": 9.989491248414636
+        "f1": 10.100581658723534,
+        "f2": 9.90181667491423
       },
       "mPts": {
         "f1": {
@@ -151,8 +149,8 @@
       "ps1": "jean-paul-lebosnoyani",
       "ps2": "farman-hasanov",
       "wPts": {
-        "f1": 7.805679647307098,
-        "f2": 14.72419445886753
+        "f1": 7.808049836191977,
+        "f2": 14.713138623311952
       },
       "mPts": {
         "f1": {
@@ -179,8 +177,8 @@
       "ps1": "francis-marshall",
       "ps2": "dakota-hope",
       "wPts": {
-        "f1": 8.04922985702201,
-        "f2": 13.718714555578032
+        "f1": 8.123694929514977,
+        "f2": 13.456137247242093
       },
       "mPts": {
         "f1": {
@@ -201,42 +199,14 @@
       }
     },
     {
-      "id": "espn-azamat-bekoev-vs-andre-petroski",
-      "f1": "Azamat Bekoev",
-      "f2": "Andre Petroski",
-      "ps1": "azamat-bekoev",
-      "ps2": "andre-petroski",
-      "wPts": {
-        "f1": 10,
-        "f2": 10
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 2,
-          "Submission": 7,
-          "Decision": 6
-        },
-        "f2": {
-          "KO/TKO": 6,
-          "Submission": 5,
-          "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
       "id": "espn-rodrigo-sezinando-vs-theodor-berggren",
       "f1": "Rodrigo Sezinando",
       "f2": "Theodor Berggren",
       "ps1": "rodrigo-sezinando",
       "ps2": "theodor-berggren",
       "wPts": {
-        "f1": 8.71337344639969,
-        "f2": 11.872392125572214
+        "f1": 8.722584406421422,
+        "f2": 11.852931099229952
       },
       "mPts": {
         "f1": {
@@ -263,8 +233,8 @@
       "ps1": "julian-erosa",
       "ps2": "jeongyeong-lee",
       "wPts": {
-        "f1": 11.729530384353119,
-        "f2": 8.78242625734776
+        "f1": 11.648051663669355,
+        "f2": 8.823350750710986
       },
       "mPts": {
         "f1": {
@@ -285,14 +255,42 @@
       }
     },
     {
+      "id": "espn-zach-reese-vs-mickey-gall",
+      "f1": "Zach Reese",
+      "f2": "Mickey Gall",
+      "ps1": "zachary-reese",
+      "ps2": "mickey-gall",
+      "wPts": {
+        "f1": 7.642630938687926,
+        "f2": 15.559540173382086
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 4,
+          "Submission": 7,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 5,
+          "Decision": 5
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
       "id": "espn-nick-klein-vs-joe-kropschot",
       "f1": "Nick Klein",
       "f2": "Joe Kropschot",
       "ps1": "nick-klein",
       "ps2": "joseph-kropschot",
       "wPts": {
-        "f1": 15.391372927505918,
-        "f2": 7.673091709314324
+        "f1": 15.460246265519043,
+        "f2": 7.660483437332784
       },
       "mPts": {
         "f1": {
@@ -319,8 +317,8 @@
       "ps1": "talita-alencar",
       "ps2": "piera-rodriguez",
       "wPts": {
-        "f1": 14.776126656355018,
-        "f2": 7.794626955234647
+        "f1": 14.850687105857547,
+        "f2": 7.77898746533173
       },
       "mPts": {
         "f1": {
@@ -347,8 +345,8 @@
       "ps1": "lucia-szabova",
       "ps2": "tainara-lisboa",
       "wPts": {
-        "f1": 7.018126646992187,
-        "f2": 21.20896706430418
+        "f1": 7.016678196511025,
+        "f2": 21.230247480767993
       },
       "mPts": {
         "f1": {
@@ -360,34 +358,6 @@
           "KO/TKO": 5,
           "Submission": 5,
           "Decision": 6
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-zach-reese-vs-mickey-gall",
-      "f1": "Zach Reese",
-      "f2": "Mickey Gall",
-      "ps1": "zachary-reese",
-      "ps2": "mickey-gall",
-      "wPts": {
-        "f1": 7.68348338110397,
-        "f2": 15.335368395839314
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 4,
-          "Submission": 7,
-          "Decision": 4
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 5,
-          "Decision": 5
         }
       },
       "rPts": {
