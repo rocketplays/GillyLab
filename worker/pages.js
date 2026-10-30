@@ -155,7 +155,7 @@ export function nameToSlug(name) {
 // slugs (e.g. a page's own photo slug) are tried as fallbacks.
 // ESPN/event-feed slugs that differ from our profile slug for the same fighter.
 // Without this the app's events page found no profile for them (no link, no photo).
-const PROFILE_SLUG_ALIASES = { "abdul-rakhman-yakhyaev": "abdulrakhman-yakhyaev" };
+const PROFILE_SLUG_ALIASES = { "abdul-rakhman-yakhyaev": "abdulrakhman-yakhyaev", "zach-reese": "zachary-reese", "joe-kropschot": "joseph-kropschot" };
 export function profileSlugFor(name, slugSet, ...extra) {
   if (!slugSet || !slugSet.size) return "";
   const cands = [nameToSlug(name), ...extra.filter(Boolean)];
