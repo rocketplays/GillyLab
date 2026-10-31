@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-31T21:46:29.832Z",
+ "generatedAt": "2026-10-31T22:17:23.190Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -6202,6 +6202,194 @@
       ]
      },
      "capturedAt": "2026-10-31T21:46:29.702Z"
+    }
+   ]
+  },
+  "Talita Alencar": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Piera Rodriguez",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Piera Rodriguez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 104,
+      "totL": 57,
+      "totA": 120,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:05",
+      "head": [
+       22,
+       76
+      ],
+      "body": [
+       17,
+       22
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       33,
+       92
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       8,
+       9
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 89,
+      "sigA": 190,
+      "totL": 102,
+      "totA": 203,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:16",
+      "head": [
+       65,
+       157
+      ],
+      "body": [
+       24,
+       32
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       78,
+       176
+      ],
+      "clinch": [
+       11,
+       14
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-31T22:17:23.067Z"
+    }
+   ]
+  },
+  "Piera Rodriguez": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Talita Alencar",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Talita Alencar",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 89,
+      "sigA": 190,
+      "totL": 102,
+      "totA": 203,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:16",
+      "head": [
+       65,
+       157
+      ],
+      "body": [
+       24,
+       32
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       78,
+       176
+      ],
+      "clinch": [
+       11,
+       14
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 104,
+      "totL": 57,
+      "totA": 120,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:05",
+      "head": [
+       22,
+       76
+      ],
+      "body": [
+       17,
+       22
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       33,
+       92
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       8,
+       9
+      ]
+     },
+     "capturedAt": "2026-10-31T22:17:23.067Z"
     }
    ]
   }
