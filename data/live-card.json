@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-31T23:04:10.159Z",
+ "generatedAt": "2026-10-31T23:19:58.755Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -6766,6 +6766,194 @@
       ]
      },
      "capturedAt": "2026-10-31T23:04:10.048Z"
+    }
+   ]
+  },
+  "Julian Erosa": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "JeongYeong Lee",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:31",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "JeongYeong Lee",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 27,
+      "totL": 17,
+      "totA": 28,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:36",
+      "head": [
+       15,
+       26
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       20
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 24,
+      "totL": 10,
+      "totA": 27,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       8,
+       22
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       6,
+       19
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-31T23:19:58.645Z"
+    }
+   ]
+  },
+  "JeongYeong Lee": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Julian Erosa",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:31",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Julian Erosa",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 24,
+      "totL": 10,
+      "totA": 27,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       8,
+       22
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       6,
+       19
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 27,
+      "totL": 17,
+      "totA": 28,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:36",
+      "head": [
+       15,
+       26
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       20
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-10-31T23:19:58.645Z"
     }
    ]
   }
