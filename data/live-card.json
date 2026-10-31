@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-31T22:17:23.190Z",
+ "generatedAt": "2026-10-31T22:33:14.154Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -6390,6 +6390,194 @@
       ]
      },
      "capturedAt": "2026-10-31T22:17:23.067Z"
+    }
+   ]
+  },
+  "Nick Klein": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Joe Kropschot",
+     "result": "L",
+     "method": "Submission (Triangle Choke With Armbar)",
+     "round": 2,
+     "time": "1:25",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Joe Kropschot",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 16,
+      "totA": 37,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:01",
+      "head": [
+       8,
+       27
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       13,
+       34
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 17,
+      "sigA": 24,
+      "totL": 32,
+      "totA": 42,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 3,
+      "rev": 1,
+      "ctrl": "1:47",
+      "head": [
+       6,
+       13
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       16,
+       23
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-31T22:33:14.041Z"
+    }
+   ]
+  },
+  "Joe Kropschot": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Nick Klein",
+     "result": "W",
+     "method": "Submission (Triangle Choke With Armbar)",
+     "round": 2,
+     "time": "1:25",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Nick Klein",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 17,
+      "sigA": 24,
+      "totL": 32,
+      "totA": 42,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 3,
+      "rev": 1,
+      "ctrl": "1:47",
+      "head": [
+       6,
+       13
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       16,
+       23
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 16,
+      "totA": 37,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:01",
+      "head": [
+       8,
+       27
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       13,
+       34
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-10-31T22:33:14.041Z"
     }
    ]
   }
