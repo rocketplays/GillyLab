@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-31T23:19:58.755Z",
+ "generatedAt": "2026-10-31T23:35:28.495Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -6954,6 +6954,194 @@
       ]
      },
      "capturedAt": "2026-10-31T23:19:58.645Z"
+    }
+   ]
+  },
+  "Rodrigo Sezinando": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Theodor Berggren",
+     "result": "W",
+     "method": "TKO - Doctor's Stoppage",
+     "round": 2,
+     "time": "5:00",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Theodor Berggren",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 58,
+      "totL": 67,
+      "totA": 116,
+      "tdL": 3,
+      "tdA": 11,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:40",
+      "head": [
+       21,
+       49
+      ],
+      "body": [
+       6,
+       7
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       33
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       13,
+       18
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 18,
+      "sigA": 37,
+      "totL": 52,
+      "totA": 76,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:00",
+      "head": [
+       8,
+       27
+      ],
+      "body": [
+       8,
+       8
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       28
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-10-31T23:35:28.386Z"
+    }
+   ]
+  },
+  "Theodor Berggren": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Rodrigo Sezinando",
+     "result": "L",
+     "method": "TKO - Doctor's Stoppage",
+     "round": 2,
+     "time": "5:00",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Rodrigo Sezinando",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 18,
+      "sigA": 37,
+      "totL": 52,
+      "totA": 76,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:00",
+      "head": [
+       8,
+       27
+      ],
+      "body": [
+       8,
+       8
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       28
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 58,
+      "totL": 67,
+      "totA": 116,
+      "tdL": 3,
+      "tdA": 11,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:40",
+      "head": [
+       21,
+       49
+      ],
+      "body": [
+       6,
+       7
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       33
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       13,
+       18
+      ]
+     },
+     "capturedAt": "2026-10-31T23:35:28.386Z"
     }
    ]
   }
