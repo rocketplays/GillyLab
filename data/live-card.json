@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-01T01:13:21.106Z",
+ "generatedAt": "2026-11-01T01:54:16.737Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -7706,6 +7706,194 @@
       ]
      },
      "capturedAt": "2026-11-01T01:07:52.341Z"
+    }
+   ]
+  },
+  "Ode' Osbourne": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Cody Durden",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Cody Durden",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 36,
+      "totL": 54,
+      "totA": 86,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 2,
+      "ctrl": "4:10",
+      "head": [
+       8,
+       29
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       14,
+       35
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 35,
+      "sigA": 47,
+      "totL": 73,
+      "totA": 101,
+      "tdL": 6,
+      "tdA": 8,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "6:51",
+      "head": [
+       33,
+       42
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       8,
+       15
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       27,
+       32
+      ]
+     },
+     "capturedAt": "2026-11-01T01:54:16.619Z"
+    }
+   ]
+  },
+  "Cody Durden": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Ode' Osbourne",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Ode' Osbourne",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 35,
+      "sigA": 47,
+      "totL": 73,
+      "totA": 101,
+      "tdL": 6,
+      "tdA": 8,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "6:51",
+      "head": [
+       33,
+       42
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       8,
+       15
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       27,
+       32
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 36,
+      "totL": 54,
+      "totA": 86,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 2,
+      "ctrl": "4:10",
+      "head": [
+       8,
+       29
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       14,
+       35
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-01T01:54:16.619Z"
     }
    ]
   }
