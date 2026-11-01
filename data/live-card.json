@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-01T00:42:21.214Z",
+ "generatedAt": "2026-11-01T01:07:52.468Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -7518,6 +7518,194 @@
       ]
      },
      "capturedAt": "2026-11-01T00:36:55.921Z"
+    }
+   ]
+  },
+  "Yana Santos": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Luana Santos",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Luana Santos",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 48,
+      "totL": 111,
+      "totA": 161,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:01",
+      "head": [
+       7,
+       39
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       13,
+       48
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 39,
+      "totA": 68,
+      "tdL": 5,
+      "tdA": 16,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:35",
+      "head": [
+       9,
+       24
+      ],
+      "body": [
+       1,
+       5
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       13,
+       34
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-01T01:07:52.341Z"
+    }
+   ]
+  },
+  "Luana Santos": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Yana Santos",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Yana Santos",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 39,
+      "totA": 68,
+      "tdL": 5,
+      "tdA": 16,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:35",
+      "head": [
+       9,
+       24
+      ],
+      "body": [
+       1,
+       5
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       13,
+       34
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 48,
+      "totL": 111,
+      "totA": 161,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:01",
+      "head": [
+       7,
+       39
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       13,
+       48
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-01T01:07:52.341Z"
     }
    ]
   }
