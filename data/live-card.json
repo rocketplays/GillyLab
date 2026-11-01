@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-01T00:06:24.555Z",
+ "generatedAt": "2026-11-01T00:36:56.021Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -7330,6 +7330,194 @@
       ]
      },
      "capturedAt": "2026-11-01T00:06:24.438Z"
+    }
+   ]
+  },
+  "Jean-Paul Lebosnoyani": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Farman Hasanov",
+     "result": "W",
+     "method": "TKO - Doctor's Stoppage",
+     "round": 3,
+     "time": "2:11",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Farman Hasanov",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 112,
+      "sigA": 207,
+      "totL": 125,
+      "totA": 220,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       78,
+       163
+      ],
+      "body": [
+       17,
+       23
+      ],
+      "leg": [
+       17,
+       21
+      ],
+      "dist": [
+       110,
+       205
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 69,
+      "sigA": 178,
+      "totL": 70,
+      "totA": 179,
+      "tdL": 2,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:36",
+      "head": [
+       64,
+       169
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       64,
+       170
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "capturedAt": "2026-11-01T00:36:55.921Z"
+    }
+   ]
+  },
+  "Farman Hasanov": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Jean-Paul Lebosnoyani",
+     "result": "L",
+     "method": "TKO - Doctor's Stoppage",
+     "round": 3,
+     "time": "2:11",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Jean-Paul Lebosnoyani",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 69,
+      "sigA": 178,
+      "totL": 70,
+      "totA": 179,
+      "tdL": 2,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:36",
+      "head": [
+       64,
+       169
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       64,
+       170
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 112,
+      "sigA": 207,
+      "totL": 125,
+      "totA": 220,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       78,
+       163
+      ],
+      "body": [
+       17,
+       23
+      ],
+      "leg": [
+       17,
+       21
+      ],
+      "dist": [
+       110,
+       205
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-01T00:36:55.921Z"
     }
    ]
   }
