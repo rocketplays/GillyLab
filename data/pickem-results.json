@@ -1,6 +1,109 @@
 {
-  "generatedAt": "2026-11-01T02:48:01.267Z",
+  "generatedAt": "2026-11-01T03:14:01.119Z",
   "events": [
+    {
+      "slug": "ufc-fight-night-october-31-2026",
+      "name": "UFC Fight Night: Moicano vs. Nolan",
+      "date": "2026-11-01",
+      "bouts": [
+        {
+          "f1": "Renato Moicano",
+          "f2": "Tom Nolan",
+          "winner": "Tom Nolan",
+          "method": "KO/TKO",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Randy Brown",
+          "f2": "Jacobe Smith",
+          "winner": "Jacobe Smith",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Ode' Osbourne",
+          "f2": "Cody Durden",
+          "winner": "Cody Durden",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Yana Santos",
+          "f2": "Luana Santos",
+          "winner": "Luana Santos",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Jean-Paul Lebosnoyani",
+          "f2": "Farman Hasanov",
+          "winner": "Jean-Paul Lebosnoyani",
+          "method": "TKO - Doctor's Stoppage",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Francis Marshall",
+          "f2": "Dakota Hope",
+          "winner": "Dakota Hope",
+          "method": "Decision - Split",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Rodrigo Sezinando",
+          "f2": "Theodor Berggren",
+          "winner": "Rodrigo Sezinando",
+          "method": "TKO - Doctor's Stoppage",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Julian Erosa",
+          "f2": "JeongYeong Lee",
+          "winner": "Julian Erosa",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Zach Reese",
+          "f2": "Mickey Gall",
+          "winner": "Zach Reese",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Nick Klein",
+          "f2": "Joe Kropschot",
+          "winner": "Joe Kropschot",
+          "method": "Submission",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Talita Alencar",
+          "f2": "Piera Rodriguez",
+          "winner": "Piera Rodriguez",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Lucia Szabova",
+          "f2": "Tainara Lisboa",
+          "winner": "Lucia Szabova",
+          "method": "KO/TKO",
+          "round": 3,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-333",
       "name": "UFC 333: Volkanovski vs. Evloev",
@@ -3567,117 +3670,6 @@
           "winner": "Alexia Thainara",
           "method": "Decision - Unanimous",
           "round": 3,
-          "voided": false
-        }
-      ]
-    },
-    {
-      "slug": "ufc-fight-night-march-21-2026",
-      "name": "UFC Fight Night: Evloev vs. Murphy",
-      "date": "2026-03-21",
-      "bouts": [
-        {
-          "f1": "Movsar Evloev",
-          "f2": "Lerone Murphy",
-          "winner": "Movsar Evloev",
-          "method": "Decision - Majority",
-          "round": 5,
-          "voided": false
-        },
-        {
-          "f1": "Luke Riley",
-          "f2": "Michael Aswell",
-          "winner": "Luke Riley",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Michael Page",
-          "f2": "Sam Patterson",
-          "winner": "Michael Page",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Iwo Baraniewski",
-          "f2": "Austen Lane",
-          "winner": "Iwo Baraniewski",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Roman Dolidze",
-          "f2": "Christian Leroy Duncan",
-          "winner": "Christian Leroy Duncan",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Kurtis Campbell",
-          "f2": "Danny Silva",
-          "winner": "Danny Silva",
-          "method": "KO/TKO",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Mason Jones",
-          "f2": "Axel Sola",
-          "winner": "Mason Jones",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Nathaniel Wood",
-          "f2": "Losene Keita",
-          "winner": "Nathaniel Wood",
-          "method": "Decision - Split",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Mario Pinto",
-          "f2": "Felipe Franco",
-          "winner": "Mario Pinto",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Mantas Kondratavičius",
-          "f2": "Antonio Trocoli",
-          "winner": "Mantas Kondratavičius",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Louie Sutherland",
-          "f2": "Brando Peričić",
-          "winner": "Brando Peričić",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Shem Rock",
-          "f2": "Abdul-Kareem Al-Selwady",
-          "winner": "Abdul-Kareem Al-Selwady",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Shanelle Dyer",
-          "f2": "Ravena Oliveira",
-          "winner": "Shanelle Dyer",
-          "method": "KO/TKO",
-          "round": 2,
           "voided": false
         }
       ]
