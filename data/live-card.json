@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-01T01:54:16.737Z",
+ "generatedAt": "2026-11-01T02:21:50.810Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -7894,6 +7894,194 @@
       ]
      },
      "capturedAt": "2026-11-01T01:54:16.619Z"
+    }
+   ]
+  },
+  "Randy Brown": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Jacobe Smith",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Jacobe Smith",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 37,
+      "totL": 39,
+      "totA": 60,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       22
+      ],
+      "body": [
+       8,
+       10
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       16,
+       37
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 66,
+      "totL": 153,
+      "totA": 186,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "8:53",
+      "head": [
+       25,
+       38
+      ],
+      "body": [
+       8,
+       12
+      ],
+      "leg": [
+       7,
+       16
+      ],
+      "dist": [
+       18,
+       37
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       22,
+       29
+      ]
+     },
+     "capturedAt": "2026-11-01T02:21:50.663Z"
+    }
+   ]
+  },
+  "Jacobe Smith": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Randy Brown",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Randy Brown",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 66,
+      "totL": 153,
+      "totA": 186,
+      "tdL": 3,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "8:53",
+      "head": [
+       25,
+       38
+      ],
+      "body": [
+       8,
+       12
+      ],
+      "leg": [
+       7,
+       16
+      ],
+      "dist": [
+       18,
+       37
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       22,
+       29
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 37,
+      "totL": 39,
+      "totA": 60,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       22
+      ],
+      "body": [
+       8,
+       10
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       16,
+       37
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-01T02:21:50.663Z"
     }
    ]
   }
