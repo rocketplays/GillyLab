@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-01T02:27:21.131Z",
+ "generatedAt": "2026-11-01T03:03:27.033Z",
  "fighters": {
   "Jason Asher": {
    "history": [
@@ -8082,6 +8082,194 @@
       ]
      },
      "capturedAt": "2026-11-01T02:21:50.663Z"
+    }
+   ]
+  },
+  "Renato Moicano": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Tom Nolan",
+     "result": "L",
+     "method": "KO/TKO (Elbows)",
+     "round": 3,
+     "time": "1:28",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Tom Nolan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 12,
+      "totL": 47,
+      "totA": 60,
+      "tdL": 3,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "7:17",
+      "head": [
+       3,
+       5
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       9,
+       12
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 69,
+      "sigA": 92,
+      "totL": 177,
+      "totA": 214,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:10",
+      "head": [
+       56,
+       78
+      ],
+      "body": [
+       10,
+       11
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       28,
+       45
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       38,
+       44
+      ]
+     },
+     "capturedAt": "2026-11-01T03:03:26.884Z"
+    }
+   ]
+  },
+  "Tom Nolan": {
+   "history": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Renato Moicano",
+     "result": "W",
+     "method": "KO/TKO (Elbows)",
+     "round": 3,
+     "time": "1:28",
+     "event": "UFC Fight Night: Moicano vs. Nolan",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Oct 31, 2026",
+     "opponent": "Renato Moicano",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 69,
+      "sigA": 92,
+      "totL": 177,
+      "totA": 214,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:10",
+      "head": [
+       56,
+       78
+      ],
+      "body": [
+       10,
+       11
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       28,
+       45
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       38,
+       44
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 9,
+      "sigA": 12,
+      "totL": 47,
+      "totA": 60,
+      "tdL": 3,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "7:17",
+      "head": [
+       3,
+       5
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       9,
+       12
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-01T03:03:26.884Z"
     }
    ]
   }
