@@ -174,6 +174,17 @@ function isStaleReschedule(para) {
   return STALE_RESCHEDULE.test(para);
 }
 
+// A withdrawal that CANCELLED the bout outright ("Brady withdrew ... resulting in
+// the cancellation of the bout"): nobody is left waiting on a replacement, and
+// the fighters on the current card were booked into a NEW pairing ("a
+// non-scheduled heavyweight bout ... was subsequently booked as the event's new
+// headliner"). Flagging the new pairing's fighter as "may change" was a false
+// positive (Cortes Acosta vs Walker, UFC Vegas 124, Nov 2026).
+const CANCELLED_BOUT = /\b(?:resulting in|resulted in|leading to|led to|causing)\s+the\s+(?:bout'?s?\s+)?cancell?ation\b|\bcancell?ation of the (?:bout|fight)\b|\b(?:bout|fight)\s+was\s+cancell?ed\b/i;
+function isCancelledBout(para) {
+  return CANCELLED_BOUT.test(para);
+}
+
 /**
  * @param {string} wikitext  Wikipedia article wikitext.
  * @param {string[]} currentNames  Exact fighter names on the live card.
@@ -223,7 +234,7 @@ function extractCardChanges(wikitext, currentNames) {
     // a withdrawal that only explains how the CURRENT pairing got rebooked from a
     // different, already-resolved event (isStaleReschedule) — that's closed
     // history, not a live pullout risk.
-    if (WITHDRAW.test(para) && !isStaleReschedule(para)) {
+    if (WITHDRAW.test(para) && !isStaleReschedule(para) && !isCancelledBout(para)) {
       for (const { canonical: F, searchName } of present) {
         const key = normLoose(F);
         if (shortNotice.has(key) || mayChange.has(key)) continue;

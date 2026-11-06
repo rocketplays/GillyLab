@@ -64,6 +64,16 @@ function run(label, wt, names, expSN, expMC, mustNot) {
   check('exactly ' + expMC.length + ' may-change', mc.length === expMC.length, 'got ' + mc.length);
 }
 
+// UFC Vegas 124 (Nov 2026): the headliner Bonfim vs Brady was cancelled when Brady
+// withdrew, and Cortes Acosta vs Walker was booked as a brand-new main event. Neither
+// fighter is waiting on a replacement, so nothing may be flagged "may change".
+const VEGAS124 = `== Background ==
+A welterweight bout between [[Gabriel Bonfim]] and [[Sean Brady (fighter)|Sean Brady]] was scheduled to headline the event. However, on October 29, Brady withdrew due to a staph infection in his knee, resulting in the cancellation of the bout. In turn, a non-scheduled heavyweight bout between [[Waldo Cortes-Acosta]] and [[Johnny Walker (fighter)|Johnny Walker]] was subsequently booked as the event's new headliner.
+
+== Fight card ==
+`;
+run('UFC Vegas 124 (cancelled bout, new headliner)', VEGAS124, ['Waldo Cortes Acosta', 'Johnny Walker', 'Gabriel Bonfim'], [], [], ['Johnny Walker']);
+
 // Post-change OKC roster: three replacements (Ricci, Melisano, Harris), two
 // bouts in limbo (Barriault & Jacobe Smith, whose opponents withdrew with no
 // replacement yet), and the fighters who stayed. Withdrawn/moved fighters
