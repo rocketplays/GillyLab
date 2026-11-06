@@ -138189,6 +138189,500 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // by either of the two named methods. Placed after `method`, before
   // `roundProps`, to match the tab order in the UI.
   const MANUAL_PROP_ODDS = {
+    // UFC Fight Night Nov 7 2026 (Cortes Acosta vs. Walker) -- fightodds.io, current prices, Nov 6 2026
+    // (fanduel/draftkings/betmgm/betonlineag/bovada). Method/double-chance/round props always fill in; ML and
+    // round totals only fill books missing from the live feed. Parsons vs Henrique appears under two keys
+    // because the feed lists him twice (as 'Jose Souza' and 'Jose Henrique'). Bashi-Calderon: only betonlineag
+    // priced method props.
+    // Waldo Cortes-Acosta vs Johnny Walker (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'cortes-acosta|walker': {
+      rounds: 5,
+      ml: {
+        betmgm:      { f1: -225, f2: 185 },
+      },
+      method: {
+        fanduel:     { f1: { ko: -120, sub: 1700, dec: 500 }, f2: { ko: 350, sub: 1200, dec: 1100 } },
+        draftkings:  { f1: { ko: -120, sub: 1800, dec: 450 }, f2: { ko: 300, sub: 1100, dec: 1100 } },
+        betmgm:      { f1: { ko: -120, sub: 1800, dec: 450 }, f2: { ko: 250, sub: 900, dec: 1100 } },
+        betonlineag: { f1: { ko: -115, sub: 2000, dec: 475 }, f2: { ko: 300, sub: 800, dec: 700 } },
+        bovada:      { f1: { ko: -125, sub: 1800, dec: 450 }, f2: { ko: 300, sub: 1200, dec: 1100 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -150, koDec: -220, subDec: 410 }, f2: { koSub: 250, koDec: 240, subDec: 600 } },
+        draftkings:  { f1: { koSub: -125, koDec: -210, subDec: 330 }, f2: { koSub: 240, koDec: 215, subDec: 550 } },
+        betmgm:      { f1: { koSub: -135 }, f2: { koSub: 225 } },
+        betonlineag: { f1: { koDec: -190, subDec: 350 }, f2: { koDec: 190, subDec: 350 } },
+        bovada:      { f1: { koSub: -135, koDec: -220, subDec: 330 }, f2: { koSub: 250, koDec: 220, subDec: 550 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 380, r2: 470, r3: 700, r4: 1300, r5: 1800 }, f2: { r1: 850, r2: 1200, r3: 1600, r4: 2200, r5: 3300 } },
+        draftkings:  { f1: { r1: 330, r2: 450, r3: 750, r4: 1100, r5: 1800 }, f2: { r1: 800, r2: 1000, r3: 1400, r4: 1800, r5: 2500 } },
+        betmgm:      { f1: { r1: 300, r2: 450, r3: 775, r4: 1450, r5: 2200 }, f2: { r1: 550, r2: 800, r3: 1250, r4: 2200, r5: 3500 } },
+        betonlineag: { f1: { r1: 350, r2: 500, r3: 700, r4: 1200, r5: 1800 }, f2: { r1: 700, r2: 900, r3: 1200, r4: 1800, r5: 2500 } },
+        bovada:      { f1: { r1: 350, r2: 500, r3: 800, r4: 1200, r5: 1800 }, f2: { r1: 800, r2: 1100, r3: 1700, r4: 2500, r5: 3300 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 120, under: -146 },
+          betmgm:      { over: -105, under: -125 },
+        },
+      },
+    },
+    // Virna Jandiroba vs Tatiana Suarez (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'jandiroba|suarez': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 180, f2: -220 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 2700, sub: 750, dec: 280 }, f2: { ko: 1100, sub: 700, dec: -110 } },
+        draftkings:  { f1: { ko: 2500, sub: 750, dec: 275 }, f2: { ko: 1100, sub: 650, dec: -120 } },
+        betmgm:      { f1: { ko: 2500, sub: 750, dec: 275 }, f2: { ko: 1000, sub: 450, dec: -120 } },
+        betonlineag: { f1: { ko: 2500, sub: 600, dec: 235 }, f2: { ko: 1250, sub: 650, dec: -125 } },
+        bovada:      { f1: { ko: 2500, sub: 750, dec: 275 }, f2: { ko: 1100, sub: 600, dec: -125 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 650, koDec: 240, subDec: 175 }, f2: { koSub: 450, koDec: -150, subDec: -175 } },
+        draftkings:  { f1: { koSub: 650, koDec: 225, subDec: 175 }, f2: { koSub: 400, koDec: -165, subDec: -200 } },
+        betmgm:      { f1: { koSub: 650 }, f2: { koSub: 400 } },
+        betonlineag: { f1: { koDec: 210, subDec: 180 }, f2: { koDec: -130, subDec: -175 } },
+        bovada:      { f1: { koSub: 650, koDec: 225, subDec: 175 }, f2: { koSub: 400, koDec: -170, subDec: -195 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1400, r2: 2000, r3: 2700 }, f2: { r1: 1000, r2: 1400, r3: 2200 } },
+        draftkings:  { f1: { r1: 1200, r2: 1800, r3: 2500 }, f2: { r1: 850, r2: 1200, r3: 1800 } },
+        betmgm:      { f1: { r1: 1400, r2: 2000, r3: 4000 }, f2: { r1: 775, r2: 1100, r3: 2200 } },
+        betonlineag: { f1: { r1: 1250, r2: 1800, r3: 2500 }, f2: { r1: 800, r2: 1000, r3: 1400 } },
+        bovada:      { f1: { r1: 1300, r2: 1700, r3: 2500 }, f2: { r1: 1100, r2: 1400, r3: 2000 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -370, under: 280 },
+        },
+      },
+    },
+    // Davey Grant vs Elijah Smith (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'grant|smith': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 260, f2: -325 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 700, sub: 1500, dec: 500 }, f2: { ko: 195, sub: 480, dec: 240 } },
+        draftkings:  { f1: { ko: 800, sub: 1600, dec: 500 }, f2: { ko: 175, sub: 400, dec: 215 } },
+        betmgm:      { f1: { ko: 800, sub: 1600, dec: 450 }, f2: { ko: 175, sub: 400, dec: 200 } },
+        betonlineag: { f1: { ko: 600, sub: 1100, dec: 600 }, f2: { ko: 200, sub: 385, dec: 200 } },
+        bovada:      { f1: { ko: 900, sub: 1800, dec: 550 }, f2: { ko: 180, sub: 450, dec: 225 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 500, koDec: 280, subDec: 400 }, f2: { koSub: -105, koDec: -165, subDec: 120 } },
+        draftkings:  { f1: { koSub: 600, koDec: 275, subDec: 350 }, f2: { koSub: 100, koDec: -200, subDec: 110 } },
+        betmgm:      { f1: { koSub: 600 }, f2: { koSub: 100 } },
+        betonlineag: { f1: { koDec: 255, subDec: 300 }, f2: { koDec: -125, subDec: 140 } },
+        bovada:      { f1: { koSub: 650, koDec: 300, subDec: 350 }, f2: { koSub: -110, koDec: -185, subDec: 110 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1200, r2: 1600, r3: 2500 }, f2: { r1: 320, r2: 500, r3: 750 } },
+        draftkings:  { f1: { r1: 1200, r2: 1600, r3: 2200 }, f2: { r1: 275, r2: 400, r3: 750 } },
+        betmgm:      { f1: { r1: 1050, r2: 1600, r3: 2200 }, f2: { r1: 250, r2: 425, r3: 625 } },
+        betonlineag: { f1: { r1: 800, r2: 1100, r3: 1400 }, f2: { r1: 300, r2: 450, r3: 750 } },
+        bovada:      { f1: { r1: 900, r2: 1300, r3: 2000 }, f2: { r1: 290, r2: 450, r3: 750 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 102, under: -122 },
+          betmgm:      { over: -110, under: -120 },
+        },
+      },
+    },
+    // Billy Elekana vs Lucas Fernando (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'elekana|fernando': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 275, f2: -350 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 1000, sub: 800, dec: 650 }, f2: { ko: 165, sub: 650, dec: 220 } },
+        draftkings:  { f1: { ko: 1100, sub: 900, dec: 600 }, f2: { ko: 150, sub: 650, dec: 185 } },
+        betmgm:      { f1: { ko: 1000, sub: 800, dec: 650 }, f2: { ko: 125, sub: 650, dec: 200 } },
+        betonlineag: { f1: { ko: 1000, sub: 650, dec: 575 }, f2: { ko: 165, sub: 700, dec: 175 } },
+        bovada:      { f1: { ko: 1000, sub: 800, dec: 650 }, f2: { ko: 140, sub: 650, dec: 200 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 470, koDec: 410, subDec: 360 }, f2: { koSub: 100, koDec: -210, subDec: 130 } },
+        draftkings:  { f1: { koSub: 500, koDec: 350, subDec: 330 }, f2: { koSub: 110, koDec: -275, subDec: 120 } },
+        betmgm:      { f1: { koSub: 500 }, f2: { koSub: 100 } },
+        betonlineag: { f1: { koDec: 355, subDec: 275 }, f2: { koDec: -235, subDec: 125 } },
+        bovada:      { f1: { koSub: 500, koDec: 350, subDec: 330 }, f2: { koSub: 100, koDec: -275, subDec: 120 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1100, r2: 1600, r3: 2000 }, f2: { r1: 300, r2: 500, r3: 850 } },
+        draftkings:  { f1: { r1: 1000, r2: 1600, r3: 2200 }, f2: { r1: 250, r2: 450, r3: 750 } },
+        betmgm:      { f1: { r1: 800, r2: 1400, r3: 2200 }, f2: { r1: 225, r2: 450, r3: 750 } },
+        betonlineag: { f1: { r1: 1000, r2: 1200, r3: 1600 }, f2: { r1: 300, r2: 450, r3: 725 } },
+        bovada:      { f1: { r1: 1000, r2: 1500, r3: 2200 }, f2: { r1: 300, r2: 475, r3: 750 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 106, under: -128 },
+          betmgm:      { over: 100, under: -135 },
+        },
+      },
+    },
+    // Nina Milosevic vs Priscila Cachoeira (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'cachoeira|milošević': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 400, f2: -550 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 600, sub: 2700, dec: 1100 }, f2: { ko: 165, sub: 185, dec: 500 } },
+        draftkings:  { f1: { ko: 750, sub: 2800, dec: 1000 }, f2: { ko: 150, sub: 150, dec: 450 } },
+        betmgm:      { f1: { ko: 700, sub: 2500, dec: 1100 }, f2: { ko: 150, sub: 150, dec: 400 } },
+        betonlineag: { f1: { ko: 475, sub: 2500, dec: 950 }, f2: { ko: 175, sub: 175, dec: 400 } },
+        bovada:      { f1: { ko: 750, sub: 2200, dec: 1100 }, f2: { ko: 175, sub: 165, dec: 385 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 550, koDec: 410, subDec: 950 }, f2: { koSub: -250, koDec: -115, subDec: -105 } },
+        draftkings:  { f1: { koSub: 650, koDec: 400, subDec: 700 }, f2: { koSub: -250, koDec: -130, subDec: -130 } },
+        betmgm:      { f1: { koSub: 600 }, f2: { koSub: -250 } },
+        betonlineag: { f1: { koDec: 315, subDec: 900 }, f2: { koDec: -125, subDec: -125 } },
+        bovada:      { f1: { koSub: 600, koDec: 450, subDec: 800 }, f2: { koSub: -225, koDec: -125, subDec: -115 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1100, r2: 2000, r3: 2200 }, f2: { r1: 155, r2: 420, r3: 500 } },
+        draftkings:  { f1: { r1: 1200, r2: 1800, r3: 2500 }, f2: { r1: 130, r2: 350, r3: 650 } },
+        betonlineag: { f1: { r1: 900, r2: 1100, r3: 1500 }, f2: { r1: 150, r2: 350, r3: 675 } },
+        bovada:      { f1: { r1: 1200, r2: 1700, r3: 2500 }, f2: { r1: 180, r2: 320, r3: 575 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -106, under: -116 },
+          betmgm:      { over: -120, under: -110 },
+        },
+      },
+    },
+    // Mitch Raposo vs Marcos Degli (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'degli|raposo': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -250, f2: 200 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 300, sub: 500, dec: 200 }, f2: { ko: 600, sub: 1200, dec: 450 } },
+        draftkings:  { f1: { ko: 250, sub: 450, dec: 180 }, f2: { ko: 650, sub: 1200, dec: 450 } },
+        betmgm:      { f1: { ko: 250, sub: 450, dec: 175 }, f2: { ko: 600, sub: 1100, dec: 450 } },
+        betonlineag: { f1: { ko: 300, sub: 400, dec: 190 }, f2: { ko: 550, sub: 1000, dec: 400 } },
+        bovada:      { f1: { ko: 275, sub: 450, dec: 185 }, f2: { ko: 600, sub: 1200, dec: 450 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 145, koDec: -135, subDec: 105 }, f2: { koSub: 410, koDec: 220, subDec: 320 } },
+        draftkings:  { f1: { koSub: 140, koDec: -170, subDec: -110 }, f2: { koSub: 450, koDec: 225, subDec: 300 } },
+        betmgm:      { f1: { koSub: 150 }, f2: { koSub: 400 } },
+        betonlineag: { f1: { koDec: -110, subDec: 105 }, f2: { koDec: 215, subDec: 350 } },
+        bovada:      { f1: { koSub: 155, koDec: -150, subDec: 100 }, f2: { koSub: 400, koDec: 250, subDec: 300 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 450, r2: 650, r3: 850 }, f2: { r1: 950, r2: 1400, r3: 1900 } },
+        draftkings:  { f1: { r1: 330, r2: 550, r3: 850 }, f2: { r1: 900, r2: 1200, r3: 1800 } },
+        betmgm:      { f1: { r1: 325, r2: 600, r3: 750 }, f2: { r1: 775, r2: 1300, r3: 1650 } },
+        betonlineag: { f1: { r1: 350, r2: 525, r3: 750 }, f2: { r1: 900, r2: 1100, r3: 1600 } },
+        bovada:      { f1: { r1: 390, r2: 575, r3: 1000 }, f2: { r1: 900, r2: 1300, r3: 2000 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -126, under: 104 },
+          betmgm:      { over: -135, under: 100 },
+        },
+      },
+    },
+    // Ollie Schmid vs Keiichiro Nakamura (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'nakamura|schmid': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -375, f2: 300 },
+      },
+      method: {
+        fanduel:     { f1: { ko: -140, sub: 1200, dec: 480 }, f2: { ko: 700, sub: 2700, dec: 600 } },
+        draftkings:  { f1: { ko: -175, sub: 1000, dec: 450 }, f2: { ko: 800, sub: 2800, dec: 550 } },
+        betmgm:      { f1: { ko: -190, sub: 800, dec: 500 }, f2: { ko: 750, sub: 2500, dec: 550 } },
+        betonlineag: { f1: { ko: -175, sub: 1000, dec: 550 }, f2: { ko: 600, sub: 2000, dec: 500 } },
+        bovada:      { f1: { ko: -175, sub: 1000, dec: 500 }, f2: { ko: 800, sub: 2500, dec: 550 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -185, koDec: -290, subDec: 330 }, f2: { koSub: 600, koDec: 300, subDec: 500 } },
+        draftkings:  { f1: { koSub: -200, koDec: -350, subDec: 275 }, f2: { koSub: 700, koDec: 300, subDec: 450 } },
+        betmgm:      { f1: { koSub: -220 }, f2: { koSub: 600 } },
+        betonlineag: { f1: { koDec: -275, subDec: 290 }, f2: { koDec: 300, subDec: 425 } },
+        bovada:      { f1: { koSub: -200, koDec: -350, subDec: 300 }, f2: { koSub: 600, koDec: 300, subDec: 450 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 185, r2: 410, r3: 650 }, f2: { r1: 1500, r2: 1900, r3: 2200 } },
+        draftkings:  { f1: { r1: 175, r2: 330, r3: 550 }, f2: { r1: 1400, r2: 2000, r3: 2500 } },
+        betonlineag: { f1: { r1: 150, r2: 300, r3: 625 }, f2: { r1: 1200, r2: 1600, r3: 2000 } },
+        bovada:      { f1: { r1: 200, r2: 320, r3: 550 }, f2: { r1: 1300, r2: 1800, r3: 2800 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -124, under: 102 },
+          betmgm:      { over: -140, under: 105 },
+        },
+      },
+    },
+    // Thomas Petersen vs Gabriel Lourenco (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'lourenco|petersen': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 145, f2: -180 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 250, sub: 2000, dec: 650 }, f2: { ko: 260, sub: 700, dec: 260 } },
+        draftkings:  { f1: { ko: 250, sub: 2000, dec: 650 }, f2: { ko: 200, sub: 600, dec: 275 } },
+        betmgm:      { f1: { ko: 250, sub: 2000, dec: 600 }, f2: { ko: 175, sub: 750, dec: 250 } },
+        betonlineag: { f1: { ko: 235, sub: 2500, dec: 550 }, f2: { ko: 265, sub: 500, dec: 225 } },
+        bovada:      { f1: { ko: 250, sub: 2000, dec: 600 }, f2: { ko: 225, sub: 750, dec: 250 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 210, koDec: 150, subDec: 500 }, f2: { koSub: 160, koDec: -125, subDec: 155 } },
+        draftkings:  { f1: { koSub: 225, koDec: 150, subDec: 450 }, f2: { koSub: 140, koDec: -140, subDec: 150 } },
+        betmgm:      { f1: { koSub: 225 }, f2: { koSub: 150 } },
+        betonlineag: { f1: { koDec: 150, subDec: 500 }, f2: { koDec: -110, subDec: 125 } },
+        bovada:      { f1: { koSub: 245, koDec: 155, subDec: 450 }, f2: { koSub: 150, koDec: -135, subDec: 175 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 500, r2: 850, r3: 1400 }, f2: { r1: 500, r2: 550, r3: 1000 } },
+        draftkings:  { f1: { r1: 400, r2: 800, r3: 1400 }, f2: { r1: 275, r2: 550, r3: 1000 } },
+        betonlineag: { f1: { r1: 500, r2: 750, r3: 1250 }, f2: { r1: 400, r2: 525, r3: 800 } },
+        bovada:      { f1: { r1: 525, r2: 800, r3: 1300 }, f2: { r1: 375, r2: 575, r3: 1000 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 120, under: -146 },
+          betmgm:      { over: 110, under: -150 },
+        },
+      },
+    },
+    // Karine Silva vs Gabriella Fernandes (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'fernandes|silva': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 200, f2: -250 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 1200, sub: 1200, dec: 310 }, f2: { ko: 750, sub: 280, dec: 175 } },
+        draftkings:  { f1: { ko: 1200, sub: 1200, dec: 300 }, f2: { ko: 700, sub: 240, dec: 165 } },
+        betmgm:      { f1: { ko: 1200, sub: 1200, dec: 300 }, f2: { ko: 750, sub: 200, dec: 150 } },
+        betonlineag: { f1: { ko: 1200, sub: 1200, dec: 275 }, f2: { ko: 700, sub: 240, dec: 150 } },
+        bovada:      { f1: { ko: 1200, sub: 1200, dec: 300 }, f2: { ko: 800, sub: 265, dec: 150 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 650, koDec: 220, subDec: 220 }, f2: { koSub: 175, koDec: 110, subDec: -165 } },
+        draftkings:  { f1: { koSub: 650, koDec: 215, subDec: 215 }, f2: { koSub: 165, koDec: 100, subDec: -200 } },
+        betmgm:      { f1: { koSub: 650 }, f2: { koSub: 175 } },
+        betonlineag: { f1: { koDec: 250, subDec: 250 }, f2: { koDec: 110, subDec: -190 } },
+        bovada:      { f1: { koSub: 650, koDec: 225, subDec: 225 }, f2: { koSub: 185, koDec: 115, subDec: -185 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1600, r2: 2000, r3: 2200 }, f2: { r1: 500, r2: 700, r3: 1100 } },
+        draftkings:  { f1: { r1: 1200, r2: 1800, r3: 2500 }, f2: { r1: 350, r2: 650, r3: 900 } },
+        betonlineag: { f1: { r1: 1400, r2: 1800, r3: 2500 }, f2: { r1: 325, r2: 650, r3: 900 } },
+        bovada:      { f1: { r1: 1300, r2: 1800, r3: 2800 }, f2: { r1: 450, r2: 700, r3: 1100 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -178, under: 144 },
+        },
+      },
+    },
+    // Jose Delano vs Murtazali Magomedov (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'delano|magomedov': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -120, f2: 100 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 410, sub: 650, dec: 270 }, f2: { ko: 550, sub: 360, dec: 460 } },
+        draftkings:  { f1: { ko: 380, sub: 600, dec: 250 }, f2: { ko: 550, sub: 330, dec: 400 } },
+        betmgm:      { f1: { ko: 350, sub: 600, dec: 250 }, f2: { ko: 550, sub: 325, dec: 400 } },
+        betonlineag: { f1: { ko: 400, sub: 700, dec: 250 }, f2: { ko: 525, sub: 275, dec: 400 } },
+        bovada:      { f1: { ko: 425, sub: 700, dec: 260 }, f2: { ko: 550, sub: 325, dec: 390 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 220, koDec: 115, subDec: 160 }, f2: { koSub: 180, koDec: 210, subDec: 160 } },
+        draftkings:  { f1: { koSub: 225, koDec: 115, subDec: 140 }, f2: { koSub: 185, koDec: 195, subDec: 140 } },
+        betmgm:      { f1: { koSub: 225 }, f2: { koSub: 175 } },
+        betonlineag: { f1: { koDec: 140, subDec: 165 }, f2: { koDec: 185, subDec: 135 } },
+        bovada:      { f1: { koSub: 250, koDec: 125, subDec: 165 }, f2: { koSub: 185, koDec: 210, subDec: 135 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 550, r2: 850, r3: 1400 }, f2: { r1: 470, r2: 750, r3: 1100 } },
+        draftkings:  { f1: { r1: 500, r2: 700, r3: 1200 }, f2: { r1: 400, r2: 650, r3: 1100 } },
+        betonlineag: { f1: { r1: 500, r2: 800, r3: 1200 }, f2: { r1: 375, r2: 650, r3: 900 } },
+        bovada:      { f1: { r1: 550, r2: 800, r3: 1300 }, f2: { r1: 390, r2: 700, r3: 1400 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 102, under: -126 },
+          betmgm:      { over: -105, under: -125 },
+        },
+      },
+    },
+    // Austin Bashi vs Carlos Calderon (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'bashi|calderon': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -550, f2: 400 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 525, sub: -120, dec: 300 }, f2: { ko: 1200, sub: 1000, dec: 750 } },
+      },
+    },
+    // Andre Petroski vs Mantas Kondratavicius (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'kondratavicius|petroski': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -300, f2: 240 },
+      },
+      method: {
+        fanduel:     { f1: { ko: -190, sub: 2000, dec: 950 }, f2: { ko: 950, sub: 600, dec: 800 } },
+        draftkings:  { f1: { ko: -175, sub: 1100, dec: 650 }, f2: { ko: 750, sub: 600, dec: 900 } },
+        betmgm:      { f1: { ko: -190, sub: 1000, dec: 650 }, f2: { ko: 750, sub: 600, dec: 900 } },
+        betonlineag: { f1: { ko: -225, sub: 1400, dec: 700 }, f2: { ko: 1200, sub: 575, dec: 650 } },
+        bovada:      { f1: { ko: -165, sub: 1200, dec: 750 }, f2: { ko: 800, sub: 625, dec: 800 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -230, koDec: -270, subDec: 700 }, f2: { koSub: 360, koDec: 450, subDec: 330 } },
+        draftkings:  { f1: { koSub: -185, koDec: -250, subDec: 380 }, f2: { koSub: 330, koDec: 380, subDec: 350 } },
+        betmgm:      { f1: { koSub: -200 }, f2: { koSub: 325 } },
+        betonlineag: { f1: { koDec: -280, subDec: 400 }, f2: { koDec: 335, subDec: 290 } },
+        bovada:      { f1: { koSub: -195, koDec: -245, subDec: 425 }, f2: { koSub: 325, koDec: 415, subDec: 365 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: -125, r2: 650, r3: 2500 }, f2: { r1: 1000, r2: 1100, r3: 1700 } },
+        draftkings:  { f1: { r1: -115, r2: 500, r3: 1600 }, f2: { r1: 450, r2: 1600, r3: 3500 } },
+        betonlineag: { f1: { r1: -125, r2: 450, r3: 1600 }, f2: { r1: 800, r2: 1200, r3: 2000 } },
+        bovada:      { f1: { r1: -117, r2: 525, r3: 2500 }, f2: { r1: 800, r2: 1200, r3: 2000 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: 182, under: -230 },
+          betmgm:      { over: 150, under: -210 },
+        },
+      },
+    },
+    // Seok Hyun Ko vs Wellington Turman (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'ko|turman': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -800, f2: 550 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 145, sub: 650, dec: 150 }, f2: { ko: 2000, sub: 1700, dec: 850 } },
+        draftkings:  { f1: { ko: 130, sub: 650, dec: 130 }, f2: { ko: 2200, sub: 1800, dec: 900 } },
+        betmgm:      { f1: { ko: 125, sub: 600, dec: 125 }, f2: { ko: 2000, sub: 1700, dec: 900 } },
+        betonlineag: { f1: { ko: 155, sub: 700, dec: 125 }, f2: { ko: 1600, sub: 1000, dec: 650 } },
+        bovada:      { f1: { ko: 130, sub: 650, dec: 125 }, f2: { ko: 2200, sub: 1800, dec: 900 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -115, koDec: -350, subDec: -110 }, f2: { koSub: 1100, koDec: 650, subDec: 600 } },
+        draftkings:  { f1: { koSub: -105, koDec: -600, subDec: -105 }, f2: { koSub: 1100, koDec: 600, subDec: 550 } },
+        betmgm:      { f1: { koSub: -110 }, f2: { koSub: 1100 } },
+        betonlineag: { f1: { koDec: -500, subDec: -125 }, f2: { koDec: 600, subDec: 575 } },
+        bovada:      { f1: { koSub: 100, koDec: -550, subDec: -105 }, f2: { koSub: 950, koDec: 600, subDec: 600 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 260, r2: 480, r3: 900 }, f2: { r1: 2500, r2: 3000, r3: 3500 } },
+        draftkings:  { f1: { r1: 255, r2: 450, r3: 800 }, f2: { r1: 2500, r2: 2800, r3: 3500 } },
+        betonlineag: { f1: { r1: 275, r2: 500, r3: 700 }, f2: { r1: 1400, r2: 1800, r3: 2500 } },
+        bovada:      { f1: { r1: 270, r2: 450, r3: 800 }, f2: { r1: 2200, r2: 3300, r3: 3300 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -112, under: -108 },
+          betmgm:      { over: -125, under: -105 },
+        },
+      },
+    },
+    // Jose Henrique vs Johnny Parsons (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'henrique|parsons': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: -230, f2: 184 },
+        betmgm:      { f1: -250, f2: 200 },
+        betonlineag: { f1: -255, f2: 212 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 155, sub: 900, dec: 290 }, f2: { ko: 460, sub: 2500, dec: 470 } },
+        draftkings:  { f1: { ko: 140, sub: 900, dec: 250 }, f2: { ko: 450, sub: 2500, dec: 450 } },
+        betmgm:      { f1: { ko: 125, sub: 900, dec: 250 }, f2: { ko: 450, sub: 2500, dec: 450 } },
+        betonlineag: { f1: { ko: 150, sub: 900, dec: 225 }, f2: { ko: 375, sub: 2500, dec: 450 } },
+        bovada:      { f1: { ko: 140, sub: 900, dec: 240 }, f2: { ko: 450, sub: 2500, dec: 475 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 105, koDec: -175, subDec: 195 }, f2: { koSub: 390, koDec: 195, subDec: 410 } },
+        draftkings:  { f1: { koSub: 110, koDec: -210, subDec: 165 }, f2: { koSub: 400, koDec: 195, subDec: 400 } },
+        betmgm:      { f1: { koSub: 100 }, f2: { koSub: 400 } },
+        betonlineag: { f1: { koDec: -175, subDec: 150 }, f2: { koDec: 200, subDec: 400 } },
+        bovada:      { f1: { koSub: 110, koDec: -210, subDec: 165 }, f2: { koSub: 400, koDec: 195, subDec: 400 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 300, r2: 550, r3: 950 }, f2: { r1: 1000, r2: 1200, r3: 1900 } },
+        draftkings:  { f1: { r1: 275, r2: 450, r3: 750 }, f2: { r1: 850, r2: 1100, r3: 1800 } },
+        betonlineag: { f1: { r1: 325, r2: 500, r3: 700 }, f2: { r1: 800, r2: 1000, r3: 1400 } },
+        bovada:      { f1: { r1: 325, r2: 500, r3: 850 }, f2: { r1: 850, r2: 1200, r3: 2000 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 114, under: -138 },
+          betmgm:      { over: 120, under: -155 },
+          betonlineag: { over: 116, under: -135 },
+        },
+      },
+    },
+    // Jose Souza vs Johnny Parsons (Nov 7 UFC Fight Night) -- fightodds.io, current prices
+    'parsons|souza': {
+      rounds: 3,
+      ml: {
+        draftkings:  { f1: 190, f2: -230 },
+        betmgm:      { f1: 200, f2: -250 },
+        bovada:      { f1: 195, f2: -235 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 460, sub: 2500, dec: 470 }, f2: { ko: 155, sub: 900, dec: 290 } },
+        draftkings:  { f1: { ko: 450, sub: 2500, dec: 450 }, f2: { ko: 140, sub: 900, dec: 250 } },
+        betmgm:      { f1: { ko: 450, sub: 2500, dec: 450 }, f2: { ko: 125, sub: 900, dec: 250 } },
+        betonlineag: { f1: { ko: 375, sub: 2500, dec: 450 }, f2: { ko: 150, sub: 900, dec: 225 } },
+        bovada:      { f1: { ko: 450, sub: 2500, dec: 475 }, f2: { ko: 140, sub: 900, dec: 240 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 390, koDec: 195, subDec: 410 }, f2: { koSub: 105, koDec: -175, subDec: 195 } },
+        draftkings:  { f1: { koSub: 400, koDec: 195, subDec: 400 }, f2: { koSub: 110, koDec: -210, subDec: 165 } },
+        betmgm:      { f1: { koSub: 400 }, f2: { koSub: 100 } },
+        betonlineag: { f1: { koDec: 200, subDec: 400 }, f2: { koDec: -175, subDec: 150 } },
+        bovada:      { f1: { koSub: 400, koDec: 195, subDec: 400 }, f2: { koSub: 110, koDec: -210, subDec: 165 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1000, r2: 1200, r3: 1900 }, f2: { r1: 300, r2: 550, r3: 950 } },
+        draftkings:  { f1: { r1: 850, r2: 1100, r3: 1800 }, f2: { r1: 275, r2: 450, r3: 750 } },
+        betonlineag: { f1: { r1: 800, r2: 1000, r3: 1400 }, f2: { r1: 325, r2: 500, r3: 700 } },
+        bovada:      { f1: { r1: 850, r2: 1200, r3: 2000 }, f2: { r1: 325, r2: 500, r3: 850 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -1100, under: 550 },
+          bovada:      { over: -1000, under: 550 },
+        },
+        '1.5': {
+          bovada:      { over: -210, under: 160 },
+        },
+        '2.5': {
+          fanduel:     { over: 114, under: -138 },
+          draftkings:  { over: 114, under: -145 },
+          betmgm:      { over: 120, under: -155 },
+          bovada:      { over: 110, under: -145 },
+        },
+      },
+    },
     // UFC Fight Night Oct 31 2026 (Moicano vs. Nolan) -- fightodds.io, current prices, Oct 29-30 2026
     // (fanduel/draftkings/betmgm/betonlineag/bovada). Method/double-chance/round props always fill in; ML and
     // round totals only fill books missing from the live feed. Dropped outliers: betonlineag r1/r2 for
@@ -145817,6 +146311,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'alex volkanovski': 'Alexander Volkanovski',
     // Odds feed spells it Jeongyoung; DB / ESPN profile is JeongYeong Lee.
     'jeongyoung lee': 'JeongYeong Lee',
+    // Odds feed spells it Lourenco; DB / ESPN profile is Gabriel Lorenço.
+    'gabriel lourenco': 'Gabriel Lorenço',
     'beatriz mesquita': 'Bia Mesquita',
     // Odds feed drops the generational suffix our DB keeps.
     'kai kamaka': 'Kai Kamaka III',
