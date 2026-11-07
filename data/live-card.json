@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T22:50:25.223Z",
+ "generatedAt": "2026-11-07T23:06:22.768Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -5262,6 +5262,194 @@
       ]
      },
      "capturedAt": "2026-11-07T22:50:25.068Z"
+    }
+   ]
+  },
+  "Mantas Kondratavičius": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Andre Petroski",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "4:39",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Andre Petroski",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 23,
+      "sigA": 48,
+      "totL": 35,
+      "totA": 60,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:58",
+      "head": [
+       17,
+       38
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       21,
+       44
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 75,
+      "sigA": 108,
+      "totL": 86,
+      "totA": 121,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:18",
+      "head": [
+       70,
+       101
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       16,
+       40
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       59,
+       68
+      ]
+     },
+     "capturedAt": "2026-11-07T23:06:22.619Z"
+    }
+   ]
+  },
+  "Andre Petroski": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Mantas Kondratavičius",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "4:39",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Mantas Kondratavičius",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 75,
+      "sigA": 108,
+      "totL": 86,
+      "totA": 121,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:18",
+      "head": [
+       70,
+       101
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       16,
+       40
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       59,
+       68
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 23,
+      "sigA": 48,
+      "totL": 35,
+      "totA": 60,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:58",
+      "head": [
+       17,
+       38
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       21,
+       44
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "capturedAt": "2026-11-07T23:06:22.619Z"
     }
    ]
   }
