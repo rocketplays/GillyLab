@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T22:19:22.714Z",
+ "generatedAt": "2026-11-07T22:50:25.223Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -5074,6 +5074,194 @@
       ]
      },
      "capturedAt": "2026-11-07T22:19:22.552Z"
+    }
+   ]
+  },
+  "Seokhyeon Ko": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Wellington Turman",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Wellington Turman",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 98,
+      "totL": 99,
+      "totA": 148,
+      "tdL": 6,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "9:01",
+      "head": [
+       36,
+       77
+      ],
+      "body": [
+       13,
+       16
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       32,
+       66
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       19,
+       28
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 36,
+      "sigA": 76,
+      "totL": 74,
+      "totA": 117,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       20,
+       55
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       35,
+       75
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-07T22:50:25.068Z"
+    }
+   ]
+  },
+  "Wellington Turman": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Seokhyeon Ko",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Seokhyeon Ko",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 36,
+      "sigA": 76,
+      "totL": 74,
+      "totA": 117,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       20,
+       55
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       35,
+       75
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 98,
+      "totL": 99,
+      "totA": 148,
+      "tdL": 6,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "9:01",
+      "head": [
+       36,
+       77
+      ],
+      "body": [
+       13,
+       16
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       32,
+       66
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       19,
+       28
+      ]
+     },
+     "capturedAt": "2026-11-07T22:50:25.068Z"
     }
    ]
   }
