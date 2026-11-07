@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T23:11:51.638Z",
+ "generatedAt": "2026-11-07T23:22:21.435Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -5450,6 +5450,194 @@
       ]
      },
      "capturedAt": "2026-11-07T23:06:22.619Z"
+    }
+   ]
+  },
+  "Austin Bashi": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Carlos Calderon",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "1:07",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Carlos Calderon",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 8,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       1,
+       5
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       2,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 6,
+      "totL": 1,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       6
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-07T23:22:21.286Z"
+    }
+   ]
+  },
+  "Carlos Calderon": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Austin Bashi",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "1:07",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Austin Bashi",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 6,
+      "totL": 1,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       6
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 6,
+      "totL": 3,
+      "totA": 8,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       1,
+       5
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       2,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-07T23:22:21.286Z"
     }
    ]
   }
