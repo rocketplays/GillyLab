@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T23:22:21.435Z",
+ "generatedAt": "2026-11-07T23:53:17.912Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -5638,6 +5638,194 @@
       ]
      },
      "capturedAt": "2026-11-07T23:22:21.286Z"
+    }
+   ]
+  },
+  "Jose Delano": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Murtazali Magomedov",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Murtazali Magomedov",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 86,
+      "sigA": 178,
+      "totL": 102,
+      "totA": 196,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:27",
+      "head": [
+       44,
+       132
+      ],
+      "body": [
+       17,
+       21
+      ],
+      "leg": [
+       25,
+       25
+      ],
+      "dist": [
+       68,
+       154
+      ],
+      "clinch": [
+       18,
+       24
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 43,
+      "sigA": 93,
+      "totL": 63,
+      "totA": 116,
+      "tdL": 4,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:30",
+      "head": [
+       27,
+       72
+      ],
+      "body": [
+       11,
+       15
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       25,
+       71
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       10,
+       13
+      ]
+     },
+     "capturedAt": "2026-11-07T23:53:17.761Z"
+    }
+   ]
+  },
+  "Murtazali Magomedov": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Jose Delano",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Jose Delano",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 43,
+      "sigA": 93,
+      "totL": 63,
+      "totA": 116,
+      "tdL": 4,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:30",
+      "head": [
+       27,
+       72
+      ],
+      "body": [
+       11,
+       15
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       25,
+       71
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       10,
+       13
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 86,
+      "sigA": 178,
+      "totL": 102,
+      "totA": 196,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:27",
+      "head": [
+       44,
+       132
+      ],
+      "body": [
+       17,
+       21
+      ],
+      "leg": [
+       25,
+       25
+      ],
+      "dist": [
+       68,
+       154
+      ],
+      "clinch": [
+       18,
+       24
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-07T23:53:17.761Z"
     }
    ]
   }
