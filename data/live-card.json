@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T02:13:14.944Z",
+ "generatedAt": "2026-11-08T02:43:47.859Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -6766,6 +6766,194 @@
       ]
      },
      "capturedAt": "2026-11-08T02:13:14.797Z"
+    }
+   ]
+  },
+  "Billy Elekana": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Lucas Fernando",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Lucas Fernando",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 39,
+      "totL": 39,
+      "totA": 65,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:59",
+      "head": [
+       19,
+       38
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       10,
+       28
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 64,
+      "sigA": 106,
+      "totL": 92,
+      "totA": 139,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:51",
+      "head": [
+       26,
+       64
+      ],
+      "body": [
+       32,
+       36
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       44,
+       79
+      ],
+      "clinch": [
+       20,
+       27
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-08T02:43:47.701Z"
+    }
+   ]
+  },
+  "Lucas Fernando": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Billy Elekana",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Billy Elekana",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 64,
+      "sigA": 106,
+      "totL": 92,
+      "totA": 139,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:51",
+      "head": [
+       26,
+       64
+      ],
+      "body": [
+       32,
+       36
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       44,
+       79
+      ],
+      "clinch": [
+       20,
+       27
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 39,
+      "totL": 39,
+      "totA": 65,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:59",
+      "head": [
+       19,
+       38
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       10,
+       28
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "capturedAt": "2026-11-08T02:43:47.701Z"
     }
    ]
   }
