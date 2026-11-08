@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T23:53:17.912Z",
+ "generatedAt": "2026-11-08T00:08:47.634Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -5826,6 +5826,194 @@
       ]
      },
      "capturedAt": "2026-11-07T23:53:17.761Z"
+    }
+   ]
+  },
+  "Karine Silva": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Gabriella Fernandes",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Gabriella Fernandes",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 49,
+      "sigA": 106,
+      "totL": 149,
+      "totA": 209,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:06",
+      "head": [
+       27,
+       81
+      ],
+      "body": [
+       15,
+       18
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       27,
+       80
+      ],
+      "clinch": [
+       20,
+       21
+      ],
+      "ground": [
+       2,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 84,
+      "totL": 63,
+      "totA": 130,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:09",
+      "head": [
+       16,
+       67
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       22,
+       78
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-08T00:08:47.484Z"
+    }
+   ]
+  },
+  "Gabriella Fernandes": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Karine Silva",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Karine Silva",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 84,
+      "totL": 63,
+      "totA": 130,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:09",
+      "head": [
+       16,
+       67
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       22,
+       78
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 49,
+      "sigA": 106,
+      "totL": 149,
+      "totA": 209,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:06",
+      "head": [
+       27,
+       81
+      ],
+      "body": [
+       15,
+       18
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       27,
+       80
+      ],
+      "clinch": [
+       20,
+       21
+      ],
+      "ground": [
+       2,
+       5
+      ]
+     },
+     "capturedAt": "2026-11-08T00:08:47.484Z"
     }
    ]
   }
