@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T03:42:35.028Z",
+ "generatedAt": "2026-11-08T04:13:06.854Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -7330,6 +7330,194 @@
       ]
      },
      "capturedAt": "2026-11-08T03:42:34.911Z"
+    }
+   ]
+  },
+  "Waldo Cortes Acosta": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Johnny Walker",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "2:27",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Johnny Walker",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 40,
+      "sigA": 89,
+      "totL": 67,
+      "totA": 117,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:24",
+      "head": [
+       36,
+       85
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       28,
+       71
+      ],
+      "clinch": [
+       10,
+       15
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 51,
+      "sigA": 77,
+      "totL": 61,
+      "totA": 87,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       17,
+       42
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       23,
+       23
+      ],
+      "dist": [
+       45,
+       68
+      ],
+      "clinch": [
+       5,
+       8
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-11-08T04:13:06.753Z"
+    }
+   ]
+  },
+  "Johnny Walker": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Waldo Cortes Acosta",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "2:27",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Waldo Cortes Acosta",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 51,
+      "sigA": 77,
+      "totL": 61,
+      "totA": 87,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       17,
+       42
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       23,
+       23
+      ],
+      "dist": [
+       45,
+       68
+      ],
+      "clinch": [
+       5,
+       8
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 40,
+      "sigA": 89,
+      "totL": 67,
+      "totA": 117,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:24",
+      "head": [
+       36,
+       85
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       28,
+       71
+      ],
+      "clinch": [
+       10,
+       15
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-11-08T04:13:06.753Z"
     }
    ]
   }
