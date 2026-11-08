@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T01:11:16.511Z",
+ "generatedAt": "2026-11-08T01:41:50.762Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -6390,6 +6390,194 @@
       ]
      },
      "capturedAt": "2026-11-08T01:11:16.359Z"
+    }
+   ]
+  },
+  "Mitch Raposo": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Marcos Degli",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Marcos Degli",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 61,
+      "sigA": 176,
+      "totL": 62,
+      "totA": 177,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       33,
+       138
+      ],
+      "body": [
+       20,
+       29
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       61,
+       176
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 144,
+      "totL": 44,
+      "totA": 148,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:27",
+      "head": [
+       25,
+       123
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       11,
+       14
+      ],
+      "dist": [
+       40,
+       144
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-08T01:41:50.611Z"
+    }
+   ]
+  },
+  "Marcos Degli": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Mitch Raposo",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Mitch Raposo",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 144,
+      "totL": 44,
+      "totA": 148,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:27",
+      "head": [
+       25,
+       123
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       11,
+       14
+      ],
+      "dist": [
+       40,
+       144
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 61,
+      "sigA": 176,
+      "totL": 62,
+      "totA": 177,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       33,
+       138
+      ],
+      "body": [
+       20,
+       29
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       61,
+       176
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-08T01:41:50.611Z"
     }
    ]
   }
