@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T00:40:15.747Z",
+ "generatedAt": "2026-11-08T01:11:16.511Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -6202,6 +6202,194 @@
       ]
      },
      "capturedAt": "2026-11-08T00:40:15.595Z"
+    }
+   ]
+  },
+  "Keiichiro Nakamura": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Ollie Schmid",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Ollie Schmid",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 94,
+      "sigA": 189,
+      "totL": 101,
+      "totA": 198,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:17",
+      "head": [
+       49,
+       121
+      ],
+      "body": [
+       18,
+       37
+      ],
+      "leg": [
+       27,
+       31
+      ],
+      "dist": [
+       78,
+       167
+      ],
+      "clinch": [
+       4,
+       9
+      ],
+      "ground": [
+       12,
+       13
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 165,
+      "totL": 72,
+      "totA": 166,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:23",
+      "head": [
+       45,
+       134
+      ],
+      "body": [
+       25,
+       30
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       67,
+       157
+      ],
+      "clinch": [
+       4,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-08T01:11:16.359Z"
+    }
+   ]
+  },
+  "Ollie Schmid": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Keiichiro Nakamura",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Keiichiro Nakamura",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 165,
+      "totL": 72,
+      "totA": 166,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:23",
+      "head": [
+       45,
+       134
+      ],
+      "body": [
+       25,
+       30
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       67,
+       157
+      ],
+      "clinch": [
+       4,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 94,
+      "sigA": 189,
+      "totL": 101,
+      "totA": 198,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:17",
+      "head": [
+       49,
+       121
+      ],
+      "body": [
+       18,
+       37
+      ],
+      "leg": [
+       27,
+       31
+      ],
+      "dist": [
+       78,
+       167
+      ],
+      "clinch": [
+       4,
+       9
+      ],
+      "ground": [
+       12,
+       13
+      ]
+     },
+     "capturedAt": "2026-11-08T01:11:16.359Z"
     }
    ]
   }
