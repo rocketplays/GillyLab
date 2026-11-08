@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T00:14:15.710Z",
+ "generatedAt": "2026-11-08T00:40:15.747Z",
  "fighters": {
   "Iasmin Lucindo": {
    "history": [
@@ -6014,6 +6014,194 @@
       ]
      },
      "capturedAt": "2026-11-08T00:08:47.484Z"
+    }
+   ]
+  },
+  "Gabriel Lorenço": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Thomas Petersen",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "4:47",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Thomas Petersen",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 53,
+      "sigA": 89,
+      "totL": 97,
+      "totA": 139,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "2:01",
+      "head": [
+       31,
+       59
+      ],
+      "body": [
+       16,
+       22
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       17,
+       37
+      ],
+      "clinch": [
+       32,
+       47
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 57,
+      "sigA": 80,
+      "totL": 130,
+      "totA": 170,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:58",
+      "head": [
+       57,
+       80
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       22
+      ],
+      "clinch": [
+       5,
+       10
+      ],
+      "ground": [
+       41,
+       48
+      ]
+     },
+     "capturedAt": "2026-11-08T00:40:15.595Z"
+    }
+   ]
+  },
+  "Thomas Petersen": {
+   "history": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Gabriel Lorenço",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "4:47",
+     "event": "UFC Fight Night: Cortes Acosta vs. Walker",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 7, 2026",
+     "opponent": "Gabriel Lorenço",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 57,
+      "sigA": 80,
+      "totL": 130,
+      "totA": 170,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:58",
+      "head": [
+       57,
+       80
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       22
+      ],
+      "clinch": [
+       5,
+       10
+      ],
+      "ground": [
+       41,
+       48
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 53,
+      "sigA": 89,
+      "totL": 97,
+      "totA": 139,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "2:01",
+      "head": [
+       31,
+       59
+      ],
+      "body": [
+       16,
+       22
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       17,
+       37
+      ],
+      "clinch": [
+       32,
+       47
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "capturedAt": "2026-11-08T00:40:15.595Z"
     }
    ]
   }
