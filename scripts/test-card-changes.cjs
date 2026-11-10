@@ -74,6 +74,19 @@ A welterweight bout between [[Gabriel Bonfim]] and [[Sean Brady (fighter)|Sean B
 `;
 run('UFC Vegas 124 (cancelled bout, new headliner)', VEGAS124, ['Waldo Cortes Acosta', 'Johnny Walker', 'Gabriel Bonfim'], [], [], ['Johnny Walker']);
 
+// UFC 334 (Nov 2026): Wikipedia spells the replacement "César Almeida" (accent) while
+// our roster has "Cesar Almeida", so he went unrecognised as the replacement and the
+// fighter who stayed (Donte Johnson) was falsely flagged "may change". Also covers a
+// hyphenated surname (Cortes-Acosta) and a reordered name (Alateng Heili).
+const UFC334 = `== Background ==
+Undefeated prospects Donte Johnson and Baisangur Susurkaev were scheduled to fight at the event in a middleweight bout. However, Susurkaev withdrew from the bout for unknown reasons and was replaced by [[César Almeida (fighter)|César Almeida]].
+
+[[Adrian Yañez]] and Juan Díaz were expected to meet in a bantamweight bout at the preliminary card. However, Yañez had to withdraw in mid October due to injury and was replaced by [[Alateng Heili]].
+
+== Fight card ==
+`;
+run('UFC 334 (accented / reordered names)', UFC334, ['Donte Johnson', 'Cesar Almeida', 'Juan Diaz', 'Alatengheili'], ['Cesar Almeida', 'Alatengheili'], [], ['Donte Johnson', 'Juan Diaz']);
+
 // Post-change OKC roster: three replacements (Ricci, Melisano, Harris), two
 // bouts in limbo (Barriault & Jacobe Smith, whose opponents withdrew with no
 // replacement yet), and the fighters who stayed. Withdrawn/moved fighters

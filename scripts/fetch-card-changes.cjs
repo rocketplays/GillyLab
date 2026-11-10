@@ -40,6 +40,13 @@ function norm(s) {
 function normLoose(s) {
   return norm(s).replace(/\b(?:jr|sr|ii|iii|iv)\b/g, '').replace(/\s+/g, ' ').trim();
 }
+// Fold a name/prose string so Wikipedia's spelling still matches our roster's:
+// strips accents ("César Almeida" == "Cesar Almeida") and turns dashes into spaces
+// ("Cortes-Acosta" == "Cortes Acosta"). Case is preserved on purpose -- the
+// replacement-role regexes below are case-sensitive.
+function fold(s) {
+  return String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[-\u2010-\u2015]/g, ' ');
+}
 function escapeRe(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 // Wikipedia sometimes narrates a fighter by their legal name instead of the ring
@@ -55,14 +62,15 @@ function escapeRe(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
 // actually capitalizes it).
 const WIKI_NAME_ALIASES = {
   'Eduardo Henrique': 'Eduardo Chapolin',
+  'Alateng Heili': 'Alatengheili',
 };
 // All name-forms worth searching a paragraph for, for one roster fighter: their
 // own name, plus any Wikipedia alias known to refer to them. Fighters with no
 // alias just get back [F] -- identical behavior to a plain nameRe(F) test.
 function nameFormsFor(F) {
-  const forms = [F];
+  const forms = [fold(F)];
   for (const wikiName of Object.keys(WIKI_NAME_ALIASES)) {
-    if (WIKI_NAME_ALIASES[wikiName] === F) forms.push(wikiName);
+    if (WIKI_NAME_ALIASES[wikiName] === F) forms.push(fold(wikiName));
   }
   return forms;
 }
@@ -191,7 +199,7 @@ function isCancelledBout(para) {
  * @returns {{shortNotice:Array<{replacement,sentence}>, mayChange:Array<{fighter,sentence}>}}
  */
 function extractCardChanges(wikitext, currentNames) {
-  const text = stripWiki(backgroundSection(wikitext));
+  const text = fold(stripWiki(backgroundSection(wikitext)));
   const paras = text.split(/\n\s*\n/).map((p) => p.replace(/\s+/g, ' ').trim()).filter(Boolean);
   const shortNotice = new Map();
   const mayChange = new Map();
