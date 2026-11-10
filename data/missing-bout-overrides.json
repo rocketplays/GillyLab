@@ -4,7 +4,10 @@
     {
       "addedOn": "2026-09-28",
       "eventSlug": "ufc-332",
-      "matchFighterNames": ["Jacobe Smith", "Bruce Whitehead"],
+      "matchFighterNames": [
+        "Jacobe Smith",
+        "Bruce Whitehead"
+      ],
       "note": "Short-notice welterweight addition to UFC 332 (Oct 3, 2026), confirmed via ufc.com's Fight By Fight Preview — Whitehead steps in on short notice for his Octagon debut. Not yet in the Cito/ESPN feed as of 2026-09-28.",
       "bout": {
         "cardSection": "Early Prelims",
@@ -32,6 +35,47 @@
             "division": "Welterweight",
             "recordText": "8-2-0",
             "nickname": "The Goose"
+          }
+        ]
+      }
+    },
+    {
+      "addedOn": "2026-11-10",
+      "eventSlug": "ufc-334",
+      "matchFighterNames": [
+        "Juan Diaz",
+        "Alatengheili"
+      ],
+      "note": "Short-notice bantamweight bout on the UFC 334 prelims (Nov 14, 2026): Adrian Yanez withdrew with an injury in mid October and Alatengheili (Wikipedia: 'Alateng Heili') replaced him against Juan Diaz. Reported by MMA Fighting / BoxingNews (Nov 8, 2026), Wikipedia UFC 334. Not in the Cito/ESPN feed as of 2026-11-10. Opening bout of the Early Prelims (odds feed lists it at 22:00Z, ahead of the other prelims).",
+      "bout": {
+        "cardSection": "Early Prelims",
+        "cardSectionOrder": 3,
+        "cardPosition": "Early Prelims 4",
+        "boutOrder": 3004,
+        "weightClass": "Bantamweight Bout",
+        "titleBout": false,
+        "numberOfRounds": 3,
+        "fighters": [
+          {
+            "fighterSlug": "juan-diaz",
+            "fighterName": "Juan Diaz",
+            "corner": "red",
+            "country": "Peru",
+            "flag": "🇵🇪",
+            "division": "Bantamweight",
+            "recordText": "16-1-1",
+            "nickname": "Pegajoso"
+          },
+          {
+            "fighterSlug": "alatengheili",
+            "fighterName": "Alatengheili",
+            "corner": "blue",
+            "country": "China",
+            "flag": "🇨🇳",
+            "division": "Bantamweight",
+            "recordText": "18-10-2",
+            "nickname": "The Mongolian Knight",
+            "shortNotice": true
           }
         ]
       }

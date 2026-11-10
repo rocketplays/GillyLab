@@ -96,6 +96,7 @@ function buildFighter(boutId, spec) {
     imageUrl: null,
     flag: spec.flag || null,
     championStatus: 'none',
+    ...(spec.shortNotice ? { shortNotice: true } : {}),
     profile: {
       slug: spec.fighterSlug,
       name: spec.fighterName,
@@ -131,6 +132,7 @@ function buildBout(eventSlug, ov) {
     boutOrder: spec.boutOrder != null ? spec.boutOrder : 9999,
     weightClass: spec.weightClass || null,
     titleBout: !!spec.titleBout,
+    ...(spec.numberOfRounds ? { numberOfRounds: spec.numberOfRounds } : {}),
     status: 'confirmed',
     isCancelled: false,
     cancellationReason: null,
