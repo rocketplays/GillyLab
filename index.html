@@ -4293,6 +4293,13 @@
 .numbered-card .fight-center > .fight-info-toggle, .numbered-card .fight-row .fight-sim-bar { border-top-color: rgba(212,175,55,0.18) !important; }
 .numbered-card .fight-center > .fight-info-toggle { border-right-color: rgba(212,175,55,0.18) !important; }
 
+/* Symmetry. Both fighters' columns are the same height, with the ranking
+   pinned to the top and the record/odds line pinned to the bottom, so the two
+   sides line up even when one name wraps to two lines and the other doesn't. */
+.fight-row .fighter-cell { align-self: stretch; }
+.fight-row .fighter-cell > div:not(.fighter-avatar) { display: flex; flex-direction: column; align-self: stretch; }
+.fight-row .fighter-cell .fighter-record { margin-top: auto !important; padding-top: 0.3rem; }
+
 /* Finished fights: the VS mark reads FINAL, and the method + round/time take
    the rounds pill's place in the header strip. There is no Simulate button on
    a finished fight, so Fight Info spans the whole footer. */

@@ -2767,6 +2767,14 @@ html.gl-no-upgrade #portalBtn{ display:none !important; }
   min-width: 24px; height: 24px; padding: 0 .35rem; border-radius: 999px; display: flex; align-items: center; justify-content: center;
   background: var(--bg); border: 1px solid var(--border); font-size: .62rem; color: #a9adb8; }
 .mf-card.mf-numbered .mf-vs { border-color: rgba(212,175,55,.55); }
+/* Symmetry: both fighters' columns are the same height, ranking pinned to the
+   top and the record/odds line to the bottom, so the two sides line up even
+   when one name wraps and the other doesn't. An unranked fighter facing a
+   ranked one gets an empty ranking line so the names still start level. */
+.mf-side { align-self: stretch; }
+.mf-meta { display: flex; flex-direction: column; align-self: stretch; }
+.mf-rec { margin-top: auto; padding-top: .3rem; }
+.mf-row:has(.mf-rank) .mf-meta:not(:has(.mf-rank))::before { content: ''; display: block; flex: none; height: 1.08rem; }
 /* Footer. --mf-foot is the shared height that lets the premium Simulate bar
    (a sibling of .mf-row, not a child) be pulled up beside Fight Info. */
 .mf-card { --mf-foot: 44px; }

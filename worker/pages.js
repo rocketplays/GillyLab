@@ -493,15 +493,16 @@ export function freeTabs(active) {
     /* DESIGN REFRESH (2026-11): this block used to be six competing buttons stacked
        above the content. The three pages are now one segmented control and the three
        games a compact row of pills, so it reads as navigation. */
-    .ftabs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:4px;background:#131318;border:1px solid var(--border);border-radius:14px}
-    .ftabs a{border:0;background:none;border-radius:10px;min-width:0;padding:.6rem .3rem;font-size:.86rem;color:#a9adb8;white-space:nowrap}
-    .ftabs a:hover{background:rgba(255,255,255,.04)}
-    .ftabs a.active{background:rgba(0,230,104,.14);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(0,230,104,.45)}
+    .ftabs{display:flex;flex-wrap:nowrap;gap:4px;padding:4px;background:#131318;border:1px solid var(--border);border-radius:14px}
+    .ftabs a{flex:1 1 auto;border:0;background:none;border-radius:10px;min-width:0;padding:.6rem .7rem;font-size:.86rem;color:#a9adb8;white-space:nowrap}
+    .ftabs a:hover{background:rgba(255,255,255,.05);border:0}
+    /* the selected page is a solid pill, the same treatment as the Media Panel / Meta AI switch */
+    .ftabs a.active,.ftabs a.active:hover{background:var(--accent);color:#04120a;border:0}
     .fplay{gap:.45rem;margin-bottom:.75rem;flex-wrap:nowrap}
     .fplay br{display:none}
     .fplay .ftab-pick{flex:1 1 auto;min-height:0;padding:.55rem .4rem;border-radius:999px;font-size:.82rem;white-space:nowrap;text-align:center;background:rgba(255,255,255,.03);border-color:var(--border)}
     @media(max-width:520px){
-      .ftabs a{font-size:.78rem;padding:.6rem .1rem}
+      .ftabs a{font-size:.8rem;padding:.6rem .35rem}
       .fplay .ftab-pick{font-size:.74rem;padding:.5rem .2rem}
     }
   </style>
@@ -3789,6 +3790,16 @@ ${AURORA_CSS}
   /* Finished fights: the centre column holds FINAL / method / round instead of VS / weight / rounds. */
   .mf-meth{order:1;flex:none;padding:.8rem 0 .1rem .95rem;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
   .mf-mtime{order:2;flex:none;margin:.7rem .95rem 0 auto;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#a9adb8;border:1px solid #2b2c36;border-radius:999px;padding:.08rem .5rem}
+  /* Symmetry: both fighters' columns are the same height, ranking pinned to the top
+     and the record/odds line to the bottom, so the two sides line up even when one
+     name wraps and the other doesn't. An unranked fighter facing a ranked one gets
+     an empty ranking line so the names still start level. */
+  .mf-side{align-self:stretch}
+  .mf-meta{display:flex;flex-direction:column;align-self:stretch}
+  .mf-rec{margin-top:auto;padding-top:.3rem}
+  .mf-restag{align-self:flex-start}
+  .mf-side.right .mf-restag{align-self:flex-end}
+  .mf-row:has(.mf-rank) .mf-meta:not(:has(.mf-rank))::before{content:'';display:block;flex:none;height:1.13rem}
   .mf-taphint{display:none}
   .mf-sechdr{font-size:.76rem;letter-spacing:.14em;color:#a9adb8}
   .mf-search-input,.mf-past-select{border-radius:12px}
