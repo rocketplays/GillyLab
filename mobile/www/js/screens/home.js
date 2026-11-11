@@ -187,7 +187,7 @@ window.GL_ROUTER.register('home', {
           : '<div class="he-name">' + esc(name) + '</div>';
       };
       return (
-        '<div class="gl-sec gl-sec--first">' +
+        '<div class="gl-sec gl-sec--first hm-hero">' +
           head +
           '<div class="he-row">' +
             '<div class="he-side">' + av(main.f1, main.s1, 'he-av') + heName(main.f1, main.s1) + '</div>' +

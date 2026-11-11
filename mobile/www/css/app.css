@@ -2693,18 +2693,21 @@ html.gl-no-upgrade #portalBtn{ display:none !important; }
 .hm-head-link { font-size: 0.74rem; color: var(--accent); }
 .gl-muted { color: var(--muted); }
 
-/* ── HOME · MAIN EVENT HERO ─────────────────────────────────────────── */
-.gl-sec--first { border: 1px solid rgba(0,230,104,0.22); border-radius: 20px; padding: 1.1rem 1rem 1rem !important; margin-top: 0.5rem;
+/* ── HOME · MAIN EVENT HERO ───────────────────────────────────────────
+   Scoped to .hm-hero (set in home.js). It used to hang off .gl-sec--first,
+   which Simulator, Bracket, Pick'em and Go Premium also use for their page
+   header, so their titles were being drawn inside a hero card. */
+.hm-hero { border: 1px solid rgba(0,230,104,0.22); border-radius: 20px; padding: 1.1rem 1rem 1rem !important; margin-top: 0.5rem;
   background: radial-gradient(120% 70% at 50% 0%, rgba(0,230,104,0.13), transparent 60%), linear-gradient(180deg, var(--card-hi), var(--card)); }
-.gl-sec--first .gl-dash-head { justify-content: center; margin-bottom: 0.9rem; }
-.gl-sec--first .hm-title { font-size: 0.82rem; letter-spacing: 0.2em; color: var(--muted); }
+.hm-hero .gl-dash-head { justify-content: center; margin-bottom: 0.9rem; }
+.hm-hero .hm-title { font-size: 0.82rem; letter-spacing: 0.2em; color: var(--muted); }
 .he-row { align-items: flex-start; }
-.gl-sec--first .he-av { width: 92px; height: 92px; box-shadow: 0 0 0 3px rgba(0,230,104,0.18), 0 14px 30px -12px rgba(0,230,104,0.45); }
-.gl-sec--first .he-name { font-family: 'Barlow Condensed', sans-serif !important; font-size: 1.5rem !important; font-weight: 800 !important;
+.hm-hero .he-av { width: 92px; height: 92px; box-shadow: 0 0 0 3px rgba(0,230,104,0.18), 0 14px 30px -12px rgba(0,230,104,0.45); }
+.hm-hero .he-name { font-family: 'Barlow Condensed', sans-serif !important; font-size: 1.5rem !important; font-weight: 800 !important;
   text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.05; margin-top: 0.6rem; }
 .he-vs { margin-top: 2.1rem; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg);
   display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: #c9ccd4; flex: none; }
-.gl-sec--first > p.gl-muted { text-align: center; font-size: 0.86rem; letter-spacing: 0.03em; margin: 0.55rem 0 1rem; }
+.hm-hero > p.gl-muted { text-align: center; font-size: 0.86rem; letter-spacing: 0.03em; margin: 0.55rem 0 1rem; }
 .he-tape { background: rgba(0,0,0,0.28); border-radius: 14px; padding: 0.95rem; }
 .he-tape-title { font-size: 0.72rem; letter-spacing: 0.14em; }
 .he-tape-legend { font-size: 0.78rem; }
@@ -2719,8 +2722,8 @@ html.gl-no-upgrade #portalBtn{ display:none !important; }
 /* The section after the hero drew its top divider straight through the hero's
    bottom edge. The hero is its own bordered card now, so the divider goes and
    the section gets normal breathing room instead. */
-.gl-sec--first + .gl-sec { border-top: none; padding-top: 1.5rem; }
-.gl-sec--first { margin-bottom: 0; }
+.hm-hero + .gl-sec { border-top: none; padding-top: 1.5rem; }
+.hm-hero { margin-bottom: 0; }
 
 /* ── HOME · CARDS ───────────────────────────────────────────────────── */
 .hm-odds-card, .hm-ev-card, .hm-lead-card, .he-tape { border-radius: 16px; }
@@ -2811,3 +2814,17 @@ html.gl-no-upgrade #portalBtn{ display:none !important; }
 .rk-name { font-size: 1rem; font-weight: 600; }
 .rk-record { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .rk-panel-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1.2rem; }
+
+/* ── SIMULATOR ──────────────────────────────────────────────────────── */
+.sim-rounds .fp-tabs { border: 1px solid var(--border); border-radius: 12px; padding: 4px; gap: 4px; margin-bottom: 0; background: var(--card); }
+.sim-rounds .fp-tab { flex: 1; border: 0; border-radius: 9px; min-height: 40px; font-size: .86rem; letter-spacing: .06em; color: #a9adb8; }
+.sim-rounds .fp-tab.sel { background: var(--accent); color: var(--on-accent); }
+.sim-byo-btn { min-height: 48px; border-radius: 12px; font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; letter-spacing: .08em; margin-top: .7rem; }
+
+/* ── ODDS: fight picker on one swipeable line ───────────────────────── */
+.odds-fight-selector, .odds-prop-tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: .45rem;
+  margin-right: -1.1rem; padding-right: 2.5rem;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+.odds-fight-selector::-webkit-scrollbar, .odds-prop-tabs::-webkit-scrollbar { display: none; }
+.odds-fight-selector > *, .odds-prop-tabs > * { flex: none; }
+.odds-fight-selector .rank-div-btn, .odds-prop-tabs > button { border-radius: 999px; font-size: .8rem; padding: .55rem .95rem; }

@@ -4397,6 +4397,47 @@
   #rankingDivTabs > *, #fightSelectorBtns > *, .odds-prop-tabs > * { flex: none !important; }
   #rankingDivTabs, #fightSelectorBtns, .odds-prop-tabs { display: flex !important; padding-right: 36px; }
 }
+
+/* ── FIGHT SIMULATOR (desktop) ──────────────────────────────────────────
+   Was: 30px inputs and a row of small controls in the top-left of a wide
+   card, with Build Your Own Simulation as a small two-line button underneath.
+   Now: one centred column. Fighters on top, rounds and simulation count on a
+   second row, then the two actions side by side at equal size. Phones keep
+   the stacked form they already had. */
+@media (min-width: 761px) {
+  .sim-panel { max-width: 980px !important; margin-left: auto; margin-right: auto; }
+  #page-projections > .page-header, #page-projections > .divider { max-width: 980px; margin-left: auto; margin-right: auto; }
+  .sim-card { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.1rem 1rem; padding: 1.75rem !important; border-radius: 16px !important; }
+  .sim-card > * { grid-column: 1 / -1; margin-top: 0 !important; }
+  .sim-fighters-row { gap: 1rem !important; align-items: flex-end !important; }
+  .sim-fighter-input { height: 54px; font-size: 1.1rem !important; padding: 0 1rem !important; border-radius: 12px !important; }
+  .sim-vs { align-self: flex-end; height: 54px; display: flex; align-items: center; padding: 0 !important; font-size: 0.95rem !important; color: var(--muted-2) !important; }
+  .sim-label { font-size: 0.76rem !important; letter-spacing: 0.14em !important; color: var(--muted-2) !important; margin-bottom: 0.45rem !important; display: block; }
+  .sim-controls { display: contents !important; }
+  .sim-rounds-group { grid-column: 1 / 3; width: auto !important; }
+  .sim-count-group { grid-column: 3 / 5; width: auto !important; }
+  .sim-rounds-toggle { display: flex; width: 100%; height: 50px; border-radius: 12px !important; overflow: hidden; }
+  .sim-rounds-btn { flex: 1; font-size: 0.95rem !important; }
+  .sim-count-input { width: 100%; height: 50px; font-size: 1.05rem !important; padding: 0 1rem !important; border-radius: 12px !important; }
+  .sim-run-btn { grid-column: 1 / 3; height: 54px; font-size: 1.05rem !important; letter-spacing: 0.12em !important; border-radius: 12px !important; }
+  .sim-card > div:has(> .sim-byo-btn) { grid-column: 3 / 5; }
+  .sim-byo-btn { display: flex !important; width: 100%; height: 54px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem !important;
+    letter-spacing: 0.12em !important; border-radius: 12px !important; white-space: nowrap; }
+  .sim-error:empty, .sim-warning:empty { display: none; }
+  .sim-results { margin-top: 0.4rem !important; }
+  .sim-results-name { font-size: 1.25rem !important; }
+  .sim-results-count { font-size: 0.82rem !important; color: var(--muted-2) !important; }
+  .sim-results-avatar { width: 48px !important; height: 48px !important; }
+  .sim-bar { height: 40px !important; border-radius: 10px; overflow: hidden; }
+  .sim-methods-title { font-size: 0.78rem !important; color: var(--muted-2) !important; }
+  .sim-method-row { min-height: 30px; }
+  .sim-method-label, .sim-method-pct { font-size: 0.95rem !important; }
+  .sim-method-bar-wrap { height: 8px !important; }
+  .sim-power-label { font-size: 0.76rem !important; }
+  .sim-power-value { font-size: 2rem !important; }
+  .sim-power-note { font-size: 0.82rem !important; color: var(--muted-2) !important; }
+  .sim-disclaimer { font-size: 0.82rem !important; }
+}
 </style>
 </head>
 <body>
