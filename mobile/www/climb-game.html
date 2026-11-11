@@ -12,7 +12,7 @@
      the link the sheet renders in a fallback face and looks like a knock-off of
      itself. Both are relative because this page is served from the repo root. -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&family=Press+Start+2P&display=swap" rel="stylesheet">
-<script src="https://gillylab.com/gl-sheet.js?v=b22a40e5" defer></script>
+<script src="https://gillylab.com/gl-sheet.js?v=709d435a" defer></script>
 <!-- HEAD SLOT — filled by scripts/gen-climb-page.cjs from the worker, empty here.
      Carries the Open Graph tags (so a shared link previews) and, for logged-out
      visitors, the CLIMB_LOCKED flag. Both have to come from the worker rather than
@@ -178,6 +178,18 @@
   .attr.up button{min-width:74px}
   .attr label{font-size:.8rem}
   .attr .v{font-size:.8rem;color:var(--accent);text-align:right;font-variant-numeric:tabular-nums}
+  /* Narrow screens (the app's iframe is ~355px, narrower than a phone browser):
+     120px label + two 74px buttons + the cost did not fit, so the + button ran
+     off the right edge of the panel. Tighter label column and 44px buttons. */
+  @media (max-width:420px){
+    .attr.up{grid-template-columns:104px minmax(0,1fr) auto;gap:.4rem}
+    .attr.up button{min-width:44px}
+  }
+  /* Wide screens: the game was a 820px column of 12-13px type on a desktop
+     monitor. Scale the whole column up rather than retune every size. */
+  @media (min-width:1000px){
+    .wrap{zoom:1.18}
+  }
   input[type=range]{width:100%;accent-color:var(--accent)}
   .pts{font-size:.9rem;font-weight:700}
   .pts.over{color:var(--accent2)}
