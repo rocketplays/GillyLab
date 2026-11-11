@@ -163,6 +163,26 @@ window.GL_NATIVE = (function(){
       lastPushToken = null;
     }
   }
+  // Which screen a notification belongs to, from its payload `type`.
+  function routeForPush(data){
+    var type = data && (data.type || (data.data && data.data.type));
+    if (type === 'pickem_reminder' || type === 'pickem_results') return 'pickem';
+    if (type === 'bet_result') return 'bettracker';
+    return 'home';
+  }
+  // Navigate by writing the hash rather than calling GL_ROUTER.go(). A tap
+  // that LAUNCHES the app fires before app.js has called GL_ROUTER.init()
+  // (it waits on GL_AUTH.ready), and init() renders whatever the hash says,
+  // so a go() made that early would be overwritten by Home. The hash works
+  // at any point: init() reads it on a cold start, and the router's own
+  // hashchange listener handles it once the app is running.
+  function openPushTarget(route){
+    var target = '#/' + route;
+    try {
+      if (location.hash !== target) location.hash = target;
+      else if (window.GL_ROUTER && window.GL_ROUTER.go) window.GL_ROUTER.go(route);   // already there: refresh it
+    } catch(e){}
+  }
   function wirePushListeners(){
     var P = plugins();
     if (!P.PushNotifications) return;
@@ -182,11 +202,16 @@ window.GL_NATIVE = (function(){
       // toggles simply won't do anything for this device until it
       // succeeds; no separate UI for this yet.
     });
-    // Tapping a delivered notification (app backgrounded or closed) -- no
-    // per-notification deep link built yet (which card, which bet), so this
-    // just brings the app to Home rather than doing nothing.
-    P.PushNotifications.addListener('pushNotificationActionPerformed', function(){
-      try { window.GL_ROUTER.go('home'); } catch(e){}
+    // Tapping a delivered notification (app backgrounded or closed).
+    // This used to send every tap to Home. The worker has always put the
+    // destination in the payload's data (see the fcmSendToUser callers in
+    // worker/index.js: pickem_reminder, pickem_results, bet_result), so read
+    // it and go there. APNs delivers those keys at the top level of the
+    // payload and FCM under `data`; Capacitor exposes both as
+    // notification.data. Anything unrecognised still lands on Home.
+    P.PushNotifications.addListener('pushNotificationActionPerformed', function(action){
+      var data = (action && action.notification && action.notification.data) || {};
+      openPushTarget(routeForPush(data));
     });
   }
   wirePushListeners();

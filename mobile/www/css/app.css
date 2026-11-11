@@ -2851,3 +2851,17 @@ html.gl-no-upgrade #portalBtn{ display:none !important; }
 .ar-ch-row { min-height: 32px; display: flex; align-items: center; border-top: 1px solid rgba(255,255,255,.05); }
 .ar-ch-row .ar-name { font-size: .92rem; text-align: left; }
 
+/* ── PICK'EM: a finished bout shows the fighters, winner lit, loser dimmed ── */
+.pk-fighter--res { cursor: default; position: relative; }
+.pk-fighter--res.lost { opacity: .45; }
+.pk-fighter--res.lost .pk-fighter-photo { filter: grayscale(1); }
+.pk-res-yours { font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pk-fighter--res.sel .pk-res-yours { color: var(--accent); }
+.pk-bout-result .pk-fighters { margin-bottom: .55rem; }
+.pk-bout-result .pk-res-foot { margin-bottom: .3rem; min-height: 26px; }
+.pk-res-badge { font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 6px; padding: .12rem .45rem; }
+.pk-res-badge.hit { color: var(--accent); border-color: rgba(0,230,104,.45); background: rgba(0,230,104,.1); }
+.pk-res-badge.miss { color: #ff6a5e; border-color: rgba(255,106,94,.45); background: rgba(255,106,94,.08); }
+.pk-bout-result .pk-res-outcome { font-size: .86rem; margin-bottom: 0; }
+

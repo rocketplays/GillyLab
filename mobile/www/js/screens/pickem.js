@@ -203,38 +203,61 @@ function mountPickem(container){
     updateShareBtn();
   }
   // Mirrors the site's data-pk-share button on the live event page -- same
-  // spot too, now: inside the submit bar next to Submit picks, like the
-  // site's .pk-summary-actions row (index.html), not a separate full-width
-  // button below the fixed bar where it used to be easy to miss. Shown once
-  // picks are actually submitted, since a share sheet of half-finished picks
-  // isn't useful. Unlike the site (whose one button flips between "Share
-  // picks"/"Share results" depending on whether BOUTS.every(isDone)), this
-  // screen never shows graded results itself -- that's My History's job (see
-  // the separate share button in showHistoryEvent below) -- so here it's
-  // always "Share picks", ungraded.
+  // spot too: inside the submit bar next to Submit picks, like the site's
+  // .pk-summary-actions row (index.html). Shown once picks are submitted,
+  // since a share sheet of half-finished picks isn't useful.
+  //
+  // Like the site, the one button flips: "Share picks" while any bout is
+  // still to come, "Share results" once every bout on the card is final
+  // (cardGraded below == the site's BOUTS.every(isDone)). It used to stay
+  // "Share picks" forever, on the old assumption that this screen never
+  // shows graded results -- it has for a while (see isDone/resultBoutHTML),
+  // so after a card ended the button still shared the ungraded picks image.
+  function cardGraded(){ return !!(card && card.bouts && card.bouts.length && card.bouts.every(isDone)); }
+  function hasAnyPick(){ return !!(card && card.bouts.some(function(b){ var p = picks[b.id]; return p && p.winner; })); }
   function updateShareBtn(){
     var btn = container.querySelector('#pkShareBtn');
     if (!btn) return;
-    btn.hidden = !submitted;
+    var graded = cardGraded();
+    btn.textContent = graded ? 'Share results' : 'Share picks';
+    // A finished card can be shared by anyone who made picks on it, even if
+    // this session never pressed Submit (picks are loaded from the server).
+    btn.hidden = !(submitted || (graded && hasAnyPick()));
   }
   function sharePicks(){
     if (!window.GL_SHEET) return;
     window.GL_NATIVE.tap();
+    var graded = cardGraded();
     var picksOut = card.bouts.map(function(b){
       var p = picks[b.id];
       if (!p || !p.winner) return null;
       var winnerIsF1 = window.GL_NAMES.side(p.winner, b.f1, b.f2) !== 2;
-      return {
+      var out = {
         winner: p.winner, loser: winnerIsF1 ? b.f2 : b.f1,
         winnerSlug: winnerIsF1 ? b.s1 : b.s2, loserSlug: winnerIsF1 ? b.s2 : b.s1,
-        method: p.method || null, round: p.round || null, confidence: p.confidence || 'Med',
+        method: p.method || null, round: (p.method && p.method !== 'Decision') ? (p.round || null) : null,
+        confidence: p.confidence || 'Med',
       };
+      if (!graded) return out;
+      // Same graded shape the site's sharePayload() and this screen's own My
+      // History share send: the avatar/name stay the PICK's own, the ring and
+      // badge show right/wrong, and actualWinner/actualLoser drive the
+      // separate "X def. Y" caption.
+      var g = gradeBoutPick(p, b), res = b.res;
+      var aw = res.voided ? null : res.winner;
+      var awIsF1 = aw ? window.GL_NAMES.side(aw, b.f1, b.f2) !== 2 : false;
+      out.actualWinner = aw || null;
+      out.actualLoser = aw ? (awIsF1 ? b.f2 : b.f1) : null;
+      out.resultMethod = res.method || null;
+      out.resultRound = res.round || null;
+      out.points = g.points || 0;
+      out.winnerHit = !!g.winnerHit; out.methodHit = !!g.methodHit; out.roundHit = !!g.roundHit; out.voided = !!g.voided;
+      return out;
     }).filter(Boolean);
     if (!picksOut.length) return;
-    window.GL_SHEET.pickem({
-      name: name, eventName: card.name, eventDate: card.date,
-      graded: false, picks: picksOut,
-    }).catch(function(){});
+    var payload = { name: name, eventName: card.name, eventDate: card.date, graded: graded, picks: picksOut };
+    if (graded) payload.totalPoints = picksOut.reduce(function(t, x){ return t + (x.points || 0); }, 0);
+    window.GL_SHEET.pickem(payload).catch(function(){});
   }
 
   // Compact "Final" row for a bout the API has already graded -- mirrors
@@ -258,11 +281,32 @@ function mountPickem(container){
       pickLine = 'You picked ' + esc(p.winner) + ' ✗';
       pts = '<span class="pk-res-pts neg">' + g.points + '</span>';
     }
+    // Same picture the site's /pickem shows once a bout is decided: both
+    // fighters' photos, the winner lit and the loser dimmed, then your pick
+    // and the result line. (This used to be a text-only row, so a finished
+    // card read as a list of sentences instead of a card of results.)
+    var winSide = res.voided ? 0 : window.GL_NAMES.side(res.winner, b.f1, b.f2);
+    var pickSide = (p && p.winner) ? window.GL_NAMES.side(p.winner, b.f1, b.f2) : 0;
+    function tile(side, slug, name){
+      var won = winSide === side, lost = winSide && winSide !== side;
+      return (
+        '<div class="pk-fighter pk-fighter--res' + (won ? ' sel' : '') + (lost ? ' lost' : '') + '">' +
+          avatarHtml(slug, name) +
+          '<span>' + esc(name) + '</span>' +
+          (pickSide === side ? '<span class="pk-res-yours">Your pick</span>' : '') +
+        '</div>'
+      );
+    }
+    var badge = g.nopick ? '<span class="pk-res-badge">No pick</span>'
+      : g.voided ? '<span class="pk-res-badge">Voided</span>'
+      : g.winnerHit ? '<span class="pk-res-badge hit">Correct' + (g.methodHit ? ' · method' : '') + (g.roundHit ? ' · round' : '') + '</span>'
+      : '<span class="pk-res-badge miss">Wrong</span>';
     return (
       '<div class="pk-bout gl-card pk-bout-result ' + cls + '" data-bout="' + b.id + '">' +
         '<div class="pk-bout-head"><span class="gl-label" style="margin:0">' + esc(b.wc || '') + '</span><span class="pk-res-final">Final</span></div>' +
+        '<div class="pk-fighters">' + tile(1, b.s1, b.f1) + tile(2, b.s2, b.f2) + '</div>' +
+        '<div class="pk-res-foot">' + badge + pts + '</div>' +
         '<div class="pk-res-outcome">' + outcome + (!res.voided ? ' <span class="pk-res-method">· ' + esc(methodStr) + '</span>' : '') + '</div>' +
-        '<div class="pk-res-foot"><span class="pk-res-pick">' + pickLine + '</span>' + pts + '</div>' +
       '</div>'
     );
   }
@@ -278,6 +322,7 @@ function mountPickem(container){
   function renderBouts(){
     var host = container.querySelector('#pkBouts');
     if (!host) return;
+    updateShareBtn();   // a live result can make the card final while this screen is open
     var sum = summaryLine();
     var sumEl = container.querySelector('#pkLiveSummary');
     if (sumEl) sumEl.innerHTML = sum || '';
