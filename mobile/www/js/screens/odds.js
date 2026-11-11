@@ -261,14 +261,15 @@ window.GL_ODDS = (function(){
   }
 
   function plHelpHTML(){
-    return '<div class="pl-help">' +
-      '<div class="pl-help-head"><span class="pl-help-badge">Parlay builder</span><span class="pl-help-lead">Tap any price — moneyline, rounds O/U, method, or round props — to add it to your slip. The slip sits at the bottom: set a stake to see the payout, and compare the same picks across every book that prices them. Greyed-out cells can\'t be added.</span></div>' +
+    return '<details class="pl-help">' +
+      '<summary class="pl-help-sum"><span class="pl-help-badge">Parlay builder</span><span class="pl-help-sumtxt">Tap any price to add it to your slip</span><span class="pl-help-more">How it works</span></summary>' +
+      '<div class="pl-help-head"><span class="pl-help-lead">Tap any price — moneyline, rounds O/U, method, or round props — to add it to your slip. The slip sits at the bottom: set a stake to see the payout, and compare the same picks across every book that prices them. Greyed-out cells can\'t be added.</span></div>' +
       '<ul class="pl-help-rules">' +
         '<li><strong>One sportsbook per parlay.</strong> Legs can\'t cross books — though the slip will show you what the same picks pay elsewhere, and can switch in one tap.</li>' +
         '<li><strong>On one fight, only a moneyline and a rounds O/U can be parlayed.</strong> Method and round props either imply the moneyline or overlap each other, so they have to stand alone.</li>' +
       '</ul>' +
       '<div class="pl-help-note">Odds move frequently — the numbers here may have shifted slightly since they were last pulled. Always confirm the current price at the sportsbook before betting.</div>' +
-      '</div>';
+      '</details>';
   }
 
   // ── Projections grid -- same no-vig data every matched fight already

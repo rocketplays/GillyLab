@@ -2828,3 +2828,26 @@ html.gl-no-upgrade #portalBtn{ display:none !important; }
 .odds-fight-selector::-webkit-scrollbar, .odds-prop-tabs::-webkit-scrollbar { display: none; }
 .odds-fight-selector > *, .odds-prop-tabs > * { flex: none; }
 .odds-fight-selector .rank-div-btn, .odds-prop-tabs > button { border-radius: 999px; font-size: .8rem; padding: .55rem .95rem; }
+
+/* ── ODDS: parlay explainer collapses to one line (<details>) ───────── */
+.pl-help { padding: 0; border-radius: 14px; }
+.pl-help-sum { display: flex; align-items: center; gap: .6rem; padding: .8rem .95rem; cursor: pointer; list-style: none; }
+.pl-help-sum::-webkit-details-marker { display: none; }
+.pl-help-sumtxt { flex: 1; min-width: 0; font-size: .84rem; color: var(--text); }
+.pl-help-more { flex: none; font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.pl-help-more::after { content: ' \2304'; }
+.pl-help[open] .pl-help-more::after { content: ' \2303'; }
+.pl-help > :not(summary) { margin-left: .95rem; margin-right: .95rem; }
+.pl-help > .pl-help-head .pl-help-badge { display: none; }
+.pl-help > .pl-help-note { margin-bottom: .85rem; }
+
+/* ── ROSTER: this week's moves as a card, matching the site ─────────── */
+.ar-ch-wrap > .gl-label { font-size: .74rem; letter-spacing: .14em; margin-bottom: .55rem; }
+.ar-ch-week { background: linear-gradient(180deg, var(--card-hi), var(--card)); border: 1px solid var(--border); border-radius: 16px; padding: .95rem 1rem .6rem; margin-bottom: 1.2rem; }
+.ar-ch-week > .gl-label { font-size: .8rem; color: #d7d9df; margin-bottom: .7rem; }
+.ar-ch-cols { gap: 1rem; }
+.ar-ch-h { font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700; letter-spacing: .12em; margin-bottom: .35rem; }
+.ar-ch-n { display: inline-block; min-width: 1.35rem; text-align: center; margin-left: .35rem; padding: 0 .35rem; border-radius: 999px; background: rgba(255,255,255,.08); font-variant-numeric: tabular-nums; }
+.ar-ch-row { min-height: 32px; display: flex; align-items: center; border-top: 1px solid rgba(255,255,255,.05); }
+.ar-ch-row .ar-name { font-size: .92rem; text-align: left; }
+

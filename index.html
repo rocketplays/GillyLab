@@ -4438,6 +4438,40 @@
   .sim-power-note { font-size: 0.82rem !important; color: var(--muted-2) !important; }
   .sim-disclaimer { font-size: 0.82rem !important; }
 }
+
+/* ── PARLAY BUILDER EXPLAINER ───────────────────────────────────────────
+   Was a block of instructions above the odds on every visit. Now one line
+   that opens on demand (<details>, so no script). */
+.pl-help { padding: 0 !important; border-radius: 12px !important; }
+.pl-help-sum { display: flex; align-items: center; gap: 0.7rem; padding: 0.75rem 1rem; cursor: pointer; list-style: none; }
+.pl-help-sum::-webkit-details-marker { display: none; }
+.pl-help-sumtxt { flex: 1; min-width: 0; font-size: 0.86rem; color: var(--text); }
+.pl-help-more { flex: none; font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.pl-help-more::after { content: ' \2304'; }
+.pl-help[open] .pl-help-more::after { content: ' \2303'; }
+.pl-help .pl-help-badge { font-size: 0.72rem !important; }
+.pl-help > :not(summary) { margin-left: 1rem; margin-right: 1rem; }
+.pl-help > .pl-help-head { padding-top: 0.2rem; }
+.pl-help > .pl-help-head .pl-help-badge { display: none; }
+.pl-help > .pl-help-note { margin-bottom: 0.85rem; }
+.pl-help-lead { font-size: 0.86rem !important; }
+.pl-help-rules li { font-size: 0.82rem !important; color: var(--muted-2) !important; }
+.pl-help-note { font-size: 0.78rem !important; }
+
+/* ── DESKTOP READABILITY ────────────────────────────────────────────────
+   These views were designed at phone density (9-11px labels) and shown at
+   the same size on a 1440px monitor. Rather than retune hundreds of sizes,
+   scale each self-contained view up as a unit on wide screens. Phones and
+   tablets are untouched. */
+@media (min-width: 1100px) {
+  .fight-details-panel > .fd-collapse-inner, .scouting-fight-panel > * { zoom: 1.16; }
+  #cs-box { zoom: 1.2; max-height: calc(88vh / 1.2) !important; }
+  #page-bets > :not(.page-header):not(.divider):not(.back-btn) { zoom: 1.18; }
+  .tape-accordion { zoom: 1.15; }
+}
+@media (min-width: 1300px) {
+  #mh-box { zoom: 1.12; max-height: calc(88vh / 1.12) !important; }
+}
 </style>
 </head>
 <body>
@@ -145294,9 +145328,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Sits above the fight selector so the click-to-build behaviour is discoverable
   // before the user starts poking at prices.
   function plHelpHTML() {
-    return `<div class="pl-help">
+    return `<details class="pl-help">
+      <summary class="pl-help-sum"><span class="pl-help-badge">Parlay builder</span><span class="pl-help-sumtxt">Click any price to add it to your slip</span><span class="pl-help-more">How it works</span></summary>
       <div class="pl-help-head">
-        <span class="pl-help-badge">Parlay builder</span>
         <span class="pl-help-lead">Click any price — moneyline, rounds O/U, method, or round props — to add it to your slip. The slip sits at the bottom: set a stake to see the payout, and compare the same picks across every book that prices them. Greyed-out cells can't be added.</span>
       </div>
       <ul class="pl-help-rules">
@@ -145304,7 +145338,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <li><strong>On one fight, only a moneyline and a rounds O/U can be parlayed.</strong> Method and round props either imply the moneyline or overlap each other, so they have to stand alone.</li>
       </ul>
       <div class="pl-help-note">Odds move frequently — the numbers here may have shifted slightly since they were last pulled. Always confirm the current price at the sportsbook before betting.</div>
-    </div>`;
+    </details>`;
   }
 
   function buildMoneylineTable(fight) {
