@@ -113,13 +113,13 @@ window.GL_ROUTER = (function(){
   };
   // A notepad/ledger with checklist lines -- tracking placed bets.
   var BETTRACKER_TAB = {
-    route: 'bettracker', label: 'Bet Tracker',
+    route: 'bettracker', label: 'Bets',
     icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><rect x="5" y="3.5" width="14" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.3 9h7.4M8.3 12.5h7.4M8.3 16h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
   };
   // A video-player frame with a play triangle -- distinct from Simulator's
   // circular play button, reads as "watch/study film".
   var TAPESTUDY_TAB = {
-    route: 'tapestudy', label: 'Tape Study',
+    route: 'tapestudy', label: 'Tape',
     icon: '<svg viewBox="0 0 24 24" class="gl-tab-icon"><rect x="4" y="5.5" width="16" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.3 9.3v6l5-3z" fill="currentColor"/></svg>',
   };
   var MORE_TAB = {
