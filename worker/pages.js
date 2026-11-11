@@ -490,6 +490,21 @@ export function freeTabs(active) {
     .fplay{display:flex;gap:8px;margin:0 0 1.2rem;flex-wrap:wrap}
     .fplay .ftab-pick{flex:1 1 0;min-width:0}
     @media(max-width:380px){ .fplay .ftab-pick{font-size:.86rem;padding:.8rem .4rem} }
+    /* DESIGN REFRESH (2026-11): this block used to be six competing buttons stacked
+       above the content. The three pages are now one segmented control and the three
+       games a compact row of pills, so it reads as navigation. */
+    .ftabs{display:flex;flex-wrap:nowrap;gap:4px;padding:4px;background:#131318;border:1px solid var(--border);border-radius:14px}
+    .ftabs a{flex:1 1 auto;border:0;background:none;border-radius:10px;min-width:0;padding:.6rem .7rem;font-size:.86rem;color:#a9adb8;white-space:nowrap}
+    .ftabs a:hover{background:rgba(255,255,255,.05);border:0}
+    /* the selected page is a solid pill, the same treatment as the Media Panel / Meta AI switch */
+    .ftabs a.active,.ftabs a.active:hover{background:var(--accent);color:#04120a;border:0}
+    .fplay{gap:.45rem;margin-bottom:.75rem;flex-wrap:nowrap}
+    .fplay br{display:none}
+    .fplay .ftab-pick{flex:1 1 auto;min-height:0;padding:.55rem .4rem;border-radius:999px;font-size:.82rem;white-space:nowrap;text-align:center;background:rgba(255,255,255,.03);border-color:var(--border)}
+    @media(max-width:520px){
+      .ftabs a{font-size:.8rem;padding:.6rem .35rem}
+      .fplay .ftab-pick{font-size:.74rem;padding:.5rem .2rem}
+    }
   </style>
   <nav class="ftabs">${row.map(([h, l]) => `<a href="${h}"${h === active ? ' class="active"' : ""}>${l}</a>`).join("")}</nav>
   <div class="fplay">
@@ -2396,6 +2411,14 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
   .rk-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center}
   .rk-cta a{color:var(--accent);text-decoration:none;font-weight:700}
 ${AURORA_CSS}
+  /* DESIGN REFRESH (2026-11): division chips are pills, and on a phone they sit on
+     one swipeable line instead of wrapping into a five-row block above the list. */
+  .rk-tab{border-radius:999px;font-size:.8rem;padding:.5rem .9rem;text-transform:none;letter-spacing:.01em}
+  @media(max-width:720px){
+    .rk-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:2.5rem;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+    .rk-tabs::-webkit-scrollbar{display:none}
+    .rk-tab{flex:none}
+  }
 </style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
@@ -3736,7 +3759,63 @@ ${eventLd}
   .mp-foot{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-size:.84rem;color:var(--muted);line-height:1.5}
   .mp-foot a{color:var(--accent);text-decoration:none;font-weight:700}
 ${AURORA_CSS}
-</style></head><body>${AURORA_DIVS}
+  /* ── DESIGN REFRESH (2026-11): fight tile ──────────────────────────────
+     Was: avatar+name | 78px meta column | name+avatar. On a 390px phone that
+     left ~66px for a name, so names broke over two lines and records wrapped
+     mid-number. Now: a strip (weight class left, rounds right), the two
+     fighters sharing the full width, and Fight Info as the tile's footer.
+     Same DOM: .mf-center is dissolved (display:contents) and its children are
+     placed on the row. */
+  .mf-card{border-radius:14px;background:linear-gradient(180deg,#191920,#131318)}
+  .mf-row{flex-wrap:wrap;position:relative;gap:0;padding:0}
+  .mf-center{display:contents}
+  .mf-row::after{content:'';order:4;flex:0 0 100%;height:0}
+  .mf-wt{order:1;flex:0 1 auto;min-width:0;max-width:calc(100% - 5.2rem);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:.8rem 0 .1rem .95rem;font-size:.68rem;font-weight:800;letter-spacing:.09em;color:#a9adb8}
+  .mf-card.main .mf-wt{color:#d9b84a}
+  .mf-rds{order:2;flex:none;margin:.7rem .95rem 0 auto;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#a9adb8;border:1px solid #2b2c36;border-radius:999px;padding:.08rem .5rem}
+  .mf-side{order:5;flex:0 0 50%;max-width:50%;gap:.65rem;padding:.75rem 1.15rem 1rem .95rem}
+  .mf-side.right{order:6;padding:.75rem .95rem 1rem 1.15rem;justify-content:flex-end}
+  .mf-side.right .mf-meta{flex:0 1 auto}
+  .mf-av{width:46px;height:46px}
+  .mf-rank{font-size:.66rem;margin-bottom:.2rem}
+  .mf-name{font-size:.92rem;line-height:1.2}
+  .mf-restag{margin-top:.25rem}
+  .mf-rec{font-size:.76rem;color:#a9adb8;white-space:nowrap;margin-top:.3rem}
+  .mf-rec b{display:inline-block;padding:0 .35rem;border-radius:5px;background:rgba(255,255,255,.08);font-variant-numeric:tabular-nums}
+  .mf-rec b.fav{background:rgba(0,230,104,.14);color:#7dffb5}
+  .mf-vs{position:absolute;left:50%;top:calc(2.1rem + .75rem + 11px);transform:translateX(-50%);pointer-events:none;min-width:24px;height:24px;padding:0 .35rem;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#0a0a0b;border:1px solid #2b2c36;font-size:.58rem;letter-spacing:.02em;color:#a9adb8}
+  .mf-card.mf-numbered .mf-vs{border-color:rgba(212,175,55,.55);color:#d9b84a}
+  .mf-info{order:7;flex:0 0 100%;margin:0;min-height:44px;padding:.7rem;border-top:1px solid #2b2c36;background:rgba(255,255,255,.02);font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff}
+  .mf-info:hover{color:var(--accent);background:rgba(255,255,255,.05)}
+  /* Finished fights: the centre column holds FINAL / method / round instead of VS / weight / rounds. */
+  .mf-meth{order:1;flex:none;padding:.8rem 0 .1rem .95rem;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+  .mf-mtime{order:2;flex:none;margin:.7rem .95rem 0 auto;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#a9adb8;border:1px solid #2b2c36;border-radius:999px;padding:.08rem .5rem}
+  /* Symmetry: both fighters' columns are the same height, ranking pinned to the top
+     and the record/odds line to the bottom, so the two sides line up even when one
+     name wraps and the other doesn't. An unranked fighter facing a ranked one gets
+     an empty ranking line so the names still start level. */
+  .mf-side{align-self:stretch}
+  .mf-meta{display:flex;flex-direction:column;align-self:stretch}
+  .mf-rec{margin-top:auto;padding-top:.3rem}
+  .mf-restag{align-self:flex-start}
+  .mf-side.right .mf-restag{align-self:flex-end}
+  .mf-row:has(.mf-rank) .mf-meta:not(:has(.mf-rank))::before{content:'';display:block;flex:none;height:1.13rem}
+  .mf-taphint{display:none}
+  .mf-sechdr{font-size:.76rem;letter-spacing:.14em;color:#a9adb8}
+  .mf-search-input,.mf-past-select{border-radius:12px}
+  @media(min-width:700px){
+    /* roomier on desktop: bigger photos and names */
+    .mf-wt,.mf-meth{font-size:.72rem;padding-left:1.15rem}
+    .mf-rds,.mf-mtime{margin-right:1.15rem}
+    .mf-side{padding:.9rem 2rem 1.1rem 1.15rem;gap:.85rem}
+    .mf-side.right{padding:.9rem 1.15rem 1.1rem 2rem}
+    .mf-av{width:60px;height:60px}
+    .mf-name{font-size:1.2rem}
+    .mf-rec{font-size:.82rem}
+    .mf-vs{min-width:34px;height:34px;font-size:.7rem;padding:0 .55rem;top:calc(2.1rem + .9rem + 13px)}
+    .mf-info{font-size:.76rem;letter-spacing:.12em}
+  }
+  </style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
