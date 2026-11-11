@@ -1,0 +1,209 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   GILLYLAB — PREMIUM APP (index.html) DESIGN REFRESH · PREVIEW LAYER
+   Nothing here is wired into index.html yet. It is injected only by the
+   preview harness so the before/after can be compared first.
+
+   Aims, in order:
+     1. Legibility — no text under 11px, muted text lifted to AA contrast.
+     2. Fight cards that read as a matchup, not a stretched table row.
+     3. Navigation you can see (inline tabs on desktop, not a dropdown).
+     4. Filter chips scroll sideways on phones instead of wrapping 5 rows.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --muted: #8d919d;          /* was #666672 (3.4:1 on --bg) -> 6.0:1 */
+  --muted-2: #a9adb8;
+  --border: #2b2c36;
+  --card: #131318;
+  --card-hi: #191920;
+  --gold: #d9b84a;
+  --r-card: 14px;
+  --r-ctl: 10px;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────────────── */
+.header-search-row { padding: 0.55rem 2rem; }
+.header-search-input { font-size: 0.95rem !important; }
+.header-search-input::placeholder { color: var(--muted) !important; }
+.nav-dropdown-btn, .account-btn { border-radius: var(--r-ctl) !important; }
+.nav-dropdown-menu { border-radius: 12px; padding: 0.4rem; min-width: 220px; box-shadow: 0 18px 50px rgba(0,0,0,0.6); }
+.nav-dropdown-menu li { border-radius: 8px; padding: 0.7rem 0.85rem !important; font-size: 0.95rem !important; letter-spacing: 0.08em !important; }
+
+/* Desktop: the ten destinations become a visible tab row. */
+@media (min-width: 1280px) {
+  .site-header nav { gap: 1.25rem; }
+  .site-header .nav-logo { position: static !important; transform: none !important; order: -1; flex: none; }
+  .site-header .nav-logo img { height: 38px !important; }
+  .nav-dropdown { flex: 1; min-width: 0; }
+  .nav-dropdown-btn { display: none !important; }
+  .nav-dropdown-menu {
+    display: flex !important; position: static; animation: none;
+    background: none; border: 0; box-shadow: none; padding: 0; margin: 0; gap: 0.1rem; min-width: 0;
+  }
+  .nav-dropdown-menu li {
+    padding: 0.55rem 0.7rem !important; font-size: 0.84rem !important; letter-spacing: 0.09em !important;
+    white-space: nowrap; color: var(--muted-2); border-radius: 8px; position: relative;
+  }
+  .nav-dropdown-menu li:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .nav-dropdown-menu li.active { color: var(--accent); background: rgba(0,230,104,0.08); }
+  .nav-dropdown-menu li.active::after {
+    content: ''; position: absolute; left: 0.7rem; right: 0.7rem; bottom: -0.62rem; height: 2px;
+    background: var(--accent); border-radius: 2px;
+  }
+}
+
+/* ── PAGE HEADERS ───────────────────────────────────────────────────── */
+.page-header-sub, .event-details { color: var(--muted-2) !important; letter-spacing: 0.02em !important; font-weight: 400 !important; }
+.hero-label, .page-header-label { color: var(--muted) !important; }
+
+/* ── EVENT HEADER ───────────────────────────────────────────────────── */
+.event-name { line-height: 1 !important; }
+.gl-prev-select { border-radius: var(--r-ctl) !important; }
+.event-countdown .countdown-time { font-variant-numeric: tabular-nums; }
+
+/* Gold PPV panel: keep the gold, lose the muddy wash and the star row. */
+.numbered-card:not(.event-header) {
+  background: linear-gradient(180deg, rgba(212,175,55,0.07) 0, rgba(212,175,55,0) 220px) !important;
+}
+.numbered-card::before { content: none !important; }
+.fight-card-section { max-width: 1040px; margin-left: auto; margin-right: auto; }
+
+/* ── FIGHT CARD ─────────────────────────────────────────────────────────
+   Was: avatar/name | 110px meta column | name/avatar, stretched 1240px wide
+   with 7.5px labels on phones.
+   Now: a header strip (weight class · rounds), the two fighters facing each
+   other across a VS mark, and a two-button footer. Same DOM — .fight-center
+   is dissolved with display:contents and its children are placed on the
+   card's own grid. */
+.fight-row, .numbered-card .fight-row {
+  grid-template-columns: 1fr 1fr !important;
+  border-radius: var(--r-card) !important;
+  margin-bottom: 0.9rem !important;
+  background: linear-gradient(180deg, var(--card-hi), var(--card)) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 10px 30px -18px rgba(0,0,0,0.9);
+}
+.fight-center { display: contents !important; }
+
+.fight-weight {
+  grid-row: 1; grid-column: 1; justify-self: start; align-self: center;
+  padding: 0.7rem 0 0.1rem 1.1rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.8rem !important; font-weight: 700; letter-spacing: 0.12em !important;
+  color: var(--muted-2) !important; text-align: left !important; white-space: nowrap !important;
+}
+.fight-row.main-event .fight-weight { color: var(--gold) !important; }
+.fight-rounds {
+  grid-row: 1; grid-column: 2; justify-self: end; align-self: center;
+  margin: 0.7rem 1.1rem 0.1rem 0;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.76rem !important; font-weight: 700; letter-spacing: 0.1em !important;
+  color: var(--muted-2) !important;
+  border: 1px solid var(--border); border-radius: 999px; padding: 0.12rem 0.55rem;
+}
+.fighter-cell { grid-row: 2; padding: 0.85rem 1.1rem 1.05rem !important; gap: 0.8rem !important; }
+.fighter-cell:not(.right) { grid-column: 1; padding-right: 2rem !important; }
+.fighter-cell.right { grid-column: 2; padding-left: 2rem !important; }
+.fight-vs, .numbered-card .fight-vs {
+  grid-row: 2; grid-column: 1 / -1; justify-self: center; align-self: center;
+  z-index: 1; pointer-events: none;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg) !important; border: 1px solid var(--border) !important;
+  color: var(--muted-2) !important; font-size: 0.78rem !important; letter-spacing: 0.04em;
+}
+.numbered-card .fight-vs { border-color: rgba(212,175,55,0.55) !important; color: var(--gold) !important; }
+
+.fighter-avatar, .numbered-card .fighter-avatar { width: 60px !important; height: 60px !important; min-width: 60px !important; }
+.fighter-name { font-size: 1.3rem !important; letter-spacing: 0.02em !important; line-height: 1.1 !important; }
+.fighter-rank { font-size: 0.74rem !important; letter-spacing: 0.08em !important; margin-bottom: 0.15rem; }
+.fighter-record { font-size: 0.86rem !important; color: var(--muted-2) !important; letter-spacing: 0.03em !important; margin-top: 0.25rem !important; }
+.fighter-record .gl-ml {
+  display: inline-block; padding: 0.05rem 0.4rem; border-radius: 6px;
+  background: rgba(255,255,255,0.07); color: #fff !important; font-variant-numeric: tabular-nums;
+}
+.fighter-record .gl-ml-fav { background: rgba(0,230,104,0.14); color: #7dffb5 !important; }
+
+/* Footer: Fight Info | Simulate — equal, thumb-sized. */
+.fight-center > .fight-info-toggle, .fight-row .fight-sim-bar {
+  grid-row: 3; margin: 0 !important; width: 100%;
+  border: 0 !important; border-top: 1px solid var(--border) !important; border-radius: 0 !important;
+  min-height: 44px; padding: 0.7rem 0.5rem !important;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.86rem !important; font-weight: 700; letter-spacing: 0.12em !important;
+  background: rgba(255,255,255,0.02) !important;
+}
+.fight-center > .fight-info-toggle { grid-column: 1; color: #fff !important; border-right: 1px solid var(--border) !important; }
+.fight-row .fight-sim-bar { grid-column: 2 !important; color: var(--accent) !important; }
+.fight-center > .fight-info-toggle:hover, .fight-center > .fight-info-toggle.open { background: rgba(255,255,255,0.06) !important; color: var(--accent) !important; }
+.fight-row .fight-sim-bar:hover { background: rgba(0,230,104,0.1) !important; }
+.numbered-card .fight-center > .fight-info-toggle, .numbered-card .fight-row .fight-sim-bar { border-top-color: rgba(212,175,55,0.18) !important; }
+.numbered-card .fight-center > .fight-info-toggle { border-right-color: rgba(212,175,55,0.18) !important; }
+
+/* ── SECTION LABELS ─────────────────────────────────────────────────── */
+.section-title { font-size: 0.95rem !important; }
+
+/* ── CHIPS / FILTER TABS ────────────────────────────────────────────── */
+.rank-div-btn, .odds-prop-btn {
+  border-radius: 999px !important; font-size: 0.82rem !important; padding: 0.5rem 0.95rem !important;
+  letter-spacing: 0.08em !important;
+}
+.rank-div-btn:not(.active), .odds-prop-btn:not(.active) { color: var(--muted-2) !important; }
+#f-record-toggle { border-radius: 999px; font-size: 0.74rem; padding: 0.3rem 0.7rem; }
+
+/* ── EVENT HEADER lines up with the card column ─────────────────────── */
+#page-home > .hero, #page-home > .event-header { max-width: 1040px !important; padding-left: 0 !important; padding-right: 0 !important; }
+@media (max-width: 1100px) { #page-home > .hero, #page-home > .event-header { padding-left: 1rem !important; padding-right: 1rem !important; } }
+
+/* ── RANKINGS ───────────────────────────────────────────────────────── */
+.rank-row, .rank-champ-row { border-radius: 12px !important; break-inside: avoid; }
+.rank-num { font-size: 1.05rem !important; min-width: 2.4rem; font-variant-numeric: tabular-nums; }
+.rank-avatar { width: 40px !important; height: 40px !important; }
+.rank-name { font-size: 1.1rem !important; }
+@media (min-width: 1000px) {
+  .rank-table { display: block !important; columns: 2; column-gap: 1rem; }
+  .rank-table > * { margin-bottom: 0.5rem; }
+}
+
+/* ── FIGHTER PROFILE ────────────────────────────────────────────────── */
+.fsx-bio { gap: 0.6rem !important; flex-wrap: wrap; }
+.fsx-bio > div { background: rgba(255,255,255,0.035); border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem 0.85rem; }
+.fsx-bio-k, .fsx-group-t { color: var(--muted) !important; font-size: 0.7rem !important; }
+.fsx-label { font-size: 0.92rem !important; color: #d7d9df !important; }
+.fsx-row { min-height: 30px; }
+.fsx-bar { height: 10px !important; border-radius: 999px !important; }
+.fsx-lg { font-size: 0.74rem !important; color: var(--muted-2) !important; }
+.fighter-tab { font-size: 0.86rem !important; }
+@media (min-width: 1100px) {
+  .fsx-card { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 2.5rem; align-items: start; }
+  .fsx-card > .fsx-bio, .fsx-card > .fsx-caption, .fsx-card > :not(.fsx-group) { grid-column: 1 / -1; }
+  .fsx-card .fsx-label { width: 150px !important; min-width: 150px !important; flex: none; }
+}
+
+/* ── PHONES ─────────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .header-search-row { padding: 0.6rem 1rem; }
+  .fight-weight { font-size: 0.72rem !important; padding: 0.6rem 0 0 0.85rem; }
+  .fight-rounds { font-size: 0.7rem !important; margin: 0.6rem 0.85rem 0 0; }
+  .fighter-cell { padding: 0.7rem 0.85rem 0.9rem !important; gap: 0.55rem !important; flex-direction: column; align-items: flex-start !important; }
+  .fighter-cell.right { flex-direction: column-reverse; align-items: flex-end !important; }
+  .fighter-cell:not(.right) { padding-right: 1.4rem !important; }
+  .fighter-cell.right { padding-left: 1.4rem !important; }
+  .fighter-cell > div:not(.fighter-avatar) { flex: none !important; width: 100%; }
+  .fighter-avatar, .numbered-card .fighter-avatar { width: 52px !important; height: 52px !important; min-width: 52px !important; }
+  .fighter-name { font-size: 1.12rem !important; white-space: normal !important; }
+  .fighter-rank { font-size: 0.7rem !important; }
+  .fighter-record { font-size: 0.8rem !important; }
+  .fight-vs, .numbered-card .fight-vs { align-self: start; margin-top: 1.5rem; width: 30px; height: 30px; font-size: 0.7rem !important; }
+  .fight-center > .fight-info-toggle, .fight-row .fight-sim-bar { font-size: 0.8rem !important; }
+
+  /* chip rows: one line, swipe sideways, fade at the right edge */
+  #rankingDivTabs, #fightSelectorBtns, .odds-prop-tabs {
+    flex-wrap: nowrap !important; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; padding-bottom: 2px;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+            mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+  }
+  #rankingDivTabs::-webkit-scrollbar, #fightSelectorBtns::-webkit-scrollbar, .odds-prop-tabs::-webkit-scrollbar { display: none; }
+  #rankingDivTabs > *, #fightSelectorBtns > *, .odds-prop-tabs > * { flex: none !important; }
+  #rankingDivTabs, #fightSelectorBtns, .odds-prop-tabs { display: flex !important; padding-right: 36px; }
+}
