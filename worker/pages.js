@@ -3761,59 +3761,50 @@ ${AURORA_CSS}
   /* ── DESIGN REFRESH (2026-11): fight tile ──────────────────────────────
      Was: avatar+name | 78px meta column | name+avatar. On a 390px phone that
      left ~66px for a name, so names broke over two lines and records wrapped
-     mid-number. Now the weight class / rounds / Fight Info sit in a one-line
-     strip and the two fighters share the full width underneath. Same DOM:
-     .mf-center is dissolved (display:contents) and its children are placed on
-     the row. Phone tiles stay about as tall as before. */
+     mid-number. Now: a strip (weight class left, rounds right), the two
+     fighters sharing the full width, and Fight Info as the tile's footer.
+     Same DOM: .mf-center is dissolved (display:contents) and its children are
+     placed on the row. */
   .mf-card{border-radius:14px;background:linear-gradient(180deg,#191920,#131318)}
-  .mf-row{flex-wrap:wrap;position:relative;gap:0;padding:.45rem .8rem .7rem}
+  .mf-row{flex-wrap:wrap;position:relative;gap:0;padding:0}
   .mf-center{display:contents}
   .mf-row::after{content:'';order:4;flex:0 0 100%;height:0}
-  .mf-wt{order:1;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.68rem;font-weight:800;letter-spacing:.09em;color:#a9adb8}
+  .mf-wt{order:1;flex:0 1 auto;min-width:0;max-width:calc(100% - 5.2rem);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:.8rem 0 .1rem .95rem;font-size:.68rem;font-weight:800;letter-spacing:.09em;color:#a9adb8}
   .mf-card.main .mf-wt{color:#d9b84a}
-  .mf-rds{order:2;flex:none;margin-left:.5rem;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#a9adb8;border:1px solid #2b2c36;border-radius:999px;padding:.05rem .45rem}
-  .mf-info{order:3;flex:none;margin:0 0 0 auto;padding:.45rem 0 .45rem .7rem;min-height:32px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#d7d9df}
-  .mf-info:hover{color:var(--accent)}
-  .mf-side{order:5;flex:0 0 50%;max-width:50%;gap:.55rem;padding:.1rem 1.1rem 0 0}
-  .mf-side.right{order:6;padding:.1rem 0 0 1.1rem;justify-content:flex-end}
+  .mf-rds{order:2;flex:none;margin:.7rem .95rem 0 auto;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#a9adb8;border:1px solid #2b2c36;border-radius:999px;padding:.08rem .5rem}
+  .mf-side{order:5;flex:0 0 50%;max-width:50%;gap:.65rem;padding:.75rem 1.15rem 1rem .95rem}
+  .mf-side.right{order:6;padding:.75rem .95rem 1rem 1.15rem;justify-content:flex-end}
   .mf-side.right .mf-meta{flex:0 1 auto}
   .mf-av{width:46px;height:46px}
-  .mf-rank{font-size:.66rem}
-  .mf-name{font-size:.95rem}
-  .mf-rec{font-size:.76rem;color:#a9adb8;white-space:nowrap}
+  .mf-rank{font-size:.66rem;margin-bottom:.2rem}
+  .mf-name{font-size:.92rem;line-height:1.2}
+  .mf-restag{margin-top:.25rem}
+  .mf-rec{font-size:.76rem;color:#a9adb8;white-space:nowrap;margin-top:.3rem}
   .mf-rec b{display:inline-block;padding:0 .35rem;border-radius:5px;background:rgba(255,255,255,.08);font-variant-numeric:tabular-nums}
   .mf-rec b.fav{background:rgba(0,230,104,.14);color:#7dffb5}
-  .mf-vs{position:absolute;left:50%;bottom:1.35rem;transform:translateX(-50%);pointer-events:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#0a0a0b;border:1px solid #2b2c36;font-size:.58rem;letter-spacing:.02em;color:#a9adb8}
+  .mf-vs{position:absolute;left:50%;top:calc(2.1rem + .75rem + 11px);transform:translateX(-50%);pointer-events:none;min-width:24px;height:24px;padding:0 .35rem;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#0a0a0b;border:1px solid #2b2c36;font-size:.58rem;letter-spacing:.02em;color:#a9adb8}
   .mf-card.mf-numbered .mf-vs{border-color:rgba(212,175,55,.55);color:#d9b84a}
+  .mf-info{order:7;flex:0 0 100%;margin:0;min-height:44px;padding:.7rem;border-top:1px solid #2b2c36;background:rgba(255,255,255,.02);font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff}
+  .mf-info:hover{color:var(--accent);background:rgba(255,255,255,.05)}
   /* Finished fights: the centre column holds FINAL / method / round instead of VS / weight / rounds. */
-  .mf-vs.final{width:auto;min-width:24px;padding:0 .4rem;border-radius:999px}
-  .mf-meth{order:1;flex:none;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
-  .mf-mtime{order:2;flex:none;margin-left:.5rem;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#a9adb8;border:1px solid #2b2c36;border-radius:999px;padding:.05rem .45rem}
+  .mf-meth{order:1;flex:none;padding:.8rem 0 .1rem .95rem;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+  .mf-mtime{order:2;flex:none;margin:.7rem .95rem 0 auto;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#a9adb8;border:1px solid #2b2c36;border-radius:999px;padding:.08rem .5rem}
   .mf-taphint{display:none}
-  @media(max-width:699px){
-    /* the strip never wraps: a long weight class truncates instead of pushing Fight Info down a line */
-    .mf-wt{max-width:calc(100% - 9.6rem)}
-    .mf-name{font-size:.88rem}
-    .mf-side{padding-right:.85rem;gap:.45rem}
-    .mf-side.right{padding-left:.85rem;padding-right:0}
-  }
   .mf-sechdr{font-size:.76rem;letter-spacing:.14em;color:#a9adb8}
   .mf-search-input,.mf-past-select{border-radius:12px}
   @media(min-width:700px){
-    /* roomier on desktop: bigger photos and names, Fight Info as a full-width footer */
-    .mf-row{padding:.6rem 1.15rem 0}
-    .mf-wt{font-size:.72rem}
-    .mf-rds,.mf-mtime{margin-left:auto}
-    .mf-vs.final{min-width:34px;padding:0 .55rem}
-    .mf-side{padding:.5rem 2rem 1rem 0;gap:.85rem}
-    .mf-side.right{padding:.5rem 0 1rem 2rem}
+    /* roomier on desktop: bigger photos and names */
+    .mf-wt,.mf-meth{font-size:.72rem;padding-left:1.15rem}
+    .mf-rds,.mf-mtime{margin-right:1.15rem}
+    .mf-side{padding:.9rem 2rem 1.1rem 1.15rem;gap:.85rem}
+    .mf-side.right{padding:.9rem 1.15rem 1.1rem 2rem}
     .mf-av{width:60px;height:60px}
     .mf-name{font-size:1.2rem}
     .mf-rec{font-size:.82rem}
-    .mf-vs{width:34px;height:34px;font-size:.7rem;bottom:calc(44px + 1.65rem)}
-    .mf-info{order:7;flex:0 0 calc(100% + 2.3rem);margin:0 -1.15rem;padding:.7rem;min-height:44px;border-top:1px solid #2b2c36;background:rgba(255,255,255,.02);color:#fff;font-size:.76rem;letter-spacing:.12em}
+    .mf-vs{min-width:34px;height:34px;font-size:.7rem;padding:0 .55rem;top:calc(2.1rem + .9rem + 13px)}
+    .mf-info{font-size:.76rem;letter-spacing:.12em}
   }
-</style></head><body>${AURORA_DIVS}
+  </style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">

@@ -4352,38 +4352,32 @@
 @media (max-width: 720px) {
   .header-search-row { padding: 0.6rem 1rem; }
 
-  /* Compact fight tile. Weight class, rounds and Fight Info share one strip;
-     the fighters sit side by side under it; Simulate Matchup is the footer.
-     Shorter than the tile it replaces, so the whole card is less scrolling. */
+  /* Phone fight tile: a strip (weight class left, rounds right), the two
+     fighters side by side, then the same two-button footer as desktop
+     (Fight Info | Simulate Matchup). Still shorter than the tile it replaced. */
   .fight-row, .numbered-card .fight-row {
     display: flex !important; flex-wrap: wrap; align-items: center; position: relative;
-    padding: 0.35rem 0.75rem 0; margin-bottom: 0.6rem !important;
+    padding: 0; margin-bottom: 0.8rem !important;
   }
   .fight-row::after { content: ''; order: 4; flex: 0 0 100%; height: 0; }
-  .fight-weight { order: 1; flex: 0 1 auto; min-width: 0; max-width: calc(100% - 9.8rem); overflow: hidden; text-overflow: ellipsis;
-    padding: 0 !important; font-size: 0.74rem !important; }
-  .fight-rounds { order: 2; flex: none; margin: 0 0 0 0.5rem !important; font-size: 0.68rem !important; padding: 0.05rem 0.45rem; }
-  .fight-center > .fight-info-toggle {
-    order: 3; flex: none; width: auto; margin: 0 0 0 auto !important; min-height: 34px;
-    border: 0 !important; background: none !important; padding: 0.45rem 0 0.45rem 0.7rem !important;
-    font-size: 0.76rem !important; color: #d7d9df !important;
-  }
-  .fight-center > .fight-info-toggle:hover, .fight-center > .fight-info-toggle.open { background: none !important; color: var(--accent) !important; }
-  .fighter-cell { order: 5; flex: 0 0 50%; max-width: 50%; gap: 0.5rem !important; padding: 0.05rem 0.9rem 0.65rem 0 !important; }
-  .fighter-cell.right { order: 6; padding: 0.05rem 0 0.65rem 0.9rem !important; }
-  .fighter-avatar, .numbered-card .fighter-avatar { width: 44px !important; height: 44px !important; min-width: 44px !important; }
-  .fighter-name { font-size: 1.02rem !important; white-space: normal !important; }
-  .fighter-rank { font-size: 0.68rem !important; margin-bottom: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .fighter-record { font-size: 0.76rem !important; margin-top: 0.1rem !important; white-space: nowrap; }
-  .fight-vs, .numbered-card .fight-vs { position: absolute; left: 50%; top: calc(0.35rem + 34px + 12px); transform: translateX(-50%);
-    width: 24px; height: 24px; font-size: 0.6rem !important; }
-  .fight-vs, .numbered-card .fight-vs { min-width: 24px; padding: 0 0.35rem; }
-  .gl-result-method { order: 2; flex: none; margin: 0 0 0 0.5rem !important; font-size: 0.72rem !important; }
-  .gl-result-time { order: 2; flex: none; margin: 0 0 0 0.35rem !important; font-size: 0.66rem !important; padding: 0.02rem 0.4rem; }
-  .fight-row:has(.gl-result-method) .fight-weight { max-width: calc(100% - 15.2rem); }
-  .fight-row:not(:has(.fight-sim-bar)) { padding-bottom: 0.1rem; }
-  .fight-row .fight-sim-bar { order: 7; flex: 0 0 calc(100% + 1.5rem); width: auto; margin: 0 -0.75rem !important;
-    min-height: 38px; padding: 0.5rem !important; font-size: 0.78rem !important; }
+  .fight-weight { order: 1; flex: 0 1 auto; min-width: 0; max-width: calc(100% - 5.4rem); overflow: hidden; text-overflow: ellipsis;
+    padding: 0.8rem 0 0.1rem 0.95rem !important; font-size: 0.76rem !important; }
+  .fight-rounds { order: 2; flex: none; margin: 0.7rem 0.95rem 0 auto !important; font-size: 0.7rem !important; padding: 0.08rem 0.5rem; }
+  .gl-result-method { order: 2; flex: none; margin: 0.7rem 0 0 auto !important; font-size: 0.74rem !important; }
+  .gl-result-time { order: 3; flex: none; margin: 0.7rem 0.95rem 0 0.45rem !important; font-size: 0.68rem !important; padding: 0.05rem 0.45rem; }
+  .fight-row:has(.gl-result-method) .fight-weight { max-width: calc(100% - 11.5rem); }
+  .fighter-cell { order: 5; flex: 0 0 50%; max-width: 50%; gap: 0.65rem !important; padding: 0.75rem 1.15rem 1rem 0.95rem !important; }
+  .fighter-cell.right { order: 6; padding: 0.75rem 0.95rem 1rem 1.15rem !important; }
+  .fighter-avatar, .numbered-card .fighter-avatar { width: 46px !important; height: 46px !important; min-width: 46px !important; }
+  .fighter-name { font-size: 1.06rem !important; line-height: 1.16 !important; white-space: normal !important; }
+  .fighter-rank { font-size: 0.7rem !important; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fighter-record { font-size: 0.8rem !important; margin-top: 0.32rem !important; white-space: nowrap; }
+  .gl-res-tag { margin-top: 0.2rem; }
+  .fight-vs, .numbered-card .fight-vs { position: absolute; left: 50%; top: calc(2.15rem + 0.75rem + 11px); transform: translateX(-50%);
+    min-width: 24px; height: 24px; padding: 0 0.35rem; font-size: 0.6rem !important; }
+  .fight-center > .fight-info-toggle { order: 7; flex: 0 0 50%; width: auto; min-height: 44px; font-size: 0.8rem !important; }
+  .fight-row .fight-sim-bar { order: 8; flex: 0 0 50%; width: auto; min-height: 44px; font-size: 0.8rem !important; }
+  .fight-row:not(:has(.fight-sim-bar)) .fight-center > .fight-info-toggle { flex-basis: 100%; }
 
   /* chip rows: one line, swipe sideways, fade at the right edge */
   #rankingDivTabs, #fightSelectorBtns, .odds-prop-tabs {

@@ -2742,42 +2742,49 @@ html.gl-no-upgrade #portalBtn{ display:none !important; }
 /* ── EVENTS · FIGHT TILE ─────────────────────────────────────────────
    Was: avatar+name | 78px meta column | name+avatar, which left ~66px for a
    fighter's name and set the weight class in 8px type.
-   Now: a one-line strip (weight class left, Fight Info right) and the two
-   fighters side by side underneath using the full width. Same DOM:
-   .mf-center is dissolved (display:contents) and its children are ordered on
-   the row's flex line. Tile height is about the same as before. */
-.mf-card { border-radius: 14px; padding: .55rem .75rem .7rem; margin-bottom: .6rem;
+   Now: a strip with the weight class, the two fighters side by side using the
+   full width, and a footer: Fight Info, plus Simulate Matchup beside it for
+   premium accounts (same split as the site). Same DOM: .mf-center is
+   dissolved (display:contents) and its children are ordered on the row. */
+.mf-card { border-radius: 14px; padding: 0 .9rem; margin-bottom: .8rem;
   background: linear-gradient(180deg, var(--card-hi), var(--card)); }
 .mf-card--sim { padding-bottom: 0; }
 .mf-row { display: flex; flex-wrap: wrap; align-items: center; position: relative; }
 .mf-center { display: contents; }
 .mf-row::after { content: ''; order: 3; flex: 0 0 100%; height: 0; }   /* line break: strip above, fighters below */
 .mf-wt { order: 1; flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left;
-  font-family: 'Barlow Condensed', sans-serif; font-size: .74rem; font-weight: 700; letter-spacing: .11em;
+  padding: .8rem 0 .1rem; font-family: 'Barlow Condensed', sans-serif; font-size: .76rem; font-weight: 700; letter-spacing: .11em;
   text-transform: uppercase; color: #a9adb8; line-height: 1.2; max-width: none; }
 .mf-card.main .mf-wt { color: var(--gold); }
-.mf-info { order: 2; margin: 0 0 0 auto; flex: none; border: 0; background: none; border-radius: 8px;
-  font-family: 'Barlow Condensed', sans-serif; font-size: .74rem; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: #d7d9df; padding: .45rem 0 .45rem .8rem; min-height: 32px; }
-.mf-info:hover, .mf-info.open { color: var(--accent); }
-.mf-side { order: 4; flex: 0 0 50%; max-width: 50%; gap: .55rem; padding: .15rem 1.1rem 0 0; }
-.mf-side.right { order: 5; padding: .15rem 0 0 1.1rem; }
-.mf-av { width: 46px; height: 46px; }
-.mf-rank { font-size: .68rem; letter-spacing: .05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mf-name { font-size: 1rem; line-height: 1.12; }
-.mf-rec { font-size: .78rem; color: #a9adb8; white-space: nowrap; }
+.mf-side { order: 4; flex: 0 0 50%; max-width: 50%; gap: .65rem; padding: .75rem 1.15rem 1rem 0; }
+.mf-side.right { order: 5; padding: .75rem 0 1rem 1.15rem; }
+.mf-av { width: 48px; height: 48px; }
+.mf-rank { font-size: .7rem; letter-spacing: .05em; margin-bottom: .2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mf-name { font-size: 1.04rem; line-height: 1.16; }
+.mf-rec { font-size: .8rem; color: #a9adb8; white-space: nowrap; margin-top: .3rem; }
 .mf-odds { display: inline-block; padding: 0 .35rem; border-radius: 5px; background: rgba(255,255,255,.08); color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
-.mf-vs { position: absolute; left: 50%; bottom: .85rem; transform: translateX(-50%); pointer-events: none;
-  width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+.mf-vs { position: absolute; left: 50%; top: calc(2.15rem + .75rem + 12px); transform: translateX(-50%); pointer-events: none;
+  min-width: 24px; height: 24px; padding: 0 .35rem; border-radius: 999px; display: flex; align-items: center; justify-content: center;
   background: var(--bg); border: 1px solid var(--border); font-size: .62rem; color: #a9adb8; }
 .mf-card.mf-numbered .mf-vs { border-color: rgba(212,175,55,.55); }
+/* Footer. --mf-foot is the shared height that lets the premium Simulate bar
+   (a sibling of .mf-row, not a child) be pulled up beside Fight Info. */
+.mf-card { --mf-foot: 44px; }
+.mf-info { order: 6; flex: 0 0 calc(100% + 1.8rem); margin: 0 -.9rem; height: var(--mf-foot); padding: 0 .5rem;
+  border: 0; border-top: 1px solid var(--border); border-radius: 0; background: rgba(255,255,255,.02);
+  font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #fff; }
+.mf-info:hover, .mf-info.open { color: var(--accent); }
+.mf-card--sim .mf-info { flex-basis: calc(50% + .9rem); margin-right: 0; border-right: 1px solid var(--border); }
+.mf-card--sim .mf-sim-bar { display: block; box-sizing: border-box; width: calc(50% + .9rem); height: var(--mf-foot);
+  margin: calc(-1 * var(--mf-foot)) -.9rem 0 50%; padding: 0 .5rem; border-radius: 0;
+  background: rgba(255,255,255,.02); font-size: .8rem; letter-spacing: .12em; position: relative; }
 /* Finished fights: VS reads FINAL, and the method + round/time join the strip. */
-.mf-vs { width: auto; min-width: 24px; padding: 0 .35rem; border-radius: 999px; }
-.mf-method { order: 2; flex: none; display: flex; align-items: center; gap: .35rem; margin: 0 0 0 .5rem;
-  font-family: 'Barlow Condensed', sans-serif; font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
-.mf-restime { font-size: .68rem; color: #a9adb8; border: 1px solid var(--border); border-radius: 999px; padding: 0 .4rem; margin: 0; }
-.mf-row:has(.mf-method) .mf-wt { max-width: calc(100% - 15rem); }
-.mf-sim-bar { font-size: .78rem; padding: .62rem; margin-top: .7rem; }
+.mf-method { order: 2; flex: none; display: flex; align-items: center; gap: .4rem; margin: .7rem 0 0 auto;
+  font-family: 'Barlow Condensed', sans-serif; font-size: .76rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.mf-restime { font-size: .68rem; color: #a9adb8; border: 1px solid var(--border); border-radius: 999px; padding: .02rem .45rem; margin: 0; }
+.mf-row:has(.mf-method) .mf-wt { max-width: calc(100% - 8.5rem); }
+.mf-name .mf-res-tag { margin-top: .25rem; }
 .mf-sechdr { font-size: .8rem; letter-spacing: .14em; color: #a9adb8; }
 .mf-cd-label { font-size: .68rem; } .mf-cd-unit { font-size: .72rem; }
 .mf-event-tip { display: none; }       /* the tile's own "Fight Info" control says this now */
