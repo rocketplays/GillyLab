@@ -7,6 +7,10 @@ import landingData from "./landing-data.js";
 // The main event's deep-dive panel, pre-rendered from index.html's own hub code by
 // scripts/gen-matchup-free.cjs. Generated, never forked — see that script's header.
 import matchupFree from "./matchup-free.js";
+// index.html's own NAME_ALIASES / SLUG_ALIASES, extracted at build time by
+// scripts/gen-odds-page.cjs -- the single source of truth for "this feed spelling
+// is that fighter". See profileSlugFor() and resolveLiteSlug() below.
+import { NAME_ALIASES, SLUG_ALIASES } from "./odds-page.js";
 // The landing page's PREMIUM feature groups (cards + tap-to-expand), generated from the
 // landing grid so /subscribe shows the exact same previews scoped to premium. Emitted by
 // scripts/gen-showcase-proto.cjs alongside worker/landing-grid.js.
@@ -156,11 +160,45 @@ export function nameToSlug(name) {
 // ESPN/event-feed slugs that differ from our profile slug for the same fighter.
 // Without this the app's events page found no profile for them (no link, no photo).
 const PROFILE_SLUG_ALIASES = { "abdul-rakhman-yakhyaev": "abdulrakhman-yakhyaev", "zach-reese": "zachary-reese", "joe-kropschot": "joseph-kropschot" };
+// Every alias the website knows, keyed by SLUG so accents / punctuation / casing
+// in the feed's spelling don't matter: index.html's SLUG_ALIASES as-is, plus each
+// NAME_ALIASES key run through nameToSlug ("king green" -> "king-green",
+// "Gabriel Lourenço" -> "gabriel-lourenco", "j.j. aldrich" -> "j-j-aldrich").
+// Values are canonical DB names. Built once, lazily (nameToSlug is declared above).
+let _aliasBySlug = null;
+function aliasBySlug() {
+  if (_aliasBySlug) return _aliasBySlug;
+  const m = {};
+  for (const k in NAME_ALIASES) { const s = nameToSlug(k); if (s && !m[s]) m[s] = NAME_ALIASES[k]; }
+  for (const k in SLUG_ALIASES) m[k] = SLUG_ALIASES[k];   // the slug table wins, as on the site
+  return (_aliasBySlug = m);
+}
+// Canonical DB name for an alias spelling, or "" when `name` isn't a known alias.
+export function aliasCanonicalName(name) {
+  const direct = NAME_ALIASES[String(name == null ? "" : name).trim().toLowerCase()];
+  return direct || aliasBySlug()[nameToSlug(name == null ? "" : name)] || "";
+}
+// [aliasSpelling, canonicalName] pairs for search-as-you-type (see /api/fighter-search).
+export function aliasPairs() {
+  const out = [];
+  for (const k in NAME_ALIASES) out.push([k, NAME_ALIASES[k]]);
+  for (const k in SLUG_ALIASES) out.push([k.replace(/-/g, " "), SLUG_ALIASES[k]]);
+  return out;
+}
+// Order matters. A name or feed slug that IS a real profile always wins (steps 1-2),
+// so an alias can never hijack an existing fighter -- "Bruno Silva" stays the
+// middleweight even though 'bruno-silva' is also an alias key for the flyweight.
+// The website's alias tables (step 3) are only consulted for a spelling that would
+// otherwise resolve to nothing: before this, the app and the free pages knew 3 of
+// the site's ~85 aliases, so "King Green", "Ian Garry", "Alex Volkanovski" etc.
+// rendered with no photo and no profile link wherever a feed used that spelling.
 export function profileSlugFor(name, slugSet, ...extra) {
   if (!slugSet || !slugSet.size) return "";
   const cands = [nameToSlug(name), ...extra.filter(Boolean)];
   for (const c of cands) if (c && slugSet.has(c)) return c;
   for (const c of cands) { const a = c && PROFILE_SLUG_ALIASES[c]; if (a && slugSet.has(a)) return a; }
+  const bySlug = aliasBySlug();
+  for (const c of cands) { const a = c && bySlug[c] && nameToSlug(bySlug[c]); if (a && slugSet.has(a)) return a; }
   return "";
 }
 
@@ -1605,7 +1643,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
-<script src="/gl-sheet.js?v=709d435a" defer></script>
+<script src="/gl-sheet.js?v=da034d53" defer></script>
 <style>
   .pl-share{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(0,0,0,.72);overflow-y:auto;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease,visibility .18s}
   .pl-share.open{visibility:visible;opacity:1;pointer-events:auto}
@@ -2778,19 +2816,9 @@ export function pagesConsensusOdds(oddsData, nameA, nameB) {
 // tape"); this free page reimplements the card renderer separately and never
 // had the alias table ported over, so DWCS fighters silently lost their tale-
 // of-tape and profile link. Kept in lockstep with index.html's copy.
-const SLUG_ALIASES = {
-  "abdul-rakhman-yakhyaev": "Abdulrakhman Yakhyaev",
-  "bruno-silva": "Bruno Gustavo da Silva",
-  "bruno-silva-blindado": "Bruno Silva",
-  "jose-miguel-delgado": "Jose Delgado",
-  "king-green": "Bobby Green",
-  "zach-reese": "Zachary Reese",
-  "luis-dias-de-assis": "Luis Felipe Dias",
-  "yisak-lee": "Yi Sak Lee",
-  "seok-hyun-ko": "Seokhyeon Ko",
-  "matt-adams": "Matthew Adams",
-  "joe-kropschot": "Joseph Kropschot",
-};
+// (SLUG_ALIASES is imported from ./odds-page.js at the top of this file -- generated
+// from index.html, so it can no longer drift from the site's copy. The hand-kept
+// list that used to live here was missing ian-garry, gary-balletto and eduardo-henrique.)
 // ESPN's own fighterSlug frequently keeps a Jr./Sr./II/III/IV suffix (e.g.
 // "raul-rosas-jr") that nameToSlug() -- and therefore every key in
 // fighter-lite.json's bySlug -- deliberately strips (see nameToSlug's own

@@ -339,6 +339,12 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
    variants: the span version aligned, the button version didn't. */
 .gl-link-btn{ background:none; border:none; padding:0; margin:0; font:inherit; font-weight:800; color:var(--accent); cursor:pointer; text-decoration:underline; text-align:left; }
 .gl-error{ color:var(--bad); font-size:.82rem; margin:.4rem 0 0; }
+/* Fine-print line under a tool (Simulator, Bet Tracker) -- the site's own
+   .sim-disclaimer, same size/colour/centering. */
+.gl-disclaimer{ font-size:.75rem; color:var(--muted); text-align:center; line-height:1.5; margin:1.5rem auto 0; max-width:700px; }
+/* "One weight class apart" notice above a simulation result -- the site's own
+   .sim-warning (amber, not the red .gl-error: the simulation still ran). */
+.sim-warning{ color:#e8a33d; background:rgba(232,163,61,.1); border:1px solid rgba(232,163,61,.35); border-radius:8px; padding:.6rem .8rem; font-size:.8rem; line-height:1.45; margin:0 0 1rem; }
 .gl-locked{
   display:flex; flex-direction:column; align-items:center; text-align:center; gap:.8rem;
   padding:2.5rem 1rem; color:var(--muted);
@@ -1589,6 +1595,12 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
 }
 .fp-hist-opp{ font-weight:600; }
 .fp-hist-opp-link{ cursor:pointer; transition:color .15s; }
+/* Opponent's record entering the bout, e.g. "(12-3-0)" -- the site's .opp-record
+   (muted, lighter weight, a size down from the name it sits under/beside). */
+.fp-opp-rec{ color:rgba(255,255,255,.4); font-weight:500; font-size:.72rem; white-space:nowrap; }
+div.fp-opp-rec{ margin-top:1px; }
+/* Fine print under a profile tab's list (odds source, external-link note). */
+.fp-foot{ padding:.6rem 0 0; font-size:.72rem; color:rgba(255,255,255,.3); }
 .fp-hist-opp-link:active{ color:var(--accent); }
 .fp-hist-result{ text-align:center; font-weight:800; }
 .fp-hist-result.good{ color:var(--accent); }

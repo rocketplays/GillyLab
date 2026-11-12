@@ -20,10 +20,15 @@
  *
  * TAPE STUDY GROUPING/SORTING is ported from populateTapeStudy() in index.html
  * (section forward-propagation + month/year sort) so the app's ordering matches
- * the site's exactly. The opponent-record-at-fight badge populateTapeStudy also
- * shows is deliberately NOT ported here — it depends on scoutingHistKey/
- * recordAsOf/OPPONENT_RECORD_CACHE, a much larger dependency chain used nowhere
- * else in this app, for a "(3-1-0)" badge that's a nice-to-have, not the feature.
+ * the site's exactly.
+ *
+ * OPPONENT RECORD AT TIME OF FIGHT. The "(12-3-0)" badge the site prints under
+ * every opponent in Fight History, Odds History and Tape Study
+ * (opponentRecordAtFight -> recordAsOf / scoutingHistKey / OPPONENT_RECORD_CACHE)
+ * used to be skipped here as "a nice-to-have". It is the single quickest read on
+ * WHO a fighter has actually beaten, and it was the most visible thing the app's
+ * profile was missing next to the site's. Ported below (see OPPONENT RECORD) and
+ * baked onto each row as `oppRec`, so the app renders it with no client logic.
  *
  * FIGHT HISTORY. Ported from populateFightHistory() (index.html
  * ~114845-114919). Each dated FIGHT_HISTORY row is embedded verbatim (date/
@@ -156,6 +161,72 @@ function findBoutDate(name, opponent) {
   return (m && m.date) || null;
 }
 
+// ── OPPONENT RECORD ───────────────────────────────────────────────────────
+// Ports of index.html's _newsNorm / scoutingHistKey / recordAsOf /
+// opponentRecordAtFight, same semantics line for line:
+//   - resolve the written opponent name to a FIGHT_HISTORY key (exact, then
+//     normalized-equal, then an UNAMBIGUOUS token-subset match);
+//   - count every W/L/D strictly before the bout's date;
+//   - no profile of their own -> data/opponent-record-cache-lite.json (Sherdog,
+//     via scripts/fetch-opponent-records.cjs), keyed "<_newsNorm(name)>|<date>".
+// null means "unknown" and renders nothing -- never a made-up 0-0-0.
+// scoutingHistKey scans every key per call on the site (fine for one profile);
+// here it runs for every row of ~3,200 fighters, so the two scans are indexed
+// and the result memoized. Same answers, not the same loop.
+function oppNorm(s) {
+  return String(s == null ? '' : s).toLowerCase().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+const FH_KEYS = Object.keys(FIGHT_HISTORY);
+const FH_BY_NORM = new Map();           // first key wins, like the site's for-loop
+const FH_TOKENS = FH_KEYS.map((k) => { const n = oppNorm(k); if (!FH_BY_NORM.has(n)) FH_BY_NORM.set(n, k); return n.split(' ').filter(Boolean); });
+const _histKeyMemo = new Map();
+function scoutingHistKey(n) {
+  if (FIGHT_HISTORY[n]) return n;
+  if (_histKeyMemo.has(n)) return _histKeyMemo.get(n);
+  const t = oppNorm(n);
+  let out = FH_BY_NORM.get(t) || null;
+  if (!out) {
+    const tt = t.split(' ').filter(Boolean);
+    if (tt.length) {
+      let hit = null, h = 0;
+      for (let i = 0; i < FH_KEYS.length; i++) {
+        const kt = FH_TOKENS[i];
+        if (tt.every((x) => kt.includes(x)) || kt.every((x) => tt.includes(x))) { hit = FH_KEYS[i]; if (++h > 1) break; }
+      }
+      out = h === 1 ? hit : null;
+    }
+  }
+  _histKeyMemo.set(n, out);
+  return out;
+}
+function recordAsOf(name, dateStr) {
+  if (!name || !FIGHT_HISTORY[name]) return null;
+  const target = Date.parse(dateStr);
+  if (!isFinite(target)) return null;
+  let w = 0, l = 0, d = 0;
+  for (const f of FIGHT_HISTORY[name]) {
+    if (!f || !f.date) continue;
+    const fd = Date.parse(f.date);
+    if (!isFinite(fd) || fd >= target) continue;
+    if (f.result === 'W') w++;
+    else if (f.result === 'L') l++;
+    else if (f.result === 'D') d++;
+  }
+  return w + '-' + l + '-' + d;
+}
+// Absent is fine (the badge just stays blank for untracked opponents, exactly as
+// the site does before its own fetch lands). Unreadable is not -- readJSONOptional
+// throws on anything but ENOENT.
+const OPPONENT_RECORD_CACHE = readJSONOptional(R('data/opponent-record-cache-lite.json')) || {};
+function opponentRecordAtFight(opponentName, dateStr) {
+  if (!opponentName || !dateStr) return null;
+  const key = scoutingHistKey(opponentName);
+  const own = recordAsOf(key || opponentName, dateStr);
+  if (own) return own;
+  return OPPONENT_RECORD_CACHE[oppNorm(opponentName) + '|' + dateStr] || null;
+}
+
 function buildTapeStudy(name) {
   const raw = TAPE_STUDY[name];
   if (!raw || !raw.length) return [];
@@ -183,6 +254,7 @@ function buildTapeStudy(name) {
         event: f.event || null,
         section: k || null,
         date: findBoutDate(name, f.opponent),
+        oppRec: opponentRecordAtFight(f.opponent, findBoutDate(name, f.opponent)),
       });
     });
   });
@@ -276,6 +348,7 @@ function buildFightHistory(name) {
       event: f.event || null,
       org: org || null,
       orgTier: promotionTier(org),
+      oppRec: opponentRecordAtFight(f.opponent, f.date),
     };
   });
 }
@@ -370,6 +443,8 @@ function buildOddsHistory(name) {
       odds: typeof h.odds === 'number' ? h.odds : null,
       date: (matched && matched.date) || h.date || null,
       result: (matched && matched.result) || null,
+      // Same date the site keys the badge on: the matched bout's, else the odds row's own.
+      oppRec: opponentRecordAtFight(h.opponent, (matched && matched.date) || h.date || null),
     };
   });
 }

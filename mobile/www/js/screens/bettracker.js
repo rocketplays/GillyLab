@@ -21,9 +21,8 @@
 // web page), it needs no new native dependency/permission-string work in
 // this app (no @capacitor/camera is installed), and tapping it already
 // surfaces the OS's own "Photo Library / Take Photo" sheet on both
-// platforms. The canvas share-card PNG export is still NOT ported -- a
-// separate add-on (exporting your OWN bet history as an image to share),
-// not part of logging a bet.
+// platforms. Both share images are ported too: one card's bets
+// (shareBetCard) and the whole-history "capper card" (shareHistory).
 window.GL_ROUTER.register('bettracker', {
   title: 'Bet Tracker',
   tab: 'bettracker',
@@ -205,6 +204,47 @@ window.GL_BETTRACKER = (function(){
   }
 
   // ── shell --------------------------------------------------------------
+  // "Share my capper card" -- the site's btShareHistory(), same payload: the
+  // stat line for the range/scope on screen, the biggest verified win, last-5
+  // form, and (best-effort) the Units-leaderboard rank for that range.
+  var RANGE_LABELS = { '7d': 'Last 7 days', '30d': 'Last 30 days', '6m': 'Last 6 months', '12m': 'Last 12 months', all: 'All time' };
+  function shareHistory(){
+    if (!window.GL_SHEET || !window.GL_SHEET.betHistory || !betsData) return;
+    window.GL_NATIVE.tap();
+    var scoped = betsData.bets.filter(inRange(hRange));
+    var verified = scoped.filter(function(b){ return b.verified; });
+    var vs = computeStats(verified);
+    var s = computeStats(hScope === 'verified' ? verified : scoped);
+    var wins = verified.filter(function(b){ return b.status === 'won'; });
+    var signature = null;
+    if (wins.length){
+      var best = wins.reduce(function(a, b){ return (b.profit || 0) > (a.profit || 0) ? b : a; });
+      signature = { pick: best.pick, units: best.profit || 0, clv: (best.clv != null ? best.clv : null) };
+    }
+    var decided = verified.filter(function(b){ return b.status === 'won' || b.status === 'lost'; })
+      .sort(function(a, b){ return a.ts - b.ts; }).slice(-5);
+    var form = decided.length
+      ? { results: decided.map(function(b){ return b.status === 'won' ? 'W' : 'L'; }), units: decided.reduce(function(u, b){ return u + (b.profit || 0); }, 0) }
+      : null;
+    var range = hRange;
+    var rangeLabel = RANGE_LABELS[range] + (hScope === 'verified' ? ' · verified' : ' · incl. self-reported');
+    function draw(name, rank){
+      window.GL_SHEET.betHistory({
+        name: name, verified: verified.length > 0, rangeLabel: rangeLabel,
+        settled: s.w + s.l, record: s.w + '-' + s.l, roi: s.roi, units: s.units,
+        clv: vs.avgClv, clvSub: vs.clvN ? ('on ' + vs.clvN + ' moneyline' + (vs.clvN === 1 ? '' : 's')) : '',
+        beatTxt: vs.clvN ? (vs.beat + ' of ' + vs.clvN) : '—',
+        rank: rank, signature: signature, form: form,
+      }).catch(function(){});
+    }
+    btDisplayName().then(function(name){
+      window.GL_API.betLeaderboard('units', range).then(function(r){
+        var me = r && r.me;
+        draw(name, (me && me.rank) ? { text: '#' + me.rank + ' · Units leaderboard · ' + RANGE_LABELS[range] } : null);
+      }).catch(function(){ draw(name, null); });
+    });
+  }
+
   function topTabsHTML(){
     return '<div class="bt-tabs">' +
       '<div class="' + (view === 'history' ? 'active' : '') + '" data-view="history">History</div>' +
@@ -218,8 +258,14 @@ window.GL_BETTRACKER = (function(){
     host.innerHTML =
       '<h1 class="gl-heading" style="margin:.6rem 0 .3rem">Bet <span style="color:var(--accent)">Tracker</span></h1>' +
       (fromOdds && view === 'log' ? '<button type="button" class="bt-back-btn" data-back-odds>&larr; Back to Odds &amp; Projections</button>' : '') +
+      // The site's own one-line pitch under the title (index.html .bt-blurb).
+      '<p class="gl-muted" style="margin:0 0 .7rem;font-size:.82rem">Input your bets to track CLV, ROI, units and record.</p>' +
       topTabsHTML() +
-      '<div id="bt-body"></div>';
+      '<div id="bt-body"></div>' +
+      // ...and the disclaimer it prints under the tracker (index.html
+      // .sim-disclaimer on #page-bets). Outside #bt-body on purpose, so it
+      // survives every view switch the same way the site's does.
+      '<p class="gl-disclaimer">A personal record-keeping tool only. GillyLab doesn’t accept wagers, handle money, or offer betting advice.</p>';
     renderView();
   }
 
@@ -372,6 +418,7 @@ window.GL_BETTRACKER = (function(){
     h += '<div class="bt-toggle"><div class="' + (hScope === 'verified' ? 'on' : '') + '" data-scope="verified">Verified only</div>' +
       '<div class="' + (hScope === 'all' ? 'on' : '') + '" data-scope="all">All (incl. self-reported)</div></div>';
     h += '<div class="bt-ranges">' + rangeBtn('7d','7D') + rangeBtn('30d','30D') + rangeBtn('6m','6M') + rangeBtn('12m','12M') + rangeBtn('all','All time') + '</div>';
+    if (s.w + s.l > 0 && window.GL_SHEET && window.GL_SHEET.betHistory) h += '<button type="button" class="bt-share-btn" data-share-history style="display:block;width:100%;margin:0 0 1rem">Share my capper card</button>';
 
     var pend = shown.filter(function(b){ return b.status === 'pending'; });
     var settled = shown.filter(function(b){ return b.status !== 'pending'; });
@@ -1046,6 +1093,7 @@ window.GL_BETTRACKER = (function(){
       if ((t = hit(e, '[data-tab]'))){ hTab = t.getAttribute('data-tab'); hCard = 'all'; renderView(); return; }
       if ((t = hit(e, '[data-card]'))){ hCard = t.getAttribute('data-card'); renderView(); return; }
       if ((t = hit(e, '[data-share-card]'))){ shareBetCard(t.getAttribute('data-share-card')); return; }
+      if (hit(e, '[data-share-history]')){ shareHistory(); return; }
       if ((t = hit(e, '[data-settle]'))){ var id = t.getAttribute('data-settle'), st = t.getAttribute('data-status');
         window.GL_API.betSettle(id, st).then(function(){ return reloadBets(); }).then(renderView).catch(function(err){ window.GL_DIALOG.alert((err && err.data && err.data.error) || 'Could not settle that bet.'); }); return; }
       if ((t = hit(e, '[data-edit-open]'))){ editId = t.getAttribute('data-edit-open'); renderView(); return; }

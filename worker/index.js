@@ -17,10 +17,10 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, invitePage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, freeTabs, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, invitePage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, freeTabs, ogTags, eventWhen, cardHoldMsFor, nameToSlug, profileSlugFor, aliasPairs, eventToCard, pagesConsensusOdds, currentLanding } from "./pages.js";
 import matchupFree from "./matchup-free.js";
 import { getFighterExtras } from "./fighter-extras.js";
-import { runFightSim, canonicalSimName, fighterTaleOfTape, matchupBreakdown, customSimBase, customSimMethodBaseline } from "./fight-sim.js";
+import { runFightSim, simWeightClassGap, canonicalSimName, fighterTaleOfTape, matchupBreakdown, customSimBase, customSimMethodBaseline } from "./fight-sim.js";
 // Matchup Analytics Deep Dive for an ARBITRARY fighter pair, computed live --
 // see scripts/gen-deep-dive.cjs for why this is a separate module from
 // matchup-free.js (that one pre-renders a FINITE set of pairings at build
@@ -4367,7 +4367,10 @@ export default {
             const already = (extras.fightHistory || []).some((f) => lastName(f.opponent) === lastName(upcoming.opponent));
             if (!already) {
               const oppSlug = profileSlugFor(upcoming.opponent, profileSlugs) || null;
-              extras.fightHistory = [Object.assign({ __upcoming: true, oppSlug: oppSlug }, upcoming)].concat(extras.fightHistory || []);
+              // The site badges an Upcoming row with the opponent's CURRENT record
+              // (opponentCurrentRecord) -- there is no "record at time of fight" yet.
+              const oppRec = (oppSlug && lite && lite.bySlug && lite.bySlug[oppSlug] && lite.bySlug[oppSlug].record) || null;
+              extras.fightHistory = [Object.assign({ __upcoming: true, oppSlug: oppSlug, oppRec: oppRec }, upcoming)].concat(extras.fightHistory || []);
             }
           }
         }
@@ -4378,7 +4381,20 @@ export default {
         // and hidden client-side -- see fighter.js's/fighterLitePage's own
         // "fight history unlocked, the rest stays behind the lock grid"
         // split.
-        if (!subscribed) return json({ fightHistory: extras.fightHistory || [] }, 200, cors);
+        // The opponent's record entering each bout (`oppRec`, baked by
+        // gen-app-fighter-extras.cjs) is something the site only ever shows inside
+        // the paywalled app -- the free /fighter/<slug> page lists the same fights
+        // without it. Dropped here for the same audience, rather than sent and hidden.
+        if (!subscribed) {
+          return json({ fightHistory: (extras.fightHistory || []).map((r) => { if (!r || r.oppRec == null) return r; const c = Object.assign({}, r); delete c.oppRec; return c; }) }, 200, cors);
+        }
+        // Odds History opponents link to their profile on the site (.fh-opponent);
+        // give the app the slug to do the same. New array -- never mutate the
+        // shared fighterExtras singleton (see the note at the top of this handler).
+        if (extras.oddsHistory && extras.oddsHistory.length) {
+          extras.oddsHistory = extras.oddsHistory.map((r) => (r && r.opponent && !r.oppSlug)
+            ? Object.assign({}, r, { oppSlug: profileSlugFor(r.opponent, profileSlugs) || null }) : r);
+        }
         return json(extras, 200, cors);
       }
       // Odds & Projections -- premium-only, an "identical copy" (per spec) of
@@ -4738,6 +4754,16 @@ export default {
         const rounds = url.searchParams.get("rounds") === "5" ? 5 : 3;
         // Same bounds as the website's own Simulations field (100-50,000, default 1,000).
         const n = Math.min(50000, Math.max(100, parseInt(url.searchParams.get("n"), 10) || 1000));
+        // The site's weight-class guard (runFightSimulator in index.html), which
+        // this endpoint never had: 2+ divisions apart or men-vs-women is refused,
+        // one division apart runs with a warning. Same wording as the site.
+        const gap = simWeightClassGap(nameA, nameB);
+        if (gap.distance != null && gap.distance >= 2) {
+          return json({ error: "Simulation cannot be done: " + nameA + " (" + gap.labelA + ") and " + nameB + " (" + gap.labelB + ") are too far apart in weight class." }, 400, cors);
+        }
+        const warning = gap.distance === 1
+          ? nameA + " (" + gap.labelA + ") and " + nameB + " (" + gap.labelB + ") are one weight class apart — results may be skewed by the size/weight difference."
+          : null;
         const result = await runFightSim(env, nameA, nameB, rounds, n);
         // Slugs (for the app's own avatar photo convention, PHOTO_BASE +
         // slug + '.png') and a tale-of-the-tape stat line per fighter -- the
@@ -4759,7 +4785,7 @@ export default {
           if (slugA && slugB) break;
         }
         return json({
-          a: nameA, b: nameB, rounds, result,
+          a: nameA, b: nameB, rounds, result, warning,
           slugA, slugB,
           tapeA: fighterTaleOfTape(nameA),
           tapeB: fighterTaleOfTape(nameB),
@@ -5431,14 +5457,36 @@ export default {
         if (q.length < 2) return json({ results: [] }, 200, cors);
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
         const bySlug = (lite && lite.bySlug) || {};
-        const results = [];
+        // Mirrors index.html's filterSearch(), which this endpoint had drifted from
+        // in three ways:
+        //  1. ALIASES. The site also matches NAME_ALIASES / SLUG_ALIASES, so "King
+        //     Green" finds Bobby Green, "Alex Volk" finds Alexander Volkanovski,
+        //     "Zach Reese" finds Zachary Reese. Here those returned nothing at all.
+        //  2. ORDER. The site sorts champions, then ranked, then unranked. This took
+        //     the first 12 in file order and stopped -- "silva" has 37 matches, so
+        //     which ones you saw was an accident of where they sit in the file.
+        //  3. DIVISION / COUNTRY. The site matches those too. Kept as a second tier
+        //     here so a name hit always outranks a "Brazil" or "Lightweight" hit.
+        const aliasCanon = new Set();
+        for (const [alias, canon] of aliasPairs()) if (searchNorm(alias).includes(q)) aliasCanon.add(canon);
+        const rankVal = (r) => {
+          r = String(r == null ? "" : r).toUpperCase().replace("#", "").trim();
+          if (r === "C") return 0;
+          if (r === "IC") return 1;
+          if (!r || r === "NR") return 99;
+          const n = parseInt(r, 10);
+          return isFinite(n) ? n + 1 : 50;
+        };
+        const byName = [], byOther = [];
         for (const slug in bySlug) {
           const f = bySlug[slug];
-          if (f && f.name && searchNorm(f.name).includes(q)) {
-            results.push({ name: f.name, slug: f.slug || slug, record: f.record || "", division: f.division || "" });
-            if (results.length >= 12) break;
-          }
+          if (!f || !f.name) continue;
+          const row = { name: f.name, slug: f.slug || slug, record: f.record || "", division: f.division || "", rank: f.rank || "" };
+          if (searchNorm(f.name).includes(q) || aliasCanon.has(f.name)) byName.push(row);
+          else if (searchNorm(f.division).includes(q) || (f.country && searchNorm(f.country).includes(q))) byOther.push(row);
         }
+        const byRank = (a, b) => rankVal(a.rank) - rankVal(b.rank);   // Array.sort is stable: file order breaks ties
+        const results = byName.sort(byRank).concat(byOther.sort(byRank)).slice(0, 12);
         return json({ results }, 200, cors);
       }
       // Lite fighter profiles (unlinked from the funnel; discoverable via sitemap).

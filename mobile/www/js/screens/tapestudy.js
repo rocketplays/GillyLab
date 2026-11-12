@@ -78,7 +78,9 @@ window.GL_TAPESTUDY = (function(){
       return (
         '<div class="tape-history-row">' +
           '<div class="tape-history-main">' +
-            '<div class="tape-history-opponent">vs ' + esc(t.opponent || '') + '</div>' +
+            '<div class="tape-history-opponent">vs ' + esc(t.opponent || '') +
+              // opponent's record entering that fight -- see fighter.js oppRecInlineHTML
+              (t.oppRec ? ' <span class="fp-opp-rec">(' + esc(t.oppRec) + ')</span>' : '') + '</div>' +
             (meta ? '<div class="tape-history-meta">' + esc(meta) + '</div>' : '') +
           '</div>' +
           '<div class="tape-history-watch">' +

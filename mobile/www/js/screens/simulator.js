@@ -967,6 +967,8 @@ window.GL_SIMULATOR = (function(){
       '<button type="button" class="sim-byo-btn gl-btn-notready" id="simByoBtn">Build Your Own Simulation</button>' +
       '<div id="simPickError"></div>' +
       '<div id="simOutput" style="margin-top:1.4rem"></div>' +
+      // Same line the site prints under its own simulator (index.html .sim-disclaimer).
+      '<p class="gl-disclaimer">These are purely statistical simulations based on historical data, not actual fight predictions, and may not reflect real results.</p>' +
       hubModalHTML() +
       csModalHTML()
     );
@@ -1058,7 +1060,11 @@ window.GL_SIMULATOR = (function(){
       runBtn.textContent = 'Simulating…';
       output.innerHTML = '';
       window.GL_API.fightSim(picked.a, picked.b, rounds, cnt.n).then(function(res){
-        output.innerHTML = resultHTML(res.a, res.b, res.slugA, res.slugB, res.result, res.tapeA, res.tapeB, res.breakdown);
+        // res.warning: the site's "one weight class apart" notice (see
+        // /api/app/fight-sim). Two or more apart never gets here -- the endpoint
+        // refuses it and the message lands in the catch below.
+        output.innerHTML = (res.warning ? '<div class="sim-warning">' + esc(res.warning) + '</div>' : '') +
+          resultHTML(res.a, res.b, res.slugA, res.slugB, res.result, res.tapeA, res.tapeB, res.breakdown);
         output.querySelectorAll('[data-sim-slug]').forEach(function(el){
           el.addEventListener('click', function(){
             window.GL_NATIVE.tap();

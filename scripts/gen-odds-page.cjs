@@ -105,6 +105,13 @@ const BOOK_ORDER = grabConst('BOOK_ORDER');
 // re-extractable, single real source of truth in index.html" treatment
 // gen-fight-sim.cjs gives it.
 const NAME_ALIASES = grabConst('NAME_ALIASES');
+// Feed-slug -> canonical DB name (the other half of index.html's
+// resolveCanonicalFighterName()). Exported alongside NAME_ALIASES so the
+// Worker's profile-link resolver (worker/pages.js profileSlugFor/resolveLiteSlug)
+// and /api/fighter-search read the SAME two tables the website does, instead of
+// the short hand-copied lists they used to carry (which had drifted: 11 of 14
+// slug aliases, 3 of ~70 name aliases).
+const SLUG_ALIASES = grabConst('SLUG_ALIASES');
 // lastNameOf() (sliced below) reads this module-level Set — grabConst can't
 // handle a `new Set([...])` initializer (its brace-matcher is for a bare
 // [...]/{...} literal), so pull the line directly instead.
@@ -159,7 +166,8 @@ const dataJS =
   'export const MANUAL_PROP_ODDS = ' + JSON.stringify(MANUAL_PROP_ODDS) + ';\n' +
   'export const BOOK_KEY_MAP = ' + JSON.stringify(BOOK_KEY_MAP) + ';\n' +
   'export const BOOK_ORDER = ' + JSON.stringify(BOOK_ORDER) + ';\n' +
-  'const NAME_ALIASES = ' + JSON.stringify(NAME_ALIASES) + ';\n' +
+  'export const NAME_ALIASES = ' + JSON.stringify(NAME_ALIASES) + ';\n' +
+  'export const SLUG_ALIASES = ' + JSON.stringify(SLUG_ALIASES) + ';\n' +
   'const NAME_SUFFIXES = new Set(' + JSON.stringify(Array.from(NAME_SUFFIXES)) + ');\n\n';
 
 // Slices are plain `function name(...) { ... }` declarations — `export`

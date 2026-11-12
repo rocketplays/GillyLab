@@ -151,7 +151,7 @@ window.GL_FIGHTER = (function(){
       html += (
         '<div class="fp-tape-row">' +
           '<div>' +
-            '<div class="fp-tape-opp">vs ' + esc(t.opponent || '') + '</div>' +
+            '<div class="fp-tape-opp">vs ' + esc(t.opponent || '') + oppRecInlineHTML(t.oppRec) + '</div>' +
             (meta ? '<div class="fp-tape-meta">' + esc(meta) + '</div>' : '') +
           '</div>' +
           (t.url
@@ -160,12 +160,21 @@ window.GL_FIGHTER = (function(){
         '</div>'
       );
     });
-    return '<div class="fp-tape-list">' + html + '</div>';
+    return '<div class="fp-tape-list">' + html + '</div>' +
+      '<div class="fp-foot">Links open to an external source</div>';
   }
 
   // Result-colored text, same green-W/red-L/dim-else convention the site
   // uses across Fight History and Odds History.
   function resultClass(r){ return r === 'W' ? 'good' : (r === 'L' ? 'bad' : ''); }
+
+  // The opponent's record ENTERING that bout -- the "(12-3-0)" line the site
+  // prints under every opponent in Fight History / Odds History and beside
+  // them in Tape Study (index.html oppRecordBadgeBlockHTML / oppRecordBadgeHTML).
+  // Arrives pre-computed as `oppRec` (scripts/gen-app-fighter-extras.cjs);
+  // absent = unknown = print nothing. Premium-only, same as the site.
+  function oppRecBlockHTML(rec){ return rec ? '<div class="fp-opp-rec">(' + esc(rec) + ')</div>' : ''; }
+  function oppRecInlineHTML(rec){ return rec ? ' <span class="fp-opp-rec">(' + esc(rec) + ')</span>' : ''; }
 
   // ── Regional promotion strength -- same tier/color convention matchup.js's
   // own PROMO_TIER_COLORS uses for the Fight Info breakdown, duplicated here
@@ -296,7 +305,7 @@ window.GL_FIGHTER = (function(){
         return (
           '<tr class="fp-hist-row">' +
             '<td class="fp-hist-td fp-hist-date">' + esc(f.date || 'TBD') + '</td>' +
-            '<td class="fp-hist-td fp-hist-opp">' + oppNameHTML(f) + '</td>' +
+            '<td class="fp-hist-td fp-hist-opp">' + oppNameHTML(f) + oppRecBlockHTML(f.oppRec) + '</td>' +
             '<td class="fp-hist-td" style="text-align:center"><span class="fp-hist-upcoming">Upcoming</span></td>' +
             '<td class="fp-hist-td fp-hist-method" style="color:var(--muted)">—</td>' +
             '<td class="fp-hist-td fp-hist-event">' + esc(f.event || '') + '</td>' +
@@ -312,7 +321,7 @@ window.GL_FIGHTER = (function(){
             (clickable ? '<div class="fp-hist-chip">' + STATS_ICON_SVG + 'Stats</div>' : '') +
             esc(f.date || '') +
           '</td>' +
-          '<td class="fp-hist-td fp-hist-opp">' + oppNameHTML(f) + '</td>' +
+          '<td class="fp-hist-td fp-hist-opp">' + oppNameHTML(f) + oppRecBlockHTML(f.oppRec) + '</td>' +
           '<td class="fp-hist-td fp-hist-result ' + resultClass(f.result) + '">' + esc(f.result || '—') + '</td>' +
           '<td class="fp-hist-td fp-hist-method">' + esc(f.method || '') +
             (subLine ? '<div class="fp-hist-sub">' + esc(subLine) + '</div>' : '') +
@@ -345,15 +354,19 @@ window.GL_FIGHTER = (function(){
         '<div class="fp-odds-row">' +
           '<div class="fp-odds-left">' +
             '<div class="fp-odds-top">' +
-              '<span class="fp-odds-opp">vs ' + esc(h.opponent || '') + '</span>' +
+              '<span class="fp-odds-opp">vs ' + (h.oppSlug
+                ? '<span class="fp-hist-opp-link" data-opp-slug="' + esc(h.oppSlug) + '">' + esc(h.opponent || '') + '</span>'
+                : esc(h.opponent || '')) + '</span>' +
               '<span class="fp-odds-result ' + resultClass(h.result) + '">' + esc(h.result || '—') + '</span>' +
             '</div>' +
-            (h.date ? '<div class="fp-odds-meta">' + esc(h.date) + '</div>' : '') +
+            ((h.date || h.oppRec) ? '<div class="fp-odds-meta">' + esc(h.date || '') + oppRecInlineHTML(h.oppRec) + '</div>' : '') +
           '</div>' +
           '<div class="fp-odds-price ' + (fav ? 'good' : 'warn') + '">' + esc(oddsDisplay) + '</div>' +
         '</div>'
       );
-    }).join('') + '</div>';
+    }).join('') + '</div>' +
+      // Same provenance line the site prints under this table.
+      '<div class="fp-foot">Closing moneyline averages · Source: BestFightOdds</div>';
   }
 
   // Ported from populateFighterNews() in index.html -- each item is a whole

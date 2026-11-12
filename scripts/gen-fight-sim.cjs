@@ -252,6 +252,16 @@ for (const slug of Object.keys(liteData.bySlug || {})) {
 // SIM_DIVISION_ALIASES lives ~200 lines before JS_START (outside the slice) —
 // trivial, hardcoded here rather than adjusting the slice boundary for one line.
 const SIM_DIVISION_ALIASES = { WFLY: 'WFLW' };
+// The simulator's weight-class guard (runFightSimulator in index.html): two
+// fighters 2+ divisions apart -- or one men's / one women's division -- are
+// refused, and exactly one division apart gets a "results may be skewed"
+// warning. The app's /api/app/fight-sim had none of it and would happily run
+// flyweight vs heavyweight. Same GENERATED-NEVER-FORKED rule as everything
+// else here: the ladders, labels and the three helpers are lifted from
+// index.html, so the app can't disagree with the site about what's allowed.
+const SIM_DIVISION_LADDERS = grabConst('SIM_DIVISION_LADDERS');
+const SIM_DIVISION_LABELS = grabConst('SIM_DIVISION_LABELS');
+const divisionGuardJS = [sliceFn('simDivisionLabel'), sliceFn('simDivisionInfo'), sliceFn('simDivisionDistance')].join('\n');
 
 // Minimal FIGHTERS stand-in -- renderMatchupBreakdown's isFemale() reads
 // fightersEntry(name).division alone (for he/she pronouns in Path to
@@ -461,6 +471,20 @@ const entryJS =
   '  const canonA = resolveSimName(nameA), canonB = resolveSimName(nameB);\n' +
   '  if (!canonA || !canonB) return null;\n' +
   '  return simRunTrials(canonA, canonB, n, rounds);\n' +
+  '}\n' +
+  'const SIM_DIVISION_LADDERS = ' + JSON.stringify(SIM_DIVISION_LADDERS) + ';\n' +
+  'const SIM_DIVISION_LABELS = ' + JSON.stringify(SIM_DIVISION_LABELS) + ';\n' +
+  divisionGuardJS + '\n' +
+  '// Weight-class check for a matchup -- see runFightSimulator() in index.html.\n' +
+  '// distance: 0 same division, 1 adjacent (warn), 2+ or Infinity (refuse; Infinity =\n' +
+  '// men vs women). null when either fighter has no division on file: the site can\'t\n' +
+  '// hit that case (every FIGHTERS row has one) so there is no rule to mirror, and\n' +
+  '// refusing a simulation over missing metadata would be a bug, not a guard.\n' +
+  'export function simWeightClassGap(nameA, nameB) {\n' +
+  '  const a = resolveSimName(nameA), b = resolveSimName(nameB);\n' +
+  '  const divA = a ? NAME_DIVISION[a] : null, divB = b ? NAME_DIVISION[b] : null;\n' +
+  '  const known = !!(divA && divB && simDivisionInfo(divA) && simDivisionInfo(divB));\n' +
+  '  return { distance: known ? simDivisionDistance(divA, divB) : null, labelA: simDivisionLabel(divA), labelB: simDivisionLabel(divB) };\n' +
   '}\n' +
   'export function fightSimKnowsFighter(name) {\n' +
   '  return !!resolveSimName(name);\n' +
