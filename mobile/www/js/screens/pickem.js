@@ -323,6 +323,7 @@ function mountPickem(container){
     var host = container.querySelector('#pkBouts');
     if (!host) return;
     updateShareBtn();   // a live result can make the card final while this screen is open
+    updateBar();
     var sum = summaryLine();
     var sumEl = container.querySelector('#pkLiveSummary');
     if (sumEl) sumEl.innerHTML = sum || '';
@@ -422,7 +423,22 @@ function mountPickem(container){
     var total = card.bouts.length, done = 0, stake = 0;
     card.bouts.forEach(function(b){ var p = picks[b.id]; if (isComplete(p)) done++; if (p && p.winner) stake += potential(p); });
     var info = container.querySelector('#pkBarInfo');
-    if (info) info.textContent = done + '/' + total + ' picks · +' + stake + ' possible';
+    if (info){
+      // Once every bout is final, "6/14 picks · +0 possible" means nothing --
+      // there is nothing left to pick or win. Show what the card actually
+      // scored instead: the total, and how many winners were called right.
+      if (cardGraded()){
+        var picked = card.bouts.filter(function(b){ var p = picks[b.id]; return p && p.winner; });
+        if (!picked.length) info.textContent = 'Card complete · no picks made';
+        else {
+          var score = 0, right = 0;
+          picked.forEach(function(b){ var g = gradeBoutPick(picks[b.id], b); score += g.points || 0; if (g.winnerHit) right++; });
+          info.textContent = 'Final score: ' + (score > 0 ? '+' : '') + score + ' pts · ' + right + '/' + picked.length + ' correct';
+        }
+      } else {
+        info.textContent = done + '/' + total + ' picks · +' + stake + ' possible';
+      }
+    }
     var btn = container.querySelector('#pkSubmit');
     // inFlight is an explicit flag, not text-sniffing -- the whole point of
     // this branch existing is so the *same* call that clears "Submitting…"
