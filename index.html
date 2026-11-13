@@ -138544,6 +138544,419 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // by either of the two named methods. Placed after `method`, before
   // `roundProps`, to match the tab order in the UI.
   const MANUAL_PROP_ODDS = {
+    // UFC 334 Nov 14 2026 (Gane vs. Hokit) -- fightodds.io, current prices, Nov 13 2026
+    // (fanduel/draftkings/betmgm/betonlineag/bovada). Method/double-chance/round props always fill in; ML and
+    // round totals only fill books missing from the live feed.
+    // Ciryl Gane vs Josh Hokit (UFC 334, Nov 14) -- fightodds.io, current prices
+    'gane|hokit': {
+      rounds: 5,
+      method: {
+        fanduel:     { f1: { ko: 135, sub: 950, dec: 390 }, f2: { ko: 450, sub: 850, dec: 600 } },
+        draftkings:  { f1: { ko: 110, sub: 1000, dec: 380 }, f2: { ko: 450, sub: 900, dec: 650 } },
+        betmgm:      { f1: { ko: 100, sub: 900, dec: 350 }, f2: { ko: 450, sub: 900, dec: 650 } },
+        betonlineag: { f1: { ko: 130, sub: 1200, dec: 300 }, f2: { ko: 375, sub: 700, dec: 600 } },
+        bovada:      { f1: { ko: 120, sub: 1000, dec: 400 }, f2: { ko: 450, sub: 900, dec: 600 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -105, koDec: -165, subDec: 250 }, f2: { koSub: 270, koDec: 230, subDec: 350 } },
+        draftkings:  { f1: { koSub: -110, koDec: -205, subDec: 240 }, f2: { koSub: 300, koDec: 225, subDec: 350 } },
+        betmgm:      { f1: { koSub: -120 }, f2: { koSub: 300 } },
+        betonlineag: { f1: { koDec: -160, subDec: 225 }, f2: { koDec: 195, subDec: 375 } },
+        bovada:      { f1: { koSub: -105, koDec: -175, subDec: 250 }, f2: { koSub: 280, koDec: 240, subDec: 370 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 400, r2: 700, r3: 950, r4: 1300, r5: 1800 }, f2: { r1: 900, r2: 1400, r3: 1900, r4: 2200, r5: 2700 } },
+        draftkings:  { f1: { r1: 330, r2: 500, r3: 800, r4: 1200, r5: 1800 }, f2: { r1: 900, r2: 1200, r3: 1800, r4: 2200, r5: 2800 } },
+        betmgm:      { f1: { r1: 300, r2: 575, r3: 825, r4: 1000, r5: 1500 }, f2: { r1: 775, r2: 1400, r3: 1800, r4: 2200, r5: 3300 } },
+        betonlineag: { f1: { r1: 400, r2: 550, r3: 850, r4: 1200, r5: 1600 }, f2: { r1: 800, r2: 950, r3: 1400, r4: 2000, r5: 2800 } },
+        bovada:      { f1: { r1: 450, r2: 600, r3: 850, r4: 1200, r5: 1800 }, f2: { r1: 1000, r2: 1400, r3: 1800, r4: 2000, r5: 3300 } },
+      },
+      totals: {
+        '3.5': {
+          fanduel:     { over: 110, under: -132 },
+          betmgm:      { over: 125, under: -165 },
+        },
+      },
+    },
+    // Kayla Harrison vs Amanda Nunes (UFC 334, Nov 14) -- fightodds.io, current prices
+    'harrison|nunes': {
+      rounds: 5,
+      method: {
+        fanduel:     { f1: { ko: 800, sub: 200, dec: 300 }, f2: { ko: 300, sub: 2500, dec: 550 } },
+        draftkings:  { f1: { ko: 750, sub: 185, dec: 275 }, f2: { ko: 275, sub: 2000, dec: 500 } },
+        betmgm:      { f1: { ko: 750, sub: 150, dec: 275 }, f2: { ko: 275, sub: 2000, dec: 500 } },
+        betonlineag: { f1: { ko: 600, sub: 170, dec: 300 }, f2: { ko: 285, sub: 2000, dec: 500 } },
+        bovada:      { f1: { ko: 750, sub: 200, dec: 300 }, f2: { ko: 300, sub: 2200, dec: 550 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 130, koDec: 190, subDec: -140 }, f2: { koSub: 240, koDec: 155, subDec: 460 } },
+        draftkings:  { f1: { koSub: 140, koDec: 165, subDec: -140 }, f2: { koSub: 250, koDec: 145, subDec: 380 } },
+        betmgm:      { f1: { koSub: 125 }, f2: { koSub: 250 } },
+        betonlineag: { f1: { koDec: 170, subDec: -140 }, f2: { koDec: 165, subDec: 385 } },
+        bovada:      { f1: { koSub: 130, koDec: 185, subDec: -125 }, f2: { koSub: 250, koDec: 160, subDec: 430 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 650, r2: 800, r3: 1000, r4: 1300, r5: 1900 }, f2: { r1: 750, r2: 1000, r3: 1800, r4: 2500, r5: 3500 } },
+        draftkings:  { f1: { r1: 500, r2: 750, r3: 1000, r4: 1400, r5: 1800 }, f2: { r1: 700, r2: 1000, r3: 1600, r4: 2500, r5: 3500 } },
+        betmgm:      { f1: { r1: 375, r2: 625, r3: 1000, r4: 1450, r5: 2200 }, f2: { r1: 675, r2: 1150, r3: 1650, r4: 2500, r5: 3500 } },
+        betonlineag: { f1: { r1: 400, r2: 600, r3: 800, r4: 1300, r5: 2000 }, f2: { r1: 800, r2: 1000, r3: 1500, r4: 2000, r5: 2800 } },
+        bovada:      { f1: { r1: 650, r2: 800, r3: 1000, r4: 1400, r5: 2000 }, f2: { r1: 750, r2: 1000, r3: 1800, r4: 2500, r5: 3500 } },
+      },
+      totals: {
+        '3.5': {
+          fanduel:     { over: 106, under: -130 },
+          betmgm:      { over: -105, under: -125 },
+        },
+      },
+    },
+    // Caio Borralho vs Yousri Belgaroui (UFC 334, Nov 14) -- fightodds.io, current prices
+    'belgaroui|borralho': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 470, sub: 3000, dec: 270 }, f2: { ko: 800, sub: 650, dec: 140 } },
+        draftkings:  { f1: { ko: 400, sub: 3500, dec: 300 }, f2: { ko: 800, sub: 600, dec: 120 } },
+        betmgm:      { f1: { ko: 400, sub: 3500, dec: 300 }, f2: { ko: 700, sub: 450, dec: 125 } },
+        betonlineag: { f1: { ko: 350, sub: 2800, dec: 250 }, f2: { ko: 750, sub: 550, dec: 135 } },
+        bovada:      { f1: { ko: 475, sub: 2800, dec: 275 }, f2: { ko: 800, sub: 650, dec: 140 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 410, koDec: 130, subDec: 240 }, f2: { koSub: 340, koDec: -110, subDec: -120 } },
+        draftkings:  { f1: { koSub: 380, koDec: 140, subDec: 255 }, f2: { koSub: 350, koDec: -125, subDec: -140 } },
+        betmgm:      { f1: { koSub: 375 }, f2: { koSub: 325 } },
+        betonlineag: { f1: { koDec: 140, subDec: 265 }, f2: { koDec: 100, subDec: -110 } },
+        bovada:      { f1: { koSub: 400, koDec: 130, subDec: 250 }, f2: { koSub: 320, koDec: -105, subDec: -115 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1000, r2: 1400, r3: 1900 }, f2: { r1: 850, r2: 1200, r3: 1600 } },
+        draftkings:  { f1: { r1: 800, r2: 1100, r3: 1600 }, f2: { r1: 750, r2: 1000, r3: 1400 } },
+        betmgm:      { f1: { r1: 875, r2: 1300, r3: 1900 }, f2: { r1: 600, r2: 900, r3: 1450 } },
+        betonlineag: { f1: { r1: 750, r2: 950, r3: 1200 }, f2: { r1: 750, r2: 950, r3: 1200 } },
+        bovada:      { f1: { r1: 1000, r2: 1400, r3: 1600 }, f2: { r1: 800, r2: 1200, r3: 1600 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -235, under: 190 },
+        },
+      },
+    },
+    // Uros Medic vs Kevin Holland (UFC 334, Nov 14) -- fightodds.io, current prices
+    'holland|medic': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 340, sub: 500, dec: 900 }, f2: { ko: 110, sub: 1400, dec: 750 } },
+        draftkings:  { f1: { ko: 330, sub: 450, dec: 900 }, f2: { ko: 100, sub: 1200, dec: 700 } },
+        betmgm:      { f1: { ko: 300, sub: 450, dec: 900 }, f2: { ko: -105, sub: 1200, dec: 800 } },
+        betonlineag: { f1: { ko: 315, sub: 450, dec: 900 }, f2: { ko: -105, sub: 1250, dec: 650 } },
+        bovada:      { f1: { ko: 350, sub: 500, dec: 900 }, f2: { ko: 110, sub: 1400, dec: 750 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 170, koDec: 220, subDec: 320 }, f2: { koSub: -120, koDec: -145, subDec: 500 } },
+        draftkings:  { f1: { koSub: 175, koDec: 215, subDec: 275 }, f2: { koSub: -110, koDec: -145, subDec: 400 } },
+        betmgm:      { f1: { koSub: 150 }, f2: { koSub: -110 } },
+        betonlineag: { f1: { koDec: 225, subDec: 275 }, f2: { koDec: -135, subDec: 450 } },
+        bovada:      { f1: { koSub: 165, koDec: 225, subDec: 290 }, f2: { koSub: -110, koDec: -135, subDec: 465 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 420, r2: 650, r3: 1400 }, f2: { r1: 210, r2: 550, r3: 1200 } },
+        draftkings:  { f1: { r1: 300, r2: 700, r3: 1400 }, f2: { r1: 200, r2: 450, r3: 1400 } },
+        betmgm:      { f1: { r1: 175, r2: 950, r3: 2500 }, f2: { r1: 100, r2: 625, r3: 1800 } },
+        betonlineag: { f1: { r1: 300, r2: 600, r3: 1600 }, f2: { r1: 180, r2: 450, r3: 1400 } },
+        bovada:      { f1: { r1: 400, r2: 650, r3: 1400 }, f2: { r1: 220, r2: 550, r3: 1200 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: 126, under: -154 },
+          betmgm:      { over: 120, under: -160 },
+        },
+      },
+    },
+    // Luis Gurule vs Bilal Hasan (UFC 334, Nov 14) -- fightodds.io, current prices
+    'gurule|hasan': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 1100, sub: 2700, dec: 2500 }, f2: { ko: -310, sub: 1100, dec: 600 } },
+        draftkings:  { f1: { ko: 1100, sub: 2800, dec: 2000 }, f2: { ko: -400, sub: 1000, dec: 600 } },
+        betmgm:      { f1: { ko: 1200, sub: 3000, dec: 2000 }, f2: { ko: -525, sub: 1000, dec: 600 } },
+        betonlineag: { f1: { ko: 1000, sub: 2500, dec: 2000 }, f2: { ko: -385, sub: 900, dec: 500 } },
+        bovada:      { f1: { ko: 1200, sub: 2800, dec: 2500 }, f2: { ko: -325, sub: 1000, dec: 600 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 900, koDec: 850, subDec: 1600 }, f2: { koSub: -425, koDec: -600, subDec: 400 } },
+        draftkings:  { f1: { koSub: 900, koDec: 700, subDec: 1100 }, f2: { koSub: -450, koDec: -800, subDec: 350 } },
+        betmgm:      { f1: { koSub: 1000 }, f2: { koSub: -600 } },
+        betonlineag: { f1: { koDec: 700, subDec: 1250 }, f2: { koDec: -700, subDec: 325 } },
+        bovada:      { f1: { koSub: 850, koDec: 800, subDec: 1300 }, f2: { koSub: -450, koDec: -700, subDec: 350 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1900, r2: 2700, r3: 3500 }, f2: { r1: 105, r2: 300, r3: 750 } },
+        draftkings:  { f1: { r1: 1800, r2: 2500, r3: 3000 }, f2: { r1: 100, r2: 300, r3: 750 } },
+        betmgm:      { f1: { r1: 1250, r2: 3000, r3: 6000 }, f2: { r1: -155, r2: 250, r3: 700 } },
+        betonlineag: { f1: { r1: 1600, r2: 2400, r3: 3300 }, f2: { r1: 100, r2: 235, r3: 600 } },
+        bovada:      { f1: { r1: 1800, r2: 2800, r3: 3300 }, f2: { r1: 105, r2: 300, r3: 700 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: 138, under: -170 },
+          betmgm:      { over: 135, under: -185 },
+        },
+      },
+    },
+    // Stephen Thompson vs Charles Radtke (UFC 334, Nov 14) -- fightodds.io, current prices
+    'radtke|thompson': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 135, f2: -165 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 480, sub: 800, dec: 390 }, f2: { ko: 440, sub: 2700, dec: 135 } },
+        draftkings:  { f1: { ko: 500, sub: 750, dec: 330 }, f2: { ko: 400, sub: 3000, dec: 120 } },
+        betmgm:      { f1: { ko: 450, sub: 600, dec: 325 }, f2: { ko: 375, sub: 2800, dec: 125 } },
+        betonlineag: { f1: { ko: 400, sub: 650, dec: 325 }, f2: { ko: 400, sub: 2500, dec: 130 } },
+        bovada:      { f1: { ko: 475, sub: 800, dec: 385 }, f2: { ko: 450, sub: 2800, dec: 130 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 270, koDec: 175, subDec: 230 }, f2: { koSub: 390, koDec: -160, subDec: 115 } },
+        draftkings:  { f1: { koSub: 300, koDec: 160, subDec: 190 }, f2: { koSub: 380, koDec: -140, subDec: 105 } },
+        betmgm:      { f1: { koSub: 300 }, f2: { koSub: 350 } },
+        betonlineag: { f1: { koDec: 195, subDec: 255 }, f2: { koDec: -135, subDec: 105 } },
+        bovada:      { f1: { koSub: 260, koDec: 175, subDec: 225 }, f2: { koSub: 375, koDec: -150, subDec: 120 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 750, r2: 1000, r3: 1100 }, f2: { r1: 1100, r2: 1300, r3: 1400 } },
+        draftkings:  { f1: { r1: 650, r2: 850, r3: 1400 }, f2: { r1: 800, r2: 1100, r3: 1800 } },
+        betmgm:      { f1: { r1: 500, r2: 825, r3: 1250 }, f2: { r1: 700, r2: 1150, r3: 1800 } },
+        betonlineag: { f1: { r1: 550, r2: 750, r3: 1000 }, f2: { r1: 700, r2: 950, r3: 1200 } },
+        bovada:      { f1: { r1: 700, r2: 900, r3: 1200 }, f2: { r1: 1000, r2: 1200, r3: 1600 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -205, under: 166 },
+        },
+      },
+    },
+    // Drew Dober vs Chris Duncan (UFC 334, Nov 14) -- fightodds.io, current prices
+    'dober|duncan': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 210, sub: 1800, dec: 1000 }, f2: { ko: 310, sub: 300, dec: 420 } },
+        draftkings:  { f1: { ko: 215, sub: 2000, dec: 1000 }, f2: { ko: 250, sub: 250, dec: 400 } },
+        betmgm:      { f1: { ko: 225, sub: 2000, dec: 1000 }, f2: { ko: 225, sub: 250, dec: 400 } },
+        betonlineag: { f1: { ko: 170, sub: 2000, dec: 900 }, f2: { ko: 300, sub: 300, dec: 350 } },
+        bovada:      { f1: { ko: 200, sub: 2200, dec: 1000 }, f2: { ko: 300, sub: 300, dec: 425 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 180, koDec: 150, subDec: 800 }, f2: { koSub: 105, koDec: 135, subDec: 130 } },
+        draftkings:  { f1: { koSub: 200, koDec: 160, subDec: 650 }, f2: { koSub: 100, koDec: 115, subDec: 115 } },
+        betmgm:      { f1: { koSub: 200 }, f2: { koSub: -110 } },
+        betonlineag: { f1: { koDec: 150, subDec: 700 }, f2: { koDec: 130, subDec: 140 } },
+        bovada:      { f1: { koSub: 175, koDec: 150, subDec: 700 }, f2: { koSub: 110, koDec: 140, subDec: 140 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 500, r2: 700, r3: 1100 }, f2: { r1: 320, r2: 500, r3: 850 } },
+        draftkings:  { f1: { r1: 400, r2: 650, r3: 1200 }, f2: { r1: 240, r2: 450, r3: 700 } },
+        betmgm:      { f1: { r1: 400, r2: 700, r3: 1300 }, f2: { r1: 200, r2: 400, r3: 725 } },
+        betonlineag: { f1: { r1: 400, r2: 550, r3: 800 }, f2: { r1: 350, r2: 500, r3: 750 } },
+        bovada:      { f1: { r1: 500, r2: 700, r3: 1200 }, f2: { r1: 325, r2: 500, r3: 800 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -124, under: 102 },
+          betmgm:      { over: -135, under: 100 },
+        },
+      },
+    },
+    // Jim Miller vs Terrance McKinney (UFC 334, Nov 14) -- fightodds.io, current prices
+    'mckinney|miller': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 130, sub: 290, dec: 2000 }, f2: { ko: 800, sub: 290, dec: 1900 } },
+        draftkings:  { f1: { ko: 120, sub: 275, dec: 1800 }, f2: { ko: 700, sub: 300, dec: 1400 } },
+        betmgm:      { f1: { ko: 125, sub: 225, dec: 1800 }, f2: { ko: 700, sub: 300, dec: 1400 } },
+        betonlineag: { f1: { ko: 115, sub: 300, dec: 1800 }, f2: { ko: 600, sub: 275, dec: 1600 } },
+        bovada:      { f1: { ko: 125, sub: 300, dec: 1800 }, f2: { ko: 800, sub: 325, dec: 1800 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -210, koDec: 110, subDec: 240 }, f2: { koSub: 200, koDec: 600, subDec: 260 } },
+        draftkings:  { f1: { koSub: -185, koDec: 100, subDec: 225 }, f2: { koSub: 200, koDec: 450, subDec: 240 } },
+        betmgm:      { f1: { koSub: -200 }, f2: { koSub: 175 } },
+        betonlineag: { f1: { koDec: 100, subDec: 215 }, f2: { koDec: 375, subDec: 195 } },
+        bovada:      { f1: { koSub: -210, koDec: 110, subDec: 245 }, f2: { koSub: 200, koDec: 525, subDec: 260 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: -140, r2: 850, r3: 4500 }, f2: { r1: 370, r2: 900, r3: 3000 } },
+        draftkings:  { f1: { r1: -150, r2: 850, r3: 3500 }, f2: { r1: 300, r2: 850, r3: 2500 } },
+        betmgm:      { f1: { r1: -250, r2: 900, r3: 4000 }, f2: { r1: 175, r2: 1500, r3: 5000 } },
+        betonlineag: { f1: { r1: -150, r2: 600, r3: 3000 }, f2: { r1: 300, r2: 750, r3: 3000 } },
+        bovada:      { f1: { r1: -140, r2: 800, r3: 4000 }, f2: { r1: 350, r2: 800, r3: 2800 } },
+      },
+      totals: {
+        '0.5': {
+          fanduel:     { over: -215, under: 176 },
+        },
+        '1.5': {
+          betmgm:      { over: 280, under: -425 },
+        },
+      },
+    },
+    // Donte Johnson vs Cesar Almeida (UFC 334, Nov 14) -- fightodds.io, current prices
+    'almeida|johnson': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 260, sub: 1900, dec: 800 }, f2: { ko: 140, sub: 1100, dec: 390 } },
+        draftkings:  { f1: { ko: 240, sub: 2000, dec: 800 }, f2: { ko: 140, sub: 1000, dec: 330 } },
+        betmgm:      { f1: { ko: 200, sub: 2000, dec: 750 }, f2: { ko: 125, sub: 1000, dec: 350 } },
+        betonlineag: { f1: { ko: 215, sub: 2500, dec: 600 }, f2: { ko: 140, sub: 1000, dec: 325 } },
+        bovada:      { f1: { ko: 250, sub: 2000, dec: 800 }, f2: { ko: 140, sub: 1000, dec: 400 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 210, koDec: 165, subDec: 600 }, f2: { koSub: 105, koDec: -160, subDec: 270 } },
+        draftkings:  { f1: { koSub: 215, koDec: 160, subDec: 550 }, f2: { koSub: 110, koDec: -170, subDec: 215 } },
+        betonlineag: { f1: { koDec: 160, subDec: 650 }, f2: { koDec: -150, subDec: 210 } },
+        bovada:      { f1: { koSub: 210, koDec: 165, subDec: 550 }, f2: { koSub: 105, koDec: -140, subDec: 260 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 550, r2: 800, r3: 1400 }, f2: { r1: 320, r2: 490, r3: 950 } },
+        draftkings:  { f1: { r1: 400, r2: 850, r3: 1200 }, f2: { r1: 250, r2: 550, r3: 850 } },
+        betmgm:      { f1: { r1: 350, r2: 700, r3: 1450 }, f2: { r1: 200, r2: 350, r3: 475 } },
+        betonlineag: { f1: { r1: 500, r2: 800, r3: 1100 }, f2: { r1: 300, r2: 475, r3: 700 } },
+        bovada:      { f1: { r1: 550, r2: 800, r3: 1400 }, f2: { r1: 325, r2: 500, r3: 900 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -128, under: 106 },
+          betmgm:      { over: -140, under: 105 },
+        },
+      },
+    },
+    // Melquizael Costa vs Jared Gordon (UFC 334, Nov 14) -- fightodds.io, current prices
+    'costa|gordon': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 160, sub: 430, dec: 270 }, f2: { ko: 900, sub: 2000, dec: 550 } },
+        draftkings:  { f1: { ko: 125, sub: 400, dec: 250 }, f2: { ko: 1000, sub: 2000, dec: 550 } },
+        betmgm:      { f1: { ko: 125, sub: 350, dec: 250 }, f2: { ko: 1000, sub: 2000, dec: 550 } },
+        betonlineag: { f1: { ko: 140, sub: 400, dec: 235 }, f2: { ko: 950, sub: 2000, dec: 450 } },
+        bovada:      { f1: { ko: 150, sub: 425, dec: 275 }, f2: { ko: 900, sub: 2200, dec: 550 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -130, koDec: -180, subDec: 120 }, f2: { koSub: 700, koDec: 330, subDec: 450 } },
+        draftkings:  { f1: { koSub: -135, koDec: -240, subDec: 115 }, f2: { koSub: 700, koDec: 330, subDec: 400 } },
+        betmgm:      { f1: { koSub: -140 }, f2: { koSub: 700 } },
+        betonlineag: { f1: { koDec: -250, subDec: 125 }, f2: { koDec: 310, subDec: 400 } },
+        bovada:      { f1: { koSub: -135, koDec: -175, subDec: 130 }, f2: { koSub: 625, koDec: 315, subDec: 430 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 250, r2: 440, r3: 800 }, f2: { r1: 1400, r2: 2000, r3: 3300 } },
+        draftkings:  { f1: { r1: 240, r2: 350, r3: 650 }, f2: { r1: 1400, r2: 2000, r3: 2800 } },
+        betmgm:      { f1: { r1: 175, r2: 375, r3: 700 }, f2: { r1: 1200, r2: 2000, r3: 3500 } },
+        betonlineag: { f1: { r1: 225, r2: 365, r3: 700 }, f2: { r1: 1400, r2: 1800, r3: 2400 } },
+        bovada:      { f1: { r1: 250, r2: 450, r3: 750 }, f2: { r1: 1500, r2: 2200, r3: 3300 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 116, under: -142 },
+          betmgm:      { over: 115, under: -150 },
+        },
+      },
+    },
+    // Macy Chiasson vs Beatriz Mesquita (UFC 334, Nov 14) -- fightodds.io, current prices
+    'chiasson|mesquita': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 210, f2: -275 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 500, sub: 2700, dec: 450 }, f2: { ko: 1000, sub: 100, dec: 480 } },
+        draftkings:  { f1: { ko: 550, sub: 2500, dec: 450 }, f2: { ko: 900, sub: -120, dec: 450 } },
+        betmgm:      { f1: { ko: 550, sub: 2500, dec: 450 }, f2: { ko: 900, sub: -140, dec: 450 } },
+        betonlineag: { f1: { ko: 600, sub: 2000, dec: 400 }, f2: { ko: 825, sub: -120, dec: 400 } },
+        bovada:      { f1: { ko: 500, sub: 2500, dec: 450 }, f2: { ko: 1000, sub: 100, dec: 475 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 440, koDec: 200, subDec: 390 }, f2: { koSub: -135, koDec: 310, subDec: -190 } },
+        draftkings:  { f1: { koSub: 500, koDec: 215, subDec: 350 }, f2: { koSub: -150, koDec: 275, subDec: -250 } },
+        betmgm:      { f1: { koSub: 500 }, f2: { koSub: -160 } },
+        betonlineag: { f1: { koDec: 220, subDec: 350 }, f2: { koDec: 275, subDec: -215 } },
+        bovada:      { f1: { koSub: 400, koDec: 200, subDec: 375 }, f2: { koSub: -135, koDec: 300, subDec: -185 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1000, r2: 1400, r3: 2000 }, f2: { r1: 210, r2: 500, r3: 900 } },
+        draftkings:  { f1: { r1: 900, r2: 1400, r3: 2200 }, f2: { r1: 200, r2: 350, r3: 700 } },
+        betmgm:      { f1: { r1: 750, r2: 1500, r3: 2500 }, f2: { r1: 150, r2: 375, r3: 700 } },
+        betonlineag: { f1: { r1: 900, r2: 1400, r3: 2000 }, f2: { r1: 200, r2: 400, r3: 650 } },
+        bovada:      { f1: { r1: 1100, r2: 1200, r3: 1800 }, f2: { r1: 205, r2: 500, r3: 900 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -130, under: 108 },
+        },
+        '2.5': {
+          betmgm:      { over: 145, under: -190 },
+        },
+      },
+    },
+    // Heili Alateng vs Juan Diaz (UFC 334, Nov 14) -- fightodds.io, current prices
+    'alateng|diaz': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 310, f2: -400 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 1200, sub: 3300, dec: 460 }, f2: { ko: 380, sub: 550, dec: 100 } },
+        draftkings:  { f1: { ko: 1200, sub: 3500, dec: 500 }, f2: { ko: 330, sub: 500, dec: -120 } },
+        betmgm:      { f1: { ko: 1200, sub: 3500, dec: 500 }, f2: { ko: 300, sub: 500, dec: -120 } },
+        betonlineag: { f1: { ko: 1100, sub: 3000, dec: 450 }, f2: { ko: 325, sub: 450, dec: -110 } },
+        bovada:      { f1: { ko: 1200, sub: 3300, dec: 475 }, f2: { ko: 375, sub: 550, dec: 100 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 1000, koDec: 320, subDec: 410 }, f2: { koSub: 195, koDec: -220, subDec: -175 } },
+        draftkings:  { f1: { koSub: 1000, koDec: 340, subDec: 425 }, f2: { koSub: 185, koDec: -300, subDec: -225 } },
+        betonlineag: { f1: { koDec: 335, subDec: 425 }, f2: { koDec: -235, subDec: -175 } },
+        bovada:      { f1: { koSub: 875, koDec: 315, subDec: 400 }, f2: { koSub: 185, koDec: -220, subDec: -170 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 2200, r2: 3000, r3: 3500 }, f2: { r1: 500, r2: 750, r3: 1100 } },
+        draftkings:  { f1: { r1: 2200, r2: 2800, r3: 3500 }, f2: { r1: 450, r2: 600, r3: 900 } },
+        betonlineag: { f1: { r1: 1800, r2: 2400, r3: 3000 }, f2: { r1: 400, r2: 600, r3: 800 } },
+        bovada:      { f1: { r1: 2200, r2: 2800, r3: 3300 }, f2: { r1: 500, r2: 700, r3: 1000 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -225, under: 180 },
+        },
+      },
+    },
+    // Evan Elder vs Samuel Sanches (UFC 334, Nov 14) -- fightodds.io, current prices
+    'elder|sanches': {
+      rounds: 3,
+      method: {
+        fanduel:     { f1: { ko: 500, sub: 700, dec: 260 }, f2: { ko: 195, sub: 1600, dec: 430 } },
+        draftkings:  { f1: { ko: 550, sub: 700, dec: 230 }, f2: { ko: 165, sub: 1800, dec: 400 } },
+        betmgm:      { f1: { ko: 500, sub: 600, dec: 225 }, f2: { ko: 175, sub: 1800, dec: 400 } },
+        betonlineag: { f1: { ko: 500, sub: 700, dec: 225 }, f2: { ko: 155, sub: 2000, dec: 400 } },
+        bovada:      { f1: { ko: 500, sub: 750, dec: 250 }, f2: { ko: 200, sub: 1800, dec: 425 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 280, koDec: 135, subDec: 160 }, f2: { koSub: 155, koDec: -110, subDec: 330 } },
+        draftkings:  { f1: { koSub: 300, koDec: 125, subDec: 135 }, f2: { koSub: 150, koDec: -110, subDec: 300 } },
+        betmgm:      { f1: { koSub: 300 }, f2: { koSub: 150 } },
+        betonlineag: { f1: { koDec: 135, subDec: 150 }, f2: { koDec: 100, subDec: 350 } },
+        bovada:      { f1: { koSub: 265, koDec: 130, subDec: 160 }, f2: { koSub: 170, koDec: 100, subDec: 330 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 750, r2: 950, r3: 1400 }, f2: { r1: 500, r2: 600, r3: 900 } },
+        draftkings:  { f1: { r1: 600, r2: 1000, r3: 1500 }, f2: { r1: 350, r2: 550, r3: 950 } },
+        betmgm:      { f1: { r1: 500, r2: 875, r3: 1300 }, f2: { r1: 350, r2: 625, r3: 1000 } },
+        betonlineag: { f1: { r1: 750, r2: 1000, r3: 1400 }, f2: { r1: 350, r2: 500, r3: 750 } },
+        bovada:      { f1: { r1: 700, r2: 1000, r3: 1400 }, f2: { r1: 450, r2: 600, r3: 900 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -106, under: -116 },
+          betmgm:      { over: -115, under: -115 },
+        },
+      },
+    },
     // UFC Fight Night Nov 7 2026 (Cortes Acosta vs. Walker) -- fightodds.io, current prices, Nov 6 2026
     // (fanduel/draftkings/betmgm/betonlineag/bovada). Method/double-chance/round props always fill in; ML and
     // round totals only fill books missing from the live feed. Parsons vs Henrique appears under two keys
