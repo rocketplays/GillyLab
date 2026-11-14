@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-14T22:49:18.068Z",
+ "generatedAt": "2026-11-14T23:20:09.824Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -5074,6 +5074,194 @@
       ]
      },
      "capturedAt": "2026-11-14T22:49:17.976Z"
+    }
+   ]
+  },
+  "Alatengheili": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Juan Diaz",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Juan Diaz",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 160,
+      "totL": 58,
+      "totA": 172,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       27,
+       130
+      ],
+      "body": [
+       15,
+       21
+      ],
+      "leg": [
+       6,
+       9
+      ],
+      "dist": [
+       43,
+       153
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 108,
+      "sigA": 240,
+      "totL": 129,
+      "totA": 262,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       91,
+       215
+      ],
+      "body": [
+       12,
+       17
+      ],
+      "leg": [
+       5,
+       8
+      ],
+      "dist": [
+       95,
+       222
+      ],
+      "clinch": [
+       13,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-14T23:20:09.697Z"
+    }
+   ]
+  },
+  "Juan Diaz": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Alatengheili",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Alatengheili",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 108,
+      "sigA": 240,
+      "totL": 129,
+      "totA": 262,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       91,
+       215
+      ],
+      "body": [
+       12,
+       17
+      ],
+      "leg": [
+       5,
+       8
+      ],
+      "dist": [
+       95,
+       222
+      ],
+      "clinch": [
+       13,
+       18
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 160,
+      "totL": 58,
+      "totA": 172,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       27,
+       130
+      ],
+      "body": [
+       15,
+       21
+      ],
+      "leg": [
+       6,
+       9
+      ],
+      "dist": [
+       43,
+       153
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-14T23:20:09.697Z"
     }
    ]
   }
