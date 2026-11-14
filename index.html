@@ -1096,7 +1096,7 @@
        panel can clip to a true zero height when closed. */
     .fight-details-panel {
       max-width: var(--cmax);
-      margin: -0.75rem auto 0;
+      margin: var(--fr-pull, -0.75rem) auto 0;
       display: grid;
       grid-template-rows: 0fr;
       opacity: 0;
@@ -2320,7 +2320,7 @@
     /* Scouting Report — collapsible dropdown (mirrors Record Breakdown). */
     /* Per-fight Scouting dropdown on the events page — same 0fr/1fr grid collapse
        as .fight-details-panel, sits full-width under the matchup card. */
-    .scouting-fight-panel { max-width: var(--cmax); margin: -0.75rem auto 0; display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease; }
+    .scouting-fight-panel { max-width: var(--cmax); margin: var(--fr-pull, -0.75rem) auto 0; display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease; }
     .scouting-fight-panel.open { margin-bottom: 0.75rem; grid-template-rows: 1fr; opacity: 1; }
     .scouting-fight-panel > .sr-inner { min-height: 0; overflow: hidden; padding: 1rem 1.25rem; background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; }
     /* ── MATCHUP HUB ─────────────────────────────────────────────────────────
@@ -3750,7 +3750,7 @@
          Info / Scouting panel's tuck-up must match — the default -0.75rem
          over-pulls and hides the line below the card. */
       .numbered-card .fight-details-panel, .numbered-card .scouting-fight-panel,
-      .freedom-card .fight-details-panel, .freedom-card .scouting-fight-panel { margin-top: -0.3rem !important; }
+      .freedom-card .fight-details-panel, .freedom-card .scouting-fight-panel { margin-top: var(--fr-pull-var, -0.3rem) !important; }
       .numbered-card .fight-vs {
         background: linear-gradient(135deg, #d4af37, #8a6d1a) !important;
         color:#fff !important; font-weight:900 !important;
@@ -3825,7 +3825,7 @@
         transition: border-color 0.2s, background 0.2s;
       }
       .dwcs-card .fight-row:hover { border-color:rgba(59,130,246,0.4) !important; background:rgba(59,130,246,0.06) !important; }
-      .dwcs-card .fight-details-panel, .dwcs-card .scouting-fight-panel { margin-top: -0.3rem !important; }
+      .dwcs-card .fight-details-panel, .dwcs-card .scouting-fight-panel { margin-top: var(--fr-pull-var, -0.3rem) !important; }
       .dwcs-card .fight-vs {
         background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
         color:#fff !important; font-weight:900 !important;
@@ -4229,10 +4229,11 @@
    other across a VS mark, and a two-button footer. Same DOM — .fight-center
    is dissolved with display:contents and its children are placed on the
    card's own grid. */
+:root { --fr-gap: 0.7rem; --fr-pull: -0.55rem; --fr-pull-var: -0.1rem; }   /* gap between events-page matchup tiles; matches /matchup (0.7rem). Panels pull up by gap-0.15rem so an opened dropdown stays docked under its tile. */
 .fight-row, .numbered-card .fight-row {
   grid-template-columns: 1fr 1fr !important;
   border-radius: var(--r-card) !important;
-  margin-bottom: 0.9rem !important;
+  margin-bottom: var(--fr-gap) !important;
   background: linear-gradient(180deg, var(--card-hi), var(--card)) !important;
   box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 10px 30px -18px rgba(0,0,0,0.9);
 }
@@ -4357,6 +4358,7 @@
 
 /* ── PHONES ─────────────────────────────────────────────────────────── */
 @media (max-width: 720px) {
+  :root { --fr-gap: 0.55rem; --fr-pull: -0.5rem; --fr-pull-var: -0.05rem; }   /* phone: matches the app's tile spacing (.55rem) */
   .header-search-row { padding: 0.6rem 1rem; }
 
   /* Phone fight tile: a strip (weight class left, rounds right), the two
@@ -4364,7 +4366,7 @@
      (Fight Info | Simulate Matchup). Still shorter than the tile it replaced. */
   .fight-row, .numbered-card .fight-row {
     display: flex !important; flex-wrap: wrap; align-items: center; position: relative;
-    padding: 0; margin-bottom: 0.8rem !important;
+    padding: 0; margin-bottom: var(--fr-gap) !important;
   }
   .fight-row::after { content: ''; order: 4; flex: 0 0 100%; height: 0; }
   .fight-weight { order: 1; flex: 0 1 auto; min-width: 0; max-width: calc(100% - 5.4rem); overflow: hidden; text-overflow: ellipsis;
