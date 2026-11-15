@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T05:06:02.656Z",
+ "generatedAt": "2026-11-15T06:01:42.252Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -7142,6 +7142,194 @@
       ]
      },
      "capturedAt": "2026-11-15T05:00:29.906Z"
+    }
+   ]
+  },
+  "Ciryl Gane": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Josh Hokit",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Josh Hokit",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 252,
+      "sigA": 388,
+      "totL": 277,
+      "totA": 414,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       185,
+       316
+      ],
+      "body": [
+       64,
+       69
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       207,
+       334
+      ],
+      "clinch": [
+       45,
+       54
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 136,
+      "sigA": 288,
+      "totL": 190,
+      "totA": 347,
+      "tdL": 3,
+      "tdA": 30,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:37",
+      "head": [
+       117,
+       266
+      ],
+      "body": [
+       19,
+       22
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       102,
+       244
+      ],
+      "clinch": [
+       34,
+       44
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T06:01:42.123Z"
+    }
+   ]
+  },
+  "Josh Hokit": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Ciryl Gane",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Ciryl Gane",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 136,
+      "sigA": 288,
+      "totL": 190,
+      "totA": 347,
+      "tdL": 3,
+      "tdA": 30,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:37",
+      "head": [
+       117,
+       266
+      ],
+      "body": [
+       19,
+       22
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       102,
+       244
+      ],
+      "clinch": [
+       34,
+       44
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 252,
+      "sigA": 388,
+      "totL": 277,
+      "totA": 414,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       185,
+       316
+      ],
+      "body": [
+       64,
+       69
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       207,
+       334
+      ],
+      "clinch": [
+       45,
+       54
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T06:01:42.123Z"
     }
    ]
   }
