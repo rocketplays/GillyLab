@@ -4699,7 +4699,36 @@
         "pts": 0.0284,
         "leaned": false
       }
+    },
+    {
+      "fightId": "amanda nunes|kayla harrison",
+      "event": "UFC 334",
+      "gradedAt": "2026-11-15T18:41:04.933Z",
+      "a": {
+        "feed": "Kayla Harrison",
+        "db": "Kayla Harrison"
+      },
+      "b": {
+        "feed": "Amanda Nunes",
+        "db": "Amanda Nunes"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 4,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.5648,
+      "modelClose": 0.5645,
+      "marketOpen": 0.6369,
+      "marketClose": 0.6387,
+      "leanA": -0.0721,
+      "nSnapshots": 12,
+      "clv": {
+        "toward": false,
+        "pts": -0.0018,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-11-15T03:25:18.032Z"
+  "generatedAt": "2026-11-15T18:41:04.939Z"
 }
