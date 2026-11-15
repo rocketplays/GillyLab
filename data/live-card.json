@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T03:01:03.835Z",
+ "generatedAt": "2026-11-15T03:41:58.619Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -6578,6 +6578,194 @@
       ]
      },
      "capturedAt": "2026-11-15T02:55:41.702Z"
+    }
+   ]
+  },
+  "Uroš Medić": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Kevin Holland",
+     "result": "D",
+     "method": "Draw",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Kevin Holland",
+     "result": "D",
+     "f": {
+      "kd": 0,
+      "sigL": 35,
+      "sigA": 60,
+      "totL": 43,
+      "totA": 70,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:07",
+      "head": [
+       20,
+       43
+      ],
+      "body": [
+       11,
+       13
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       33,
+       55
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 53,
+      "sigA": 105,
+      "totL": 64,
+      "totA": 116,
+      "tdL": 2,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "2:36",
+      "head": [
+       15,
+       50
+      ],
+      "body": [
+       12,
+       21
+      ],
+      "leg": [
+       26,
+       34
+      ],
+      "dist": [
+       46,
+       98
+      ],
+      "clinch": [
+       7,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T03:41:58.505Z"
+    }
+   ]
+  },
+  "Kevin Holland": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Uroš Medić",
+     "result": "D",
+     "method": "Draw",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Uroš Medić",
+     "result": "D",
+     "f": {
+      "kd": 1,
+      "sigL": 53,
+      "sigA": 105,
+      "totL": 64,
+      "totA": 116,
+      "tdL": 2,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "2:36",
+      "head": [
+       15,
+       50
+      ],
+      "body": [
+       12,
+       21
+      ],
+      "leg": [
+       26,
+       34
+      ],
+      "dist": [
+       46,
+       98
+      ],
+      "clinch": [
+       7,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 35,
+      "sigA": 60,
+      "totL": 43,
+      "totA": 70,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:07",
+      "head": [
+       20,
+       43
+      ],
+      "body": [
+       11,
+       13
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       33,
+       55
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "capturedAt": "2026-11-15T03:41:58.505Z"
     }
    ]
   }
