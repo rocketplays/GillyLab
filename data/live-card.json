@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T02:10:09.885Z",
+ "generatedAt": "2026-11-15T02:55:41.822Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -6390,6 +6390,194 @@
       ]
      },
      "capturedAt": "2026-11-15T02:10:09.775Z"
+    }
+   ]
+  },
+  "Bilal Hasan": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Luis Gurule",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Luis Gurule",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 53,
+      "sigA": 111,
+      "totL": 59,
+      "totA": 118,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       59
+      ],
+      "body": [
+       30,
+       37
+      ],
+      "leg": [
+       11,
+       15
+      ],
+      "dist": [
+       47,
+       103
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 91,
+      "totL": 93,
+      "totA": 148,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:19",
+      "head": [
+       13,
+       56
+      ],
+      "body": [
+       12,
+       17
+      ],
+      "leg": [
+       12,
+       18
+      ],
+      "dist": [
+       25,
+       72
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       9,
+       14
+      ]
+     },
+     "capturedAt": "2026-11-15T02:55:41.702Z"
+    }
+   ]
+  },
+  "Luis Gurule": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Bilal Hasan",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Bilal Hasan",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 91,
+      "totL": 93,
+      "totA": 148,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:19",
+      "head": [
+       13,
+       56
+      ],
+      "body": [
+       12,
+       17
+      ],
+      "leg": [
+       12,
+       18
+      ],
+      "dist": [
+       25,
+       72
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       9,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 53,
+      "sigA": 111,
+      "totL": 59,
+      "totA": 118,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       59
+      ],
+      "body": [
+       30,
+       37
+      ],
+      "leg": [
+       11,
+       15
+      ],
+      "dist": [
+       47,
+       103
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-11-15T02:55:41.702Z"
     }
    ]
   }
