@@ -1,6 +1,114 @@
 {
-  "generatedAt": "2026-11-15T04:33:16.241Z",
+  "generatedAt": "2026-11-15T10:18:28.789Z",
   "events": [
+    {
+      "slug": "ufc-334",
+      "name": "UFC 334: Gane vs. Hokit",
+      "date": "2026-11-15",
+      "bouts": [
+        {
+          "f1": "Ciryl Gane",
+          "f2": "Josh Hokit",
+          "winner": "Ciryl Gane",
+          "method": "Decision - Unanimous",
+          "round": 5,
+          "voided": false
+        },
+        {
+          "f1": "Kayla Harrison",
+          "f2": "Amanda Nunes",
+          "winner": "Kayla Harrison",
+          "method": "Submission",
+          "round": 4,
+          "voided": false
+        },
+        {
+          "f1": "Caio Borralho",
+          "f2": "Yousri Belgaroui",
+          "winner": "Caio Borralho",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Uroš Medić",
+          "f2": "Kevin Holland",
+          "voided": true
+        },
+        {
+          "f1": "Bilal Hasan",
+          "f2": "Luis Gurule",
+          "winner": "Luis Gurule",
+          "method": "Decision - Split",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Stephen Thompson",
+          "f2": "Charles Radtke",
+          "winner": "Stephen Thompson",
+          "method": "KO/TKO",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Drew Dober",
+          "f2": "Chris Duncan",
+          "winner": "Chris Duncan",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Jim Miller",
+          "f2": "Terrance McKinney",
+          "winner": "Terrance McKinney",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Donte Johnson",
+          "f2": "Cesar Almeida",
+          "winner": "Cesar Almeida",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Jared Gordon",
+          "f2": "Melquizael Costa",
+          "winner": "Melquizael Costa",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Macy Chiasson",
+          "f2": "Bia Mesquita",
+          "winner": "Bia Mesquita",
+          "method": "Submission",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Alatengheili",
+          "f2": "Juan Diaz",
+          "winner": "Juan Diaz",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Evan Elder",
+          "f2": "Samuel Sanches",
+          "winner": "Evan Elder",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-fight-night-november-07-2026",
       "name": "UFC Fight Night: Cortes Acosta vs. Walker",
@@ -3569,117 +3677,6 @@
           "f2": "Francisco Prado",
           "winner": "Charles Radtke",
           "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        }
-      ]
-    },
-    {
-      "slug": "ufc-fight-night-april-04-2026",
-      "name": "UFC Fight Night: Moicano vs. Duncan",
-      "date": "2026-04-05",
-      "bouts": [
-        {
-          "f1": "Renato Moicano",
-          "f2": "Chris Duncan",
-          "winner": "Renato Moicano",
-          "method": "Submission",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Virna Jandiroba",
-          "f2": "Tabatha Ricci",
-          "winner": "Virna Jandiroba",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Abdul-Rakhman Yakhyaev",
-          "f2": "Brendson Ribeiro",
-          "winner": "Abdul-Rakhman Yakhyaev",
-          "method": "Submission",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Ethyn Ewing",
-          "f2": "Rafael Estevam",
-          "winner": "Ethyn Ewing",
-          "method": "KO/TKO",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Tommy McMillen",
-          "f2": "Manolo Zecchini",
-          "winner": "Tommy McMillen",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Jose Delano",
-          "f2": "Robert Ruchała",
-          "winner": "Jose Delano",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Guilherme Pat",
-          "f2": "Thomas Petersen",
-          "winner": "Thomas Petersen",
-          "method": "Decision - Majority",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Alessandro Costa",
-          "f2": "Stewart Nicoll",
-          "winner": "Alessandro Costa",
-          "method": "KO/TKO",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Lando Vannata",
-          "f2": "Darrius Flowers",
-          "winner": "Darrius Flowers",
-          "method": "KO/TKO",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Alice Pereira",
-          "f2": "Hailey Cowan",
-          "winner": "Alice Pereira",
-          "method": "KO/TKO",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Azamat Bekoev",
-          "f2": "Tresean Gore",
-          "winner": "Tresean Gore",
-          "method": "Submission",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Dione Barbosa",
-          "f2": "Melissa Gatto",
-          "winner": "Dione Barbosa",
-          "method": "Decision - Majority",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Kai Kamaka III",
-          "f2": "Dakota Hope",
-          "winner": "Kai Kamaka III",
-          "method": "Decision - Split",
           "round": 3,
           "voided": false
         }
