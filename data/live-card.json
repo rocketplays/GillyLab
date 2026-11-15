@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T00:06:48.429Z",
+ "generatedAt": "2026-11-15T00:22:14.582Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -5638,6 +5638,194 @@
       ]
      },
      "capturedAt": "2026-11-15T00:06:48.317Z"
+    }
+   ]
+  },
+  "Donte Johnson": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Cesar Almeida",
+     "result": "L",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "1:41",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Cesar Almeida",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 17,
+      "sigA": 44,
+      "totL": 17,
+      "totA": 44,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       38
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       17,
+       44
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 35,
+      "sigA": 52,
+      "totL": 35,
+      "totA": 52,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       28,
+       37
+      ],
+      "body": [
+       6,
+       11
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       19,
+       35
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       13,
+       14
+      ]
+     },
+     "capturedAt": "2026-11-15T00:22:14.453Z"
+    }
+   ]
+  },
+  "Cesar Almeida": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Donte Johnson",
+     "result": "W",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "1:41",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Donte Johnson",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 35,
+      "sigA": 52,
+      "totL": 35,
+      "totA": 52,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       28,
+       37
+      ],
+      "body": [
+       6,
+       11
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       19,
+       35
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       13,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 17,
+      "sigA": 44,
+      "totL": 17,
+      "totA": 44,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       38
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       17,
+       44
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T00:22:14.453Z"
     }
    ]
   }
