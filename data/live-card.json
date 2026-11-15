@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T03:41:58.619Z",
+ "generatedAt": "2026-11-15T04:17:51.450Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -6766,6 +6766,194 @@
       ]
      },
      "capturedAt": "2026-11-15T03:41:58.505Z"
+    }
+   ]
+  },
+  "Caio Borralho": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Yousri Belgaroui",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Yousri Belgaroui",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 37,
+      "totL": 37,
+      "totA": 57,
+      "tdL": 5,
+      "tdA": 13,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "7:47",
+      "head": [
+       15,
+       31
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       15,
+       32
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 50,
+      "totL": 51,
+      "totA": 73,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       7,
+       20
+      ],
+      "body": [
+       15,
+       22
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       27,
+       49
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T04:17:51.339Z"
+    }
+   ]
+  },
+  "Yousri Belgaroui": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Caio Borralho",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Caio Borralho",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 50,
+      "totL": 51,
+      "totA": 73,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       7,
+       20
+      ],
+      "body": [
+       15,
+       22
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       27,
+       49
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 37,
+      "totL": 37,
+      "totA": 57,
+      "tdL": 5,
+      "tdA": 13,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "7:47",
+      "head": [
+       15,
+       31
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       15,
+       32
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-11-15T04:17:51.339Z"
     }
    ]
   }
