@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T04:17:51.450Z",
+ "generatedAt": "2026-11-15T05:00:30.039Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -6954,6 +6954,194 @@
       ]
      },
      "capturedAt": "2026-11-15T04:17:51.339Z"
+    }
+   ]
+  },
+  "Kayla Harrison": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Amanda Nunes",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 4,
+     "time": "1:29",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Amanda Nunes",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 38,
+      "sigA": 50,
+      "totL": 160,
+      "totA": 172,
+      "tdL": 3,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "5:41",
+      "head": [
+       27,
+       37
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       9,
+       19
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       25,
+       25
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 31,
+      "sigA": 64,
+      "totL": 50,
+      "totA": 84,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:28",
+      "head": [
+       19,
+       41
+      ],
+      "body": [
+       9,
+       19
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       20,
+       51
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       6,
+       6
+      ]
+     },
+     "capturedAt": "2026-11-15T05:00:29.906Z"
+    }
+   ]
+  },
+  "Amanda Nunes": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Kayla Harrison",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 4,
+     "time": "1:29",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Kayla Harrison",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 31,
+      "sigA": 64,
+      "totL": 50,
+      "totA": 84,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:28",
+      "head": [
+       19,
+       41
+      ],
+      "body": [
+       9,
+       19
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       20,
+       51
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       6,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 38,
+      "sigA": 50,
+      "totL": 160,
+      "totA": 172,
+      "tdL": 3,
+      "tdA": 9,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "5:41",
+      "head": [
+       27,
+       37
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       9,
+       19
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       25,
+       25
+      ]
+     },
+     "capturedAt": "2026-11-15T05:00:29.906Z"
     }
    ]
   }
