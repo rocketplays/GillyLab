@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T01:39:17.919Z",
+ "generatedAt": "2026-11-15T02:10:09.885Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -6202,6 +6202,194 @@
       ]
      },
      "capturedAt": "2026-11-15T01:39:17.817Z"
+    }
+   ]
+  },
+  "Stephen Thompson": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Charles Radtke",
+     "result": "W",
+     "method": "KO/TKO (Kick)",
+     "round": 3,
+     "time": "2:54",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Charles Radtke",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 67,
+      "sigA": 122,
+      "totL": 89,
+      "totA": 147,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:32",
+      "head": [
+       46,
+       96
+      ],
+      "body": [
+       16,
+       21
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       62,
+       117
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 40,
+      "totL": 38,
+      "totA": 72,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:47",
+      "head": [
+       7,
+       35
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       9,
+       38
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T02:10:09.775Z"
+    }
+   ]
+  },
+  "Charles Radtke": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Stephen Thompson",
+     "result": "L",
+     "method": "KO/TKO (Kick)",
+     "round": 3,
+     "time": "2:54",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Stephen Thompson",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 40,
+      "totL": 38,
+      "totA": 72,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:47",
+      "head": [
+       7,
+       35
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       9,
+       38
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 67,
+      "sigA": 122,
+      "totL": 89,
+      "totA": 147,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:32",
+      "head": [
+       46,
+       96
+      ],
+      "body": [
+       16,
+       21
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       62,
+       117
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-11-15T02:10:09.775Z"
     }
    ]
   }
