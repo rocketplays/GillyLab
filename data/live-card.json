@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-14T23:35:53.681Z",
+ "generatedAt": "2026-11-15T00:06:48.429Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -5450,6 +5450,194 @@
       ]
      },
      "capturedAt": "2026-11-14T23:35:53.565Z"
+    }
+   ]
+  },
+  "Jared Gordon": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Melquizael Costa",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Melquizael Costa",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 48,
+      "totL": 69,
+      "totA": 106,
+      "tdL": 4,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:25",
+      "head": [
+       14,
+       38
+      ],
+      "body": [
+       3,
+       6
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       14,
+       38
+      ],
+      "clinch": [
+       5,
+       8
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 127,
+      "totL": 82,
+      "totA": 159,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:21",
+      "head": [
+       26,
+       89
+      ],
+      "body": [
+       17,
+       25
+      ],
+      "leg": [
+       11,
+       13
+      ],
+      "dist": [
+       52,
+       124
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T00:06:48.316Z"
+    }
+   ]
+  },
+  "Melquizael Costa": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Jared Gordon",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Jared Gordon",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 127,
+      "totL": 82,
+      "totA": 159,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:21",
+      "head": [
+       26,
+       89
+      ],
+      "body": [
+       17,
+       25
+      ],
+      "leg": [
+       11,
+       13
+      ],
+      "dist": [
+       52,
+       124
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 48,
+      "totL": 69,
+      "totA": 106,
+      "tdL": 4,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:25",
+      "head": [
+       14,
+       38
+      ],
+      "body": [
+       3,
+       6
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       14,
+       38
+      ],
+      "clinch": [
+       5,
+       8
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "capturedAt": "2026-11-15T00:06:48.317Z"
     }
    ]
   }
