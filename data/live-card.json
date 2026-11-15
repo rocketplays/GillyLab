@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-15T00:53:26.812Z",
+ "generatedAt": "2026-11-15T01:39:17.919Z",
  "fighters": {
   "Lucia Szabova": {
    "history": [
@@ -6014,6 +6014,194 @@
       ]
      },
      "capturedAt": "2026-11-15T00:53:26.701Z"
+    }
+   ]
+  },
+  "Drew Dober": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Chris Duncan",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Chris Duncan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 49,
+      "sigA": 125,
+      "totL": 53,
+      "totA": 130,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       33,
+       107
+      ],
+      "body": [
+       8,
+       10
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       47,
+       122
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 61,
+      "sigA": 122,
+      "totL": 69,
+      "totA": 130,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       28,
+       79
+      ],
+      "body": [
+       29,
+       39
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       56,
+       115
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       3,
+       5
+      ]
+     },
+     "capturedAt": "2026-11-15T01:39:17.817Z"
+    }
+   ]
+  },
+  "Chris Duncan": {
+   "history": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Drew Dober",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 334: Gane vs. Hokit",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 14, 2026",
+     "opponent": "Drew Dober",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 61,
+      "sigA": 122,
+      "totL": 69,
+      "totA": 130,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       28,
+       79
+      ],
+      "body": [
+       29,
+       39
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       56,
+       115
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       3,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 49,
+      "sigA": 125,
+      "totL": 53,
+      "totA": 130,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       33,
+       107
+      ],
+      "body": [
+       8,
+       10
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       47,
+       122
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-15T01:39:17.817Z"
     }
    ]
   }
