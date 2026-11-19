@@ -138572,6 +138572,537 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // by either of the two named methods. Placed after `method`, before
   // `roundProps`, to match the tab order in the UI.
   const MANUAL_PROP_ODDS = {
+    // UFC Fight Night Nov 21 2026 (Procházka vs. Stirling, Doha) -- fightodds.io, current prices, Nov 19 2026
+    // (fanduel/draftkings/betmgm/betonlineag/bovada). Method/double-chance/round props always fill in; ML and
+    // round totals only fill books missing from the live feed. Sousa-Zaynukov and Cavalcanti-Montague had no lines posted.
+    // Jiri Prochazka vs Navajo Stirling (Nov 21) -- fightodds.io, current prices
+    'prochazka|stirling': {
+      rounds: 5,
+      ml: {
+        fanduel:     { f1: 140, f2: -180 },
+        betmgm:      { f1: 150, f2: -185 },
+        bovada:      { f1: 147, f2: -172 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 195, sub: 2000, dec: 1100 }, f2: { ko: -110, sub: 2000, dec: 800 } },
+        draftkings:  { f1: { ko: 200, sub: 1800, dec: 1100 }, f2: { ko: -125, sub: 1800, dec: 800 } },
+        betmgm:      { f1: { ko: 175, sub: 1600, dec: 1100 }, f2: { ko: -130, sub: 1700, dec: 800 } },
+        betonlineag: { f1: { ko: 160, sub: 1800, dec: 1000 }, f2: { ko: -115, sub: 1800, dec: 700 } },
+        bovada:      { f1: { ko: 175, sub: 1800, dec: 1200 }, f2: { ko: -115, sub: 2000, dec: 900 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 170, koDec: 150, subDec: 850 }, f2: { koSub: -135, koDec: -165, subDec: 650 } },
+        draftkings:  { f1: { koSub: 185, koDec: 150, subDec: 650 }, f2: { koSub: -130, koDec: -160, subDec: 550 } },
+        betmgm:      { f1: { koSub: 150 }, f2: { koSub: -135 } },
+        betonlineag: { f1: { koDec: 145, subDec: 700 }, f2: { koDec: -150, subDec: 575 } },
+        bovada:      { f1: { koSub: 150, koDec: 135, subDec: 750 }, f2: { koSub: -120, koDec: -130, subDec: 575 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 600, r2: 900, r3: 1300, r4: 1700, r5: 2200 }, f2: { r1: 330, r2: 600, r3: 900, r4: 1300, r5: 1700 } },
+        draftkings:  { f1: { r1: 550, r2: 850, r3: 1200, r4: 1600, r5: 2500 }, f2: { r1: 275, r2: 450, r3: 850, r4: 1100, r5: 1800 } },
+        betmgm:      { f1: { r1: 400, r2: 825, r3: 1250, r4: 1850, r5: 2500 }, f2: { r1: 250, r2: 525, r3: 850, r4: 1200, r5: 1850 } },
+        betonlineag: { f1: { r1: 550, r2: 750, r3: 1000, r4: 1600, r5: 2400 }, f2: { r1: 350, r2: 475, r3: 650, r4: 1200, r5: 1600 } },
+        bovada:      { f1: { r1: 575, r2: 750, r3: 1100, r4: 1700, r5: 2500 }, f2: { r1: 375, r2: 500, r3: 750, r4: 1100, r5: 1700 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -1200, under: 550 },
+        },
+        '1.5': {
+          fanduel:     { over: -150, under: 124 },
+          draftkings:  { over: -175, under: 130 },
+        },
+        '2.5': {
+          draftkings:  { over: 124, under: -160 },
+          betmgm:      { over: 130, under: -170 },
+          betonlineag: { over: 140, under: -165 },
+          bovada:      { over: 125, under: -165 },
+        },
+        '3.5': {
+          draftkings:  { over: 215, under: -310 },
+          bovada:      { over: 220, under: -300 },
+        },
+        '4.5': {
+          draftkings:  { over: 350, under: -575 },
+          bovada:      { over: 375, under: -600 },
+        },
+      },
+    },
+    // Aljamain Sterling vs Kevin Vallejos (Nov 21) -- fightodds.io, current prices
+    'sterling|vallejos': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: 108, f2: -138 },
+        betmgm:      { f1: 110, f2: -135 },
+        bovada:      { f1: 105, f2: -125 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 2000, sub: 650, dec: 190 }, f2: { ko: 200, sub: 2000, dec: 310 } },
+        draftkings:  { f1: { ko: 1800, sub: 800, dec: 165 }, f2: { ko: 200, sub: 2000, dec: 275 } },
+        betmgm:      { f1: { ko: 1700, sub: 700, dec: 150 }, f2: { ko: 200, sub: 1900, dec: 275 } },
+        betonlineag: { f1: { ko: 1800, sub: 650, dec: 160 }, f2: { ko: 180, sub: 2000, dec: 275 } },
+        bovada:      { f1: { ko: 1800, sub: 700, dec: 180 }, f2: { ko: 185, sub: 2000, dec: 275 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 550, koDec: 160, subDec: 115 }, f2: { koSub: 175, koDec: -130, subDec: 260 } },
+        draftkings:  { f1: { koSub: 600, koDec: 135, subDec: 115 }, f2: { koSub: 185, koDec: -125, subDec: 225 } },
+        betmgm:      { f1: { koSub: 600 }, f2: { koSub: 175 } },
+        betonlineag: { f1: { koDec: 140, subDec: 120 }, f2: { koDec: -125, subDec: 250 } },
+        bovada:      { f1: { koSub: 550, koDec: 150, subDec: 125 }, f2: { koSub: 185, koDec: -125, subDec: 235 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1300, r2: 1600, r3: 2200 }, f2: { r1: 470, r2: 750, r3: 1000 } },
+        draftkings:  { f1: { r1: 1200, r2: 1600, r3: 2500 }, f2: { r1: 450, r2: 650, r3: 900 } },
+        betmgm:      { f1: { r1: 950, r2: 1550, r3: 2200 }, f2: { r1: 400, r2: 700, r3: 1050 } },
+        betonlineag: { f1: { r1: 1200, r2: 1600, r3: 2200 }, f2: { r1: 400, r2: 600, r3: 750 } },
+        bovada:      { f1: { r1: 1200, r2: 1600, r3: 2500 }, f2: { r1: 450, r2: 650, r3: 1000 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -3500, under: 900 },
+          bovada:      { over: -2500, under: 1000 },
+        },
+        '1.5': {
+          draftkings:  { over: -370, under: 255 },
+          bovada:      { over: -360, under: 255 },
+        },
+        '2.5': {
+          fanduel:     { over: -162, under: 132 },
+          draftkings:  { over: -180, under: 140 },
+          betmgm:      { over: -185, under: 140 },
+          betonlineag: { over: -156, under: 133 },
+          bovada:      { over: -185, under: 140 },
+        },
+      },
+    },
+    // Asu Almabaev vs Kyoji Horiguchi (Nov 21) -- fightodds.io, current prices
+    'almabaev|horiguchi': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: 148, f2: -192 },
+        betmgm:      { f1: 170, f2: -210 },
+        bovada:      { f1: 160, f2: -185 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 1100, sub: 1000, dec: 260 }, f2: { ko: 490, sub: 900, dec: 130 } },
+        draftkings:  { f1: { ko: 1100, sub: 1000, dec: 250 }, f2: { ko: 450, sub: 900, dec: 110 } },
+        betmgm:      { f1: { ko: 1400, sub: 1200, dec: 250 }, f2: { ko: 450, sub: 700, dec: 100 } },
+        betonlineag: { f1: { ko: 1000, sub: 1000, dec: 250 }, f2: { ko: 450, sub: 700, dec: 115 } },
+        bovada:      { f1: { ko: 1200, sub: 1200, dec: 280 }, f2: { ko: 450, sub: 700, dec: 115 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 600, koDec: 190, subDec: 185 }, f2: { koSub: 300, koDec: -150, subDec: -110 } },
+        draftkings:  { f1: { koSub: 550, koDec: 180, subDec: 175 }, f2: { koSub: 320, koDec: -170, subDec: -130 } },
+        betmgm:      { f1: { koSub: 700 }, f2: { koSub: 275 } },
+        betonlineag: { f1: { koDec: 205, subDec: 190 }, f2: { koDec: -165, subDec: -125 } },
+        bovada:      { f1: { koSub: 650, koDec: 200, subDec: 215 }, f2: { koSub: 285, koDec: -155, subDec: -125 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1400, r2: 1900, r3: 2200 }, f2: { r1: 700, r2: 1100, r3: 1600 } },
+        draftkings:  { f1: { r1: 1200, r2: 1600, r3: 2200 }, f2: { r1: 650, r2: 900, r3: 1600 } },
+        betmgm:      { f1: { r1: 1400, r2: 2000, r3: 2800 }, f2: { r1: 575, r2: 1000, r3: 1300 } },
+        betonlineag: { f1: { r1: 1200, r2: 1400, r3: 1800 }, f2: { r1: 600, r2: 800, r3: 1000 } },
+        bovada:      { f1: { r1: 1300, r2: 1600, r3: 2200 }, f2: { r1: 700, r2: 1000, r3: 1400 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -20000, under: 1200 },
+          bovada:      { over: -3300, under: 1200 },
+        },
+        '1.5': {
+          draftkings:  { over: -575, under: 350 },
+          bovada:      { over: -550, under: 350 },
+        },
+        '2.5': {
+          fanduel:     { over: -270, under: 205 },
+          draftkings:  { over: -280, under: 210 },
+          betonlineag: { over: -250, under: 208 },
+          bovada:      { over: -285, under: 210 },
+        },
+      },
+    },
+    // Daniel Hooker vs Brian Ortega (Nov 21) -- fightodds.io, current prices
+    'hooker|ortega': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: -200, f2: 154 },
+        betmgm:      { f1: -200, f2: 165 },
+        bovada:      { f1: -183, f2: 158 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 220, sub: 1600, dec: 195 }, f2: { ko: 1200, sub: 480, dec: 430 } },
+        draftkings:  { f1: { ko: 200, sub: 1600, dec: 180 }, f2: { ko: 1000, sub: 500, dec: 400 } },
+        betmgm:      { f1: { ko: 200, sub: 1600, dec: 175 }, f2: { ko: 1000, sub: 400, dec: 400 } },
+        betonlineag: { f1: { sub: 1300, dec: 185 }, f2: { sub: 400, dec: 425 } },
+        bovada:      { f1: { ko: 200, sub: 1800, dec: 190 }, f2: { ko: 950, sub: 450, dec: 400 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 180, koDec: -175, subDec: 160 }, f2: { koSub: 330, koDec: 300, subDec: 185 } },
+        draftkings:  { f1: { koSub: 180, koDec: -175, subDec: 140 }, f2: { koSub: 350, koDec: 250, subDec: 180 } },
+        betmgm:      { f1: { koSub: 175 }, f2: { koSub: 350 } },
+        betonlineag: { f1: { koDec: -145, subDec: 150 }, f2: { koDec: 265, subDec: 175 } },
+        bovada:      { f1: { koSub: 185, koDec: -165, subDec: 165 }, f2: { koSub: 325, koDec: 275, subDec: 185 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 460, r2: 850, r3: 1200 }, f2: { r1: 750, r2: 1200, r3: 1700 } },
+        draftkings:  { f1: { r1: 400, r2: 650, r3: 1000 }, f2: { r1: 650, r2: 1000, r3: 1600 } },
+        betmgm:      { f1: { r1: 375, r2: 725, r3: 1150 }, f2: { r1: 550, r2: 1000, r3: 1550 } },
+        betonlineag: { f1: { r1: 400, r2: 600, r3: 900 }, f2: { r1: 750, r2: 1000, r3: 1300 } },
+        bovada:      { f1: { r1: 450, r2: 650, r3: 1100 }, f2: { r1: 750, r2: 1100, r3: 1800 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -2000, under: 750 },
+          bovada:      { over: -1600, under: 750 },
+        },
+        '1.5': {
+          draftkings:  { over: -275, under: 195 },
+          bovada:      { over: -275, under: 200 },
+        },
+        '2.5': {
+          fanduel:     { over: -128, under: 106 },
+          draftkings:  { over: -135, under: 105 },
+          betmgm:      { over: -135, under: 100 },
+          betonlineag: { over: -130, under: 111 },
+          bovada:      { over: -135, under: 105 },
+        },
+      },
+    },
+    // Ikram Aliskerov vs Jared Cannonier (Nov 21) -- fightodds.io, current prices
+    'aliskerov|cannonier': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: -300, f2: 235 },
+        betmgm:      { f1: -300, f2: 240 },
+        bovada:      { f1: -290, f2: 240 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 210, sub: 650, dec: 185 }, f2: { ko: 440, sub: 2200, dec: 750 } },
+        draftkings:  { f1: { ko: 185, sub: 650, dec: 165 }, f2: { ko: 425, sub: 2800, dec: 800 } },
+        betmgm:      { f1: { ko: 175, sub: 650, dec: 175 }, f2: { ko: 400, sub: 2500, dec: 800 } },
+        betonlineag: { f1: { ko: 190, sub: 625, dec: 170 }, f2: { ko: 325, sub: 2500, dec: 750 } },
+        bovada:      { f1: { ko: 190, sub: 650, dec: 175 }, f2: { ko: 400, sub: 2800, dec: 800 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 125, koDec: -195, subDec: 110 }, f2: { koSub: 370, koDec: 250, subDec: 650 } },
+        draftkings:  { f1: { koSub: 130, koDec: -250, subDec: 100 }, f2: { koSub: 380, koDec: 245, subDec: 600 } },
+        betmgm:      { f1: { koSub: 125 }, f2: { koSub: 350 } },
+        betonlineag: { f1: { koDec: -225, subDec: 110 }, f2: { koDec: 260, subDec: 700 } },
+        bovada:      { f1: { koSub: 140, koDec: -205, subDec: 115 }, f2: { koSub: 325, koDec: 240, subDec: 750 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 370, r2: 600, r3: 950 }, f2: { r1: 850, r2: 1300, r3: 1900 } },
+        draftkings:  { f1: { r1: 330, r2: 500, r3: 850 }, f2: { r1: 800, r2: 1100, r3: 1800 } },
+        betmgm:      { f1: { r1: 250, r2: 525, r3: 900 }, f2: { r1: 625, r2: 1250, r3: 1900 } },
+        betonlineag: { f1: { r1: 350, r2: 500, r3: 750 }, f2: { r1: 600, r2: 900, r3: 1500 } },
+        bovada:      { f1: { r1: 350, r2: 525, r3: 900 }, f2: { r1: 850, r2: 1200, r3: 2000 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -1800, under: 700 },
+          bovada:      { over: -1400, under: 700 },
+        },
+        '1.5': {
+          draftkings:  { over: -225, under: 165 },
+          bovada:      { over: -220, under: 165 },
+        },
+        '2.5': {
+          fanduel:     { over: -102, under: -120 },
+          draftkings:  { over: -110, under: -120 },
+          betmgm:      { over: -110, under: -120 },
+          betonlineag: { over: -101, under: -115 },
+          bovada:      { over: -110, under: -120 },
+        },
+      },
+    },
+    // Santiago Luna vs Aleksandre Topuria (Nov 21) -- fightodds.io, current prices
+    'luna|topuria': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: 225, f2: -290 },
+        draftkings:  { f1: 230, f2: -285 },
+        betmgm:      { f1: 240, f2: -300 },
+        bovada:      { f1: 230, f2: -280 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 1100, sub: 1000, dec: 450 }, f2: { ko: 410, sub: 500, dec: 130 } },
+        draftkings:  { f1: { ko: 1000, sub: 900, dec: 500 }, f2: { ko: 350, sub: 450, dec: 120 } },
+        betmgm:      { f1: { ko: 1200, sub: 1100, dec: 400 }, f2: { ko: 300, sub: 450, dec: 125 } },
+        betonlineag: { f1: { ko: 1100, sub: 1100, dec: 475 }, f2: { ko: 300, sub: 450, dec: 115 } },
+        bovada:      { f1: { ko: 1200, sub: 1100, dec: 450 }, f2: { ko: 375, sub: 460, dec: 120 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 550, koDec: 300, subDec: 290 }, f2: { koSub: 190, koDec: -160, subDec: -145 } },
+        draftkings:  { f1: { koSub: 500, koDec: 300, subDec: 275 }, f2: { koSub: 180, koDec: -190, subDec: -160 } },
+        betmgm:      { f1: { koSub: 600 }, f2: { koSub: 175 } },
+        betonlineag: { f1: { koDec: 300, subDec: 300 }, f2: { koDec: -175, subDec: -155 } },
+        bovada:      { f1: { koSub: 600, koDec: 285, subDec: 300 }, f2: { koSub: 185, koDec: -175, subDec: -140 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1400, r2: 1700, r3: 2200 }, f2: { r1: 550, r2: 750, r3: 1000 } },
+        draftkings:  { f1: { r1: 1000, r2: 1400, r3: 2200 }, f2: { r1: 400, r2: 650, r3: 900 } },
+        betonlineag: { f1: { r1: 900, r2: 1200, r3: 1500 }, f2: { r1: 500, r2: 675, r3: 900 } },
+        bovada:      { f1: { r1: 1200, r2: 1700, r3: 2500 }, f2: { r1: 425, r2: 625, r3: 1000 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -3500, under: 900 },
+          bovada:      { over: -2500, under: 1000 },
+        },
+        '1.5': {
+          draftkings:  { over: -340, under: 235 },
+          bovada:      { over: -325, under: 230 },
+        },
+        '2.5': {
+          fanduel:     { over: -178, under: 146 },
+          draftkings:  { over: -166, under: 130 },
+          betmgm:      { over: -190, under: 145 },
+          betonlineag: { over: -180, under: 153 },
+          bovada:      { over: -175, under: 135 },
+        },
+      },
+    },
+    // Shamil Gaziev vs Talisson Teixeira (Nov 21) -- fightodds.io, current prices
+    'gaziev|teixeira': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: -210, f2: 168 },
+        betmgm:      { f1: -200, f2: 165 },
+        bovada:      { f1: -195, f2: 165 },
+      },
+      method: {
+        fanduel:     { f1: { ko: -135, sub: 1500, dec: 1000 }, f2: { ko: 240, sub: 2200, dec: 1100 } },
+        draftkings:  { f1: { ko: -145, sub: 1400, dec: 1000 }, f2: { ko: 225, sub: 2500, dec: 1100 } },
+        betmgm:      { f1: { ko: -150, sub: 1300, dec: 1000 }, f2: { ko: 225, sub: 2500, dec: 1100 } },
+        betonlineag: { f1: { ko: -145, sub: 1600, dec: 800 }, f2: { ko: 195, sub: 2500, dec: 900 } },
+        bovada:      { f1: { ko: -150, sub: 1600, dec: 900 }, f2: { ko: 235, sub: 2800, dec: 1000 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: -170, koDec: -185, subDec: 700 }, f2: { koSub: 210, koDec: 180, subDec: 850 } },
+        draftkings:  { f1: { koSub: -160, koDec: -185, subDec: 550 }, f2: { koSub: 215, koDec: 170, subDec: 700 } },
+        betmgm:      { f1: { koSub: -165 }, f2: { koSub: 200 } },
+        betonlineag: { f1: { koDec: -190, subDec: 700 }, f2: { koDec: 160, subDec: 800 } },
+        bovada:      { f1: { koSub: -150, koDec: -190, subDec: 650 }, f2: { koSub: 200, koDec: 170, subDec: 800 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 135, r2: 500, r3: 1400 }, f2: { r1: 400, r2: 950, r3: 2200 } },
+        draftkings:  { f1: { r1: 125, r2: 550, r3: 1400 }, f2: { r1: 330, r2: 800, r3: 2200 } },
+        betonlineag: { f1: { r1: 140, r2: 425, r3: 1200 }, f2: { r1: 285, r2: 1000, r3: 2200 } },
+        bovada:      { f1: { r1: 165, r2: 425, r3: 1100 }, f2: { r1: 390, r2: 850, r3: 2200 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -425, under: 275 },
+        },
+        '1.5': {
+          fanduel:     { over: 178, under: -220 },
+          draftkings:  { over: 170, under: -220 },
+          betmgm:      { over: 170, under: -225 },
+          betonlineag: { over: 173, under: -205 },
+          bovada:      { over: 170, under: -225 },
+        },
+        '2.5': {
+          draftkings:  { over: 360, under: -600 },
+          bovada:      { over: 340, under: -525 },
+        },
+      },
+    },
+    // Amir Albazi vs Alessandro Costa (Nov 21) -- fightodds.io, current prices
+    'albazi|costa': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: -106, f2: -114 },
+        betmgm:      { f1: -120, f2: 100 },
+        bovada:      { f1: -109, f2: -109 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 850, sub: 750, dec: 195 }, f2: { ko: 310, sub: 1300, dec: 270 } },
+        draftkings:  { f1: { ko: 800, sub: 700, dec: 175 }, f2: { ko: 300, sub: 1200, dec: 250 } },
+        betmgm:      { f1: { ko: 800, sub: 650, dec: 175 }, f2: { ko: 275, sub: 1200, dec: 250 } },
+        betonlineag: { f1: { ko: 650, sub: 650, dec: 200 }, f2: { ko: 275, sub: 1000, dec: 250 } },
+        bovada:      { f1: { ko: 825, sub: 700, dec: 175 }, f2: { ko: 325, sub: 1100, dec: 275 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 400, koDec: 130, subDec: 120 }, f2: { koSub: 230, koDec: -105, subDec: 200 } },
+        draftkings:  { f1: { koSub: 380, koDec: 115, subDec: 110 }, f2: { koSub: 250, koDec: -105, subDec: 180 } },
+        betmgm:      { f1: { koSub: 375 }, f2: { koSub: 250 } },
+        betonlineag: { f1: { koDec: 115, subDec: 115 }, f2: { koDec: 120, subDec: 160 } },
+        bovada:      { f1: { koSub: 385, koDec: 125, subDec: 115 }, f2: { koSub: 250, koDec: 105, subDec: 215 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1000, r2: 1300, r3: 1800 }, f2: { r1: 600, r2: 950, r3: 1300 } },
+        draftkings:  { f1: { r1: 800, r2: 1100, r3: 1800 }, f2: { r1: 500, r2: 800, r3: 1400 } },
+        betonlineag: { f1: { r1: 775, r2: 1000, r3: 1400 }, f2: { r1: 500, r2: 650, r3: 900 } },
+        bovada:      { f1: { r1: 850, r2: 1100, r3: 1700 }, f2: { r1: 600, r2: 850, r3: 1300 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -3500, under: 900 },
+          bovada:      { over: -2500, under: 1000 },
+        },
+        '1.5': {
+          draftkings:  { over: -360, under: 245 },
+          bovada:      { over: -350, under: 250 },
+        },
+        '2.5': {
+          fanduel:     { over: -174, under: 142 },
+          draftkings:  { over: -180, under: 140 },
+          betmgm:      { over: -185, under: 140 },
+          betonlineag: { over: -170, under: 145 },
+          bovada:      { over: -185, under: 140 },
+        },
+      },
+    },
+    // Tahir Abdullaev vs Jake Matthews (Nov 21) -- fightodds.io, current prices
+    'abdullaev|matthews': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: 205, f2: -260 },
+        betmgm:      { f1: 220, f2: -275 },
+        bovada:      { f1: 215, f2: -260 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 750, sub: 950, dec: 500 }, f2: { ko: 450, sub: 450, dec: 145 } },
+        draftkings:  { f1: { ko: 750, sub: 1000, dec: 500 }, f2: { ko: 400, sub: 400, dec: 130 } },
+        betmgm:      { f1: { ko: 750, sub: 1000, dec: 500 }, f2: { ko: 350, sub: 400, dec: 125 } },
+        betonlineag: { f1: { ko: 600, sub: 800, dec: 500 }, f2: { ko: 450, sub: 350, dec: 140 } },
+        bovada:      { f1: { ko: 750, sub: 1000, dec: 500 }, f2: { ko: 400, sub: 400, dec: 135 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 430, koDec: 270, subDec: 320 }, f2: { koSub: 190, koDec: -140, subDec: -140 } },
+        draftkings:  { f1: { koSub: 450, koDec: 255, subDec: 300 }, f2: { koSub: 185, koDec: -160, subDec: -160 } },
+        betmgm:      { f1: { koSub: 450 }, f2: { koSub: 175 } },
+        betonlineag: { f1: { koDec: 250, subDec: 275 }, f2: { koDec: -125, subDec: -150 } },
+        bovada:      { f1: { koSub: 450, koDec: 265, subDec: 375 }, f2: { koSub: 185, koDec: -150, subDec: -150 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 1000, r2: 1400, r3: 1900 }, f2: { r1: 500, r2: 750, r3: 1100 } },
+        draftkings:  { f1: { r1: 900, r2: 1200, r3: 1800 }, f2: { r1: 450, r2: 650, r3: 900 } },
+        betonlineag: { f1: { r1: 700, r2: 1000, r3: 1400 }, f2: { r1: 450, r2: 650, r3: 800 } },
+        bovada:      { f1: { r1: 1000, r2: 1400, r3: 2200 }, f2: { r1: 450, r2: 650, r3: 1100 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -3500, under: 900 },
+          bovada:      { over: -2500, under: 1000 },
+        },
+        '1.5': {
+          draftkings:  { over: -330, under: 230 },
+          bovada:      { over: -325, under: 230 },
+        },
+        '2.5': {
+          fanduel:     { over: -150, under: 124 },
+          draftkings:  { over: -160, under: 124 },
+          betmgm:      { over: -165, under: 125 },
+          betonlineag: { over: -150, under: 128 },
+          bovada:      { over: -165, under: 125 },
+        },
+      },
+    },
+    // Dom Mar Fan vs Nikolas Motta (Nov 21) -- fightodds.io, current prices
+    'fan|motta': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: -170, f2: 138 },
+        draftkings:  { f1: -170, f2: 142 },
+        betmgm:      { f1: -180, f2: 145 },
+        bovada:      { f1: -168, f2: 142 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 390, sub: 410, dec: 260 }, f2: { ko: 260, sub: 2700, dec: 550 } },
+        draftkings:  { f1: { ko: 350, sub: 380, dec: 240 }, f2: { ko: 250, sub: 2500, dec: 550 } },
+        betmgm:      { f1: { ko: 350, sub: 350, dec: 225 }, f2: { ko: 250, sub: 2500, dec: 550 } },
+        betonlineag: { f1: { ko: 400, sub: 450, dec: 200 }, f2: { ko: 200, sub: 2500, dec: 550 } },
+        bovada:      { f1: { ko: 355, sub: 375, dec: 250 }, f2: { ko: 255, sub: 2800, dec: 550 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 160, koDec: 110, subDec: 115 }, f2: { koSub: 220, koDec: 140, subDec: 500 } },
+        draftkings:  { f1: { koSub: 165, koDec: 100, subDec: 105 }, f2: { koSub: 240, koDec: 145, subDec: 425 } },
+        betmgm:      { f1: { koSub: 150 }, f2: { koSub: 225 } },
+        betonlineag: { f1: { koDec: 115, subDec: 120 }, f2: { koDec: 150, subDec: 500 } },
+        bovada:      { f1: { koSub: 155, koDec: 105, subDec: 110 }, f2: { koSub: 230, koDec: 155, subDec: 500 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 470, r2: 650, r3: 950 }, f2: { r1: 550, r2: 900, r3: 1400 } },
+        draftkings:  { f1: { r1: 380, r2: 550, r3: 850 }, f2: { r1: 500, r2: 800, r3: 1200 } },
+        betonlineag: { f1: { r1: 500, r2: 650, r3: 850 }, f2: { r1: 400, r2: 700, r3: 1200 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -1600, under: 650 },
+          bovada:      { over: -1200, under: 650 },
+        },
+        '1.5': {
+          draftkings:  { over: -220, under: 160 },
+          bovada:      { over: -200, under: 150 },
+        },
+        '2.5': {
+          fanduel:     { over: 110, under: -134 },
+          draftkings:  { over: 100, under: -130 },
+          betmgm:      { over: 100, under: -135 },
+          betonlineag: { over: 111, under: -130 },
+          bovada:      { over: 100, under: -130 },
+        },
+      },
+    },
+    // Alik Lorenz vs Diyar Nurgozhay (Nov 21) -- fightodds.io, current prices
+    'lorenz|nurgozhay': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: 198, f2: -250 },
+        draftkings:  { f1: 200, f2: -245 },
+        betmgm:      { f1: 200, f2: -250 },
+        bovada:      { f1: 215, f2: -260 },
+      },
+      method: {
+        fanduel:     { f1: { ko: 270, sub: 2200, dec: 1500 }, f2: { ko: -130, sub: 900, dec: 850 } },
+        draftkings:  { f1: { ko: 275, sub: 2000, dec: 1400 }, f2: { ko: -150, sub: 800, dec: 800 } },
+        betmgm:      { f1: { ko: 275, sub: 2000, dec: 1400 }, f2: { ko: -175, sub: 800, dec: 800 } },
+        betonlineag: { f1: { ko: 260, sub: 1600, dec: 1200 }, f2: { ko: -140, sub: 750, dec: 700 } },
+        bovada:      { f1: { ko: 275, sub: 2000 }, f2: { ko: -150, sub: 800, dec: 800 } },
+      },
+      doubleChance: {
+        fanduel:     { f1: { koSub: 230, koDec: 210, subDec: 1000 }, f2: { koSub: -185, koDec: -190, subDec: 450 } },
+        draftkings:  { f1: { koSub: 250, koDec: 205, subDec: 800 }, f2: { koSub: -185, koDec: -185, subDec: 380 } },
+        betmgm:      { f1: { koSub: 250 }, f2: { koSub: -200 } },
+        betonlineag: { f1: { koDec: 200, subDec: 800 }, f2: { koDec: -190, subDec: 375 } },
+        bovada:      { f1: { koSub: 205, koDec: 250, subDec: 800 }, f2: { koSub: -185, koDec: -185, subDec: 380 } },
+      },
+      roundProps: {
+        fanduel:     { f1: { r1: 450, r2: 1000, r3: 2000 }, f2: { r1: 150, r2: 430, r3: 1000 } },
+        draftkings:  { f1: { r1: 400, r2: 900, r3: 1800 }, f2: { r1: 150, r2: 400, r3: 1100 } },
+        betonlineag: { f1: { r1: 450, r2: 800, r3: 1600 }, f2: { r1: 150, r2: 350, r3: 800 } },
+        bovada:      { f1: { r1: 450, r2: 900, r3: 2000 }, f2: { r1: 155, r2: 375, r3: 1000 } },
+      },
+      totals: {
+        '0.5': {
+          draftkings:  { over: -475, under: 300 },
+          bovada:      { over: -450, under: 300 },
+        },
+        '1.5': {
+          fanduel:     { over: 158, under: -194 },
+          draftkings:  { over: 145, under: -188 },
+          betmgm:      { over: 145, under: -190 },
+          betonlineag: { over: 136, under: -160 },
+          bovada:      { over: 145, under: -190 },
+        },
+        '2.5': {
+          draftkings:  { over: 330, under: -525 },
+          bovada:      { over: 340, under: -525 },
+        },
+      },
+    },
+    // John Mitchell vs Shoaib Yousaf (Nov 21) -- fightodds.io, current prices
+    'mitchell|yousaf': {
+      rounds: 3,
+      ml: {
+        fanduel:     { f1: -144, f2: 118 },
+        draftkings:  { f1: -142, f2: 120 },
+        betmgm:      { f1: -140, f2: 115 },
+        betonlineag: { f1: -128, f2: 110 },
+        bovada:      { f1: -137, f2: 117 },
+      },
+    },
     // UFC 334 Nov 14 2026 (Gane vs. Hokit) -- fightodds.io, current prices, Nov 13 2026
     // (fanduel/draftkings/betmgm/betonlineag/bovada). Method/double-chance/round props always fill in; ML and
     // round totals only fill books missing from the live feed.
@@ -145001,6 +145532,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       },
     },
   };
+
+  // Spelling variants between the odds feed and our fighter DB (same fight, same entry).
+  MANUAL_PROP_ODDS['almabayev|horiguchi'] = MANUAL_PROP_ODDS['almabaev|horiguchi'];
+  MANUAL_PROP_ODDS['abdullayev|matthews'] = MANUAL_PROP_ODDS['abdullaev|matthews'];
 
   function pairKey(n1, n2) {
     return [lastNameOf(n1).toLowerCase(), lastNameOf(n2).toLowerCase()].sort().join('|');
