@@ -55,13 +55,13 @@ export default {
     ]
   },
   "roster": {
-    "week": "October 20 – November 10, 2026",
-    "added": [
-      "Smila Sundell"
+    "week": "November 11 – November 18, 2026",
+    "added": [],
+    "addedTotal": 0,
+    "removed": [
+      "Julian Erosa"
     ],
-    "addedTotal": 9,
-    "removed": [],
-    "removedTotal": 0,
+    "removedTotal": 5,
     "names": [
       "Aaron Pico",
       "Abdul Hussein",
@@ -76,7 +76,7 @@ export default {
       "Aiemann Zahabi",
       "Aieza Bertolso"
     ],
-    "total": 703
+    "total": 698
   },
   "featured": {
     "name": "Islam Makhachev",
