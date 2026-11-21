@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T20:40:43.073Z",
+ "generatedAt": "2026-11-21T20:56:15.440Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -7142,6 +7142,194 @@
       ]
      },
      "capturedAt": "2026-11-21T20:40:42.927Z"
+    }
+   ]
+  },
+  "Jiří Procházka": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Navajo Stirling",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "4:58",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Navajo Stirling",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 23,
+      "sigA": 45,
+      "totL": 26,
+      "totA": 48,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:18",
+      "head": [
+       11,
+       31
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       12,
+       14
+      ],
+      "dist": [
+       22,
+       44
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 48,
+      "sigA": 94,
+      "totL": 51,
+      "totA": 98,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       8,
+       36
+      ],
+      "body": [
+       9,
+       16
+      ],
+      "leg": [
+       31,
+       42
+      ],
+      "dist": [
+       43,
+       88
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-11-21T20:56:15.288Z"
+    }
+   ]
+  },
+  "Navajo Stirling": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Jiří Procházka",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "4:58",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Jiří Procházka",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 48,
+      "sigA": 94,
+      "totL": 51,
+      "totA": 98,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       8,
+       36
+      ],
+      "body": [
+       9,
+       16
+      ],
+      "leg": [
+       31,
+       42
+      ],
+      "dist": [
+       43,
+       88
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 23,
+      "sigA": 45,
+      "totL": 26,
+      "totA": 48,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:18",
+      "head": [
+       11,
+       31
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       12,
+       14
+      ],
+      "dist": [
+       22,
+       44
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T20:56:15.288Z"
     }
    ]
   }
