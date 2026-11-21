@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T18:18:04.933Z",
+ "generatedAt": "2026-11-21T18:49:25.693Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -6390,6 +6390,194 @@
       ]
      },
      "capturedAt": "2026-11-21T18:12:40.157Z"
+    }
+   ]
+  },
+  "Jared Cannonier": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Ikram Aliskerov",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Ikram Aliskerov",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 73,
+      "totL": 25,
+      "totA": 80,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       13,
+       59
+      ],
+      "body": [
+       4,
+       9
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       20,
+       73
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 79,
+      "totL": 70,
+      "totA": 114,
+      "tdL": 4,
+      "tdA": 6,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "6:55",
+      "head": [
+       21,
+       55
+      ],
+      "body": [
+       13,
+       19
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       35,
+       74
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T18:49:25.552Z"
+    }
+   ]
+  },
+  "Ikram Aliskerov": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Jared Cannonier",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Jared Cannonier",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 79,
+      "totL": 70,
+      "totA": 114,
+      "tdL": 4,
+      "tdA": 6,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "6:55",
+      "head": [
+       21,
+       55
+      ],
+      "body": [
+       13,
+       19
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       35,
+       74
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 73,
+      "totL": 25,
+      "totA": 80,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       13,
+       59
+      ],
+      "body": [
+       4,
+       9
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       20,
+       73
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T18:49:25.552Z"
     }
    ]
   }
