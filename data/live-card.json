@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T15:22:01.896Z",
+ "generatedAt": "2026-11-21T15:52:56.753Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -5262,6 +5262,194 @@
       ]
      },
      "capturedAt": "2026-11-21T15:22:01.760Z"
+    }
+   ]
+  },
+  "Diyar Nurgozhay": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Alik Lorenz",
+     "result": "W",
+     "method": "KO/TKO (Kick)",
+     "round": 2,
+     "time": "0:24",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Alik Lorenz",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 37,
+      "sigA": 56,
+      "totL": 61,
+      "totA": 94,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:51",
+      "head": [
+       25,
+       41
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       5,
+       7
+      ],
+      "dist": [
+       17,
+       29
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       17,
+       22
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 18,
+      "sigA": 39,
+      "totL": 22,
+      "totA": 45,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       17,
+       37
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       18,
+       38
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T15:52:56.611Z"
+    }
+   ]
+  },
+  "Alik Lorenz": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Diyar Nurgozhay",
+     "result": "L",
+     "method": "KO/TKO (Kick)",
+     "round": 2,
+     "time": "0:24",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Diyar Nurgozhay",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 18,
+      "sigA": 39,
+      "totL": 22,
+      "totA": 45,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       17,
+       37
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       18,
+       38
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 37,
+      "sigA": 56,
+      "totL": 61,
+      "totA": 94,
+      "tdL": 2,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:51",
+      "head": [
+       25,
+       41
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       5,
+       7
+      ],
+      "dist": [
+       17,
+       29
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       17,
+       22
+      ]
+     },
+     "capturedAt": "2026-11-21T15:52:56.611Z"
     }
    ]
   }
