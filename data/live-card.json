@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T16:23:54.670Z",
+ "generatedAt": "2026-11-21T16:54:50.503Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -5638,6 +5638,194 @@
       ]
      },
      "capturedAt": "2026-11-21T16:23:54.529Z"
+    }
+   ]
+  },
+  "Jake Matthews": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Tahir Abdullayev",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Tahir Abdullayev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 18,
+      "sigA": 71,
+      "totL": 52,
+      "totA": 111,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:32",
+      "head": [
+       13,
+       65
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       16,
+       66
+      ],
+      "clinch": [
+       2,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 32,
+      "sigA": 72,
+      "totL": 63,
+      "totA": 113,
+      "tdL": 5,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "9:02",
+      "head": [
+       27,
+       63
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       18,
+       52
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       9,
+       14
+      ]
+     },
+     "capturedAt": "2026-11-21T16:54:50.360Z"
+    }
+   ]
+  },
+  "Tahir Abdullayev": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Jake Matthews",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Jake Matthews",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 32,
+      "sigA": 72,
+      "totL": 63,
+      "totA": 113,
+      "tdL": 5,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "9:02",
+      "head": [
+       27,
+       63
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       18,
+       52
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       9,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 18,
+      "sigA": 71,
+      "totL": 52,
+      "totA": 111,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:32",
+      "head": [
+       13,
+       65
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       16,
+       66
+      ],
+      "clinch": [
+       2,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T16:54:50.360Z"
     }
    ]
   }
