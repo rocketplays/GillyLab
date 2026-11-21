@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T17:41:43.765Z",
+ "generatedAt": "2026-11-21T18:12:40.293Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -6202,6 +6202,194 @@
       ]
      },
      "capturedAt": "2026-11-21T17:41:43.628Z"
+    }
+   ]
+  },
+  "Aleksandre Topuria": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Santiago Luna",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Santiago Luna",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 142,
+      "totL": 76,
+      "totA": 142,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       56,
+       116
+      ],
+      "body": [
+       8,
+       11
+      ],
+      "leg": [
+       12,
+       15
+      ],
+      "dist": [
+       73,
+       138
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 202,
+      "sigA": 397,
+      "totL": 202,
+      "totA": 397,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       169,
+       358
+      ],
+      "body": [
+       12,
+       16
+      ],
+      "leg": [
+       21,
+       23
+      ],
+      "dist": [
+       198,
+       392
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T18:12:40.157Z"
+    }
+   ]
+  },
+  "Santiago Luna": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Aleksandre Topuria",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Aleksandre Topuria",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 202,
+      "sigA": 397,
+      "totL": 202,
+      "totA": 397,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       169,
+       358
+      ],
+      "body": [
+       12,
+       16
+      ],
+      "leg": [
+       21,
+       23
+      ],
+      "dist": [
+       198,
+       392
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 142,
+      "totL": 76,
+      "totA": 142,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       56,
+       116
+      ],
+      "body": [
+       8,
+       11
+      ],
+      "leg": [
+       12,
+       15
+      ],
+      "dist": [
+       73,
+       138
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T18:12:40.157Z"
     }
    ]
   }
