@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T19:15:24.037Z",
+ "generatedAt": "2026-11-21T19:45:56.717Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -6766,6 +6766,194 @@
       ]
      },
      "capturedAt": "2026-11-21T19:15:23.898Z"
+    }
+   ]
+  },
+  "Dan Hooker": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Brian Ortega",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Brian Ortega",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 144,
+      "sigA": 292,
+      "totL": 153,
+      "totA": 301,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       94,
+       220
+      ],
+      "body": [
+       14,
+       31
+      ],
+      "leg": [
+       36,
+       41
+      ],
+      "dist": [
+       142,
+       290
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 86,
+      "sigA": 194,
+      "totL": 87,
+      "totA": 195,
+      "tdL": 2,
+      "tdA": 11,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:42",
+      "head": [
+       59,
+       160
+      ],
+      "body": [
+       19,
+       25
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       85,
+       193
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T19:45:56.580Z"
+    }
+   ]
+  },
+  "Brian Ortega": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Dan Hooker",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Dan Hooker",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 86,
+      "sigA": 194,
+      "totL": 87,
+      "totA": 195,
+      "tdL": 2,
+      "tdA": 11,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:42",
+      "head": [
+       59,
+       160
+      ],
+      "body": [
+       19,
+       25
+      ],
+      "leg": [
+       8,
+       9
+      ],
+      "dist": [
+       85,
+       193
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 144,
+      "sigA": 292,
+      "totL": 153,
+      "totA": 301,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       94,
+       220
+      ],
+      "body": [
+       14,
+       31
+      ],
+      "leg": [
+       36,
+       41
+      ],
+      "dist": [
+       142,
+       290
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T19:45:56.580Z"
     }
    ]
   }
