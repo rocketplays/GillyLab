@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T15:52:56.753Z",
+ "generatedAt": "2026-11-21T16:23:54.670Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -5450,6 +5450,194 @@
       ]
      },
      "capturedAt": "2026-11-21T15:52:56.611Z"
+    }
+   ]
+  },
+  "Nikolas Motta": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Dom Mar Fan",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Dom Mar Fan",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 14,
+      "sigA": 85,
+      "totL": 19,
+      "totA": 90,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       10,
+       81
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       11,
+       79
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       3,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 59,
+      "sigA": 110,
+      "totL": 111,
+      "totA": 182,
+      "tdL": 4,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:01",
+      "head": [
+       45,
+       92
+      ],
+      "body": [
+       9,
+       13
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       49,
+       94
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       7,
+       11
+      ]
+     },
+     "capturedAt": "2026-11-21T16:23:54.529Z"
+    }
+   ]
+  },
+  "Dom Mar Fan": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Nikolas Motta",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Nikolas Motta",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 59,
+      "sigA": 110,
+      "totL": 111,
+      "totA": 182,
+      "tdL": 4,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:01",
+      "head": [
+       45,
+       92
+      ],
+      "body": [
+       9,
+       13
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       49,
+       94
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       7,
+       11
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 14,
+      "sigA": 85,
+      "totL": 19,
+      "totA": 90,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       10,
+       81
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       11,
+       79
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       3,
+       5
+      ]
+     },
+     "capturedAt": "2026-11-21T16:23:54.529Z"
     }
    ]
   }
