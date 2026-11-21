@@ -1,6 +1,109 @@
 {
-  "generatedAt": "2026-11-21T20:11:50.158Z",
+  "generatedAt": "2026-11-21T21:06:45.262Z",
   "events": [
+    {
+      "slug": "ufc-fight-night-november-21-2026",
+      "name": "UFC Fight Night: Procházka vs. Stirling",
+      "date": "2026-11-21",
+      "bouts": [
+        {
+          "f1": "Jiří Procházka",
+          "f2": "Navajo Stirling",
+          "winner": "Navajo Stirling",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Aljamain Sterling",
+          "f2": "Kevin Vallejos",
+          "winner": "Kevin Vallejos",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Dan Hooker",
+          "f2": "Brian Ortega",
+          "winner": "Dan Hooker",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Kyoji Horiguchi",
+          "f2": "Asu Almabayev",
+          "winner": "Kyoji Horiguchi",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Jared Cannonier",
+          "f2": "Ikram Aliskerov",
+          "winner": "Ikram Aliskerov",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Aleksandre Topuria",
+          "f2": "Santiago Luna",
+          "winner": "Santiago Luna",
+          "method": "Decision - Split",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Shamil Gaziev",
+          "f2": "Tallison Teixeira",
+          "winner": "Tallison Teixeira",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Amir Albazi",
+          "f2": "Alessandro Costa",
+          "winner": "Amir Albazi",
+          "method": "Submission",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Jake Matthews",
+          "f2": "Tahir Abdullayev",
+          "winner": "Tahir Abdullayev",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Nikolas Motta",
+          "f2": "Dom Mar Fan",
+          "winner": "Dom Mar Fan",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Diyar Nurgozhay",
+          "f2": "Alik Lorenz",
+          "winner": "Diyar Nurgozhay",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Shoaib Yousaf",
+          "f2": "John Mitchell",
+          "winner": "John Mitchell",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-334",
       "name": "UFC 334: Gane vs. Hokit",
@@ -3578,106 +3681,6 @@
           "winner": "John Yannis",
           "method": "KO/TKO",
           "round": 1,
-          "voided": false
-        }
-      ]
-    },
-    {
-      "slug": "ufc-327",
-      "name": "UFC 327: Procházka vs. Ulberg",
-      "date": "2026-04-12",
-      "bouts": [
-        {
-          "f1": "Jiří Procházka",
-          "f2": "Carlos Ulberg",
-          "winner": "Carlos Ulberg",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Azamat Murzakanov",
-          "f2": "Paulo Costa",
-          "winner": "Paulo Costa",
-          "method": "KO/TKO",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Curtis Blaydes",
-          "f2": "Josh Hokit",
-          "winner": "Josh Hokit",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Dominick Reyes",
-          "f2": "Johnny Walker",
-          "winner": "Dominick Reyes",
-          "method": "Decision - Split",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Cub Swanson",
-          "f2": "Nate Landwehr",
-          "winner": "Cub Swanson",
-          "method": "KO/TKO",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Patricio Pitbull",
-          "f2": "Aaron Pico",
-          "winner": "Aaron Pico",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Kevin Holland",
-          "f2": "Randy Brown",
-          "winner": "Kevin Holland",
-          "method": "Decision - Unanimous",
-          "round": 3,
-          "voided": false
-        },
-        {
-          "f1": "Mateusz Gamrot",
-          "f2": "Esteban Ribovics",
-          "winner": "Mateusz Gamrot",
-          "method": "Submission",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Tatiana Suarez",
-          "f2": "Loopy Godínez",
-          "winner": "Tatiana Suarez",
-          "method": "Submission",
-          "round": 2,
-          "voided": false
-        },
-        {
-          "f1": "Chris Padilla",
-          "f2": "MarQuel Mederos",
-          "voided": true
-        },
-        {
-          "f1": "Kelvin Gastelum",
-          "f2": "Vicente Luque",
-          "winner": "Vicente Luque",
-          "method": "Submission",
-          "round": 1,
-          "voided": false
-        },
-        {
-          "f1": "Charles Radtke",
-          "f2": "Francisco Prado",
-          "winner": "Charles Radtke",
-          "method": "Decision - Unanimous",
-          "round": 3,
           "voided": false
         }
       ]
