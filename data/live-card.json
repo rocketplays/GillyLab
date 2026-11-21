@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T16:54:50.503Z",
+ "generatedAt": "2026-11-21T17:10:20.984Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -5826,6 +5826,194 @@
       ]
      },
      "capturedAt": "2026-11-21T16:54:50.360Z"
+    }
+   ]
+  },
+  "Amir Albazi": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Alessandro Costa",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "4:34",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Alessandro Costa",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 35,
+      "sigA": 58,
+      "totL": 85,
+      "totA": 114,
+      "tdL": 7,
+      "tdA": 10,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "6:19",
+      "head": [
+       24,
+       44
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       7,
+       9
+      ],
+      "dist": [
+       30,
+       52
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 42,
+      "sigA": 81,
+      "totL": 51,
+      "totA": 95,
+      "tdL": 5,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:49",
+      "head": [
+       39,
+       73
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       7
+      ],
+      "dist": [
+       11,
+       47
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       26,
+       27
+      ]
+     },
+     "capturedAt": "2026-11-21T17:10:20.842Z"
+    }
+   ]
+  },
+  "Alessandro Costa": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Amir Albazi",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "4:34",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Amir Albazi",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 42,
+      "sigA": 81,
+      "totL": 51,
+      "totA": 95,
+      "tdL": 5,
+      "tdA": 5,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:49",
+      "head": [
+       39,
+       73
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       7
+      ],
+      "dist": [
+       11,
+       47
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       26,
+       27
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 35,
+      "sigA": 58,
+      "totL": 85,
+      "totA": 114,
+      "tdL": 7,
+      "tdA": 10,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "6:19",
+      "head": [
+       24,
+       44
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       7,
+       9
+      ],
+      "dist": [
+       30,
+       52
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-11-21T17:10:20.842Z"
     }
    ]
   }
