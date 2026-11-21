@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-21T19:51:22.579Z",
+ "generatedAt": "2026-11-21T20:40:43.073Z",
  "fighters": {
   "Jonny Parsons": {
    "history": [
@@ -6954,6 +6954,194 @@
       ]
      },
      "capturedAt": "2026-11-21T19:45:56.580Z"
+    }
+   ]
+  },
+  "Aljamain Sterling": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Kevin Vallejos",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Kevin Vallejos",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 32,
+      "sigA": 93,
+      "totL": 74,
+      "totA": 138,
+      "tdL": 1,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:32",
+      "head": [
+       11,
+       59
+      ],
+      "body": [
+       14,
+       22
+      ],
+      "leg": [
+       7,
+       12
+      ],
+      "dist": [
+       28,
+       85
+      ],
+      "clinch": [
+       4,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 94,
+      "totL": 61,
+      "totA": 119,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:58",
+      "head": [
+       16,
+       67
+      ],
+      "body": [
+       12,
+       18
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       35,
+       92
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-11-21T20:40:42.927Z"
+    }
+   ]
+  },
+  "Kevin Vallejos": {
+   "history": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Aljamain Sterling",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Procházka vs. Stirling",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Nov 21, 2026",
+     "opponent": "Aljamain Sterling",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 94,
+      "totL": 61,
+      "totA": 119,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:58",
+      "head": [
+       16,
+       67
+      ],
+      "body": [
+       12,
+       18
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       35,
+       92
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 32,
+      "sigA": 93,
+      "totL": 74,
+      "totA": 138,
+      "tdL": 1,
+      "tdA": 12,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:32",
+      "head": [
+       11,
+       59
+      ],
+      "body": [
+       14,
+       22
+      ],
+      "leg": [
+       7,
+       12
+      ],
+      "dist": [
+       28,
+       85
+      ],
+      "clinch": [
+       4,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-11-21T20:40:42.927Z"
     }
    ]
   }
