@@ -1,6 +1,6 @@
 {
   "slug": "ufc-fight-night-december-05-2026",
-  "generatedAt": "2026-11-23T23:14:01.654Z",
+  "generatedAt": "2026-11-24T07:17:04.901Z",
   "slugs": [
     "israel-adesanya",
     "shara-magomedov",
@@ -27,7 +27,9 @@
     "modestino-rodrigues",
     "matthieu-letho-duclos",
     "abdul-hussein",
-    "hecher-sosa"
+    "hecher-sosa",
+    "mateusz-rebecki",
+    "elves-brener"
   ],
   "bouts": [
     {
@@ -37,8 +39,8 @@
       "ps1": "israel-adesanya",
       "ps2": "shara-magomedov",
       "wPts": {
-        "f1": 8.808704236151735,
-        "f2": 11.676948525445429
+        "f1": 8.77037475949709,
+        "f2": 11.753967605264226
       },
       "mPts": {
         "f1": {
@@ -95,8 +97,8 @@
       "ps1": "serghei-spivac",
       "ps2": "mario-pinto",
       "wPts": {
-        "f1": 15.304597605928066,
-        "f2": 7.689246950305534
+        "f1": 15.346453420389604,
+        "f2": 7.681416517211025
       },
       "mPts": {
         "f1": {
@@ -319,8 +321,8 @@
       "ps1": "pavel-andrusca",
       "ps2": "mehemmedeli-osmanli",
       "wPts": {
-        "f1": 9.260863118031459,
-        "f2": 10.900908895701715
+        "f1": 9.312394041638807,
+        "f2": 10.825495154790241
       },
       "mPts": {
         "f1": {
@@ -375,8 +377,8 @@
       "ps1": "abdul-hussein",
       "ps2": "hecher-sosa",
       "wPts": {
-        "f1": 8.910514340226321,
-        "f2": 11.48189948285356
+        "f1": 8.936367030306055,
+        "f2": 11.434452744664016
       },
       "mPts": {
         "f1": {
@@ -388,6 +390,34 @@
           "KO/TKO": 5,
           "Submission": 6,
           "Decision": 4
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-mateusz-rebecki-vs-elves-brener",
+      "f1": "Mateusz Rębecki",
+      "f2": "Elves Brener",
+      "ps1": "mateusz-rebecki",
+      "ps2": "elves-brener",
+      "wPts": {
+        "f1": 8.893423892460872,
+        "f2": 11.51371488425001
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 5,
+          "Submission": 7,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 4,
+          "Decision": 6
         }
       },
       "rPts": {
